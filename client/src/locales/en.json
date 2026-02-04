@@ -1,0 +1,155 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About Us",
+    "blog": "Blog & Recipes",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Roots in Modern Life",
+    "subtitle": "Experience the authentic taste of tradition with modern innovation.",
+    "cta": "Explore Products"
+  },
+  "products": {
+    "title": "Our Collection",
+    "ladle_bonus": "Free Ladle Included",
+    "view_details": "View Details"
+  },
+  "about": {
+    "title": "Our Story",
+    "values": "Our Values",
+    "authenticity": "Authenticity",
+    "innovation": "Innovation",
+    "quality": "Certified Quality (SGS)",
+    "connection": "Connection",
+    "simplicity": "Simplicity"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send Message"
+  },
+  "products_page": {
+    "title": "Our Premium Collection",
+    "subtitle": "Discover the perfect blend of tradition and modern engineering.",
+    "filter_all": "All",
+    "filter_cookware": "Cookware",
+    "filter_appliances": "Appliances",
+    "filter_accessories": "Accessories",
+    "pot_red": "Rayhana Heritage Pot (Red)",
+    "pot_grey": "Rayhana Heritage Pot (Grey)",
+    "pot_desc": "Designed for authentic Qabili Pulao and traditional Afghan dishes. Premium non-stick ceramic coating that preserves taste and aroma, perfect for steaming rice.",
+    "sizes": "Available Sizes: 7, 9, 12",
+    "colors": "Colors: Red, Grey",
+    "sgs_certified": "SGS, FDA & CA65 Certified | PFAS FREE",
+    "price_7": "$109.99",
+    "price_9": "$129.99",
+    "price_12": "$149.99",
+    "bonus_gifts": "Bonus Gifts Included",
+    "bonus_desc": "Includes Silicone Ladle with Wooden Handle, Fridge Magnet, and 2x Silicone Handle Covers.",
+    "buy_amazon": "Buy on Amazon US",
+    "amazon_reviews": "Amazon Customer Reviews",
+    "verified_purchase": "Verified Purchase",
+    "review_1": "Absolutely love this pot! The non-stick coating is amazing and it's so easy to clean.",
+    "review_2": "Great quality and beautiful design. The ladle is a nice bonus.",
+    "review_3": "Perfect size for my family. Highly recommended!",
+    "out_of_5": "out of 5 stars",
+    "coming_soon_markets": "Coming soon to Amazon Europe, UK, and Australia",
+    "brand_message_title": "The Beginning of a Journey",
+    "brand_message_p1": "In a world of endless choices, you chose culture. You chose quality. You chose to honor the generations who taught us that the best meals are crafted with patience and love.",
+    "brand_message_highlight": "Your support changes lives.",
+    "brand_message_p2": "This Qabili pilaf Pot is just the beginning. We started with this traditional vessel, and soon you will welcome more Rayhana products into your kitchen—each crafted with the same precision and excellence.",
+    "brand_signature": "With love and gratitude - The Rayhana Family - Roots and authenticity in modern life",
+    "price": "$"
+  },
+  "referral": {
+    "card_title": "Rayhana Golden Invitation",
+    "card_subtitle": "Share the culture, gift the quality",
+    "name_placeholder": "Enter your name",
+    "generate_btn": "Create My Golden Card",
+    "enter_name_error": "Please enter your name first",
+    "code_generated": "Your golden card is ready!",
+    "code_copied": "Code copied to clipboard",
+    "your_code_label": "YOUR EXCLUSIVE CODE",
+    "copy": "Copy Code",
+    "share": "Share",
+    "share_message": "I invite you to experience authentic taste with Rayhana. Use my code {{code}} for a special welcome gift.",
+    "terms": "Valid for new customers only"
+  },
+  "gallery": {
+    "title": "Your Kitchen, Our Story",
+    "subtitle": "Join the Rayhana family by sharing your culinary creations",
+    "share_button": "Share Your Photo",
+    "upload_title": "Share Your Masterpiece",
+    "upload_placeholder": "Click to upload photo",
+    "upload_note": "Share your cooking moments with Rayhana pot",
+    "submit_photo": "Submit Photo"
+  },
+  "newsletter": {
+    "title": "Join the Rayhana Family",
+    "subtitle": "Be the first to know about new products and exclusive offers",
+    "placeholder": "Enter your email address",
+    "disclaimer": "We respect your privacy. Unsubscribe at any time.",
+    "success_title": "Welcome to the Rayhana Family!",
+     "success_message": "You are now part of our story. Get ready to receive exclusive tastes and traditions in your inbox."
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about Rayhana products",
+    "q1": "Is the ceramic coating safe?",
+    "a1": "Absolutely. Our Greblon C3+ ceramic coating is German-engineered, SGS certified, and 100% free from PFOA, PFAS, lead, and cadmium. It's designed for healthy cooking.",
+    "q2": "Can I use metal utensils?",
+    "a2": "While our coating is durable, we recommend using silicone or wooden utensils (like the free ladle included) to extend the life of your pot.",
+    "q3": "Is it dishwasher safe?",
+    "a3": "Yes, Rayhana pots are dishwasher safe. However, hand washing with a soft sponge is recommended to maintain the non-stick performance for years.",
+    "q4": "Does it work on induction cooktops?",
+    "a4": "Yes! Our pots feature a premium induction bottom that works perfectly on gas, electric, ceramic, and induction stoves."
+  },
+  "about_page": {
+    "title": "Our Journey",
+    "subtitle": "From a longing for home to a global brand.",
+    "story_title": "The Rayhana Story",
+    "story_content": "Rayhana is not just a kitchenware brand; it is a bridge between the past and the future. We were born from the deep longing of immigrants for the authentic tastes of home. In a world rapidly moving towards modernity, we are committed to keeping the aroma and flavor of traditional dishes alive in modern kitchens. Every Rayhana product is designed with love and precision to be not just a cooking tool, but a companion for creating sweet memories of family gatherings.",
+    "mission_title": "Our Mission",
+    "mission_content": "Our mission is to bring the warmth and intimacy of traditional tables back to modern homes. We want to enable every Afghan and Persian-speaking immigrant to experience the true taste of home, wherever they are in the world, by offering world-class quality products with authentic design. We are committed to passing on a part of our rich culture and identity to future generations with every Rayhana pot.",
+    "founder_title": "Founder's Story",
+    "founder_content": "I have lived in China for over fifteen years and witnessed a challenge that thousands of Afghan and Persian-speaking immigrants faced: the lack of quality kitchenware for cooking traditional dishes. After years of extensive research and market analysis, I gained a deep understanding of this need. That moment was a turning point: I decided not only to identify the problem but to create a comprehensive solution with world-class quality. Thus, Rayhana was born a brand that understands the longing of immigrants and transforms it into reality."
+  },
+  "blog_page": {
+    "title": "Culinary Tales & Recipes",
+    "subtitle": "Explore traditional recipes adapted for the modern kitchen.",
+    "read_more": "Read Recipe",
+    "recipe_1_title": "Classic Pot Roast: A Sunday Favorite",
+    "recipe_1_desc": "Tender, melt-in-your-mouth beef roast with vegetables, cooked to perfection in your Rayhana Pot.",
+    "recipe_2_title": "Hearty Beef & Vegetable Stew",
+    "recipe_2_desc": "A comforting, rich stew that brings the family together on cold evenings.",
+    "recipe_3_title": "Creamy Mushroom Risotto",
+    "recipe_3_desc": "Achieve restaurant-quality risotto with the even heat distribution of Rayhana cookware."
+  },
+  "contact_page": {
+    "title": "Contact Us",
+    "subtitle": "We'd love to hear from you. Send us a message or visit us.",
+    "info_title": "Contact Information",
+    "address": "Address",
+    "address_value": "Zhejiang Province, Jinhua City, Yiwu City, Financial Business District, No. 3 Financial Street, Liandu International Building, Section B, Room 1703",
+    "phone": "Phone",
+    "phone_value": "+86 18480366600",
+    "email": "Email",
+    "email_value": "info@rayhana.com",
+    "socials": "Follow Us",
+    "form_name": "Your Name",
+    "form_email": "Your Email",
+    "form_subject": "Subject",
+    "form_message": "Message",
+    "form_submit": "Send Message",
+    "whatsapp": "WhatsApp",
+    "working_hours": "Working Hours",
+    "working_hours_value": "Saturday to Friday, 9 AM to 6 PM (China Standard Time)"
+  },
+  "footer": {
+    "rights": "© 2026 Rayhana Kitchen Appliance. All rights reserved."
+  }
+}

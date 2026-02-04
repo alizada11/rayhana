@@ -1,0 +1,135 @@
+{
+  "nav": {
+    "home": "Ana Sayfa",
+    "products": "Ürünler",
+    "about": "Hakkımızda",
+    "blog": "Blog ve Tarifler",
+    "contact": "İletişim"
+  },
+  "hero": {
+    "title": "Modern Yaşamda Kökler",
+    "subtitle": "Geleneksel lezzetleri modern inovasyonla deneyimleyin.",
+    "cta": "Ürünleri Keşfet"
+  },
+  "products": {
+    "title": "Koleksiyonumuz",
+    "ladle_bonus": "Ücretsiz Kepçe Dahil",
+    "view_details": "Detayları Gör"
+  },
+  "about": {
+    "title": "Hikayemiz",
+    "values": "Değerlerimiz",
+    "authenticity": "Özgünlük",
+    "innovation": "İnovasyon",
+    "quality": "Sertifikalı Kalite (SGS)",
+    "connection": "Bağlantı",
+    "simplicity": "Sadelik"
+  },
+  "contact": {
+    "title": "İletişime Geçin",
+    "name": "İsim",
+    "email": "E-posta",
+    "message": "Mesaj",
+    "send": "Mesaj Gönder"
+  },
+  "products_page": {
+    "title": "Premium Koleksiyonumuz",
+    "subtitle": "Gelenek ve modern mühendisliğin mükemmel uyumunu keşfedin.",
+    "filter_all": "Tümü",
+    "filter_cookware": "Pişirme Gereçleri",
+    "filter_appliances": "Ev Aletleri",
+    "filter_accessories": "Aksesuarlar",
+    "pot_red": "Rayhana Karnıyarık ve Pilav Tenceresi (Kırmızı)",
+    "pot_grey": "Rayhana Karnıyarık ve Pilav Tenceresi (Gri)",
+    "pot_desc": "Geleneksel Karnıyarık ve Pilav için özel tasarım. Avrupa seramik yapışmaz kaplaması ile az yağda mükemmel lezzetler.",
+    "sizes": "Mevcut Boyutlar: 7, 9, 12",
+    "colors": "Renkler: Kırmızı, Gri",
+    "sgs_certified": "SGS, FDA ve CA65 Sertifikalı | PFAS İÇERMEZ",
+    "price_7": "$109.99",
+    "price_9": "$129.99",
+    "price_12": "$149.99",
+    "bonus_gifts": "Hediye Ürünler Dahil",
+    "bonus_desc": "Ahşap Saplı Silikon Kepçe, Buzdolabı Magneti ve 2x Silikon Tutacak içerir.",
+    "buy_amazon": "Amazon ABD'den Satın Al",
+    "amazon_reviews": "Amazon Müşteri Yorumları",
+    "verified_purchase": "Doğrulanmış Satın Alma",
+    "review_1": "Bu tencereye bayıldım! Yapışmaz kaplaması harika ve temizlemesi çok kolay.",
+    "review_2": "Harika kalite ve güzel tasarım. Kepçe güzel bir bonus.",
+    "review_3": "Ailem için mükemmel boyut. Kesinlikle tavsiye ederim!",
+    "out_of_5": "5 üzerinden",
+    "coming_soon_markets": "Yakında Amazon Avrupa, İngiltere ve Avustralya'da",
+    "brand_message_title": "Bir Yolculuğun Başlangıcı",
+    "brand_message_p1": "Sonsuz seçeneklerle dolu bir dünyada, siz kültürü seçtiniz. Kaliteyi seçtiniz. En iyi yemeklerin sabır ve sevgiyle hazırlandığını bize öğreten nesilleri onurlandırmayı seçtiniz.",
+    "brand_message_highlight": "Desteğiniz hayatları değiştiriyor.",
+    "brand_message_p2": "Bu Qabili Pilav Tenceresi sadece bir başlangıç. Bu geleneksel kapla başladık ve yakında mutfağınızda daha fazla Rayhana ürününü ağırlayacaksınız—her biri aynı hassasiyet ve mükemmellikle üretildi.",
+    "brand_signature": "Sevgi ve minnetle - Rayhana Ailesi - Modern yaşamda kökler ve özgünlük",
+    "price": "$"
+  },
+  "referral": {
+    "card_title": "Rayhana Altın Davetiye",
+    "card_subtitle": "Kültürü paylaşın, kaliteyi hediye edin",
+    "name_placeholder": "İsminizi girin",
+    "generate_btn": "Altın Kartımı Oluştur",
+    "enter_name_error": "Lütfen önce isminizi girin",
+    "code_generated": "Altın kartınız hazır!",
+    "code_copied": "Kod panoya kopyalandı",
+    "your_code_label": "ÖZEL KODUNUZ",
+    "copy": "Kodu Kopyala",
+    "share": "Paylaş",
+    "share_message": "Sizi Rayhana ile otantik lezzetleri deneyimlemeye davet ediyorum. Özel bir hoş geldin hediyesi için {{code}} kodumu kullanın.",
+    "terms": "Sadece yeni müşteriler için geçerlidir"
+  },
+  "gallery": {
+    "title": "Sizin Mutfağınız, Bizim Hikayemiz",
+    "subtitle": "Mutfak eserlerinizi paylaşarak Rayhana ailesine katılın",
+    "share_button": "Fotoğraf Paylaş",
+    "upload_title": "Şaheserinizi Paylaşın",
+    "upload_placeholder": "Fotoğraf yüklemek için tıklayın",
+    "upload_note": "Rayhana tenceresi ile pişirme anlarınızı paylaşın",
+    "submit_photo": "Fotoğraf Gönder"
+  },
+  "newsletter": {
+    "title": "Rayhana Ailesine Katılın",
+    "subtitle": "Yeni ürünlerden ve özel tekliflerden ilk siz haberdar olun",
+    "placeholder": "E-posta adresinizi girin",
+    "disclaimer": "Gizliliğinize saygı duyuyoruz. İstediğiniz zaman abonelikten çıkabilirsiniz.",
+    "success_title": "Rayhana Ailesine Hoş Geldiniz!",
+    "success_message": "Artık hikayemizin bir parçasısınız. Gelen kutunuza gelecek özel lezzetler ve gelenekler için hazır olun."
+  },
+  "about_page": {
+    "title": "Yolculuğumuz",
+    "subtitle": "Ev özleminden küresel bir markaya.",
+    "story_title": "Rayhana Hikayesi",
+    "story_content": "RAYHANA, birçok göçmenin evlerine ve geleneksel yemeklerinin otantik tadına duyduğu özlemden doğdu. Fikir, kurucularının modern mutfaklarda otantik yemekler hazırlamanın ne kadar zor olduğunu fark etmeleriyle ortaya çıktı.",
+    "mission_title": "Misyonumuz",
+    "mission_content": "Dünya çapındaki göçmenler için kültür ve modernite arasında bir köprü olmak, geçmişi geleceğe sorunsuz bir şekilde bağlayan yeni bir mutfak deneyimi yaratmak."
+  },
+  "blog_page": {
+    "title": "Mutfak Masalları ve Tarifler",
+    "subtitle": "Modern mutfağa uyarlanmış geleneksel tarifleri keşfedin.",
+    "read_more": "Tarifi Oku",
+    "recipe_1_title": "Karnıyarık: Anadolu'nun Efsane Lezzeti",
+    "recipe_1_desc": "Rayhana tenceresi ile patlıcanları yağ çekmeden, lokum gibi pişirmenin sırları.",
+    "recipe_2_title": "Tane Tane Pirinç Pilavı",
+    "recipe_2_desc": "Tam kıvamında, bembeyaz ve tane tane dökülen pilavın püf noktaları.",
+    "recipe_3_title": "Mercimek Çorbası: Sofraların Baştacı",
+    "recipe_3_desc": "Geleneksel usulde, şifa kaynağı süzme mercimek çorbası tarifi."
+  },
+  "contact_page": {
+    "title": "Bize Ulaşın",
+    "subtitle": "Sizden haber almayı çok isteriz. Bize mesaj gönderin veya ziyaret edin.",
+    "info_title": "İletişim Bilgileri",
+    "address": "Adres",
+    "phone": "Telefon",
+    "email": "E-posta",
+    "socials": "Bizi Takip Edin",
+    "form_name": "İsminiz",
+    "form_email": "E-postanız",
+    "form_subject": "Konu",
+    "form_message": "Mesaj",
+    "form_submit": "Mesaj Gönder"
+  },
+  "footer": {
+    "rights": "© 2026 Rayhana Mutfak Aletleri. Tüm hakları saklıdır."
+  }
+}
