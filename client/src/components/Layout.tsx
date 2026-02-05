@@ -226,12 +226,14 @@ export default function Layout({ children }: LayoutProps) {
                     Facebook
                   </a>
                 </li>
-                <SignedOut>
-                  <SignInButton mode="modal" />
-                </SignedOut>
-                <SignedIn>
-                  <SignOutButton />
-                </SignedIn>
+                <li>
+                  <SignedOut>
+                    <SignInButton mode="modal" />
+                  </SignedOut>
+                  <SignedIn>
+                    <SignOutButton />
+                  </SignedIn>
+                </li>
               </ul>
             </div>
           </div>

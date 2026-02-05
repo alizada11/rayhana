@@ -1,19 +1,26 @@
 import { useAuth } from "@clerk/clerk-react";
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import api from "../lib/axios";
 
 let isInterceptorRegistered = false;
 
 function useAuthReq() {
   const { isSignedIn, getToken, isLoaded } = useAuth();
+  const authRef = useRef({ isSignedIn, getToken });
+
+  // Keep ref updated with latest values
+  useEffect(() => {
+    authRef.current = { isSignedIn, getToken };
+  }, [isSignedIn, getToken]);
+
   // include the token to the request headers
   useEffect(() => {
     if (isInterceptorRegistered) return;
     isInterceptorRegistered = true;
 
     const interceptor = api.interceptors.request.use(async config => {
-      if (isSignedIn) {
-        const token = await getToken();
+      if (authRef.current.isSignedIn) {
+        const token = await authRef.current.getToken();
         if (token) {
           config.headers.Authorization = `Bearer ${token}`;
         }
@@ -25,7 +32,7 @@ function useAuthReq() {
       api.interceptors.request.eject(interceptor);
       isInterceptorRegistered = false;
     };
-  }, [isSignedIn, getToken]);
+  }, []);
 
   return { isSignedIn, isClerkLoaded: isLoaded };
 }

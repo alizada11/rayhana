@@ -33,7 +33,7 @@ function Router() {
 function App() {
   const { isClerkLoaded, isSignedIn } = useAuthReq();
   useUserSync();
-  // if (!isClerkLoaded) return null;
+  if (!isClerkLoaded) return null;
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
