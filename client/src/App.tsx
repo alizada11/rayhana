@@ -11,6 +11,8 @@ import BlogPost from "@/pages/BlogPost";
 import Products from "./pages/Products";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import useAuthReq from "./hooks/useAuthReq";
+import useUserSync from "./hooks/useUserSync";
 
 function Router() {
   return (
@@ -29,6 +31,9 @@ function Router() {
 }
 
 function App() {
+  const { isClerkLoaded, isSignedIn } = useAuthReq();
+  useUserSync();
+  // if (!isClerkLoaded) return null;
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
