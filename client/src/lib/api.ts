@@ -5,17 +5,16 @@ export interface UserData {
   [key: string]: any;
 }
 
-export interface ProductData {
-  [key: string]: any;
-}
+export type ProductData = FormData;
 
 export interface CommentData {
   productId: string | number;
   content: string;
 }
 
-export interface UpdateProductParams extends ProductData {
+export interface UpdateProductParams {
   id: string | number;
+  data: FormData;
 }
 
 export interface DeleteCommentParams {
@@ -45,15 +44,19 @@ export const getMyProducts = async () => {
 };
 
 export const createProduct = async (productData: ProductData) => {
-  const { data } = await api.post("/products", productData);
+  const { data } = await api.post("/products", productData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return data;
 };
 
 export const updateProduct = async ({
   id,
-  ...productData
+  data: productData,
 }: UpdateProductParams) => {
-  const { data } = await api.put(`/products/${id}`, productData);
+  const { data } = await api.put(`/products/${id}`, productData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
   return data;
 };
 

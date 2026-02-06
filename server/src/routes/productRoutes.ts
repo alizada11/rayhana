@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as productController from "../controllers/productController";
 import { requireAuth } from "@clerk/express";
+import { upload } from "../middleware/upload";
 
 const router = Router();
 
@@ -14,10 +15,20 @@ router.get("/my", requireAuth(), productController.getMyProducts);
 router.get("/:id", productController.getProductById);
 
 // POST /api/products - Create new product (protected)
-router.post("/", requireAuth(), productController.createProduct);
+router.post(
+  "/",
+  requireAuth(),
+  upload.single("image"),
+  productController.createProduct
+);
 
 // PUT /api/products/:id - Update product (protected - owner only)
-router.put("/:id", requireAuth(), productController.updateProduct);
+router.put(
+  "/:id",
+  requireAuth(),
+  upload.single("image"),
+  productController.updateProduct
+);
 
 // DELETE /api/products/:id - Delete product (protected - owner only)
 router.delete("/:id", requireAuth(), productController.deleteProduct);

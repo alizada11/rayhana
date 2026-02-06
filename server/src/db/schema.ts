@@ -25,19 +25,23 @@ export const users = pgTable("users", {
 export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),
   // Localized fields: { en: string, fa: string, ps: string }
-  title: jsonb("title").notNull(),
-  description: jsonb("description").notNull(),
+  title: jsonb("title").$type<Record<string, string>>().notNull(),
+  description: jsonb("description").$type<Record<string, string>>().notNull(),
   category: text("category").notNull(),
   imageUrl: text("image_url").notNull(),
   rating: integer("rating").notNull().default(5),
-  sizes: integer("sizes").array(),
-  colors: text("colors").array(),
+  sizes: jsonb("sizes").$type<number[]>().notNull().default([]),
+  colors: jsonb("colors").$type<string[]>().notNull().default([]),
   // Size -> price mapping, e.g. { "7": 24.99, "9": 29.99 }
-  prices: jsonb("prices"),
+  prices: jsonb("prices").$type<Record<string, number>>().notNull().default({}),
   userId: text("user_id")
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 // export const products = pgTable("products", {
 //   id: uuid("id").defaultRandom().primaryKey(),

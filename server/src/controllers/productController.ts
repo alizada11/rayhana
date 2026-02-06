@@ -1,10 +1,24 @@
 import type { Request, Response } from "express";
 import * as queries from "../db/queries";
 import { getAuth } from "@clerk/express";
+import fs from "fs";
+import path from "path";
 
 // Utility to normalize ID from params
 const getId = (rawId: string | string[]) =>
   Array.isArray(rawId) ? rawId[0] : rawId;
+
+const parseJSON = <T>(value: unknown, fallback: T): T => {
+  if (value == null) return fallback;
+  if (typeof value === "string") {
+    try {
+      return JSON.parse(value) as T;
+    } catch {
+      return fallback;
+    }
+  }
+  return value as T;
+};
 
 // -------------------------
 // GET ALL PRODUCTS (public)
@@ -69,22 +83,30 @@ export const createProduct = async (req: Request, res: Response) => {
       prices,
     } = req.body;
 
+    const uploadedImageUrl = req.file
+      ? `/uploads/${req.file.filename}`
+      : undefined;
+
     // Validate required fields
-    if (!title || !description || !imageUrl || !category) {
+    if (!title || !description || !category || (!imageUrl && !uploadedImageUrl)) {
       return res.status(400).json({
-        error: "Title, description, imageUrl, and category are required",
+        error: "Title, description, category, and image are required",
       });
     }
 
     const product = await queries.createProduct({
-      title,
-      description,
-      imageUrl,
+      title: parseJSON<Record<string, string>>(title, { en: "", fa: "", ps: "" }),
+      description: parseJSON<Record<string, string>>(description, {
+        en: "",
+        fa: "",
+        ps: "",
+      }),
+      imageUrl: uploadedImageUrl ?? imageUrl,
       category,
-      rating: rating ?? 5,
-      sizes: sizes ?? [],
-      colors: colors ?? [],
-      prices: prices ?? {},
+      rating: Number(rating ?? 5),
+      sizes: parseJSON<number[]>(sizes, []),
+      colors: parseJSON<string[]>(colors, []),
+      prices: parseJSON<Record<string, number>>(prices, {}),
       userId,
     });
 
@@ -115,6 +137,10 @@ export const updateProduct = async (req: Request, res: Response) => {
       prices,
     } = req.body;
 
+    const uploadedImageUrl = req.file
+      ? `/uploads/${req.file.filename}`
+      : undefined;
+
     const existingProduct = await queries.getProductById(id);
     if (!existingProduct)
       return res.status(404).json({ error: "Product not found" });
@@ -123,15 +149,31 @@ export const updateProduct = async (req: Request, res: Response) => {
         .status(403)
         .json({ error: "You can only update your own products" });
 
+    // If a new image was uploaded, delete the old local file (if any).
+    if (uploadedImageUrl && existingProduct.imageUrl?.startsWith("/uploads/")) {
+      const oldPath = path.join(process.cwd(), existingProduct.imageUrl);
+      if (fs.existsSync(oldPath)) {
+        fs.unlinkSync(oldPath);
+      }
+    }
+
     const product = await queries.updateProduct(id, {
-      title,
-      description,
-      imageUrl,
+      title: title
+        ? parseJSON<Record<string, string>>(title, { en: "", fa: "", ps: "" })
+        : undefined,
+      description: description
+        ? parseJSON<Record<string, string>>(description, {
+            en: "",
+            fa: "",
+            ps: "",
+          })
+        : undefined,
+      imageUrl: uploadedImageUrl ?? imageUrl,
       category,
-      rating,
-      sizes,
-      colors,
-      prices,
+      rating: rating !== undefined ? Number(rating) : undefined,
+      sizes: sizes ? parseJSON<number[]>(sizes, []) : undefined,
+      colors: colors ? parseJSON<string[]>(colors, []) : undefined,
+      prices: prices ? parseJSON<Record<string, number>>(prices, {}) : undefined,
     });
 
     res.status(200).json(product);
