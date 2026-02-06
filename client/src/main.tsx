@@ -17,7 +17,11 @@ if (!PUBLISHABLE_KEY) {
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
-  <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
+  <ClerkProvider
+    publishableKey={PUBLISHABLE_KEY}
+    afterSignInUrl="/dashboard"
+    afterSignUpUrl="/dashboard"
+  >
     <QueryClientProvider client={queryClient}>
       <App />
     </QueryClientProvider>

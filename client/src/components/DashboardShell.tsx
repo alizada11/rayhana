@@ -6,8 +6,10 @@ import DashboardProducts from "@/pages/DashboardProducts";
 import useAuthReq from "@/hooks/useAuthReq";
 
 export default function DashboardShell() {
-  const { isSignedIn } = useAuthReq();
-
+  const { isSignedIn, isClerkLoaded } = useAuthReq();
+  if (!isClerkLoaded) {
+    return null;
+  }
   if (!isSignedIn) {
     return <Redirect to="/pamik-sign-in" />;
   }

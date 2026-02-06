@@ -52,7 +52,7 @@ function LoginPage() {
                       className="space-y-4"
                     >
                       {/* Sign In Button */}
-                      <SignInButton mode="modal">
+                      <SignInButton mode="modal" forceRedirectUrl="/dashboard">
                         <Link
                           to="#"
                           className="block w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg text-center"
@@ -69,7 +69,10 @@ function LoginPage() {
                             "Don't have an account?"
                           )}
                         </p>
-                        <SignUpButton mode="modal" forceRedirectUrl="/sign-up">
+                        <SignUpButton
+                          mode="modal"
+                          forceRedirectUrl="/dashboard"
+                        >
                           <Link
                             to="#"
                             className="block w-full border-2 border-primary text-primary hover:bg-primary/5 font-semibold py-3 px-6 rounded-lg transition-all duration-300 text-center"

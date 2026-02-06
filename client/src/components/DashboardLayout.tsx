@@ -1,11 +1,13 @@
+import { SignedIn, SignedOut, SignOutButton } from "@clerk/clerk-react";
 import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
-
+import { useUser } from "@clerk/clerk-react";
 type DashboardLayoutProps = {
   children: ReactNode;
 };
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
+  const { user } = useUser();
   const [location] = useLocation();
 
   const linkClass = (path: string) => `
@@ -21,7 +23,6 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { path: "/dashboard", label: "Overview", icon: "📊" },
     { path: "/dashboard/blogs", label: "Blogs", icon: "📝" },
     { path: "/dashboard/products", label: "Products", icon: "📦" },
-    { path: "/dashboard/settings", label: "Settings", icon: "⚙️" },
   ];
 
   return (
@@ -65,10 +66,10 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-gray-900 truncate">
-                John Doe
+                {user?.firstName} {user?.lastName}
               </p>
               <p className="text-xs text-muted-foreground truncate">
-                admin@rayhana.com
+                {user?.emailAddresses[0]?.emailAddress}
               </p>
             </div>
           </div>
@@ -90,30 +91,17 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           </div>
 
           <div className="flex items-center gap-4">
-            {/* Notifications */}
-            <button className="w-10 h-10 rounded-full hover:bg-gray-100 flex items-center justify-center transition-colors">
-              <span className="text-lg relative">
-                🔔
-                <span className="absolute -top-1 -right-1 w-2 h-2 bg-red-500 rounded-full border border-white"></span>
-              </span>
-            </button>
-
-            {/* Search */}
-            <div className="relative">
-              <input
-                type="search"
-                placeholder="Search..."
-                className="w-48 px-4 py-2 pl-10 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary/20 focus:border-primary"
-              />
-              <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
-                🔍
-              </span>
-            </div>
-
             {/* Quick Actions */}
-            <button className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium">
-              + New
-            </button>
+            <SignedIn>
+              <SignOutButton>
+                <Link
+                  to="#"
+                  className="block w-30 bg-red-500 hover:bg-red-600 text-white font-semibold py-3 px-6 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 hover:shadow-lg text-center"
+                >
+                  Sign Out
+                </Link>
+              </SignOutButton>
+            </SignedIn>
           </div>
         </header>
 
