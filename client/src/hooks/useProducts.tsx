@@ -18,7 +18,7 @@ export interface Product {
 
 export interface UpdateProductVariables {
   id: ID;
-  [key: string]: any;
+  data: FormData;
 }
 
 // ---------- Hooks ----------
@@ -36,6 +36,9 @@ export const useCreateProduct = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["products"] });
       queryClient.invalidateQueries({ queryKey: ["myProducts"] });
+    },
+    onError: err => {
+      console.error("Create product failed:", err);
     },
   });
 };

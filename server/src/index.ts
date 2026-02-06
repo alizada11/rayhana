@@ -1,4 +1,5 @@
 import exprss from "express";
+import path from "path";
 import cors from "cors";
 import { ENV } from "./config/env";
 import { clerkMiddleware } from "@clerk/express";
@@ -12,6 +13,7 @@ app.use(cors({ origin: ENV.FRONTEND_URL, credentials: true }));
 app.use(clerkMiddleware());
 app.use(exprss.json());
 app.use(exprss.urlencoded({ extended: true }));
+app.use("/uploads", exprss.static(path.join(process.cwd(), "uploads")));
 
 app.get("/", (req, res) => {
   res.json({ success: true });
