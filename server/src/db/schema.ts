@@ -22,7 +22,7 @@ export const users = pgTable("users", {
     .$onUpdate(() => new Date()),
 });
 
-export const product = pgTable("product", {
+export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),
   // Localized fields: { en: string, fa: string, ps: string }
   title: jsonb("title").notNull(),
@@ -39,17 +39,17 @@ export const product = pgTable("product", {
     .references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });
-export const products = pgTable("products", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  title: text("title").notNull(),
-  description: text("description").notNull(),
-  imageUrl: text("image_url").notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
-});
+// export const products = pgTable("products", {
+//   id: uuid("id").defaultRandom().primaryKey(),
+//   title: text("title").notNull(),
+//   description: text("description").notNull(),
+//   imageUrl: text("image_url").notNull(),
+//   userId: text("user_id")
+//     .notNull()
+//     .references(() => users.id, { onDelete: "cascade" }),
+//   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+//   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
+// });
 
 export const comments = pgTable("comments", {
   id: uuid("id").defaultRandom().primaryKey(),
