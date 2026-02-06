@@ -23,14 +23,19 @@ function useUserSync() {
     },
   });
   useEffect(() => {
-    if (isSignedIn && user && !isPending && !isSuccess && !hasSynced) {
-      syncUserMutation({
-        email: user.primaryEmailAddress?.emailAddress,
-        name: user.fullName || user.firstName,
-        imageUrl: user.imageUrl,
-      });
-    }
-  }, [isSignedIn, user, syncUserMutation, isPending, isSuccess]);
+    if (!isSignedIn) return;
+    if (!user?.id) return;
+    if (isPending || isSuccess || hasSynced) return;
+
+    setHasSynced(true);
+    sessionStorage.setItem(SYNC_KEY, "true");
+
+    syncUserMutation({
+      email: user.primaryEmailAddress?.emailAddress,
+      name: user.fullName || user.firstName,
+      imageUrl: user.imageUrl,
+    });
+  }, [isSignedIn, user?.id, isPending, isSuccess, hasSynced, syncUserMutation]);
 
   return { isSynced: isSuccess };
 }
