@@ -1,4 +1,12 @@
-import { pgTable, text, timestamp, uuid } from "drizzle-orm/pg-core";
+// import { pgTable, text,jsonb, timestamp, uuid } from "drizzle-orm/pg-core";
+import {
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
@@ -14,6 +22,23 @@ export const users = pgTable("users", {
     .$onUpdate(() => new Date()),
 });
 
+export const product = pgTable("product", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  // Localized fields: { en: string, fa: string, ps: string }
+  title: jsonb("title").notNull(),
+  description: jsonb("description").notNull(),
+  category: text("category").notNull(),
+  imageUrl: text("image_url").notNull(),
+  rating: integer("rating").notNull().default(5),
+  sizes: integer("sizes").array(),
+  colors: text("colors").array(),
+  // Size -> price mapping, e.g. { "7": 24.99, "9": 29.99 }
+  prices: jsonb("prices"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
 export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),
   title: text("title").notNull(),
