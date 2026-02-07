@@ -105,12 +105,10 @@ export const getBlogPostBySlug = async (req: Request, res: Response) => {
 // -------------------------
 export const createBlogPost = async (req: Request, res: Response) => {
   try {
-    const { userId, role } = getAuth(req) as {
-      userId?: string;
-      role?: string;
-    };
+    const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
-    if (role !== "admin") return res.status(403).json({ error: "Forbidden" });
+    const isAdmin = await isAdminUser(userId);
+    if (!isAdmin) return res.status(403).json({ error: "Forbidden" });
 
     const {
       title,
@@ -199,12 +197,10 @@ export const createBlogPost = async (req: Request, res: Response) => {
 // -------------------------
 export const updateBlogPost = async (req: Request, res: Response) => {
   try {
-    const { userId, role } = getAuth(req) as {
-      userId?: string;
-      role?: string;
-    };
+    const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
-    if (role !== "admin") return res.status(403).json({ error: "Forbidden" });
+    const isAdmin = await isAdminUser(userId);
+    if (!isAdmin) return res.status(403).json({ error: "Forbidden" });
 
     const id = getId(req.params.id);
     const {
@@ -304,12 +300,10 @@ export const updateBlogPost = async (req: Request, res: Response) => {
 // -------------------------
 export const deleteBlogPost = async (req: Request, res: Response) => {
   try {
-    const { userId, role } = getAuth(req) as {
-      userId?: string;
-      role?: string;
-    };
+    const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
-    if (role !== "admin") return res.status(403).json({ error: "Forbidden" });
+    const isAdmin = await isAdminUser(userId);
+    if (!isAdmin) return res.status(403).json({ error: "Forbidden" });
 
     const id = getId(req.params.id);
     const existingPost = await queries.getBlogPostById(id);
@@ -335,12 +329,10 @@ export const deleteBlogPost = async (req: Request, res: Response) => {
 // -------------------------
 export const uploadBlogImage = async (req: Request, res: Response) => {
   try {
-    const { userId, role } = getAuth(req) as {
-      userId?: string;
-      role?: string;
-    };
+    const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
-    if (role !== "admin") return res.status(403).json({ error: "Forbidden" });
+    const isAdmin = await isAdminUser(userId);
+    if (!isAdmin) return res.status(403).json({ error: "Forbidden" });
 
     if (!req.file) {
       return res.status(400).json({ error: "Image file is required" });

@@ -13,6 +13,7 @@ import {
   Star,
 } from "lucide-react";
 import { Link } from "wouter";
+import { toast } from "sonner";
 
 function DashboardBlogs() {
   const [editingPost, setEditingPost] = useState<any | null>(null);
@@ -69,7 +70,14 @@ function DashboardBlogs() {
 
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this post?")) {
-      deleteMutation.mutate(id);
+      deleteMutation.mutate(id, {
+        onSuccess: () => {
+          toast.success("Blog post deleted.");
+        },
+        onError: () => {
+          toast.error("Failed to delete blog post.");
+        },
+      });
     }
   };
 

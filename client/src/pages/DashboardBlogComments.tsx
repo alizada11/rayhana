@@ -7,6 +7,7 @@ import {
 } from "@/hooks/useBlogs";
 import { Edit, Trash2, Save } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
+import { toast } from "sonner";
 
 export default function DashboardBlogComments() {
   const { data: blogsData } = useBlogs({ page: 1, limit: 100 });
@@ -37,18 +38,38 @@ export default function DashboardBlogComments() {
 
   const handleSave = (commentId: string) => {
     if (!editingContent.trim()) return;
-    updateMutation.mutate({
-      blogId: selectedBlogId,
-      commentId,
-      content: editingContent.trim(),
-    });
-    setEditingId(null);
-    setEditingContent("");
+    updateMutation.mutate(
+      {
+        blogId: selectedBlogId,
+        commentId,
+        content: editingContent.trim(),
+      },
+      {
+        onSuccess: () => {
+          toast.success("Comment updated.");
+          setEditingId(null);
+          setEditingContent("");
+        },
+        onError: () => {
+          toast.error("Failed to update comment.");
+        },
+      }
+    );
   };
 
   const handleDelete = (commentId: string) => {
     if (!confirm("Delete this comment?")) return;
-    deleteMutation.mutate({ blogId: selectedBlogId, commentId });
+    deleteMutation.mutate(
+      { blogId: selectedBlogId, commentId },
+      {
+        onSuccess: () => {
+          toast.success("Comment deleted.");
+        },
+        onError: () => {
+          toast.error("Failed to delete comment.");
+        },
+      }
+    );
   };
 
   return (

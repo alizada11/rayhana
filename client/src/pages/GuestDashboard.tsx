@@ -28,6 +28,7 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
+import { toast } from "sonner";
 
 export default function GuestDashboard() {
   const { data: submissions = [], isLoading } = useMyGallery();
@@ -245,7 +246,14 @@ export default function GuestDashboard() {
                             "Are you sure you want to delete this submission?"
                           )
                         ) {
-                          deleteMutation.mutate(item.id);
+                          deleteMutation.mutate(item.id, {
+                            onSuccess: () => {
+                              toast.success("Submission deleted.");
+                            },
+                            onError: () => {
+                              toast.error("Failed to delete submission.");
+                            },
+                          });
                         }
                       }}
                       disabled={deleteMutation.isPending}

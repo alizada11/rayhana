@@ -19,6 +19,7 @@ import {
   Eye,
 } from "lucide-react";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import { toast } from "sonner";
 
 export default function DashboardGallery() {
   const { data: submissions = [], isLoading } = useAllGallery();
@@ -191,14 +192,32 @@ export default function DashboardGallery() {
                   {item.status === "pending" && (
                     <>
                       <button
-                        onClick={() => approveMutation.mutate(item.id)}
+                        onClick={() =>
+                          approveMutation.mutate(item.id, {
+                            onSuccess: () => {
+                              toast.success("Gallery submission approved.");
+                            },
+                            onError: () => {
+                              toast.error("Failed to approve submission.");
+                            },
+                          })
+                        }
                         className="flex-1 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-1.5"
                       >
                         <Check className="w-4 h-4" />
                         Approve
                       </button>
                       <button
-                        onClick={() => rejectMutation.mutate(item.id)}
+                        onClick={() =>
+                          rejectMutation.mutate(item.id, {
+                            onSuccess: () => {
+                              toast.success("Gallery submission rejected.");
+                            },
+                            onError: () => {
+                              toast.error("Failed to reject submission.");
+                            },
+                          })
+                        }
                         className="flex-1 py-2 bg-yellow-500 text-white text-sm font-medium rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-1.5"
                       >
                         <X className="w-4 h-4" />
@@ -208,7 +227,16 @@ export default function DashboardGallery() {
                   )}
                   {item.status === "approved" && (
                     <button
-                      onClick={() => rejectMutation.mutate(item.id)}
+                      onClick={() =>
+                        rejectMutation.mutate(item.id, {
+                          onSuccess: () => {
+                            toast.success("Gallery submission unapproved.");
+                          },
+                          onError: () => {
+                            toast.error("Failed to unapprove submission.");
+                          },
+                        })
+                      }
                       className="flex-1 py-2 bg-yellow-500 text-white text-sm font-medium rounded-lg hover:bg-yellow-600 transition-colors flex items-center justify-center gap-1.5"
                     >
                       <X className="w-4 h-4" />
@@ -217,7 +245,16 @@ export default function DashboardGallery() {
                   )}
                   {item.status === "rejected" && (
                     <button
-                      onClick={() => approveMutation.mutate(item.id)}
+                      onClick={() =>
+                        approveMutation.mutate(item.id, {
+                          onSuccess: () => {
+                            toast.success("Gallery submission approved.");
+                          },
+                          onError: () => {
+                            toast.error("Failed to approve submission.");
+                          },
+                        })
+                      }
                       className="flex-1 py-2 bg-green-600 text-white text-sm font-medium rounded-lg hover:bg-green-700 transition-colors flex items-center justify-center gap-1.5"
                     >
                       <Check className="w-4 h-4" />
@@ -231,7 +268,14 @@ export default function DashboardGallery() {
                           "Are you sure you want to delete this submission?"
                         )
                       ) {
-                        deleteMutation.mutate(item.id);
+                        deleteMutation.mutate(item.id, {
+                          onSuccess: () => {
+                            toast.success("Gallery submission deleted.");
+                          },
+                          onError: () => {
+                            toast.error("Failed to delete submission.");
+                          },
+                        });
                       }
                     }}
                     className="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center"

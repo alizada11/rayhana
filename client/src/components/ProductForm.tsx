@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useCreateProduct, useUpdateProduct } from "../hooks/useProducts";
 import { X } from "lucide-react";
+import { toast } from "sonner";
 
 type ProductFormProps = {
   product?: any;
@@ -64,12 +65,29 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     if (imageFile) payload.append("image", imageFile);
 
     if (isEdit) {
-      updateMutation.mutate({ id: product.id, data: payload });
+      updateMutation.mutate(
+        { id: product.id, data: payload },
+        {
+          onSuccess: () => {
+            toast.success("Product updated.");
+            onClose();
+          },
+          onError: () => {
+            toast.error("Failed to update product.");
+          },
+        }
+      );
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate(payload, {
+        onSuccess: () => {
+          toast.success("Product created.");
+          onClose();
+        },
+        onError: () => {
+          toast.error("Failed to create product.");
+        },
+      });
     }
-
-    onClose();
   };
 
   useEffect(() => {

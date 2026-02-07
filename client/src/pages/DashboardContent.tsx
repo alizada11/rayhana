@@ -3,6 +3,7 @@ import { useContent, useUpsertContent } from "@/hooks/useContent";
 import MediaPicker from "@/components/MediaPicker";
 import { Image as ImageIcon, Save } from "lucide-react";
 import BlogRichTextEditor from "@/components/BlogRichTextEditor";
+import { toast } from "sonner";
 
 type Lang = "en" | "fa" | "ps";
 
@@ -141,7 +142,14 @@ export default function DashboardContent() {
   };
 
   const handleSave = () => {
-    upsert.mutate(formData);
+    upsert.mutate(formData, {
+      onSuccess: () => {
+        toast.success(`Saved ${key} content.`);
+      },
+      onError: () => {
+        toast.error(`Failed to save ${key} content.`);
+      },
+    });
   };
 
   return (
