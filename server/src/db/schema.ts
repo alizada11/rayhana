@@ -1,5 +1,6 @@
 // import { pgTable, text,jsonb, timestamp, uuid } from "drizzle-orm/pg-core";
 import {
+  boolean,
   integer,
   jsonb,
   pgTable,
@@ -17,6 +18,8 @@ export const galleryStatusEnum = pgEnum("gallery_status", [
   "approved",
   "rejected",
 ]);
+
+export const blogStatusEnum = pgEnum("blog_status", ["draft", "published"]);
 
 export const users = pgTable("users", {
   id: text("id").primaryKey(), // clerkId
@@ -77,6 +80,45 @@ export const comments = pgTable("comments", {
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });
 
+export const blogPosts = pgTable("blog_posts", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  slug: text("slug").notNull().unique(),
+  title: jsonb("title").$type<Record<string, string>>().notNull(),
+  excerpt: jsonb("excerpt").$type<Record<string, string>>().notNull(),
+  content: jsonb("content").$type<Record<string, string>>().notNull(),
+  imageUrl: text("image_url").notNull(),
+  authorName: text("author_name"),
+  featured: boolean("featured").notNull().default(false),
+  status: blogStatusEnum("status").notNull().default("published"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+  publishedAt: timestamp("published_at", { mode: "date" })
+    .notNull()
+    .defaultNow(),
+});
+
+export const blogComments = pgTable("blog_comments", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  content: text("content").notNull(),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  blogId: uuid("blog_id")
+    .notNull()
+    .references(() => blogPosts.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
 export const gallerySubmissions = pgTable("gallery_submissions", {
   id: uuid("id").defaultRandom().primaryKey(),
   imageUrl: text("image_url").notNull(),
@@ -121,6 +163,8 @@ export const galleryLikes = pgTable(
 export const usersRelations = relations(users, ({ many }) => ({
   products: many(products), // 🔴 One user → many products
   comments: many(comments), // 🔴 One user → many comments
+  blogPosts: many(blogPosts),
+  blogComments: many(blogComments),
   gallerySubmissions: many(gallerySubmissions),
 }));
 
@@ -143,6 +187,19 @@ export const commentsRelations = relations(comments, ({ one }) => ({
     fields: [comments.productId],
     references: [products.id],
   }), // One comment → one product
+}));
+
+export const blogPostsRelations = relations(blogPosts, ({ one, many }) => ({
+  user: one(users, { fields: [blogPosts.userId], references: [users.id] }),
+  comments: many(blogComments),
+}));
+
+export const blogCommentsRelations = relations(blogComments, ({ one }) => ({
+  user: one(users, { fields: [blogComments.userId], references: [users.id] }),
+  blog: one(blogPosts, {
+    fields: [blogComments.blogId],
+    references: [blogPosts.id],
+  }),
 }));
 
 export const gallerySubmissionsRelations = relations(
@@ -176,6 +233,12 @@ export type NewProduct = typeof products.$inferInsert;
 
 export type Comment = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;
+
+export type BlogPost = typeof blogPosts.$inferSelect;
+export type NewBlogPost = typeof blogPosts.$inferInsert;
+
+export type BlogComment = typeof blogComments.$inferSelect;
+export type NewBlogComment = typeof blogComments.$inferInsert;
 
 export type GallerySubmission = typeof gallerySubmissions.$inferSelect;
 export type NewGallerySubmission = typeof gallerySubmissions.$inferInsert;

@@ -1,14 +1,18 @@
 import { db } from "./index";
-import { eq, and, sql } from "drizzle-orm";
+import { eq, and, sql, desc } from "drizzle-orm";
 import {
   users,
   comments,
   products,
+  blogPosts,
+  blogComments,
   gallerySubmissions,
   galleryLikes,
   type NewUser,
   type NewComment,
   type NewProduct,
+  type NewBlogPost,
+  type NewBlogComment,
   type NewGallerySubmission,
   type NewGalleryLike,
 } from "./schema";
@@ -143,6 +147,171 @@ export const getCommentById = async (id: string) => {
   return db.query.comments.findFirst({
     where: eq(comments.id, id),
     with: { user: true },
+  });
+};
+
+// BLOG QUERIES
+export const createBlogPost = async (data: NewBlogPost) => {
+  const [post] = await db.insert(blogPosts).values(data).returning();
+  return post;
+};
+
+type BlogListFilters = {
+  includeDrafts?: boolean;
+  featured?: boolean;
+  status?: "draft" | "published";
+  page?: number;
+  limit?: number;
+};
+
+export const getBlogPostsPaginated = async (filters: BlogListFilters = {}) => {
+  const includeDrafts = Boolean(filters.includeDrafts);
+  const featured = filters.featured;
+  const status = filters.status;
+  const page = Math.max(1, Number(filters.page || 1));
+  const limit = Math.max(1, Math.min(50, Number(filters.limit || 9)));
+  const offset = (page - 1) * limit;
+
+  const whereClauses = [
+    !includeDrafts ? eq(blogPosts.status, "published") : undefined,
+    status ? eq(blogPosts.status, status) : undefined,
+    featured !== undefined ? eq(blogPosts.featured, featured) : undefined,
+  ].filter(Boolean);
+
+  const where =
+    whereClauses.length > 0
+      ? whereClauses.reduce((acc, clause) =>
+          acc ? and(acc, clause) : clause
+        )
+      : undefined;
+
+  const [countRow] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(blogPosts)
+    .where(where);
+
+  const total = Number(countRow?.count ?? 0);
+
+  const items = await db.query.blogPosts.findMany({
+    where,
+    with: { user: true },
+    orderBy: [desc(blogPosts.publishedAt)],
+    limit,
+    offset,
+  });
+
+  return {
+    items,
+    total,
+    page,
+    pageSize: limit,
+    totalPages: Math.max(1, Math.ceil(total / limit)),
+  };
+};
+
+export const getBlogPostById = async (id: string) => {
+  return db.query.blogPosts.findFirst({
+    where: eq(blogPosts.id, id),
+    with: {
+      user: true,
+      comments: {
+        with: { user: true },
+        orderBy: (blogComments, { desc }) => [desc(blogComments.createdAt)],
+      },
+    },
+  });
+};
+
+export const getBlogPostBySlug = async (slug: string) => {
+  return db.query.blogPosts.findFirst({
+    where: eq(blogPosts.slug, slug),
+    with: {
+      user: true,
+      comments: {
+        with: { user: true },
+        orderBy: (blogComments, { desc }) => [desc(blogComments.createdAt)],
+      },
+    },
+  });
+};
+
+export const updateBlogPost = async (
+  id: string,
+  data: Partial<NewBlogPost>
+) => {
+  const existingPost = await getBlogPostById(id);
+  if (!existingPost) {
+    throw new Error(`Blog post with id ${id} not found`);
+  }
+
+  const [post] = await db
+    .update(blogPosts)
+    .set(data)
+    .where(eq(blogPosts.id, id))
+    .returning();
+  return post;
+};
+
+export const deleteBlogPost = async (id: string) => {
+  const existingPost = await getBlogPostById(id);
+  if (!existingPost) {
+    throw new Error(`Blog post with id ${id} not found`);
+  }
+
+  const [post] = await db
+    .delete(blogPosts)
+    .where(eq(blogPosts.id, id))
+    .returning();
+  return post;
+};
+
+export const createBlogComment = async (data: NewBlogComment) => {
+  const [comment] = await db.insert(blogComments).values(data).returning();
+  return comment;
+};
+
+export const updateBlogComment = async (
+  id: string,
+  data: Partial<NewBlogComment>
+) => {
+  const existingComment = await getBlogCommentById(id);
+  if (!existingComment) {
+    throw new Error(`Blog comment with id ${id} not found`);
+  }
+
+  const [comment] = await db
+    .update(blogComments)
+    .set(data)
+    .where(eq(blogComments.id, id))
+    .returning();
+  return comment;
+};
+
+export const deleteBlogComment = async (id: string) => {
+  const existingComment = await getBlogCommentById(id);
+  if (!existingComment) {
+    throw new Error(`Blog comment with id ${id} not found`);
+  }
+
+  const [comment] = await db
+    .delete(blogComments)
+    .where(eq(blogComments.id, id))
+    .returning();
+  return comment;
+};
+
+export const getBlogCommentById = async (id: string) => {
+  return db.query.blogComments.findFirst({
+    where: eq(blogComments.id, id),
+    with: { user: true, blog: true },
+  });
+};
+
+export const getBlogCommentsByBlogId = async (blogId: string) => {
+  return db.query.blogComments.findMany({
+    where: eq(blogComments.blogId, blogId),
+    with: { user: true },
+    orderBy: (blogComments, { desc }) => [desc(blogComments.createdAt)],
   });
 };
 

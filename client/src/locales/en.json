@@ -32,6 +32,9 @@
     "message": "Message",
     "send": "Send Message"
   },
+  "common": {
+    "loading": "Loading..."
+  },
   "products_page": {
     "title": "Our Premium Collection",
     "subtitle": "Discover the perfect blend of tradition and modern engineering.",
@@ -94,7 +97,7 @@
     "placeholder": "Enter your email address",
     "disclaimer": "We respect your privacy. Unsubscribe at any time.",
     "success_title": "Welcome to the Rayhana Family!",
-     "success_message": "You are now part of our story. Get ready to receive exclusive tastes and traditions in your inbox."
+    "success_message": "You are now part of our story. Get ready to receive exclusive tastes and traditions in your inbox."
   },
   "faq": {
     "title": "Frequently Asked Questions",
