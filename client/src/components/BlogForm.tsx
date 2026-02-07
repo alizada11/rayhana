@@ -3,6 +3,7 @@ import { useCreateBlog, useUpdateBlog } from "@/hooks/useBlogs";
 import BlogRichTextEditor from "@/components/BlogRichTextEditor";
 import MediaPicker from "@/components/MediaPicker";
 import { X, Star, Image as ImageIcon } from "lucide-react";
+import { toast } from "sonner";
 
 type BlogFormProps = {
   post?: any;
@@ -78,25 +79,33 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
       updateMutation.mutate(
         { id: post.id, data: payload },
         {
-          onSuccess: () => onClose(),
+          onSuccess: () => {
+            toast.success("Blog post updated.");
+            onClose();
+          },
           onError: error => {
             setSubmitError(
               error instanceof Error
                 ? error.message
                 : "Failed to update the post."
             );
+            toast.error("Failed to update blog post.");
           },
         }
       );
     } else {
       createMutation.mutate(payload, {
-        onSuccess: () => onClose(),
+        onSuccess: () => {
+          toast.success("Blog post created.");
+          onClose();
+        },
         onError: error => {
           setSubmitError(
             error instanceof Error
               ? error.message
               : "Failed to create the post."
           );
+          toast.error("Failed to create blog post.");
         },
       });
     }

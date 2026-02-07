@@ -58,6 +58,7 @@ export default function Comments({ postId }: CommentsProps) {
           setMessage("");
           setShowSuccess(true);
           setTimeout(() => setShowSuccess(false), 2500);
+          toast.success(isRTL ? "نظر شما ثبت شد" : "Comment posted.");
         },
         onError: () => {
           toast.error(
@@ -81,6 +82,7 @@ export default function Comments({ postId }: CommentsProps) {
         onSuccess: () => {
           setEditingId(null);
           setEditingMessage("");
+          toast.success(isRTL ? "نظر به‌روزرسانی شد" : "Comment updated.");
         },
         onError: () => {
           toast.error(isRTL ? "ویرایش ناموفق بود" : "Update failed");
@@ -94,6 +96,9 @@ export default function Comments({ postId }: CommentsProps) {
     deleteMutation.mutate(
       { blogId: postId, commentId },
       {
+        onSuccess: () => {
+          toast.success(isRTL ? "نظر حذف شد" : "Comment deleted.");
+        },
         onError: () => {
           toast.error(isRTL ? "حذف ناموفق بود" : "Delete failed");
         },

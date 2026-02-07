@@ -1,6 +1,7 @@
 import { useRef, useState } from "react";
 import { useDeleteMedia, useMedia, useUploadMedia } from "@/hooks/useMedia";
 import { Trash2, Upload } from "lucide-react";
+import { toast } from "sonner";
 
 export default function DashboardMedia() {
   const { data: media = [], isLoading } = useMedia();
@@ -26,6 +27,10 @@ export default function DashboardMedia() {
           if (fileInputRef.current) {
             fileInputRef.current.value = "";
           }
+          toast.success("Media uploaded successfully.");
+        },
+        onError: () => {
+          toast.error("Failed to upload media.");
         },
       }
     );
@@ -33,7 +38,14 @@ export default function DashboardMedia() {
 
   const handleDelete = (id: string) => {
     if (!confirm("Delete this media item?")) return;
-    deleteMutation.mutate(id);
+    deleteMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success("Media deleted.");
+      },
+      onError: () => {
+        toast.error("Failed to delete media.");
+      },
+    });
   };
 
   return (

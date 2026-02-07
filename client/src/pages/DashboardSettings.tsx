@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useContent, useUpsertContent } from "@/hooks/useContent";
 import { Save, Plus, Trash2 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function DashboardSettings() {
   const { data } = useContent("settings");
@@ -46,7 +47,14 @@ export default function DashboardSettings() {
   };
 
   const handleSave = () => {
-    upsert.mutate(formData);
+    upsert.mutate(formData, {
+      onSuccess: () => {
+        toast.success("Settings saved.");
+      },
+      onError: () => {
+        toast.error("Failed to save settings.");
+      },
+    });
   };
 
   const renderList = (key: "nav" | "footerLinks" | "social", title: string) => (

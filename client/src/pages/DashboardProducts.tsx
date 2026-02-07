@@ -12,6 +12,7 @@ import {
   Trash2,
   Plus,
 } from "lucide-react";
+import { toast } from "sonner";
 
 export default function DashboardProducts() {
   const { data: products = [], isLoading } = useMyProducts();
@@ -74,7 +75,14 @@ export default function DashboardProducts() {
 
   const handleDelete = (id: string) => {
     if (confirm("Are you sure you want to delete this product?")) {
-      deleteMutation.mutate(id);
+      deleteMutation.mutate(id, {
+        onSuccess: () => {
+          toast.success("Product deleted.");
+        },
+        onError: () => {
+          toast.error("Failed to delete product.");
+        },
+      });
     }
   };
 
