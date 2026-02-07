@@ -42,17 +42,34 @@ const fallbackAbout = {
   images: {
     story: "",
   },
-  story: { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
-  mission: { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
-  founder: { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
+  story: {
+    title: { en: "", fa: "", ps: "" },
+    body: { en: "", fa: "", ps: "" },
+  },
+  mission: {
+    title: { en: "", fa: "", ps: "" },
+    body: { en: "", fa: "", ps: "" },
+  },
+  founder: {
+    title: { en: "", fa: "", ps: "" },
+    body: { en: "", fa: "", ps: "" },
+  },
 };
 
 const fallbackFaq = {
   title: { en: "", fa: "", ps: "" },
   subtitle: { en: "", fa: "", ps: "" },
   items: [
-    { id: "q1", question: { en: "", fa: "", ps: "" }, answer: { en: "", fa: "", ps: "" } },
-    { id: "q2", question: { en: "", fa: "", ps: "" }, answer: { en: "", fa: "", ps: "" } },
+    {
+      id: "q1",
+      question: { en: "", fa: "", ps: "" },
+      answer: { en: "", fa: "", ps: "" },
+    },
+    {
+      id: "q2",
+      question: { en: "", fa: "", ps: "" },
+      answer: { en: "", fa: "", ps: "" },
+    },
   ],
 };
 
@@ -198,7 +215,9 @@ export default function DashboardContent() {
                 className="border rounded-lg px-3 py-2"
                 placeholder="Hero title"
                 value={formData.hero?.title?.[activeLang] || ""}
-                onChange={e => updateLangField(["hero", "title"], e.target.value)}
+                onChange={e =>
+                  updateLangField(["hero", "title"], e.target.value)
+                }
               />
               <input
                 className="border rounded-lg px-3 py-2"
@@ -269,9 +288,7 @@ export default function DashboardContent() {
                 <button
                   type="button"
                   className="p-2 border rounded-lg"
-                  onClick={() =>
-                    openImagePicker(["images", "featuredProduct"])
-                  }
+                  onClick={() => openImagePicker(["images", "featuredProduct"])}
                 >
                   <ImageIcon className="w-4 h-4" />
                 </button>
@@ -303,7 +320,9 @@ export default function DashboardContent() {
                 className="border rounded-lg px-3 py-2"
                 placeholder="Title"
                 value={formData.story?.title?.[activeLang] || ""}
-                onChange={e => updateLangField(["story", "title"], e.target.value)}
+                onChange={e =>
+                  updateLangField(["story", "title"], e.target.value)
+                }
               />
               <div>
                 <label className="text-xs text-gray-500">Body</label>
@@ -317,14 +336,18 @@ export default function DashboardContent() {
                 className="border rounded-lg px-3 py-2"
                 placeholder="CTA"
                 value={formData.story?.cta?.[activeLang] || ""}
-                onChange={e => updateLangField(["story", "cta"], e.target.value)}
+                onChange={e =>
+                  updateLangField(["story", "cta"], e.target.value)
+                }
               />
               <div className="flex items-center gap-2">
                 <input
                   className="border rounded-lg px-3 py-2 w-full"
                   placeholder="Story image URL"
                   value={formData.images?.storyImage || ""}
-                  onChange={e => updateField(["images", "storyImage"], e.target.value)}
+                  onChange={e =>
+                    updateField(["images", "storyImage"], e.target.value)
+                  }
                 />
                 <button
                   type="button"
@@ -394,7 +417,9 @@ export default function DashboardContent() {
                 className="border rounded-lg px-3 py-2"
                 placeholder="Title"
                 value={formData.hero?.title?.[activeLang] || ""}
-                onChange={e => updateLangField(["hero", "title"], e.target.value)}
+                onChange={e =>
+                  updateLangField(["hero", "title"], e.target.value)
+                }
               />
               <input
                 className="border rounded-lg px-3 py-2"
@@ -413,7 +438,9 @@ export default function DashboardContent() {
                 className="border rounded-lg px-3 py-2"
                 placeholder="Title"
                 value={formData.story?.title?.[activeLang] || ""}
-                onChange={e => updateLangField(["story", "title"], e.target.value)}
+                onChange={e =>
+                  updateLangField(["story", "title"], e.target.value)
+                }
               />
               <div>
                 <label className="text-xs text-gray-500">Body</label>
@@ -428,7 +455,9 @@ export default function DashboardContent() {
                   className="border rounded-lg px-3 py-2 w-full"
                   placeholder="Story image URL"
                   value={formData.images?.story || ""}
-                  onChange={e => updateField(["images", "story"], e.target.value)}
+                  onChange={e =>
+                    updateField(["images", "story"], e.target.value)
+                  }
                 />
                 <button
                   type="button"
@@ -512,20 +541,26 @@ export default function DashboardContent() {
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Questions</h2>
             {formData.items?.map((item: any, idx: number) => (
-              <div key={item.id || idx} className="grid md:grid-cols-2 gap-4">
-                <input
-                  className="border rounded-lg px-3 py-2"
-                  placeholder={`Question ${idx + 1}`}
-                  value={item.question?.[activeLang] || ""}
-                  onChange={e => {
-                    const next = structuredClone(formData.items);
-                    next[idx].question = {
-                      ...(next[idx].question || {}),
-                      [activeLang]: e.target.value,
-                    };
-                    updateField(["items"], next);
-                  }}
-                />
+              <div
+                key={item.id || idx}
+                className="grid md:grid-cols-1 gap-4 items-start"
+              >
+                <div className="flex flex-col py-2">
+                  <label className="text-xs text-gray-500">Question</label>
+                  <input
+                    className="border rounded-lg mt-1 px-3 py-2"
+                    placeholder={`Question ${idx + 1}`}
+                    value={item.question?.[activeLang] || ""}
+                    onChange={e => {
+                      const next = structuredClone(formData.items);
+                      next[idx].question = {
+                        ...(next[idx].question || {}),
+                        [activeLang]: e.target.value,
+                      };
+                      updateField(["items"], next);
+                    }}
+                  />
+                </div>
                 <div>
                   <label className="text-xs text-gray-500">Answer</label>
                   <BlogRichTextEditor

@@ -5,18 +5,38 @@ import { Save, Plus, Trash2 } from "lucide-react";
 export default function DashboardSettings() {
   const { data } = useContent("settings");
   const upsert = useUpsertContent("settings");
+  const emptyLabel = { en: "", fa: "", ps: "" };
+  const normalizeLabel = (label: any) => {
+    if (label && typeof label === "object") {
+      return {
+        en: label.en || "",
+        fa: label.fa || "",
+        ps: label.ps || "",
+      };
+    }
+    return { ...emptyLabel, en: label || "" };
+  };
   const [formData, setFormData] = useState<any>({
-    nav: [{ label: "Home", href: "/" }],
-    footerLinks: [{ label: "Privacy Policy", href: "/privacy" }],
-    social: [{ label: "Instagram", href: "https://instagram.com" }],
+    nav: [{ label: { en: "Home", fa: "", ps: "" }, href: "/" }],
+    footerLinks: [{ label: { en: "Privacy Policy", fa: "", ps: "" }, href: "/privacy" }],
+    social: [{ label: { en: "Instagram", fa: "", ps: "" }, href: "https://instagram.com" }],
   });
 
   useEffect(() => {
     if (data?.data) {
       setFormData({
-        nav: data.data.nav || [],
-        footerLinks: data.data.footerLinks || [],
-        social: data.data.social || [],
+        nav: (data.data.nav || []).map((item: any) => ({
+          ...item,
+          label: normalizeLabel(item.label),
+        })),
+        footerLinks: (data.data.footerLinks || []).map((item: any) => ({
+          ...item,
+          label: normalizeLabel(item.label),
+        })),
+        social: (data.data.social || []).map((item: any) => ({
+          ...item,
+          label: normalizeLabel(item.label),
+        })),
       });
     }
   }, [data]);
@@ -35,7 +55,10 @@ export default function DashboardSettings() {
         <h2 className="font-serif text-lg font-bold">{title}</h2>
         <button
           onClick={() =>
-            updateList(key, [...formData[key], { label: "", href: "" }])
+            updateList(key, [
+              ...formData[key],
+              { label: { ...emptyLabel }, href: "" },
+            ])
           }
           className="inline-flex items-center gap-2 text-sm text-primary hover:underline"
         >
@@ -44,14 +67,43 @@ export default function DashboardSettings() {
         </button>
       </div>
       {formData[key].map((item: any, idx: number) => (
-        <div key={`${key}-${idx}`} className="grid md:grid-cols-[1fr_1fr_auto] gap-3">
+        <div key={`${key}-${idx}`} className="grid gap-3 md:grid-cols-[1fr_1fr_1fr_1fr_auto]">
           <input
             className="border rounded-lg px-3 py-2"
-            placeholder="Label"
-            value={item.label}
+            placeholder="Label (EN)"
+            value={item.label?.en || ""}
             onChange={e => {
               const next = [...formData[key]];
-              next[idx] = { ...next[idx], label: e.target.value };
+              next[idx] = {
+                ...next[idx],
+                label: { ...normalizeLabel(next[idx].label), en: e.target.value },
+              };
+              updateList(key, next);
+            }}
+          />
+          <input
+            className="border rounded-lg px-3 py-2"
+            placeholder="Label (FA)"
+            value={item.label?.fa || ""}
+            onChange={e => {
+              const next = [...formData[key]];
+              next[idx] = {
+                ...next[idx],
+                label: { ...normalizeLabel(next[idx].label), fa: e.target.value },
+              };
+              updateList(key, next);
+            }}
+          />
+          <input
+            className="border rounded-lg px-3 py-2"
+            placeholder="Label (PS)"
+            value={item.label?.ps || ""}
+            onChange={e => {
+              const next = [...formData[key]];
+              next[idx] = {
+                ...next[idx],
+                label: { ...normalizeLabel(next[idx].label), ps: e.target.value },
+              };
               updateList(key, next);
             }}
           />

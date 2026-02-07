@@ -25,6 +25,7 @@ export default function Layout({ children }: LayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const isRTL = ["fa", "ar", "ps", "ku"].includes(i18n.language);
+  const currentLang = i18n.language as "en" | "fa" | "ps";
 
   useEffect(() => {
     document.dir = isRTL ? "rtl" : "ltr";
@@ -71,6 +72,11 @@ export default function Layout({ children }: LayoutProps) {
         { href: "https://www.facebook.com", label: "Facebook" },
       ];
 
+  const getLocalizedLabel = (label: any) => {
+    if (typeof label === "string") return label;
+    return label?.[currentLang] || label?.en || "";
+  };
+
   return (
     <div
       className={cn(
@@ -102,7 +108,7 @@ export default function Layout({ children }: LayoutProps) {
                     : "text-muted-foreground"
                 )}
               >
-                {item.label}
+                {getLocalizedLabel(item.label)}
               </Link>
             ))}
           </nav>
@@ -190,7 +196,7 @@ export default function Layout({ children }: LayoutProps) {
                   )}
                   onClick={() => setIsMenuOpen(false)}
                 >
-                  {item.label}
+                  {getLocalizedLabel(item.label)}
                 </Link>
               ))}
             </div>
@@ -222,7 +228,7 @@ export default function Layout({ children }: LayoutProps) {
                       href={item.href}
                       className="hover:text-primary transition-colors"
                     >
-                      {item.label}
+                      {getLocalizedLabel(item.label)}
                     </Link>
                   </li>
                 ))}
@@ -242,7 +248,7 @@ export default function Layout({ children }: LayoutProps) {
                       rel="noopener noreferrer"
                       className="hover:text-primary"
                     >
-                      {item.label}
+                      {getLocalizedLabel(item.label)}
                     </a>
                   ))}
                 </li>
