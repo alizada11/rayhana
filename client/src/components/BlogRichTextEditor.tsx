@@ -82,14 +82,33 @@ export default function BlogRichTextEditor({
   if (!editor) return null;
 
   const setLink = () => {
-    const previousUrl = editor.getAttributes("link").href;
-    const url = window.prompt("Enter URL", previousUrl || "");
+    const isAllowedScheme = (value: string) => {
+      const match = value.trim().match(/^([a-z][a-z0-9+.-]*):/i);
+      if (!match) return false;
+      const scheme = match[1].toLowerCase();
+      return scheme === "http" || scheme === "https" || scheme === "mailto";
+    };
+
+    const previousUrl = editor.getAttributes("link").href as string | undefined;
+    const safePreviousUrl =
+      previousUrl && isAllowedScheme(previousUrl) ? previousUrl : "";
+    const url = window.prompt("Enter URL", safePreviousUrl);
     if (url === null) return;
-    if (url === "") {
+    const trimmedUrl = url.trim();
+    if (trimmedUrl === "") {
       editor.chain().focus().unsetLink().run();
       return;
     }
-    editor.chain().focus().extendMarkRange("link").setLink({ href: url }).run();
+    if (!isAllowedScheme(trimmedUrl)) {
+      alert("Only http, https, or mailto links are allowed.");
+      return;
+    }
+    editor
+      .chain()
+      .focus()
+      .extendMarkRange("link")
+      .setLink({ href: trimmedUrl })
+      .run();
   };
 
   const compressImage = async (file: File) => {

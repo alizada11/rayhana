@@ -19,6 +19,12 @@ export default function MediaPicker({
   const uploadMutation = useUploadMedia();
   const [file, setFile] = useState<File | null>(null);
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const acceptValue =
+    accept === "video"
+      ? "video/*"
+      : accept === "both"
+      ? "image/*,video/*"
+      : "image/*";
 
   const resolveUrl = (url?: string) => {
     if (!url) return "";
@@ -51,7 +57,7 @@ export default function MediaPicker({
           <div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
             <input
               type="file"
-              accept="image/*"
+              accept={acceptValue}
               onChange={e => setFile(e.target.files?.[0] || null)}
               className="w-full md:w-auto"
             />

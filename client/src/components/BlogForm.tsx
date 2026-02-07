@@ -12,7 +12,9 @@ type BlogFormProps = {
 export default function BlogForm({ post, onClose }: BlogFormProps) {
   const isEdit = Boolean(post);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState(post?.imageUrl || "");
   const [showMediaPicker, setShowMediaPicker] = useState(false);
+  const [submitError, setSubmitError] = useState<string | null>(null);
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
   const resolveImageUrl = (url?: string) => {
     if (!url) return null;
@@ -31,7 +33,6 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
     authorName: post?.authorName || "",
     status: post?.status || "published",
     featured: Boolean(post?.featured),
-    imageUrl: post?.imageUrl || "",
   });
 
   const createMutation = useCreateBlog();
@@ -55,10 +56,12 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!imageFile && !formData.imageUrl) {
+    if (!imageFile && !imageUrl) {
       alert("Please provide a cover image.");
       return;
     }
+
+    setSubmitError(null);
 
     const payload = new FormData();
     payload.append("title", JSON.stringify(formData.title));
@@ -68,16 +71,35 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
     payload.append("authorName", formData.authorName);
     payload.append("status", formData.status);
     payload.append("featured", String(formData.featured));
-    payload.append("imageUrl", formData.imageUrl);
+    payload.append("imageUrl", imageUrl);
     if (imageFile) payload.append("image", imageFile);
 
     if (isEdit) {
-      updateMutation.mutate({ id: post.id, data: payload });
+      updateMutation.mutate(
+        { id: post.id, data: payload },
+        {
+          onSuccess: () => onClose(),
+          onError: error => {
+            setSubmitError(
+              error instanceof Error
+                ? error.message
+                : "Failed to update the post."
+            );
+          },
+        }
+      );
     } else {
-      createMutation.mutate(payload);
+      createMutation.mutate(payload, {
+        onSuccess: () => onClose(),
+        onError: error => {
+          setSubmitError(
+            error instanceof Error
+              ? error.message
+              : "Failed to create the post."
+          );
+        },
+      });
     }
-
-    onClose();
   };
 
   useEffect(() => {
@@ -88,10 +110,14 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
   }, [imageFile]);
 
   useEffect(() => {
-    if (!imageFile && post?.imageUrl) {
-      setImagePreview(resolveImageUrl(post.imageUrl));
+    if (imageFile) return;
+    const nextUrl = imageUrl || post?.imageUrl;
+    if (nextUrl) {
+      setImagePreview(resolveImageUrl(nextUrl));
+      return;
     }
-  }, [imageFile, post?.imageUrl]);
+    setImagePreview(null);
+  }, [imageFile, imageUrl, post?.imageUrl]);
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
@@ -249,7 +275,13 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
                   <input
                     type="file"
                     accept="image/*"
-                    onChange={e => setImageFile(e.target.files?.[0] || null)}
+                    onChange={e => {
+                      const file = e.target.files?.[0] || null;
+                      setImageFile(file);
+                      if (file) {
+                        setImageUrl("");
+                      }
+                    }}
                     className="hidden"
                     id="blog-image-upload"
                   />
@@ -266,8 +298,8 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
                 <input
                   type="text"
                   placeholder="Or paste image URL"
-                  value={formData.imageUrl}
-                  onChange={e => handleChange("imageUrl", e.target.value)}
+                  value={imageUrl}
+                  onChange={e => setImageUrl(e.target.value)}
                   className="mt-3 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 />
                 <button
@@ -291,6 +323,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
                     type="button"
                     onClick={() => {
                       setImageFile(null);
+                      setImageUrl("");
                       setImagePreview(null);
                     }}
                     className="absolute -top-2 -right-2 w-6 h-6 bg-red-500 text-white rounded-full flex items-center justify-center"
@@ -328,13 +361,17 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
               Cancel
             </button>
           </div>
+          {submitError && (
+            <p className="text-sm text-red-600">{submitError}</p>
+          )}
         </form>
       </div>
       <MediaPicker
         open={showMediaPicker}
         onClose={() => setShowMediaPicker(false)}
         onSelect={url => {
-          handleChange("imageUrl", url);
+          setImageUrl(url);
+          setImageFile(null);
           setShowMediaPicker(false);
         }}
       />

@@ -213,7 +213,7 @@ export default function Comments({ postId }: CommentsProps) {
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
                       <h4 className="font-bold text-sm">
-                        {comment.user?.name || comment.user?.email || "User"}
+                        {comment.user?.name || comment.user?.username || "User"}
                       </h4>
                       <span className="text-xs text-muted-foreground">
                         {comment.createdAt

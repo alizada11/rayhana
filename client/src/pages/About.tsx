@@ -163,10 +163,7 @@ export default function About() {
                   {heroTitle}
                 </p>
                 <p className="text-muted-foreground">
-                  {getLocalized(
-                    aboutContent?.data?.hero?.subtitle,
-                    t('hero.subtitle')
-                  )}
+                  {heroSubtitle}
                 </p>
               </div>
             </motion.div>

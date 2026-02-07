@@ -48,7 +48,7 @@ export const uploadMedia = async (req: Request, res: Response) => {
     }
 
     const url = `/uploads/${req.file.filename}`;
-    const fullPath = path.join(process.cwd(), url);
+    const fullPath = path.join(process.cwd(), "uploads", req.file.filename);
     const { width, height } = await getImageSize(fullPath);
 
     const asset = await queries.createMediaAsset({
@@ -90,7 +90,8 @@ export const deleteMedia = async (req: Request, res: Response) => {
     if (!asset) return res.status(404).json({ error: "Not found" });
 
     if (asset.url?.startsWith("/uploads/")) {
-      const imgPath = path.join(process.cwd(), asset.url);
+      const relativeUrl = asset.url.replace(/^\/+/, "");
+      const imgPath = path.join(process.cwd(), relativeUrl);
       if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
     }
 

@@ -37,7 +37,7 @@ export const upsertContent = async (req: Request, res: Response) => {
 
     const key = getParam(req.params.key);
     const data = req.body;
-    if (!data || typeof data !== "object") {
+    if (!data || typeof data !== "object" || Array.isArray(data)) {
       return res.status(400).json({ error: "Content payload is required" });
     }
 

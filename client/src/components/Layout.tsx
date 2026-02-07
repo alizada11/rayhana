@@ -48,28 +48,28 @@ export default function Layout({ children }: LayoutProps) {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  const navItems =
-    settingsContent?.data?.nav ??
-    [
-      { href: "/", label: t("nav.home") },
-      { href: "/products", label: t("nav.products") },
-      { href: "/about", label: t("nav.about") },
-      { href: "/blog", label: t("nav.blog") },
-      { href: "/contact", label: t("nav.contact") },
-    ];
-  const footerLinks =
-    settingsContent?.data?.footerLinks ??
-    [
-      { href: "/privacy", label: "Privacy Policy" },
-      { href: "/terms", label: "Terms of Service" },
-      { href: "/help", label: "Help Center" },
-    ];
-  const socialLinks =
-    settingsContent?.data?.social ??
-    [
-      { href: "https://www.instagram.com", label: "Instagram" },
-      { href: "https://www.facebook.com", label: "Facebook" },
-    ];
+  const navItems = Array.isArray(settingsContent?.data?.nav)
+    ? settingsContent.data.nav
+    : [
+        { href: "/", label: t("nav.home") },
+        { href: "/products", label: t("nav.products") },
+        { href: "/about", label: t("nav.about") },
+        { href: "/blog", label: t("nav.blog") },
+        { href: "/contact", label: t("nav.contact") },
+      ];
+  const footerLinks = Array.isArray(settingsContent?.data?.footerLinks)
+    ? settingsContent.data.footerLinks
+    : [
+        { href: "/privacy", label: "Privacy Policy" },
+        { href: "/terms", label: "Terms of Service" },
+        { href: "/help", label: "Help Center" },
+      ];
+  const socialLinks = Array.isArray(settingsContent?.data?.social)
+    ? settingsContent.data.social
+    : [
+        { href: "https://www.instagram.com", label: "Instagram" },
+        { href: "https://www.facebook.com", label: "Facebook" },
+      ];
 
   return (
     <div

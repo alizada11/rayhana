@@ -9,6 +9,7 @@ import FAQ from "@/components/FAQ";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
+import DOMPurify from "dompurify";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -176,7 +177,9 @@ export default function Home() {
                 </h3>
                 <div
                   className="text-muted-foreground text-sm mb-4 prose prose-sm max-w-none"
-                  dangerouslySetInnerHTML={{ __html: value.body || "" }}
+                  dangerouslySetInnerHTML={{
+                    __html: DOMPurify.sanitize(value.body || ""),
+                  }}
                 />
                 <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-primary/5 rounded-full group-hover:scale-150 transition-transform duration-500" />
               </div>

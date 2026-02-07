@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { useDeleteMedia, useMedia, useUploadMedia } from "@/hooks/useMedia";
 import { Trash2, Upload } from "lucide-react";
 
@@ -7,6 +7,7 @@ export default function DashboardMedia() {
   const uploadMutation = useUploadMedia();
   const deleteMutation = useDeleteMedia();
   const [file, setFile] = useState<File | null>(null);
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
 
   const resolveUrl = (url?: string) => {
@@ -17,8 +18,17 @@ export default function DashboardMedia() {
 
   const handleUpload = () => {
     if (!file) return;
-    uploadMutation.mutate({ file });
-    setFile(null);
+    uploadMutation.mutate(
+      { file },
+      {
+        onSuccess: () => {
+          setFile(null);
+          if (fileInputRef.current) {
+            fileInputRef.current.value = "";
+          }
+        },
+      }
+    );
   };
 
   const handleDelete = (id: string) => {
@@ -42,6 +52,7 @@ export default function DashboardMedia() {
       <div className="bg-white border border-gray-200 rounded-xl p-4">
         <div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
           <input
+            ref={fileInputRef}
             type="file"
             accept="image/*,video/*"
             onChange={e => setFile(e.target.files?.[0] || null)}

@@ -5,6 +5,7 @@ import { ArrowLeft, Calendar, User, Share2 } from 'lucide-react';
 import Comments from '@/components/Comments';
 import { motion } from 'framer-motion';
 import { useBlogBySlug } from '@/hooks/useBlogs';
+import DOMPurify from 'dompurify';
 
 export default function BlogPost() {
   const { t, i18n } = useTranslation();
@@ -13,9 +14,9 @@ export default function BlogPost() {
   const isRTL = currentLang === 'fa' || currentLang === 'ps';
   const apiBase = import.meta.env.VITE_API_URL?.replace('/api', '') || '';
 
-  if (!match || !params) return null;
+  const { data: post, isLoading } = useBlogBySlug(params?.slug);
 
-  const { data: post, isLoading } = useBlogBySlug(params.slug);
+  if (!match || !params) return null;
 
   if (isLoading) {
     return (
@@ -49,6 +50,7 @@ export default function BlogPost() {
 
   const title = post.title?.[currentLang] || post.title?.en || '';
   const content = post.content?.[currentLang] || post.content?.en || '';
+  const sanitizedContent = DOMPurify.sanitize(content);
 
   return (
     <article className="min-h-screen bg-background pt-24 pb-16">
@@ -106,7 +108,7 @@ export default function BlogPost() {
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
             className="prose prose-lg dark:prose-invert max-w-none font-sans"
-            dangerouslySetInnerHTML={{ __html: content }}
+            dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
           
           <div className="mt-16 pt-8 border-t border-border">
