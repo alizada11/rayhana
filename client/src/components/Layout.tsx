@@ -82,26 +82,27 @@ export default function Layout({ children }: LayoutProps) {
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/">
-            <a className="flex items-center gap-2 font-serif text-2xl font-bold text-primary">
-              <span className="hidden sm:inline">RAYHANA</span>
-            </a>
+          <Link
+            href="/"
+            className="flex items-center gap-2 font-serif text-2xl font-bold text-primary"
+          >
+            <span className="hidden sm:inline">RAYHANA</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {navItems.map(item => (
-              <Link key={item.href} href={item.href}>
-                <a
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    location === item.href
-                      ? "text-primary"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {item.label}
-                </a>
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  location === item.href
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
+              >
+                {item.label}
               </Link>
             ))}
           </nav>
@@ -178,18 +179,18 @@ export default function Layout({ children }: LayoutProps) {
           <div className="md:hidden border-t bg-background">
             <div className="container py-4 flex flex-col gap-4">
               {navItems.map(item => (
-                <Link key={item.href} href={item.href}>
-                  <a
-                    className={cn(
-                      "text-sm font-medium transition-colors hover:text-primary p-2 rounded-md hover:bg-muted",
-                      location === item.href
-                        ? "text-primary bg-muted"
-                        : "text-foreground"
-                    )}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.label}
-                  </a>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary p-2 rounded-md hover:bg-muted",
+                    location === item.href
+                      ? "text-primary bg-muted"
+                      : "text-foreground"
+                  )}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
                 </Link>
               ))}
             </div>
@@ -217,10 +218,11 @@ export default function Layout({ children }: LayoutProps) {
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {footerLinks.map((item: any, idx: number) => (
                   <li key={`${item.href}-${idx}`}>
-                    <Link href={item.href}>
-                      <a className="hover:text-primary transition-colors">
-                        {item.label}
-                      </a>
+                    <Link
+                      href={item.href}
+                      className="hover:text-primary transition-colors"
+                    >
+                      {item.label}
                     </Link>
                   </li>
                 ))}
