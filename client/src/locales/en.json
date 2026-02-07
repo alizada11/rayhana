@@ -132,6 +132,12 @@
     "recipe_3_title": "Creamy Mushroom Risotto",
     "recipe_3_desc": "Achieve restaurant-quality risotto with the even heat distribution of Rayhana cookware."
   },
+  "blog": {
+    "featuredTitle": "Featured Stories",
+    "featuredSubtitle": "Our most loved recipes and cultural journeys.",
+    "featured": "Featured",
+    "viewAll": "View all"
+  },
   "contact_page": {
     "title": "Contact Us",
     "subtitle": "We'd love to hear from you. Send us a message or visit us.",

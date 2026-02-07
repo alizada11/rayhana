@@ -119,6 +119,30 @@ export const blogComments = pgTable("blog_comments", {
     .$onUpdate(() => new Date()),
 });
 
+export const siteContent = pgTable("site_content", {
+  key: text("key").primaryKey(),
+  data: jsonb("data").$type<Record<string, any>>().notNull().default({}),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const mediaAssets = pgTable("media_assets", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  url: text("url").notNull(),
+  fileName: text("file_name").notNull(),
+  mimeType: text("mime_type").notNull(),
+  sizeBytes: integer("size_bytes").notNull(),
+  width: integer("width"),
+  height: integer("height"),
+  altText: text("alt_text"),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
+
 export const gallerySubmissions = pgTable("gallery_submissions", {
   id: uuid("id").defaultRandom().primaryKey(),
   imageUrl: text("image_url").notNull(),
@@ -165,6 +189,7 @@ export const usersRelations = relations(users, ({ many }) => ({
   comments: many(comments), // 🔴 One user → many comments
   blogPosts: many(blogPosts),
   blogComments: many(blogComments),
+  mediaAssets: many(mediaAssets),
   gallerySubmissions: many(gallerySubmissions),
 }));
 
@@ -200,6 +225,10 @@ export const blogCommentsRelations = relations(blogComments, ({ one }) => ({
     fields: [blogComments.blogId],
     references: [blogPosts.id],
   }),
+}));
+
+export const mediaAssetsRelations = relations(mediaAssets, ({ one }) => ({
+  user: one(users, { fields: [mediaAssets.userId], references: [users.id] }),
 }));
 
 export const gallerySubmissionsRelations = relations(
@@ -239,6 +268,12 @@ export type NewBlogPost = typeof blogPosts.$inferInsert;
 
 export type BlogComment = typeof blogComments.$inferSelect;
 export type NewBlogComment = typeof blogComments.$inferInsert;
+
+export type SiteContent = typeof siteContent.$inferSelect;
+export type NewSiteContent = typeof siteContent.$inferInsert;
+
+export type MediaAsset = typeof mediaAssets.$inferSelect;
+export type NewMediaAsset = typeof mediaAssets.$inferInsert;
 
 export type GallerySubmission = typeof gallerySubmissions.$inferSelect;
 export type NewGallerySubmission = typeof gallerySubmissions.$inferInsert;

@@ -42,6 +42,14 @@ export interface DeleteBlogCommentParams {
   commentId: string | number;
 }
 
+export interface SiteContentPayload {
+  [key: string]: any;
+}
+
+export interface MediaUploadPayload {
+  file: File;
+}
+
 export interface UpdateProductParams {
   id: string | number;
   data: FormData;
@@ -221,6 +229,42 @@ export const deleteBlogComment = async ({
   commentId,
 }: DeleteBlogCommentParams) => {
   const { data } = await api.delete(`/blogs/${blogId}/comments/${commentId}`);
+  return data;
+};
+
+// ---------- SITE CONTENT API ----------
+export const getContentByKey = async (key: string) => {
+  const { data } = await api.get(`/content/${key}`);
+  return data;
+};
+
+export const upsertContent = async (key: string, payload: SiteContentPayload) => {
+  const { data } = await api.put(`/content/${key}`, payload);
+  return data;
+};
+
+export const getAllContent = async () => {
+  const { data } = await api.get("/content");
+  return data;
+};
+
+// ---------- MEDIA API ----------
+export const uploadMedia = async ({ file }: MediaUploadPayload) => {
+  const payload = new FormData();
+  payload.append("file", file);
+  const { data } = await api.post("/media", payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
+
+export const getMedia = async () => {
+  const { data } = await api.get("/media");
+  return data;
+};
+
+export const deleteMedia = async (id: string | number) => {
+  const { data } = await api.delete(`/media/${id}`);
   return data;
 };
 

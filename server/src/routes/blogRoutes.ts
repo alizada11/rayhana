@@ -10,6 +10,15 @@ const router = Router();
 // GET /api/blogs => Get all blog posts (public)
 router.get("/", blogController.getAllBlogPosts);
 
+// POST /api/blogs/uploads => Upload blog content image (admin only)
+router.post(
+  "/uploads",
+  requireAuth(),
+  requireAdmin,
+  upload.single("image"),
+  blogController.uploadBlogImage
+);
+
 // GET /api/blogs/:slug => Get blog post by slug (public)
 router.get("/:slug", blogController.getBlogPostBySlug);
 

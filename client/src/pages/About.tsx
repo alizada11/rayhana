@@ -1,8 +1,49 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
+import { useContent } from "@/hooks/useContent";
 
 export default function About() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language as "en" | "fa" | "ps";
+  const { data: aboutContent } = useContent("about");
+
+  const getLocalized = (obj: any, fallback: string) =>
+    obj?.[currentLang] || obj?.en || fallback;
+
+  const heroTitle = getLocalized(
+    aboutContent?.data?.hero?.title,
+    t("about_page.title")
+  );
+  const heroSubtitle = getLocalized(
+    aboutContent?.data?.hero?.subtitle,
+    t("about_page.subtitle")
+  );
+  const storyTitle = getLocalized(
+    aboutContent?.data?.story?.title,
+    t("about_page.story_title")
+  );
+  const storyBody = getLocalized(
+    aboutContent?.data?.story?.body,
+    t("about_page.story_content")
+  );
+  const missionTitle = getLocalized(
+    aboutContent?.data?.mission?.title,
+    t("about_page.mission_title")
+  );
+  const missionBody = getLocalized(
+    aboutContent?.data?.mission?.body,
+    t("about_page.mission_content")
+  );
+  const founderTitle = getLocalized(
+    aboutContent?.data?.founder?.title,
+    t("about_page.founder_title")
+  );
+  const founderBody = getLocalized(
+    aboutContent?.data?.founder?.body,
+    t("about_page.founder_content")
+  );
+  const storyImage =
+    aboutContent?.data?.images?.story || "/images/about-user.jpg";
 
   return (
     <div className="min-h-screen">
@@ -14,7 +55,7 @@ export default function About() {
             animate={{ opacity: 1, y: 0 }}
             className="font-serif text-5xl md:text-7xl font-bold text-primary"
           >
-            {t('about_page.title')}
+            {heroTitle}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -22,7 +63,7 @@ export default function About() {
             transition={{ delay: 0.2 }}
             className="text-xl text-muted-foreground max-w-2xl mx-auto"
           >
-            {t('about_page.subtitle')}
+            {heroSubtitle}
           </motion.p>
         </div>
       </section>
@@ -38,7 +79,7 @@ export default function About() {
               className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl"
             >
               <img 
-                src="/images/about-user.jpg" 
+                src={storyImage} 
                 alt="Rayhana Story" 
                 className="w-full h-full object-cover"
               />
@@ -52,19 +93,19 @@ export default function About() {
             >
               <div>
                 <h2 className="font-serif text-3xl font-bold mb-4 text-primary">
-                  {t('about_page.story_title')}
+                  {storyTitle}
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  {t('about_page.story_content')}
+                  {storyBody}
                 </p>
               </div>
               
               <div>
                 <h2 className="font-serif text-3xl font-bold mb-4 text-primary">
-                  {t('about_page.mission_title')}
+                  {missionTitle}
                 </h2>
                 <p className="text-lg text-muted-foreground leading-relaxed">
-                  {t('about_page.mission_content')}
+                  {missionBody}
                 </p>
               </div>
 
@@ -98,10 +139,10 @@ export default function About() {
               className="space-y-6"
             >
               <h2 className="font-serif text-4xl font-bold text-primary">
-                {t('about_page.founder_title')}
+                {founderTitle}
               </h2>
               <p className="text-lg text-muted-foreground leading-relaxed">
-                {t('about_page.founder_content')}
+                {founderBody}
               </p>
               <div className="pt-4 border-l-4 border-primary pl-6">
                 <p className="text-sm text-muted-foreground italic">
@@ -118,8 +159,15 @@ export default function About() {
             >
               <div className="text-center space-y-4 p-8">
                 <div className="text-6xl">🏠</div>
-                <p className="text-xl font-serif font-bold text-primary">{t('about_page.title')}</p>
-                <p className="text-muted-foreground">{t('hero.subtitle')}</p>
+                <p className="text-xl font-serif font-bold text-primary">
+                  {heroTitle}
+                </p>
+                <p className="text-muted-foreground">
+                  {getLocalized(
+                    aboutContent?.data?.hero?.subtitle,
+                    t('hero.subtitle')
+                  )}
+                </p>
               </div>
             </motion.div>
           </div>

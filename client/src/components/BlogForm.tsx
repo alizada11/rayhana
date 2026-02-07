@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { useCreateBlog, useUpdateBlog } from "@/hooks/useBlogs";
-import { X, Star } from "lucide-react";
+import BlogRichTextEditor from "@/components/BlogRichTextEditor";
+import MediaPicker from "@/components/MediaPicker";
+import { X, Star, Image as ImageIcon } from "lucide-react";
 
 type BlogFormProps = {
   post?: any;
@@ -10,6 +12,7 @@ type BlogFormProps = {
 export default function BlogForm({ post, onClose }: BlogFormProps) {
   const isEdit = Boolean(post);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [showMediaPicker, setShowMediaPicker] = useState(false);
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
   const resolveImageUrl = (url?: string) => {
     if (!url) return null;
@@ -110,7 +113,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
           {/* Title */}
           <div>
             <h3 className="text-sm font-medium text-gray-700 mb-3">Title</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
                   <label className="block text-xs text-gray-500 mb-1">
@@ -158,21 +161,18 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
           {/* Content */}
           <div>
             <h3 className="text-sm font-medium text-gray-700 mb-3">Content</h3>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
                   <label className="block text-xs text-gray-500 mb-1">
                     {lang.toUpperCase()}
                   </label>
-                  <textarea
-                    placeholder={`HTML content in ${lang}`}
+                  <BlogRichTextEditor
                     value={formData.content[lang]}
-                    onChange={e =>
-                      handleJSONFieldChange("content", lang, e.target.value)
+                    onChange={value =>
+                      handleJSONFieldChange("content", lang, value)
                     }
-                    rows={8}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none font-mono text-xs"
-                    required
+                    placeholder={`Write content in ${lang}`}
                   />
                 </div>
               ))}
@@ -270,6 +270,14 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
                   onChange={e => handleChange("imageUrl", e.target.value)}
                   className="mt-3 w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 />
+                <button
+                  type="button"
+                  onClick={() => setShowMediaPicker(true)}
+                  className="mt-3 inline-flex items-center gap-2 text-sm text-primary hover:underline"
+                >
+                  <ImageIcon className="w-4 h-4" />
+                  Choose from Media Library
+                </button>
               </div>
 
               {imagePreview && (
@@ -322,6 +330,14 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
           </div>
         </form>
       </div>
+      <MediaPicker
+        open={showMediaPicker}
+        onClose={() => setShowMediaPicker(false)}
+        onSelect={url => {
+          handleChange("imageUrl", url);
+          setShowMediaPicker(false);
+        }}
+      />
     </div>
   );
 }

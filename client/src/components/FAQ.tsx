@@ -6,16 +6,28 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
+import { useContent } from "@/hooks/useContent";
 
 export default function FAQ() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language as "en" | "fa" | "ps";
+  const { data: faqContent } = useContent("faq");
 
-  const questions = [
-    { id: "q1", question: t("faq.q1"), answer: t("faq.a1") },
-    { id: "q2", question: t("faq.q2"), answer: t("faq.a2") },
-    { id: "q3", question: t("faq.q3"), answer: t("faq.a3") },
-    { id: "q4", question: t("faq.q4"), answer: t("faq.a4") },
-  ];
+  const getLocalized = (obj: any, fallback: string) =>
+    obj?.[currentLang] || obj?.en || fallback;
+
+  const questions =
+    faqContent?.data?.items?.map((item: any, index: number) => ({
+      id: item.id || `q${index + 1}`,
+      question: getLocalized(item.question, t(`faq.q${index + 1}`)),
+      answer: getLocalized(item.answer, t(`faq.a${index + 1}`)),
+    })) ??
+    [
+      { id: "q1", question: t("faq.q1"), answer: t("faq.a1") },
+      { id: "q2", question: t("faq.q2"), answer: t("faq.a2") },
+      { id: "q3", question: t("faq.q3"), answer: t("faq.a3") },
+      { id: "q4", question: t("faq.q4"), answer: t("faq.a4") },
+    ];
 
   return (
     <section className="py-20 bg-muted/30">
@@ -28,10 +40,10 @@ export default function FAQ() {
           className="text-center mb-12"
         >
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary mb-4">
-            {t("faq.title")}
+            {getLocalized(faqContent?.data?.title, t("faq.title"))}
           </h2>
           <p className="text-muted-foreground text-lg">
-            {t("faq.subtitle")}
+            {getLocalized(faqContent?.data?.subtitle, t("faq.subtitle"))}
           </p>
         </motion.div>
 

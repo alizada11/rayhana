@@ -21,7 +21,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   const sidebarLinks = [
     { path: "/dashboard", label: "Overview", icon: "📊" },
+    { path: "/dashboard/content", label: "Content", icon: "🧩" },
     { path: "/dashboard/blogs", label: "Blogs", icon: "📝" },
+    { path: "/dashboard/comments", label: "Comments", icon: "💬" },
+    { path: "/dashboard/media", label: "Media", icon: "🗂️" },
+    { path: "/dashboard/settings", label: "Settings", icon: "⚙️" },
     { path: "/dashboard/products", label: "Products", icon: "📦" },
     { path: "/dashboard/gallery", label: "Gallery", icon: "🖼️" },
   ];

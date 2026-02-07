@@ -9,6 +9,8 @@ import productRoutes from "./routes/productRoutes";
 import commentRoutes from "./routes/commentRoutes";
 import galleryRoutes from "./routes/galleryRoutes";
 import blogRoutes from "./routes/blogRoutes";
+import contentRoutes from "./routes/contentRoutes";
+import mediaRoutes from "./routes/mediaRoutes";
 
 const app = exprss();
 app.use(cors({ origin: ENV.FRONTEND_URL, credentials: true }));
@@ -26,6 +28,8 @@ app.use("/api/products", productRoutes);
 app.use("/api/comments", commentRoutes);
 app.use("/api/gallery", galleryRoutes);
 app.use("/api/blogs", blogRoutes);
+app.use("/api/content", contentRoutes);
+app.use("/api/media", mediaRoutes);
 
 app.listen(ENV.PORT, () =>
   console.log("Server is up and running on port:", ENV.PORT)

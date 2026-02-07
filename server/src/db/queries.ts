@@ -6,6 +6,8 @@ import {
   products,
   blogPosts,
   blogComments,
+  siteContent,
+  mediaAssets,
   gallerySubmissions,
   galleryLikes,
   type NewUser,
@@ -13,6 +15,8 @@ import {
   type NewProduct,
   type NewBlogPost,
   type NewBlogComment,
+  type NewSiteContent,
+  type NewMediaAsset,
   type NewGallerySubmission,
   type NewGalleryLike,
 } from "./schema";
@@ -313,6 +317,50 @@ export const getBlogCommentsByBlogId = async (blogId: string) => {
     with: { user: true },
     orderBy: (blogComments, { desc }) => [desc(blogComments.createdAt)],
   });
+};
+
+// SITE CONTENT QUERIES
+export const getSiteContentByKey = async (key: string) => {
+  return db.query.siteContent.findFirst({
+    where: eq(siteContent.key, key),
+  });
+};
+
+export const upsertSiteContent = async (data: NewSiteContent) => {
+  const [row] = await db
+    .insert(siteContent)
+    .values(data)
+    .onConflictDoUpdate({
+      target: siteContent.key,
+      set: { data: data.data },
+    })
+    .returning();
+  return row;
+};
+
+export const getAllSiteContent = async () => {
+  return db.query.siteContent.findMany();
+};
+
+// MEDIA QUERIES
+export const createMediaAsset = async (data: NewMediaAsset) => {
+  const [asset] = await db.insert(mediaAssets).values(data).returning();
+  return asset;
+};
+
+export const getMediaAssets = async () => {
+  return db.query.mediaAssets.findMany({
+    with: { user: true },
+    orderBy: (mediaAssets, { desc }) => [desc(mediaAssets.createdAt)],
+  });
+};
+
+export const deleteMediaAsset = async (id: string) => {
+  const [asset] = await db
+    .delete(mediaAssets)
+    .where(eq(mediaAssets.id, id))
+    .returning();
+  return asset;
 };
 
 // GALLERY QUERIES

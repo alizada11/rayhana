@@ -297,3 +297,23 @@ export const deleteBlogPost = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to delete blog post" });
   }
 };
+
+// -------------------------
+// UPLOAD BLOG CONTENT IMAGE (admin only)
+// -------------------------
+export const uploadBlogImage = async (req: Request, res: Response) => {
+  try {
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    if (!req.file) {
+      return res.status(400).json({ error: "Image file is required" });
+    }
+
+    const imageUrl = `/uploads/${req.file.filename}`;
+    res.status(201).json({ url: imageUrl });
+  } catch (error) {
+    console.error("Error uploading blog image:", error);
+    res.status(500).json({ error: "Failed to upload image" });
+  }
+};
