@@ -23,6 +23,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { path: "/dashboard", label: "Overview", icon: "📊" },
     { path: "/dashboard/blogs", label: "Blogs", icon: "📝" },
     { path: "/dashboard/products", label: "Products", icon: "📦" },
+    { path: "/dashboard/gallery", label: "Gallery", icon: "🖼️" },
   ];
 
   return (

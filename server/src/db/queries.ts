@@ -1,12 +1,16 @@
 import { db } from "./index";
-import { eq } from "drizzle-orm";
+import { eq, and, sql } from "drizzle-orm";
 import {
   users,
   comments,
   products,
+  gallerySubmissions,
+  galleryLikes,
   type NewUser,
   type NewComment,
   type NewProduct,
+  type NewGallerySubmission,
+  type NewGalleryLike,
 } from "./schema";
 
 // USER QUERIES
@@ -139,5 +143,115 @@ export const getCommentById = async (id: string) => {
   return db.query.comments.findFirst({
     where: eq(comments.id, id),
     with: { user: true },
+  });
+};
+
+// GALLERY QUERIES
+export const createGallerySubmission = async (data: NewGallerySubmission) => {
+  const [submission] = await db
+    .insert(gallerySubmissions)
+    .values(data)
+    .returning();
+  return submission;
+};
+
+export const getApprovedGallerySubmissions = async () => {
+  return db.query.gallerySubmissions.findMany({
+    where: eq(gallerySubmissions.status, "approved"),
+    with: { user: true },
+    orderBy: (gallerySubmissions, { desc }) => [
+      desc(gallerySubmissions.createdAt),
+    ],
+  });
+};
+
+export const getAllGallerySubmissions = async () => {
+  return db.query.gallerySubmissions.findMany({
+    with: { user: true },
+    orderBy: (gallerySubmissions, { desc }) => [
+      desc(gallerySubmissions.createdAt),
+    ],
+  });
+};
+
+export const getGallerySubmissionsByUserId = async (userId: string) => {
+  return db.query.gallerySubmissions.findMany({
+    where: eq(gallerySubmissions.userId, userId),
+    with: { user: true },
+    orderBy: (gallerySubmissions, { desc }) => [
+      desc(gallerySubmissions.createdAt),
+    ],
+  });
+};
+
+export const getGalleryLikesByUserId = async (userId: string) => {
+  return db.query.galleryLikes.findMany({
+    where: eq(galleryLikes.userId, userId),
+  });
+};
+
+export const updateGallerySubmissionStatus = async (
+  id: string,
+  status: "pending" | "approved" | "rejected"
+) => {
+  const [submission] = await db
+    .update(gallerySubmissions)
+    .set({ status })
+    .where(eq(gallerySubmissions.id, id))
+    .returning();
+  return submission;
+};
+
+export const deleteGallerySubmission = async (id: string) => {
+  const [submission] = await db
+    .delete(gallerySubmissions)
+    .where(eq(gallerySubmissions.id, id))
+    .returning();
+  return submission;
+};
+
+export const toggleGalleryLike = async (
+  submissionId: string,
+  userId: string
+) => {
+  return db.transaction(async tx => {
+    const existing = await tx.query.galleryLikes.findFirst({
+      where: and(
+        eq(galleryLikes.submissionId, submissionId),
+        eq(galleryLikes.userId, userId)
+      ),
+    });
+
+    if (existing) {
+      await tx
+        .delete(galleryLikes)
+        .where(eq(galleryLikes.id, existing.id))
+        .returning();
+
+      await tx
+        .update(gallerySubmissions)
+        .set({
+          likesCount: sql`${gallerySubmissions.likesCount} - 1`,
+        })
+        .where(eq(gallerySubmissions.id, submissionId))
+        .returning();
+
+      return { liked: false };
+    }
+
+    const [like] = await tx
+      .insert(galleryLikes)
+      .values({ submissionId, userId } as NewGalleryLike)
+      .returning();
+
+    await tx
+      .update(gallerySubmissions)
+      .set({
+        likesCount: sql`${gallerySubmissions.likesCount} + 1`,
+      })
+      .where(eq(gallerySubmissions.id, submissionId))
+      .returning();
+
+    return { liked: true, like };
   });
 };

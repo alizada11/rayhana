@@ -10,9 +10,11 @@ import {
   SignedOut,
   UserButton,
 } from "@clerk/clerk-react";
+import { useUserRole } from "@/hooks/useUserRole";
 
 function LoginPage() {
   const { t } = useTranslation();
+  const { data: me } = useUserRole();
 
   return (
     <div className="p-2 bg-gradient-to-br from-gray-50 to-gray-100">
@@ -129,12 +131,22 @@ function LoginPage() {
                         </SignOutButton>
 
                         <div className="grid grid-cols-2 gap-3">
-                          <Link
-                            to="/dashboard"
-                            className="block bg-primary/10 hover:bg-primary/20 text-primary font-semibold py-3 px-4 rounded-lg transition-all duration-300 text-center"
-                          >
-                            {t("login_page.dashboard", "Dashboard")}
-                          </Link>
+                          {me?.role === "admin" && (
+                            <Link
+                              to="/dashboard"
+                              className="block bg-primary/10 hover:bg-primary/20 text-primary font-semibold py-3 px-4 rounded-lg transition-all duration-300 text-center"
+                            >
+                              {t("login_page.dashboard", "Dashboard")}
+                            </Link>
+                          )}
+                          {me?.role === "guest" && (
+                            <Link
+                              to="/guest-dashboard"
+                              className="block bg-primary/10 hover:bg-primary/20 text-primary font-semibold py-3 px-4 rounded-lg transition-all duration-300 text-center"
+                            >
+                              {t("login_page.guest_dashboard", "My Photos")}
+                            </Link>
+                          )}
                           <Link
                             to="/profile"
                             className="block bg-secondary/10 hover:bg-secondary/20 text-foreground font-semibold py-3 px-4 rounded-lg transition-all duration-300 text-center"

@@ -3,17 +3,27 @@ import {
   integer,
   jsonb,
   pgTable,
+  pgEnum,
+  uniqueIndex,
   text,
   timestamp,
   uuid,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
+export const userRoleEnum = pgEnum("user_role", ["admin", "guest"]);
+export const galleryStatusEnum = pgEnum("gallery_status", [
+  "pending",
+  "approved",
+  "rejected",
+]);
+
 export const users = pgTable("users", {
   id: text("id").primaryKey(), // clerkId
   email: text("email").notNull().unique(),
   name: text("name"),
   imageUrl: text("image_url"),
+  role: userRoleEnum("role").notNull().default("guest"),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   // updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" })
@@ -67,6 +77,41 @@ export const comments = pgTable("comments", {
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });
 
+export const gallerySubmissions = pgTable("gallery_submissions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  imageUrl: text("image_url").notNull(),
+  dishName: text("dish_name").notNull(),
+  description: text("description"),
+  status: galleryStatusEnum("status").notNull().default("pending"),
+  likesCount: integer("likes_count").notNull().default(0),
+  userId: text("user_id")
+    .notNull()
+    .references(() => users.id, { onDelete: "cascade" }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const galleryLikes = pgTable(
+  "gallery_likes",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    submissionId: uuid("submission_id")
+      .notNull()
+      .references(() => gallerySubmissions.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at", { mode: "date" })
+      .notNull()
+      .defaultNow(),
+  },
+  table => ({
+    uniqueSubmissionUser: uniqueIndex("gallery_like_unique").on(
+      table.submissionId,
+      table.userId
+    ),
+  })
+);
+
 // 🔴 Relations define how tables connect to each other. This enables Drizzle's query API
 // 🔴 to automatically join related data when using `with: { relationName: true }`
 
@@ -76,6 +121,7 @@ export const comments = pgTable("comments", {
 export const usersRelations = relations(users, ({ many }) => ({
   products: many(products), // 🔴 One user → many products
   comments: many(comments), // 🔴 One user → many comments
+  gallerySubmissions: many(gallerySubmissions),
 }));
 
 // Products Relations: a product belongs to one user and can have many comments
@@ -99,6 +145,28 @@ export const commentsRelations = relations(comments, ({ one }) => ({
   }), // One comment → one product
 }));
 
+export const gallerySubmissionsRelations = relations(
+  gallerySubmissions,
+  ({ one, many }) => ({
+    user: one(users, {
+      fields: [gallerySubmissions.userId],
+      references: [users.id],
+    }),
+    likes: many(galleryLikes),
+  })
+);
+
+export const galleryLikesRelations = relations(galleryLikes, ({ one }) => ({
+  submission: one(gallerySubmissions, {
+    fields: [galleryLikes.submissionId],
+    references: [gallerySubmissions.id],
+  }),
+  user: one(users, {
+    fields: [galleryLikes.userId],
+    references: [users.id],
+  }),
+}));
+
 // Type inference
 export type User = typeof users.$inferSelect;
 export type NewUser = typeof users.$inferInsert;
@@ -108,3 +176,9 @@ export type NewProduct = typeof products.$inferInsert;
 
 export type Comment = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;
+
+export type GallerySubmission = typeof gallerySubmissions.$inferSelect;
+export type NewGallerySubmission = typeof gallerySubmissions.$inferInsert;
+
+export type GalleryLike = typeof galleryLikes.$inferSelect;
+export type NewGalleryLike = typeof galleryLikes.$inferInsert;
