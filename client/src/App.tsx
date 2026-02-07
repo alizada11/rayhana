@@ -71,7 +71,7 @@ function Router() {
           <LoginPage />
         </Layout>
       </Route>
-      <Route path="/guest-dashboard">
+      <Route path="/my-submissions">
         <GuestDashboardRoute />
       </Route>
 
