@@ -17,6 +17,17 @@ import useUserSync from "./hooks/useUserSync";
 import LoginPage from "./pages/LoginPage";
 import GuestDashboard from "./pages/GuestDashboard";
 
+function GuestDashboardRoute() {
+  const { isClerkLoaded, isSignedIn } = useAuthReq();
+  if (!isClerkLoaded) return null;
+  if (!isSignedIn) return <Redirect to="/pamik-sign-in" />;
+  return (
+    <Layout>
+      <GuestDashboard />
+    </Layout>
+  );
+}
+
 function Router() {
   return (
     <Switch>
@@ -61,9 +72,7 @@ function Router() {
         </Layout>
       </Route>
       <Route path="/guest-dashboard">
-        <Layout>
-          <GuestDashboard />
-        </Layout>
+        <GuestDashboardRoute />
       </Route>
 
       {/* Dashboard group */}
