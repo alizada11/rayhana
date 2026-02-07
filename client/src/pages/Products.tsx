@@ -263,7 +263,7 @@ function ProductCard({
         </motion.div>
       </DialogTrigger>
 
-      <DialogContent className="max-w-3xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className="max-w-5xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="font-serif text-2xl font-bold text-primary">
             {localize(product.title)}
@@ -281,7 +281,7 @@ function ProductCard({
               />
             </div>
 
-            <div className="flex items-center justify-between p-4 bg-secondary/30 rounded-xl">
+            <div className="flex items-center flex-col justify-between p-4 bg-secondary/30 rounded-xl">
               <span className="text-2xl font-bold text-primary">
                 {currentPrice !== undefined
                   ? `${isRTL ? "" : "$"}${currentPrice}${isRTL ? " تومان" : ""}`

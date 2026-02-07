@@ -7,6 +7,7 @@ import { clerkMiddleware } from "@clerk/express";
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
 import commentRoutes from "./routes/commentRoutes";
+import galleryRoutes from "./routes/galleryRoutes";
 
 const app = exprss();
 app.use(cors({ origin: ENV.FRONTEND_URL, credentials: true }));
@@ -22,6 +23,7 @@ app.get("/", (req, res) => {
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
 app.use("/api/comments", commentRoutes);
+app.use("/api/gallery", galleryRoutes);
 
 app.listen(ENV.PORT, () =>
   console.log("Server is up and running on port:", ENV.PORT)

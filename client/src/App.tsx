@@ -15,6 +15,7 @@ import Contact from "./pages/Contact";
 import useAuthReq from "./hooks/useAuthReq";
 import useUserSync from "./hooks/useUserSync";
 import LoginPage from "./pages/LoginPage";
+import GuestDashboard from "./pages/GuestDashboard";
 
 function Router() {
   return (
@@ -57,6 +58,11 @@ function Router() {
       <Route path="/pamik-sign-in">
         <Layout>
           <LoginPage />
+        </Layout>
+      </Route>
+      <Route path="/guest-dashboard">
+        <Layout>
+          <GuestDashboard />
         </Layout>
       </Route>
 
