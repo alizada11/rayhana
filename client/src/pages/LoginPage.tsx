@@ -141,7 +141,7 @@ function LoginPage() {
                           )}
                           {me?.role === "guest" && (
                             <Link
-                              to="/guest-dashboard"
+                              to="/my-submissions"
                               className="block bg-primary/10 hover:bg-primary/20 text-primary font-semibold py-3 px-4 rounded-lg transition-all duration-300 text-center"
                             >
                               {t("login_page.guest_dashboard", "My Photos")}
