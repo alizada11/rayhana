@@ -23,7 +23,7 @@ import { DialogTitle } from "@radix-ui/react-dialog";
 export default function DashboardGallery() {
   const { data: submissions = [], isLoading } = useAllGallery();
   const approveMutation = useApproveGallerySubmission();
-  const rejectMutation = useApproveGallerySubmission();
+  const rejectMutation = useRejectGallerySubmission();
   const deleteMutation = useDeleteGallerySubmission();
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
   const [statusFilter, setStatusFilter] = useState<
@@ -99,7 +99,10 @@ export default function DashboardGallery() {
           ].map(({ key, label, icon }) => (
             <button
               key={key}
-              onClick={() => setStatusFilter(key as any)}
+              onClick={() => {
+                setStatusFilter(key as any);
+                setPage(1);
+              }}
               className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all flex items-center gap-1.5 ${
                 statusFilter === key
                   ? "bg-gray-900 text-white border-gray-900"

@@ -57,6 +57,7 @@ export const useCreateGallerySubmission = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gallery", "approved"] });
       queryClient.invalidateQueries({ queryKey: ["gallery", "admin"] });
+      queryClient.invalidateQueries({ queryKey: ["gallery", "my"] });
     },
   });
 };
