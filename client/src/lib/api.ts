@@ -12,6 +12,44 @@ export interface CommentData {
   content: string;
 }
 
+export type BlogPostData = FormData;
+
+export interface BlogListParams {
+  page?: number;
+  limit?: number;
+  featured?: boolean;
+  status?: "draft" | "published";
+}
+
+export interface UpdateBlogPostParams {
+  id: string | number;
+  data: FormData;
+}
+
+export interface BlogCommentData {
+  blogId: string | number;
+  content: string;
+}
+
+export interface UpdateBlogCommentParams {
+  blogId: string | number;
+  commentId: string | number;
+  content: string;
+}
+
+export interface DeleteBlogCommentParams {
+  blogId: string | number;
+  commentId: string | number;
+}
+
+export interface SiteContentPayload {
+  [key: string]: any;
+}
+
+export interface MediaUploadPayload {
+  file: File;
+}
+
 export interface UpdateProductParams {
   id: string | number;
   data: FormData;
@@ -120,6 +158,113 @@ export const updateProduct = async ({
 
 export const deleteProduct = async (id: string | number) => {
   const { data } = await api.delete(`/products/${id}`);
+  return data;
+};
+
+// ---------- BLOG API ----------
+export const getBlogPosts = async (params: BlogListParams = {}) => {
+  const searchParams = new URLSearchParams();
+  if (params.page) searchParams.set("page", String(params.page));
+  if (params.limit) searchParams.set("limit", String(params.limit));
+  if (params.featured !== undefined) {
+    searchParams.set("featured", params.featured ? "1" : "0");
+  }
+  if (params.status) searchParams.set("status", params.status);
+
+  const query = searchParams.toString();
+  const { data } = await api.get(`/blogs${query ? `?${query}` : ""}`);
+  return data;
+};
+
+export const getBlogPostBySlug = async (slug: string | number) => {
+  const { data } = await api.get(`/blogs/${slug}`);
+  return data;
+};
+
+export const createBlogPost = async (payload: BlogPostData) => {
+  const { data } = await api.post("/blogs", payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
+
+export const updateBlogPost = async ({
+  id,
+  data: blogData,
+}: UpdateBlogPostParams) => {
+  const { data } = await api.put(`/blogs/${id}`, blogData, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
+
+export const deleteBlogPost = async (id: string | number) => {
+  const { data } = await api.delete(`/blogs/${id}`);
+  return data;
+};
+
+export const getBlogComments = async (blogId: string | number) => {
+  const { data } = await api.get(`/blogs/${blogId}/comments`);
+  return data;
+};
+
+export const createBlogComment = async ({ blogId, content }: BlogCommentData) => {
+  const { data } = await api.post(`/blogs/${blogId}/comments`, { content });
+  return data;
+};
+
+export const updateBlogComment = async ({
+  blogId,
+  commentId,
+  content,
+}: UpdateBlogCommentParams) => {
+  const { data } = await api.put(`/blogs/${blogId}/comments/${commentId}`, {
+    content,
+  });
+  return data;
+};
+
+export const deleteBlogComment = async ({
+  blogId,
+  commentId,
+}: DeleteBlogCommentParams) => {
+  const { data } = await api.delete(`/blogs/${blogId}/comments/${commentId}`);
+  return data;
+};
+
+// ---------- SITE CONTENT API ----------
+export const getContentByKey = async (key: string) => {
+  const { data } = await api.get(`/content/${key}`);
+  return data;
+};
+
+export const upsertContent = async (key: string, payload: SiteContentPayload) => {
+  const { data } = await api.put(`/content/${key}`, payload);
+  return data;
+};
+
+export const getAllContent = async () => {
+  const { data } = await api.get("/content");
+  return data;
+};
+
+// ---------- MEDIA API ----------
+export const uploadMedia = async ({ file }: MediaUploadPayload) => {
+  const payload = new FormData();
+  payload.append("file", file);
+  const { data } = await api.post("/media", payload, {
+    headers: { "Content-Type": "multipart/form-data" },
+  });
+  return data;
+};
+
+export const getMedia = async () => {
+  const { data } = await api.get("/media");
+  return data;
+};
+
+export const deleteMedia = async (id: string | number) => {
+  const { data } = await api.delete(`/media/${id}`);
   return data;
 };
 

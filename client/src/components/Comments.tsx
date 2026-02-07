@@ -1,21 +1,21 @@
-import { useState, useEffect } from 'react';
-import { useTranslation } from 'react-i18next';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Textarea } from '@/components/ui/textarea';
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { MessageSquare, User, Send } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
-
-interface Comment {
-  id: string;
-  name: string;
-  email: string;
-  message: string;
-  date: string;
-  avatar?: string;
-}
+import { useState } from "react";
+import { useTranslation } from "react-i18next";
+import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { MessageSquare, User, Send, Pencil, Trash2 } from "lucide-react";
+import { motion, AnimatePresence } from "framer-motion";
+import {
+  useBlogComments,
+  useCreateBlogComment,
+  useDeleteBlogComment,
+  useUpdateBlogComment,
+} from "@/hooks/useBlogs";
+import { useAuth, useUser } from "@clerk/clerk-react";
+import { useUserRole } from "@/hooks/useUserRole";
+import { toast } from "sonner";
+import { useLocation } from "wouter";
 
 interface CommentsProps {
   postId: string;
@@ -23,72 +23,82 @@ interface CommentsProps {
 
 export default function Comments({ postId }: CommentsProps) {
   const { t, i18n } = useTranslation();
-  const isRTL = ['fa', 'ps'].includes(i18n.language);
-  
-  const [comments, setComments] = useState<Comment[]>([]);
-  const [name, setName] = useState('');
-  const [email, setEmail] = useState('');
-  const [message, setMessage] = useState('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const isRTL = ["fa", "ps"].includes(i18n.language);
+  const { isSignedIn, userId } = useAuth();
+  const { user } = useUser();
+  const { data: me } = useUserRole();
+  const [, setLocation] = useLocation();
+
+  const { data: comments = [], isLoading } = useBlogComments(postId);
+  const createMutation = useCreateBlogComment();
+  const updateMutation = useUpdateBlogComment();
+  const deleteMutation = useDeleteBlogComment();
+
+  const [message, setMessage] = useState("");
+  const [editingId, setEditingId] = useState<string | null>(null);
+  const [editingMessage, setEditingMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
 
-  // Load comments from localStorage on mount
-  useEffect(() => {
-    const savedComments = localStorage.getItem(`comments-${postId}`);
-    if (savedComments) {
-      setComments(JSON.parse(savedComments));
-    } else {
-      // Add some dummy comments for demonstration
-      setComments([
-        {
-          id: '1',
-          name: 'Sarah M.',
-          email: 'sarah@example.com',
-          message: 'I tried this recipe last weekend and it was amazing! The pot really makes a difference.',
-          date: '2025-01-15',
-          avatar: 'https://i.pravatar.cc/150?u=sarah'
-        },
-        {
-          id: '2',
-          name: 'Ahmad K.',
-          email: 'ahmad@example.com',
-          message: 'Authentic taste just like my grandmother used to make. Thank you Rayhana!',
-          date: '2025-01-18',
-          avatar: 'https://i.pravatar.cc/150?u=ahmad'
-        }
-      ]);
-    }
-  }, [postId]);
+  const canManage = (comment: any) =>
+    me?.role === "admin" || (userId && comment.userId === userId);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!name || !email || !message) return;
+    if (!message.trim()) return;
 
-    setIsSubmitting(true);
+    if (!isSignedIn) {
+      setLocation("/pamik-sign-in");
+      return;
+    }
 
-    // Simulate API delay
-    setTimeout(() => {
-      const newComment: Comment = {
-        id: Date.now().toString(),
-        name,
-        email,
-        message,
-        date: new Date().toISOString().split('T')[0],
-        avatar: `https://i.pravatar.cc/150?u=${name}`
-      };
+    createMutation.mutate(
+      { blogId: postId, content: message.trim() },
+      {
+        onSuccess: () => {
+          setMessage("");
+          setShowSuccess(true);
+          setTimeout(() => setShowSuccess(false), 2500);
+        },
+        onError: () => {
+          toast.error(
+            isRTL ? "ارسال نظر ناموفق بود" : "Failed to submit comment"
+          );
+        },
+      }
+    );
+  };
 
-      const updatedComments = [newComment, ...comments];
-      setComments(updatedComments);
-      localStorage.setItem(`comments-${postId}`, JSON.stringify(updatedComments));
+  const handleEdit = (comment: any) => {
+    setEditingId(String(comment.id));
+    setEditingMessage(comment.content || "");
+  };
 
-      setName('');
-      setEmail('');
-      setMessage('');
-      setIsSubmitting(false);
-      setShowSuccess(true);
+  const handleUpdate = (commentId: string) => {
+    if (!editingMessage.trim()) return;
+    updateMutation.mutate(
+      { blogId: postId, commentId, content: editingMessage.trim() },
+      {
+        onSuccess: () => {
+          setEditingId(null);
+          setEditingMessage("");
+        },
+        onError: () => {
+          toast.error(isRTL ? "ویرایش ناموفق بود" : "Update failed");
+        },
+      }
+    );
+  };
 
-      setTimeout(() => setShowSuccess(false), 3000);
-    }, 1000);
+  const handleDelete = (commentId: string) => {
+    if (!confirm("Delete this comment?")) return;
+    deleteMutation.mutate(
+      { blogId: postId, commentId },
+      {
+        onError: () => {
+          toast.error(isRTL ? "حذف ناموفق بود" : "Delete failed");
+        },
+      }
+    );
   };
 
   return (
@@ -97,70 +107,68 @@ export default function Comments({ postId }: CommentsProps) {
         <CardHeader className="px-0">
           <CardTitle className="text-2xl font-serif flex items-center gap-2">
             <MessageSquare className="w-6 h-6 text-primary" />
-            {t('comments.title', 'Comments')} ({comments.length})
+            {t("comments.title", "Comments")} ({comments.length})
           </CardTitle>
         </CardHeader>
         <CardContent className="px-0">
           {/* Comment Form */}
-          <form onSubmit={handleSubmit} className="mb-12 bg-card p-6 rounded-xl border shadow-sm">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-              <div className="space-y-2">
-                <label htmlFor="name" className="text-sm font-medium text-muted-foreground">
-                  {t('comments.name', 'Name')}
-                </label>
-                <Input
-                  id="name"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder={t('comments.name', 'Name')}
-                  required
-                  className="bg-background"
-                />
-              </div>
-              <div className="space-y-2">
-                <label htmlFor="email" className="text-sm font-medium text-muted-foreground">
-                  {t('comments.email', 'Email')}
-                </label>
-                <Input
-                  id="email"
-                  type="email"
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  placeholder={t('comments.email', 'Email')}
-                  required
-                  className="bg-background"
-                />
+          <form
+            onSubmit={handleSubmit}
+            className="mb-12 bg-card p-6 rounded-xl border shadow-sm"
+          >
+            <div className="flex items-center gap-3 mb-4">
+              <Avatar className="w-10 h-10 border-2 border-background">
+                <AvatarImage src={user?.imageUrl} />
+                <AvatarFallback>
+                  <User className="w-5 h-5" />
+                </AvatarFallback>
+              </Avatar>
+              <div>
+                <p className="text-sm font-medium">
+                  {user?.fullName ||
+                    user?.username ||
+                    t("comments.guest", "Guest")}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {isSignedIn
+                    ? t("comments.signedIn", "Signed in")
+                    : t("comments.signInToComment", "Sign in to comment")}
+                </p>
               </div>
             </div>
+
             <div className="space-y-2 mb-4">
-              <label htmlFor="message" className="text-sm font-medium text-muted-foreground">
-                {t('comments.message', 'Message')}
+              <label
+                htmlFor="message"
+                className="text-sm font-medium text-muted-foreground"
+              >
+                {t("comments.message", "Message")}
               </label>
               <Textarea
                 id="message"
                 value={message}
-                onChange={(e) => setMessage(e.target.value)}
-                placeholder={t('comments.message', 'Message')}
+                onChange={e => setMessage(e.target.value)}
+                placeholder={t("comments.message", "Message")}
                 required
                 className="min-h-[100px] bg-background"
               />
             </div>
             <div className="flex items-center justify-between">
-              <Button 
-                type="submit" 
-                disabled={isSubmitting}
+              <Button
+                type="submit"
+                disabled={createMutation.isPending}
                 className="bg-primary text-primary-foreground hover:bg-primary/90"
               >
-                {isSubmitting ? (
+                {createMutation.isPending ? (
                   <span className="animate-pulse">...</span>
                 ) : (
                   <>
-                    <Send className={`w-4 h-4 ${isRTL ? 'ml-2' : 'mr-2'}`} />
-                    {t('comments.submit', 'Post Comment')}
+                    <Send className={`w-4 h-4 ${isRTL ? "ml-2" : "mr-2"}`} />
+                    {t("comments.submit", "Post Comment")}
                   </>
                 )}
               </Button>
-              
+
               <AnimatePresence>
                 {showSuccess && (
                   <motion.span
@@ -169,7 +177,7 @@ export default function Comments({ postId }: CommentsProps) {
                     exit={{ opacity: 0 }}
                     className="text-green-600 text-sm font-medium"
                   >
-                    {t('comments.success', 'Comment submitted successfully!')}
+                    {t("comments.success", "Comment submitted successfully!")}
                   </motion.span>
                 )}
               </AnimatePresence>
@@ -178,12 +186,20 @@ export default function Comments({ postId }: CommentsProps) {
 
           {/* Comments List */}
           <div className="space-y-6">
-            {comments.length === 0 ? (
+            {isLoading && (
               <p className="text-center text-muted-foreground py-8">
-                {t('comments.noComments', 'No comments yet. Be the first to share your thoughts!')}
+                {t("comments.loading", "Loading comments...")}
+              </p>
+            )}
+            {!isLoading && comments.length === 0 ? (
+              <p className="text-center text-muted-foreground py-8">
+                {t(
+                  "comments.noComments",
+                  "No comments yet. Be the first to share your thoughts!"
+                )}
               </p>
             ) : (
-              comments.map((comment) => (
+              comments.map(comment => (
                 <motion.div
                   key={comment.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -191,18 +207,80 @@ export default function Comments({ postId }: CommentsProps) {
                   className="flex gap-4 p-4 rounded-lg bg-muted/30"
                 >
                   <Avatar className="w-10 h-10 border-2 border-background">
-                    <AvatarImage src={comment.avatar} />
-                    <AvatarFallback><User className="w-5 h-5" /></AvatarFallback>
+                    <AvatarImage src={comment.user?.imageUrl} />
+                    <AvatarFallback>
+                      <User className="w-5 h-5" />
+                    </AvatarFallback>
                   </Avatar>
                   <div className="flex-1">
                     <div className="flex items-center justify-between mb-1">
-                      <h4 className="font-bold text-sm">{comment.name}</h4>
-                      <span className="text-xs text-muted-foreground">{comment.date}</span>
+                      <h4 className="font-bold text-sm">
+                        {comment.user?.name || comment.user?.username || "User"}
+                      </h4>
+                      <span className="text-xs text-muted-foreground">
+                        {comment.createdAt
+                          ? new Date(comment.createdAt).toLocaleDateString()
+                          : ""}
+                      </span>
                     </div>
-                    <p className="text-sm text-muted-foreground leading-relaxed">
-                      {comment.message}
-                    </p>
+
+                    {editingId === String(comment.id) ? (
+                      <div className="space-y-2">
+                        <Textarea
+                          value={editingMessage}
+                          onChange={e => setEditingMessage(e.target.value)}
+                          className="min-h-[80px] bg-background"
+                        />
+                        <div className="flex gap-2">
+                          <Button
+                            type="button"
+                            size="sm"
+                            onClick={() => handleUpdate(String(comment.id))}
+                            disabled={updateMutation.isPending}
+                          >
+                            Save
+                          </Button>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={() => {
+                              setEditingId(null);
+                              setEditingMessage("");
+                            }}
+                          >
+                            Cancel
+                          </Button>
+                        </div>
+                      </div>
+                    ) : (
+                      <p className="text-sm text-muted-foreground leading-relaxed">
+                        {comment.content}
+                      </p>
+                    )}
                   </div>
+                  {canManage(comment) && editingId !== String(comment.id) && (
+                    <div className="flex items-start gap-2">
+                      <button
+                        type="button"
+                        aria-label="Edit"
+                        onClick={() => handleEdit(comment)}
+                        className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                        title="Edit"
+                      >
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      <button
+                        type="button"
+                        aria-label="Delete"
+                        onClick={() => handleDelete(String(comment.id))}
+                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
+                      </button>
+                    </div>
+                  )}
                 </motion.div>
               ))
             )}

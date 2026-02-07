@@ -4,6 +4,7 @@ import { Link, useLocation } from "wouter";
 import { Menu, X, Globe, Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
+import { useContent } from "@/hooks/useContent";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import {
@@ -19,6 +20,7 @@ interface LayoutProps {
 
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
+  const { data: settingsContent } = useContent("settings");
   const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -46,13 +48,28 @@ export default function Layout({ children }: LayoutProps) {
     setTheme(theme === "dark" ? "light" : "dark");
   };
 
-  const navItems = [
-    { href: "/", label: t("nav.home") },
-    { href: "/products", label: t("nav.products") },
-    { href: "/about", label: t("nav.about") },
-    { href: "/blog", label: t("nav.blog") },
-    { href: "/contact", label: t("nav.contact") },
-  ];
+  const navItems = Array.isArray(settingsContent?.data?.nav)
+    ? settingsContent.data.nav
+    : [
+        { href: "/", label: t("nav.home") },
+        { href: "/products", label: t("nav.products") },
+        { href: "/about", label: t("nav.about") },
+        { href: "/blog", label: t("nav.blog") },
+        { href: "/contact", label: t("nav.contact") },
+      ];
+  const footerLinks = Array.isArray(settingsContent?.data?.footerLinks)
+    ? settingsContent.data.footerLinks
+    : [
+        { href: "/privacy", label: "Privacy Policy" },
+        { href: "/terms", label: "Terms of Service" },
+        { href: "/help", label: "Help Center" },
+      ];
+  const socialLinks = Array.isArray(settingsContent?.data?.social)
+    ? settingsContent.data.social
+    : [
+        { href: "https://www.instagram.com", label: "Instagram" },
+        { href: "https://www.facebook.com", label: "Facebook" },
+      ];
 
   return (
     <div
@@ -65,26 +82,27 @@ export default function Layout({ children }: LayoutProps) {
       <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
-          <Link href="/">
-            <a className="flex items-center gap-2 font-serif text-2xl font-bold text-primary">
-              <span className="hidden sm:inline">RAYHANA</span>
-            </a>
+          <Link
+            href="/"
+            className="flex items-center gap-2 font-serif text-2xl font-bold text-primary"
+          >
+            <span className="hidden sm:inline">RAYHANA</span>
           </Link>
 
           {/* Desktop Navigation */}
           <nav className="hidden md:flex items-center gap-6">
             {navItems.map(item => (
-              <Link key={item.href} href={item.href}>
-                <a
-                  className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary",
-                    location === item.href
-                      ? "text-primary"
-                      : "text-muted-foreground"
-                  )}
-                >
-                  {item.label}
-                </a>
+              <Link
+                key={item.href}
+                href={item.href}
+                className={cn(
+                  "text-sm font-medium transition-colors hover:text-primary",
+                  location === item.href
+                    ? "text-primary"
+                    : "text-muted-foreground"
+                )}
+              >
+                {item.label}
               </Link>
             ))}
           </nav>
@@ -161,18 +179,18 @@ export default function Layout({ children }: LayoutProps) {
           <div className="md:hidden border-t bg-background">
             <div className="container py-4 flex flex-col gap-4">
               {navItems.map(item => (
-                <Link key={item.href} href={item.href}>
-                  <a
-                    className={cn(
-                      "text-sm font-medium transition-colors hover:text-primary p-2 rounded-md hover:bg-muted",
-                      location === item.href
-                        ? "text-primary bg-muted"
-                        : "text-foreground"
-                    )}
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {item.label}
-                  </a>
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors hover:text-primary p-2 rounded-md hover:bg-muted",
+                    location === item.href
+                      ? "text-primary bg-muted"
+                      : "text-foreground"
+                  )}
+                  onClick={() => setIsMenuOpen(false)}
+                >
+                  {item.label}
                 </Link>
               ))}
             </div>
@@ -198,9 +216,16 @@ export default function Layout({ children }: LayoutProps) {
             <div>
               <h4 className="font-bold mb-4">{t("nav.products")}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>Cookware Sets</li>
-                <li>Smart Pots</li>
-                <li>Kitchen Tools</li>
+                {footerLinks.map((item: any, idx: number) => (
+                  <li key={`${item.href}-${idx}`}>
+                    <Link
+                      href={item.href}
+                      className="hover:text-primary transition-colors"
+                    >
+                      {item.label}
+                    </Link>
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
@@ -209,22 +234,17 @@ export default function Layout({ children }: LayoutProps) {
                 <li>info@rayhana.com</li>
                 <li dir="ltr">+86 13867932870</li>
                 <li className="flex gap-4 mt-4">
-                  <a
-                    href="https://www.instagram.com/rayhanafamily?igsh=Z2pmOWtlOXE2NTR6&utm_source=qr"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary"
-                  >
-                    Instagram
-                  </a>
-                  <a
-                    href="https://www.facebook.com/profile.php?id=61583243074253"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="hover:text-primary"
-                  >
-                    Facebook
-                  </a>
+                  {socialLinks.map((item: any, idx: number) => (
+                    <a
+                      key={`${item.href}-${idx}`}
+                      href={item.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="hover:text-primary"
+                    >
+                      {item.label}
+                    </a>
+                  ))}
                 </li>
               </ul>
             </div>
