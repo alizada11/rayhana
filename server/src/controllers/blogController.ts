@@ -34,6 +34,17 @@ const isAdminUser = async (userId: string) => {
   return user?.role === "admin";
 };
 
+const uploadsBase = path.resolve(process.cwd(), "uploads");
+
+const safeUnlinkUpload = (url?: string) => {
+  if (!url || !url.startsWith("/uploads/")) return;
+  const relativePath = url.replace(/^\/uploads\//, "");
+  if (!relativePath) return;
+  const candidatePath = path.resolve(uploadsBase, relativePath);
+  if (!candidatePath.startsWith(uploadsBase + path.sep)) return;
+  if (fs.existsSync(candidatePath)) fs.unlinkSync(candidatePath);
+};
+
 // -------------------------
 // GET ALL BLOG POSTS (public)
 // -------------------------
@@ -110,8 +121,7 @@ export const createBlogPost = async (req: Request, res: Response) => {
       authorName,
       status,
       featured,
-    } =
-      req.body;
+    } = req.body;
 
     const uploadedImageUrl = req.file
       ? `/uploads/${req.file.filename}`
@@ -126,7 +136,8 @@ export const createBlogPost = async (req: Request, res: Response) => {
     if (!isValidStatus(status)) {
       return res.status(400).json({ error: "Invalid status value" });
     }
-
+    const hasLocaleValue = (value?: Record<string, string>) =>
+      !!value && Object.values(value).some(v => v?.trim());
     const parsedTitle = parseJSON<Record<string, string>>(title, {
       en: "",
       fa: "",
@@ -142,7 +153,13 @@ export const createBlogPost = async (req: Request, res: Response) => {
       fa: "",
       ps: "",
     });
-
+    if (
+      !hasLocaleValue(parsedTitle) ||
+      !hasLocaleValue(parsedExcerpt) ||
+      !hasLocaleValue(parsedContent)
+    ) {
+      return res.status(400).json({ error: "Invalid localized content" });
+    }
     const baseSlug = slugify(
       typeof slug === "string" && slug.trim()
         ? slug
@@ -199,8 +216,7 @@ export const updateBlogPost = async (req: Request, res: Response) => {
       authorName,
       status,
       featured,
-    } =
-      req.body;
+    } = req.body;
 
     if (!isValidStatus(status)) {
       return res.status(400).json({ error: "Invalid status value" });
@@ -223,10 +239,7 @@ export const updateBlogPost = async (req: Request, res: Response) => {
       (uploadedImageUrl || isExternalImageUrl) &&
       existingPost.imageUrl?.startsWith("/uploads/")
     ) {
-      const oldPath = path.join(process.cwd(), existingPost.imageUrl);
-      if (fs.existsSync(oldPath)) {
-        fs.unlinkSync(oldPath);
-      }
+      safeUnlinkUpload(existingPost.imageUrl);
     }
 
     let nextSlug: string | undefined;
@@ -307,8 +320,7 @@ export const deleteBlogPost = async (req: Request, res: Response) => {
     if (!deleted) return res.status(404).json({ error: "Not found" });
 
     if (deleted.imageUrl?.startsWith("/uploads/")) {
-      const imgPath = path.join(process.cwd(), deleted.imageUrl);
-      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+      safeUnlinkUpload(deleted.imageUrl);
     }
 
     res.status(200).json({ message: "Blog post deleted successfully" });

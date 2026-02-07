@@ -18,16 +18,18 @@ const getImageSize = async (filePath: string) => {
     }
     if (buffer.length > 10 && buffer[0] === 0xff && buffer[1] === 0xd8) {
       let offset = 2;
-      while (offset < buffer.length) {
+      while (offset + 4 <= buffer.length) {
         const marker = buffer.readUInt16BE(offset);
         offset += 2;
         const size = buffer.readUInt16BE(offset);
         if (marker >= 0xffc0 && marker <= 0xffcf && marker !== 0xffc4) {
+          if (offset + 5 > buffer.length) break;
           offset += 3;
           const height = buffer.readUInt16BE(offset);
           const width = buffer.readUInt16BE(offset + 2);
           return { width, height };
         }
+        if (offset + size > buffer.length) break;
         offset += size;
       }
     }

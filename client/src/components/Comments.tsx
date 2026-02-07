@@ -125,7 +125,9 @@ export default function Comments({ postId }: CommentsProps) {
               </Avatar>
               <div>
                 <p className="text-sm font-medium">
-                  {user?.fullName || user?.username || t("comments.guest", "Guest")}
+                  {user?.fullName ||
+                    user?.username ||
+                    t("comments.guest", "Guest")}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {isSignedIn
@@ -261,6 +263,7 @@ export default function Comments({ postId }: CommentsProps) {
                     <div className="flex items-start gap-2">
                       <button
                         type="button"
+                        aria-label="Edit"
                         onClick={() => handleEdit(comment)}
                         className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
                         title="Edit"
@@ -269,6 +272,7 @@ export default function Comments({ postId }: CommentsProps) {
                       </button>
                       <button
                         type="button"
+                        aria-label="Delete"
                         onClick={() => handleDelete(String(comment.id))}
                         className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                         title="Delete"

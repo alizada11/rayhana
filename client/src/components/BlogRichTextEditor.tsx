@@ -114,7 +114,10 @@ export default function BlogRichTextEditor({
   const compressImage = async (file: File) => {
     const imageBitmap = await createImageBitmap(file);
     const maxDim = 1600;
-    const scale = Math.min(1, maxDim / Math.max(imageBitmap.width, imageBitmap.height));
+    const scale = Math.min(
+      1,
+      maxDim / Math.max(imageBitmap.width, imageBitmap.height)
+    );
     const targetW = Math.round(imageBitmap.width * scale);
     const targetH = Math.round(imageBitmap.height * scale);
 
@@ -140,15 +143,16 @@ export default function BlogRichTextEditor({
       alert("Please select an image file.");
       return;
     }
-    const payload = new FormData();
-    const compressed = await compressImage(file);
-    if (compressed.size > maxImageBytes) {
-      alert("Image is too large. Please use an image under 5MB.");
-      return;
-    }
-    payload.append("image", compressed);
-    setIsUploading(true);
+
     try {
+      setIsUploading(true);
+      const compressed = await compressImage(file);
+      if (compressed.size > maxImageBytes) {
+        alert("Image is too large. Please use an image under 5MB.");
+        return;
+      }
+      const payload = new FormData();
+      payload.append("image", compressed);
       const { data } = await api.post("/blogs/uploads", payload, {
         headers: { "Content-Type": "multipart/form-data" },
       });
@@ -185,10 +189,10 @@ export default function BlogRichTextEditor({
     const current = getImageStyle();
     const filtered = current
       .split(";")
-      .map(s => s.trim())
+      .map((s: string) => s.trim())
       .filter(Boolean)
       .filter(
-        s =>
+        (s: string) =>
           !s.startsWith("width:") &&
           !s.startsWith("max-width:") &&
           !s.startsWith("margin-left:") &&
@@ -205,7 +209,11 @@ export default function BlogRichTextEditor({
     } else if (align === "right") {
       mergeImageStyle(["display:block", "margin-left:auto", "margin-right:0"]);
     } else {
-      mergeImageStyle(["display:block", "margin-left:auto", "margin-right:auto"]);
+      mergeImageStyle([
+        "display:block",
+        "margin-left:auto",
+        "margin-right:auto",
+      ]);
     }
   };
 
@@ -236,7 +244,9 @@ export default function BlogRichTextEditor({
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
           className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("italic") ? "bg-white text-primary" : "text-gray-600"
+            editor.isActive("italic")
+              ? "bg-white text-primary"
+              : "text-gray-600"
           }`}
           title="Italic"
         >
@@ -246,7 +256,9 @@ export default function BlogRichTextEditor({
           type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
           className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("strike") ? "bg-white text-primary" : "text-gray-600"
+            editor.isActive("strike")
+              ? "bg-white text-primary"
+              : "text-gray-600"
           }`}
           title="Strike"
         >
@@ -255,7 +267,9 @@ export default function BlogRichTextEditor({
         <div className="w-px bg-gray-200 mx-1" />
         <button
           type="button"
-          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 2 }).run()
+          }
           className={`p-2 rounded-md hover:bg-white ${
             editor.isActive("heading", { level: 2 })
               ? "bg-white text-primary"
