@@ -113,7 +113,8 @@ export default function BlogPost() {
       {/* Content */}
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
-          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via DOMPurify */}
+          // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via
+          DOMPurify
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
@@ -121,7 +122,6 @@ export default function BlogPost() {
             className="prose prose-lg dark:prose-invert max-w-none font-sans"
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
-
           <div className="mt-16 pt-8 border-t border-border">
             <h3 className="text-2xl font-serif font-bold mb-6 text-center">
               {t("blog.cookWithUs", "Ready to cook authentic Qabili Pulao?")}
@@ -137,7 +137,6 @@ export default function BlogPost() {
               </Link>
             </div>
           </div>
-
           {/* Comments Section */}
           <Comments postId={String(post.id)} />
         </div>
