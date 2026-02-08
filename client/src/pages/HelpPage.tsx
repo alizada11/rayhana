@@ -60,6 +60,7 @@ export default function HelpPage() {
         </p>
 
         <div className="mt-8 bg-card border rounded-2xl p-6">
+          // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
           <div
             className="text-foreground prose prose-sm max-w-none"
             dangerouslySetInnerHTML={{
@@ -75,6 +76,7 @@ export default function HelpPage() {
             <h2 className="text-xl font-semibold text-foreground">
               {t("help.stepByStep", "Step-by-step")}
             </h2>
+            // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
             <div
               className="mt-3 text-muted-foreground prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{
@@ -89,6 +91,7 @@ export default function HelpPage() {
             <h2 className="text-xl font-semibold text-foreground">
               {t("help.tips", "Tips")}
             </h2>
+            // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
             <div
               className="mt-3 text-muted-foreground prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{

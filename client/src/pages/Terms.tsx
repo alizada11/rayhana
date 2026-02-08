@@ -39,6 +39,7 @@ export default function Terms() {
           </p>
         </div>
 
+        // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
         <div
           className="prose prose-lg dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{ __html: sanitizedIntro }}
@@ -47,7 +48,7 @@ export default function Terms() {
         <div className="mt-8 space-y-6">
           {sections.map((section: any, index: number) => (
             <section
-              key={section.title}
+              key={`section-${index}`}
               className="bg-card border rounded-xl p-6"
             >
               <h2
@@ -57,6 +58,7 @@ export default function Terms() {
               >
                 {getLocalized(section.title, `Section ${index + 1}`)}
               </h2>
+              // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
               <div
                 className="text-muted-foreground mt-2 prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{
