@@ -113,7 +113,7 @@ export default function BlogPost() {
       {/* Content */}
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
-          {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
+          {/* biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via DOMPurify */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

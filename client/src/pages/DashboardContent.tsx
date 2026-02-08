@@ -314,15 +314,21 @@ export default function DashboardContent() {
 
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Featured Product</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                className="border rounded-lg px-3 py-2"
-                placeholder="Title"
-                value={formData.featuredProduct?.title?.[activeLang] || ""}
-                onChange={e =>
-                  updateLangField(["featuredProduct", "title"], e.target.value)
-                }
-              />
+            <div className="grid md:grid-cols-2 gap-4 items-start">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-gray-500">Title</label>
+                <input
+                  className="border rounded-lg px-3 py-2"
+                  placeholder="Title"
+                  value={formData.featuredProduct?.title?.[activeLang] || ""}
+                  onChange={e =>
+                    updateLangField(
+                      ["featuredProduct", "title"],
+                      e.target.value
+                    )
+                  }
+                />
+              </div>
               <div>
                 <label className="text-xs text-gray-500">Description</label>
                 <BlogRichTextEditor
@@ -355,15 +361,23 @@ export default function DashboardContent() {
             </div>
             <div className="grid md:grid-cols-2 gap-4">
               {formData.featuredProduct?.bullets?.map(
-                (item: string, idx: number) => (
+                (item: any, idx: number) => (
                   <input
                     key={idx}
                     className="border rounded-lg px-3 py-2"
                     placeholder={`Bullet ${idx + 1}`}
-                    value={item}
+                    value={item?.text?.[activeLang] || ""}
                     onChange={e => {
                       const next = [...formData.featuredProduct.bullets];
-                      next[idx] = e.target.value;
+                      const current = next[idx] || {};
+                      const text =
+                        current.text && typeof current.text === "object"
+                          ? { ...current.text }
+                          : { en: "", fa: "", ps: "" };
+                      next[idx] = {
+                        ...current,
+                        text: { ...text, [activeLang]: e.target.value },
+                      };
                       updateField(["featuredProduct", "bullets"], next);
                     }}
                   />
@@ -374,15 +388,18 @@ export default function DashboardContent() {
 
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Story</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                className="border rounded-lg px-3 py-2"
-                placeholder="Title"
-                value={formData.story?.title?.[activeLang] || ""}
-                onChange={e =>
-                  updateLangField(["story", "title"], e.target.value)
-                }
-              />
+            <div className="grid md:grid-cols-2 gap-4 items-start">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-gray-500">title</label>
+                <input
+                  className="border rounded-lg px-3 py-2"
+                  placeholder="Title"
+                  value={formData.story?.title?.[activeLang] || ""}
+                  onChange={e =>
+                    updateLangField(["story", "title"], e.target.value)
+                  }
+                />
+              </div>
               <div>
                 <label className="text-xs text-gray-500">Body</label>
                 <BlogRichTextEditor
@@ -427,20 +444,36 @@ export default function DashboardContent() {
                   <input
                     className="border rounded-lg px-3 py-2 w-full"
                     placeholder={`Title ${idx + 1}`}
-                    value={item.title || ""}
+                    value={item?.title?.[activeLang] || ""}
                     onChange={e => {
                       const next = structuredClone(formData.values);
-                      next[idx] = { ...next[idx], title: e.target.value };
+                      const current = next[idx] || {};
+                      const title =
+                        current.title && typeof current.title === "object"
+                          ? { ...current.title }
+                          : { en: "", fa: "", ps: "" };
+                      next[idx] = {
+                        ...current,
+                        title: { ...title, [activeLang]: e.target.value },
+                      };
                       updateField(["values"], next);
                     }}
                   />
                   <div>
                     <label className="text-xs text-gray-500">Body</label>
                     <BlogRichTextEditor
-                      value={item.body || ""}
+                      value={item?.body?.[activeLang] || ""}
                       onChange={value => {
                         const next = structuredClone(formData.values);
-                        next[idx] = { ...next[idx], body: value };
+                        const current = next[idx] || {};
+                        const body =
+                          current.body && typeof current.body === "object"
+                            ? { ...current.body }
+                            : { en: "", fa: "", ps: "" };
+                        next[idx] = {
+                          ...current,
+                          body: { ...body, [activeLang]: value },
+                        };
                         updateField(["values"], next);
                       }}
                       placeholder={`Body ${idx + 1}`}

@@ -47,7 +47,7 @@ export default function HelpPage() {
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-sm text-muted-foreground">
           <Link href="/help" className="hover:underline">
-            Help Center
+            {t("help.center", "Help Center")}
           </Link>{" "}
           / {getLocalized(article.title, "Help Article")}
         </div>
@@ -56,11 +56,12 @@ export default function HelpPage() {
           {getLocalized(article.title, "Help Article")}
         </h1>
         <p className="text-muted-foreground mt-2">
-          Last updated: {article.updated || "February 7, 2026"}
+          {t("help.lastUpdated", "Last updated")}:{" "}
+          {article.updated || "February 7, 2026"}
         </p>
 
         <div className="mt-8 bg-card border rounded-2xl p-6">
-          // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
+          {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
           <div
             className="text-foreground prose prose-sm max-w-none"
             dangerouslySetInnerHTML={{
@@ -76,7 +77,7 @@ export default function HelpPage() {
             <h2 className="text-xl font-semibold text-foreground">
               {t("help.stepByStep", "Step-by-step")}
             </h2>
-            // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
+            {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
             <div
               className="mt-3 text-muted-foreground prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{
@@ -91,7 +92,7 @@ export default function HelpPage() {
             <h2 className="text-xl font-semibold text-foreground">
               {t("help.tips", "Tips")}
             </h2>
-            // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
+            {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
             <div
               className="mt-3 text-muted-foreground prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{

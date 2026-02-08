@@ -38,17 +38,15 @@ export default function Terms() {
             {t("terms.effectiveDate", "Effective Date")}: {effectiveDate}
           </p>
         </div>
-
-        // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
         <div
           className="prose prose-lg dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{ __html: sanitizedIntro }}
         />
-
         <div className="mt-8 space-y-6">
           {sections.map((section: any, index: number) => (
             <section
-              key={`section-${index}`}
+              key={section?.id ? String(section.id) : `section-${index}`}
               className="bg-card border rounded-xl p-6"
             >
               <h2
@@ -58,7 +56,7 @@ export default function Terms() {
               >
                 {getLocalized(section.title, `Section ${index + 1}`)}
               </h2>
-              // biome-ignore lint/security/noDangerouslySetInnerHtml -- DOMPurify.sanitize is applied
+              {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
               <div
                 className="text-muted-foreground mt-2 prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{
@@ -68,11 +66,10 @@ export default function Terms() {
             </section>
           ))}
         </div>
-
         <div className="mt-10 text-sm text-muted-foreground">
-          Need help? Visit the{" "}
+          {t("terms.footer.needHelp", "Need help? Visit the")}{" "}
           <Link href="/help" className="text-primary hover:underline">
-            Help Center
+            {t("terms.footer.helpCenter", "Help Center")}
           </Link>
           .
         </div>

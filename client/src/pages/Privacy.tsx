@@ -5,7 +5,7 @@ import DOMPurify from "dompurify";
 
 export default function Privacy() {
   const { data } = useContent("privacy");
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
 
   const getLocalized = (obj: any, fallback: string) =>
@@ -30,7 +30,7 @@ export default function Privacy() {
             {title}
           </h1>
           <p className="text-muted-foreground mt-3">
-            Effective Date: {effectiveDate}
+            {t("privacy.effectiveDate", "Effective Date")}: {effectiveDate}
           </p>
         </div>
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
@@ -59,9 +59,9 @@ export default function Privacy() {
         </div>
 
         <div className="mt-10 text-sm text-muted-foreground">
-          Need help? Visit the{" "}
+          {t("privacy.needHelp", "Need help? Visit the")}{" "}
           <Link href="/help" className="text-primary hover:underline">
-            Help Center
+            {t("help.centerTitle", "Help Center")}
           </Link>
           .
         </div>
