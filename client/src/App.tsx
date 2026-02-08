@@ -12,10 +12,15 @@ import BlogPost from "@/pages/BlogPost";
 import Products from "./pages/Products";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
+import HelpCenter from "./pages/HelpCenter";
+import HelpPage from "./pages/HelpPage";
+import Privacy from "./pages/Privacy";
 import useAuthReq from "./hooks/useAuthReq";
 import useUserSync from "./hooks/useUserSync";
 import LoginPage from "./pages/LoginPage";
 import GuestDashboard from "./pages/GuestDashboard";
+import Gallery from "./pages/Gallery";
 
 function GuestDashboardRoute() {
   const { isClerkLoaded, isSignedIn } = useAuthReq();
@@ -64,6 +69,31 @@ function Router() {
       <Route path="/contact">
         <Layout>
           <Contact />
+        </Layout>
+      </Route>
+      <Route path="/terms">
+        <Layout>
+          <Terms />
+        </Layout>
+      </Route>
+      <Route path="/privacy">
+        <Layout>
+          <Privacy />
+        </Layout>
+      </Route>
+      <Route path="/gallery">
+        <Layout>
+          <Gallery />
+        </Layout>
+      </Route>
+      <Route path="/help/:slug">
+        <Layout>
+          <HelpPage />
+        </Layout>
+      </Route>
+      <Route path="/help">
+        <Layout>
+          <HelpCenter />
         </Layout>
       </Route>
       <Route path="/pamik-sign-in">
