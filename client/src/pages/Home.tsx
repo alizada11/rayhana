@@ -176,6 +176,14 @@ export default function Home() {
                 : value.icon === "globe"
                   ? Globe
                   : Star;
+            const valueTitle =
+              typeof value.title === "object"
+                ? getLocalized(value.title, "")
+                : value.title;
+            const valueBody =
+              typeof value.body === "object"
+                ? getLocalized(value.body, "")
+                : value.body;
             return (
               <div
                 key={`${value.title}-${index}`}
@@ -185,12 +193,12 @@ export default function Home() {
                   <Icon className="h-6 w-6" />
                 </div>
                 <h3 className="font-serif text-xl font-bold mb-2">
-                  {value.title}
+                  {valueTitle}
                 </h3>
                 <div
                   className="text-muted-foreground text-sm mb-4 prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(value.body || ""),
+                    __html: DOMPurify.sanitize(valueBody || ""),
                   }}
                 />
                 <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-primary/5 rounded-full group-hover:scale-150 transition-transform duration-500" />
@@ -235,34 +243,45 @@ export default function Home() {
                   : "دیگ کامل برای هر وعده غذایی"
               )}
             </h2>
-            <p className="text-lg text-muted-foreground leading-relaxed">
-              {getLocalized(
-                homeContent?.data?.featuredProduct?.description,
-                i18n.language === "en"
-                  ? "Designed for the modern kitchen but rooted in tradition. Our non-stick granite coating ensures healthy cooking with less oil, while the premium aluminum body distributes heat evenly for that perfect taste of home."
-                  : "طراحی شده برای آشپزخانه مدرن اما ریشه در سنت دارد. پوشش گرانیتی نچسب ما پخت سالم با روغن کمتر را تضمین می‌کند، در حالی که بدنه آلومینیومی ممتاز گرما را به طور یکنواخت توزیع می‌کند تا طعم کامل خانه را تجربه کنید."
-              )}
-            </p>
+            <div
+              className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(
+                  getLocalized(
+                    homeContent?.data?.featuredProduct?.description,
+                    i18n.language === "en"
+                      ? "Designed for the modern kitchen but rooted in tradition. Our non-stick granite coating ensures healthy cooking with less oil, while the premium aluminum body distributes heat evenly for that perfect taste of home."
+                      : "طراحی شده برای آشپزخانه مدرن اما ریشه در سنت دارد. پوشش گرانیتی نچسب ما پخت سالم با روغن کمتر را تضمین می‌کند، در حالی که بدنه آلومینیومی ممتاز گرما را به طور یکنواخت توزیع می‌کند تا طعم کامل خانه را تجربه کنید."
+                  )
+                ),
+              }}
+            />
             <ul className="space-y-3">
               {(Array.isArray(homeContent?.data?.featuredProduct?.bullets)
                 ? homeContent.data.featuredProduct.bullets
                 : [
-                    "PFOA Free",
-                    "FDA Approved",
-                    "Durable Granite Coating",
-                    "Heat Resistant Handles",
+                    { text: { en: "PFOA Free", fa: "", ps: "" } },
+                    { text: { en: "FDA Approved", fa: "", ps: "" } },
+                    { text: { en: "Durable Granite Coating", fa: "", ps: "" } },
+                    { text: { en: "Heat Resistant Handles", fa: "", ps: "" } },
                   ]
-              ).map((item: string) => (
-                <li
-                  key={item}
-                  className="flex items-center gap-3 text-foreground/80"
-                >
-                  <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary">
-                    <Check className="w-4 h-4" />
-                  </div>
-                  {item}
-                </li>
-              ))}
+              ).map((item: any, index: number) => {
+                const text =
+                  typeof item === "string"
+                    ? item
+                    : getLocalized(item.text || item, "");
+                return (
+                  <li
+                    key={`${text}-${index}`}
+                    className="flex items-center gap-3 text-foreground/80"
+                  >
+                    <div className="w-6 h-6 rounded-full bg-primary/20 flex items-center justify-center text-primary">
+                      <Check className="w-4 h-4" />
+                    </div>
+                    {text}
+                  </li>
+                );
+              })}
             </ul>
             <Button size="lg" variant="outline" className="mt-4">
               {t("products.view_details")}
@@ -281,12 +300,15 @@ export default function Home() {
               viewport={{ once: true }}
               className="order-2 md:order-1 space-y-6"
             >
-              <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
-                {storyTitle}
-              </h2>
-              <p className="text-lg text-muted-foreground leading-relaxed">
-                {storyBody}
-              </p>
+            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
+              {storyTitle}
+            </h2>
+            <div
+              className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
+              dangerouslySetInnerHTML={{
+                __html: DOMPurify.sanitize(storyBody),
+              }}
+            />
               <Link href="/about">
                 <Button
                   variant="link"

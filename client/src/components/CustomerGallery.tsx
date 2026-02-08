@@ -176,7 +176,7 @@ export function CustomerGallery() {
           ))}
         </div>
 
-        <div className="flex justify-center">
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
           <Dialog
             open={isOpen}
             onOpenChange={open => {
@@ -194,16 +194,16 @@ export function CustomerGallery() {
               }
               setIsOpen(open);
             }}
-          >
-            <DialogTrigger asChild>
-              <Button
-                size="lg"
-                className="rounded-full bg-amber-700 hover:bg-amber-800 text-white px-8 shadow-lg hover:shadow-xl transition-all gap-2"
-              >
-                <Camera className="w-5 h-5" />
-                {t("gallery.share_button")}
-              </Button>
-            </DialogTrigger>
+            >
+              <DialogTrigger asChild>
+                <Button
+                  size="lg"
+                  className="rounded-full bg-amber-700 hover:bg-amber-800 text-white px-8 shadow-lg hover:shadow-xl transition-all gap-2"
+                >
+                  <Camera className="w-5 h-5" />
+                  {t("gallery.share_button")}
+                </Button>
+              </DialogTrigger>
             <DialogContent className={`sm:max-w-md ${isRTL ? "rtl" : "ltr"}`}>
               <DialogHeader>
                 <DialogTitle className="text-center font-serif text-2xl text-amber-900 dark:text-amber-500">
@@ -302,6 +302,14 @@ export function CustomerGallery() {
               </form>
             </DialogContent>
           </Dialog>
+          <Button
+            size="lg"
+            variant="outline"
+            className="rounded-full px-8 shadow-sm hover:shadow-md transition-all"
+            onClick={() => setLocation("/gallery")}
+          >
+            {t("gallery.view_all", "View all photos")}
+          </Button>
         </div>
       </div>
 
