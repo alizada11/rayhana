@@ -74,7 +74,57 @@ const fallbackFaq = {
   ],
 };
 
-const CONTENT_KEYS = ["home", "about", "faq"] as const;
+const fallbackTerms = {
+  effectiveDate: "",
+  title: { en: "", fa: "", ps: "" },
+  intro: { en: "", fa: "", ps: "" },
+  sections: [
+    { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
+  ],
+};
+
+const fallbackPrivacy = {
+  effectiveDate: "",
+  title: { en: "", fa: "", ps: "" },
+  intro: { en: "", fa: "", ps: "" },
+  sections: [
+    { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
+  ],
+};
+
+const fallbackHelp = {
+  center: {
+    title: { en: "", fa: "", ps: "" },
+    subtitle: { en: "", fa: "", ps: "" },
+    contactEmail: "",
+    sections: [
+      {
+        slug: "",
+        title: { en: "", fa: "", ps: "" },
+        description: { en: "", fa: "", ps: "" },
+        icon: "lifeBuoy",
+      },
+    ],
+    faqs: [
+      {
+        question: { en: "", fa: "", ps: "" },
+        answer: { en: "", fa: "", ps: "" },
+      },
+    ],
+  },
+  articles: [
+    {
+      slug: "",
+      title: { en: "", fa: "", ps: "" },
+      updated: "",
+      intro: { en: "", fa: "", ps: "" },
+      steps: { en: "", fa: "", ps: "" },
+      tips: { en: "", fa: "", ps: "" },
+    },
+  ],
+};
+
+const CONTENT_KEYS = ["home", "about", "faq", "terms", "privacy", "help"] as const;
 
 export default function DashboardContent() {
   const [key, setKey] = useState<(typeof CONTENT_KEYS)[number]>("home");
@@ -92,7 +142,10 @@ export default function DashboardContent() {
   const initialData = useMemo(() => {
     if (key === "home") return fallbackHome;
     if (key === "about") return fallbackAbout;
-    return fallbackFaq;
+    if (key === "faq") return fallbackFaq;
+    if (key === "terms") return fallbackTerms;
+    if (key === "privacy") return fallbackPrivacy;
+    return fallbackHelp;
   }, [key]);
 
   const [formData, setFormData] = useState<any>(initialData);
@@ -686,6 +739,519 @@ export default function DashboardContent() {
               className="text-sm text-primary hover:underline"
             >
               + Add Question
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Terms Editor */}
+      {key === "terms" && (
+        <div className="space-y-6">
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Terms Page</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Effective Date"
+                value={formData.effectiveDate || ""}
+                onChange={e => updateField(["effectiveDate"], e.target.value)}
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.title?.[activeLang] || ""}
+                onChange={e => updateLangField(["title"], e.target.value)}
+              />
+              <div className="md:col-span-2">
+                <label className="text-xs text-gray-500">Intro</label>
+                <BlogRichTextEditor
+                  value={formData.intro?.[activeLang] || ""}
+                  onChange={value => updateLangField(["intro"], value)}
+                  placeholder="Intro"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Sections</h2>
+            {formData.sections?.map((section: any, idx: number) => (
+              <div key={`terms-section-${idx}`} className="border rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-gray-700">
+                    Section {idx + 1}
+                  </h3>
+                  <button
+                    type="button"
+                    className="text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      const next = structuredClone(formData.sections);
+                      next.splice(idx, 1);
+                      updateField(["sections"], next);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Title"
+                  value={section.title?.[activeLang] || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.sections);
+                    next[idx] = {
+                      ...next[idx],
+                      title: { ...next[idx].title, [activeLang]: e.target.value },
+                    };
+                    updateField(["sections"], next);
+                  }}
+                />
+                <div>
+                  <label className="text-xs text-gray-500">Body</label>
+                  <BlogRichTextEditor
+                    value={section.body?.[activeLang] || ""}
+                    onChange={value => {
+                      const next = structuredClone(formData.sections);
+                      next[idx] = {
+                        ...next[idx],
+                        body: { ...next[idx].body, [activeLang]: value },
+                      };
+                      updateField(["sections"], next);
+                    }}
+                    placeholder="Body"
+                  />
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="text-sm text-primary hover:underline"
+              onClick={() => {
+                const next = [
+                  ...(formData.sections || []),
+                  { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
+                ];
+                updateField(["sections"], next);
+              }}
+            >
+              + Add Section
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Privacy Editor */}
+      {key === "privacy" && (
+        <div className="space-y-6">
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Privacy Policy</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Effective Date"
+                value={formData.effectiveDate || ""}
+                onChange={e => updateField(["effectiveDate"], e.target.value)}
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.title?.[activeLang] || ""}
+                onChange={e => updateLangField(["title"], e.target.value)}
+              />
+              <div className="md:col-span-2">
+                <label className="text-xs text-gray-500">Intro</label>
+                <BlogRichTextEditor
+                  value={formData.intro?.[activeLang] || ""}
+                  onChange={value => updateLangField(["intro"], value)}
+                  placeholder="Intro"
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Sections</h2>
+            {formData.sections?.map((section: any, idx: number) => (
+              <div key={`privacy-section-${idx}`} className="border rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-gray-700">
+                    Section {idx + 1}
+                  </h3>
+                  <button
+                    type="button"
+                    className="text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      const next = structuredClone(formData.sections);
+                      next.splice(idx, 1);
+                      updateField(["sections"], next);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Title"
+                  value={section.title?.[activeLang] || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.sections);
+                    next[idx] = {
+                      ...next[idx],
+                      title: { ...next[idx].title, [activeLang]: e.target.value },
+                    };
+                    updateField(["sections"], next);
+                  }}
+                />
+                <div>
+                  <label className="text-xs text-gray-500">Body</label>
+                  <BlogRichTextEditor
+                    value={section.body?.[activeLang] || ""}
+                    onChange={value => {
+                      const next = structuredClone(formData.sections);
+                      next[idx] = {
+                        ...next[idx],
+                        body: { ...next[idx].body, [activeLang]: value },
+                      };
+                      updateField(["sections"], next);
+                    }}
+                    placeholder="Body"
+                  />
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="text-sm text-primary hover:underline"
+              onClick={() => {
+                const next = [
+                  ...(formData.sections || []),
+                  { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
+                ];
+                updateField(["sections"], next);
+              }}
+            >
+              + Add Section
+            </button>
+          </div>
+        </div>
+      )}
+
+      {/* Help Editor */}
+      {key === "help" && (
+        <div className="space-y-6">
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Help Center</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.center?.title?.[activeLang] || ""}
+                onChange={e =>
+                  updateField(["center", "title"], {
+                    ...formData.center?.title,
+                    [activeLang]: e.target.value,
+                  })
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Subtitle"
+                value={formData.center?.subtitle?.[activeLang] || ""}
+                onChange={e =>
+                  updateField(["center", "subtitle"], {
+                    ...formData.center?.subtitle,
+                    [activeLang]: e.target.value,
+                  })
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Contact Email"
+                value={formData.center?.contactEmail || ""}
+                onChange={e =>
+                  updateField(["center", "contactEmail"], e.target.value)
+                }
+              />
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Help Sections</h2>
+            {formData.center?.sections?.map((section: any, idx: number) => (
+              <div key={`help-section-${idx}`} className="border rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-gray-700">
+                    Section {idx + 1}
+                  </h3>
+                  <button
+                    type="button"
+                    className="text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      const next = structuredClone(formData.center.sections);
+                      next.splice(idx, 1);
+                      updateField(["center", "sections"], next);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Slug"
+                  value={section.slug || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.center.sections);
+                    next[idx] = { ...next[idx], slug: e.target.value };
+                    updateField(["center", "sections"], next);
+                  }}
+                />
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Title"
+                  value={section.title?.[activeLang] || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.center.sections);
+                    next[idx] = {
+                      ...next[idx],
+                      title: { ...next[idx].title, [activeLang]: e.target.value },
+                    };
+                    updateField(["center", "sections"], next);
+                  }}
+                />
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Description"
+                  value={section.description?.[activeLang] || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.center.sections);
+                    next[idx] = {
+                      ...next[idx],
+                      description: {
+                        ...next[idx].description,
+                        [activeLang]: e.target.value,
+                      },
+                    };
+                    updateField(["center", "sections"], next);
+                  }}
+                />
+                <select
+                  className="border rounded-lg px-3 py-2 w-full"
+                  value={section.icon || "lifeBuoy"}
+                  onChange={e => {
+                    const next = structuredClone(formData.center.sections);
+                    next[idx] = { ...next[idx], icon: e.target.value };
+                    updateField(["center", "sections"], next);
+                  }}
+                >
+                  <option value="lifeBuoy">Life Buoy</option>
+                  <option value="package">Package</option>
+                  <option value="refresh">Refresh</option>
+                  <option value="shield">Shield</option>
+                </select>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="text-sm text-primary hover:underline"
+              onClick={() => {
+                const next = [
+                  ...(formData.center?.sections || []),
+                  {
+                    slug: "",
+                    title: { en: "", fa: "", ps: "" },
+                    description: { en: "", fa: "", ps: "" },
+                    icon: "lifeBuoy",
+                  },
+                ];
+                updateField(["center", "sections"], next);
+              }}
+            >
+              + Add Help Section
+            </button>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">FAQs</h2>
+            {formData.center?.faqs?.map((faq: any, idx: number) => (
+              <div key={`faq-${idx}`} className="border rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-gray-700">FAQ {idx + 1}</h3>
+                  <button
+                    type="button"
+                    className="text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      const next = structuredClone(formData.center.faqs);
+                      next.splice(idx, 1);
+                      updateField(["center", "faqs"], next);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Question"
+                  value={faq.question?.[activeLang] || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.center.faqs);
+                    next[idx] = {
+                      ...next[idx],
+                      question: { ...next[idx].question, [activeLang]: e.target.value },
+                    };
+                    updateField(["center", "faqs"], next);
+                  }}
+                />
+                <div>
+                  <label className="text-xs text-gray-500">Answer</label>
+                  <BlogRichTextEditor
+                    value={faq.answer?.[activeLang] || ""}
+                    onChange={value => {
+                      const next = structuredClone(formData.center.faqs);
+                      next[idx] = {
+                        ...next[idx],
+                        answer: { ...next[idx].answer, [activeLang]: value },
+                      };
+                      updateField(["center", "faqs"], next);
+                    }}
+                    placeholder="Answer"
+                  />
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="text-sm text-primary hover:underline"
+              onClick={() => {
+                const next = [
+                  ...(formData.center?.faqs || []),
+                  { question: { en: "", fa: "", ps: "" }, answer: { en: "", fa: "", ps: "" } },
+                ];
+                updateField(["center", "faqs"], next);
+              }}
+            >
+              + Add FAQ
+            </button>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Help Articles</h2>
+            {formData.articles?.map((article: any, idx: number) => (
+              <div key={`article-${idx}`} className="border rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-gray-700">
+                    Article {idx + 1}
+                  </h3>
+                  <button
+                    type="button"
+                    className="text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      const next = structuredClone(formData.articles);
+                      next.splice(idx, 1);
+                      updateField(["articles"], next);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Slug"
+                  value={article.slug || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.articles);
+                    next[idx] = { ...next[idx], slug: e.target.value };
+                    updateField(["articles"], next);
+                  }}
+                />
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Title"
+                  value={article.title?.[activeLang] || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.articles);
+                    next[idx] = {
+                      ...next[idx],
+                      title: { ...next[idx].title, [activeLang]: e.target.value },
+                    };
+                    updateField(["articles"], next);
+                  }}
+                />
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Last Updated"
+                  value={article.updated || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.articles);
+                    next[idx] = { ...next[idx], updated: e.target.value };
+                    updateField(["articles"], next);
+                  }}
+                />
+                <div>
+                  <label className="text-xs text-gray-500">Intro</label>
+                  <BlogRichTextEditor
+                    value={article.intro?.[activeLang] || ""}
+                    onChange={value => {
+                      const next = structuredClone(formData.articles);
+                      next[idx] = {
+                        ...next[idx],
+                        intro: { ...next[idx].intro, [activeLang]: value },
+                      };
+                      updateField(["articles"], next);
+                    }}
+                    placeholder="Intro"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500">Steps (HTML)</label>
+                  <BlogRichTextEditor
+                    value={article.steps?.[activeLang] || ""}
+                    onChange={value => {
+                      const next = structuredClone(formData.articles);
+                      next[idx] = {
+                        ...next[idx],
+                        steps: { ...next[idx].steps, [activeLang]: value },
+                      };
+                      updateField(["articles"], next);
+                    }}
+                    placeholder="Steps"
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500">Tips (HTML)</label>
+                  <BlogRichTextEditor
+                    value={article.tips?.[activeLang] || ""}
+                    onChange={value => {
+                      const next = structuredClone(formData.articles);
+                      next[idx] = {
+                        ...next[idx],
+                        tips: { ...next[idx].tips, [activeLang]: value },
+                      };
+                      updateField(["articles"], next);
+                    }}
+                    placeholder="Tips"
+                  />
+                </div>
+              </div>
+            ))}
+            <button
+              type="button"
+              className="text-sm text-primary hover:underline"
+              onClick={() => {
+                const next = [
+                  ...(formData.articles || []),
+                  {
+                    slug: "",
+                    title: { en: "", fa: "", ps: "" },
+                    updated: "",
+                    intro: { en: "", fa: "", ps: "" },
+                    steps: { en: "", fa: "", ps: "" },
+                    tips: { en: "", fa: "", ps: "" },
+                  },
+                ];
+                updateField(["articles"], next);
+              }}
+            >
+              + Add Article
             </button>
           </div>
         </div>
