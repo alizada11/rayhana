@@ -138,6 +138,27 @@
     "featured": "Featured",
     "viewAll": "View all"
   },
+  "help": {
+    "notFound": "Help Article Not Found",
+    "description": "The help page you are looking for does not exist.",
+    "backToCenter": "Back to Help Center",
+    "center": "Help Center",
+    "centerTitle": "Help Center",
+    "stepByStep": "Step-by-step",
+    "tips": "Tips",
+    "needHelpEmail": "Still need help? Email",
+    "lastUpdated": "Last updated"
+  },
+  "terms": {
+    "footer": {
+      "needHelp": "Need help? Visit the",
+      "helpCenter": "Help Center"
+    }
+  },
+  "privacy": {
+    "effectiveDate": "Effective Date",
+    "needHelp": "Need help? Visit the"
+  },
   "contact_page": {
     "title": "Contact Us",
     "subtitle": "We'd love to hear from you. Send us a message or visit us.",

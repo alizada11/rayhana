@@ -93,6 +93,11 @@
   --chart-5: oklch(0.95 0.02 25);
 }
 
+:root[dir="rtl"],
+html[dir="rtl"] {
+  --font-serif: "Vazirmatn", "Noto Sans Arabic", "Noto Sans", sans-serif;
+}
+
 .dark {
   --background: oklch(0.15 0.02 260);
   --foreground: oklch(0.95 0.01 85);
@@ -152,6 +157,12 @@
   input[type="checkbox"]:not(:disabled),
   input[type="radio"]:not(:disabled) {
     @apply cursor-pointer;
+  }
+}
+
+@layer utilities {
+  [dir="rtl"] .font-serif {
+    font-family: "Vazirmatn", "Noto Sans Arabic", "Noto Sans", sans-serif !important;
   }
 }
 
