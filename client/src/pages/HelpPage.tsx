@@ -6,7 +6,7 @@ import DOMPurify from "dompurify";
 export default function HelpPage() {
   const [match, params] = useRoute("/help/:slug");
   const { data } = useContent("help");
-  const { i18n } = useTranslation();
+  const { i18n, t } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const contactEmail = data?.data?.center?.contactEmail || "info@rayhana.com";
 
@@ -23,16 +23,19 @@ export default function HelpPage() {
       <div className="min-h-screen bg-background pt-24 pb-16">
         <div className="container mx-auto px-4 max-w-3xl">
           <h1 className="text-3xl font-serif font-bold text-primary">
-            Help Article Not Found
+            {t("help.notFound", "Help Article Not Found")}
           </h1>
           <p className="text-muted-foreground mt-3">
-            The help page you are looking for does not exist.
+            {t(
+              "help.description",
+              "The help page you are looking for does not exist."
+            )}
           </p>
           <Link
             href="/help"
             className="inline-flex mt-6 text-primary hover:underline"
           >
-            Back to Help Center
+            {t("help.backToCenter", "Back to Help Center")}
           </Link>
         </div>
       </div>
@@ -68,9 +71,9 @@ export default function HelpPage() {
         </div>
 
         <div className="mt-8 space-y-6">
-          <section className="bg-white border rounded-2xl p-6">
+          <section className="bg-card border rounded-2xl p-6">
             <h2 className="text-xl font-semibold text-foreground">
-              Step-by-step
+              {t("help.stepByStep", "Step-by-step")}
             </h2>
             <div
               className="mt-3 text-muted-foreground prose prose-sm max-w-none"
@@ -82,8 +85,10 @@ export default function HelpPage() {
             />
           </section>
 
-          <section className="bg-white border rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-foreground">Tips</h2>
+          <section className="bg-card border rounded-2xl p-6">
+            <h2 className="text-xl font-semibold text-foreground">
+              {t("help.tips", "Tips")}
+            </h2>
             <div
               className="mt-3 text-muted-foreground prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{
@@ -96,7 +101,7 @@ export default function HelpPage() {
         </div>
 
         <div className="mt-10 text-sm text-muted-foreground">
-          Still need help? Email{" "}
+          {t("help.needHelpEmail", "Still need help? Email")}{" "}
           <span className="font-medium text-foreground">{contactEmail}</span>.
         </div>
       </div>

@@ -5,7 +5,7 @@ import DOMPurify from "dompurify";
 
 export default function Terms() {
   const { data } = useContent("terms");
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const isRTL = ["fa", "ps"].includes(currentLang);
 
@@ -35,7 +35,7 @@ export default function Terms() {
             {title}
           </h1>
           <p className="text-muted-foreground mt-3">
-            Effective Date: {effectiveDate}
+            {t("terms.effectiveDate", "Effective Date")}: {effectiveDate}
           </p>
         </div>
 
@@ -46,7 +46,10 @@ export default function Terms() {
 
         <div className="mt-8 space-y-6">
           {sections.map((section: any, index: number) => (
-            <section key={section.title} className="bg-card border rounded-xl p-6">
+            <section
+              key={section.title}
+              className="bg-card border rounded-xl p-6"
+            >
               <h2
                 className={`text-xl font-semibold text-foreground ${
                   isRTL ? "font-vazir" : "font-serif"

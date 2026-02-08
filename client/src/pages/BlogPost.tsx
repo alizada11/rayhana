@@ -103,7 +103,7 @@ export default function BlogPost() {
               </div>
               <Button variant="outline" size="sm" className="ml-auto">
                 <Share2 className="w-4 h-4 mr-2" />
-                Share
+                {t("referral.share", "Share")}
               </Button>
             </div>
           </div>
@@ -113,6 +113,7 @@ export default function BlogPost() {
       {/* Content */}
       <div className="container mx-auto px-4">
         <div className="max-w-3xl mx-auto">
+          {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}

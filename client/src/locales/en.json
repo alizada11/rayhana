@@ -138,6 +138,14 @@
     "featured": "Featured",
     "viewAll": "View all"
   },
+  "help": {
+    "notFound": "Help Article Not Found",
+    "description": "The help page you are looking for does not exist.",
+    "backToCenter": "Back to Help Center",
+    "stepByStep": "Step-by-step",
+    "tips": "Tips",
+    "needHelpEmail": "Still need help? Email"
+  },
   "contact_page": {
     "title": "Contact Us",
     "subtitle": "We'd love to hear from you. Send us a message or visit us.",

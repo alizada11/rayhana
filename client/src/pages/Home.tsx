@@ -195,6 +195,7 @@ export default function Home() {
                 <h3 className="font-serif text-xl font-bold mb-2">
                   {valueTitle}
                 </h3>
+                {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
                 <div
                   className="text-muted-foreground text-sm mb-4 prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{
@@ -300,15 +301,15 @@ export default function Home() {
               viewport={{ once: true }}
               className="order-2 md:order-1 space-y-6"
             >
-            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
-              {storyTitle}
-            </h2>
-            <div
-              className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(storyBody),
-              }}
-            />
+              <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
+                {storyTitle}
+              </h2>
+              <div
+                className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
+                dangerouslySetInnerHTML={{
+                  __html: DOMPurify.sanitize(storyBody),
+                }}
+              />
               <Link href="/about">
                 <Button
                   variant="link"

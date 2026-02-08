@@ -172,7 +172,11 @@ export const contentSchemas: Record<ContentSchema["key"], ContentSchema> = {
             label: "Values",
             path: ["values"],
             itemLabel: index => `Card ${index + 1}`,
-            itemDefaults: { title: "", body: "", icon: "star" },
+            itemDefaults: {
+              title: { en: "", fa: "", ps: "" },
+              body: { en: "", fa: "", ps: "" },
+              icon: "star",
+            },
             fields: [
               {
                 type: "text",

@@ -1,14 +1,11 @@
 import { useEffect, useMemo, useState } from "react";
 import { useContent, useUpsertContent } from "@/hooks/useContent";
 import MediaPicker from "@/components/MediaPicker";
-import { Save, Trash2 } from "lucide-react";
+import { Image as ImageIcon, Save } from "lucide-react";
 import BlogRichTextEditor from "@/components/BlogRichTextEditor";
 import { toast } from "sonner";
-import {
-  contentSchemas,
-  type Field,
-  type Lang,
-} from "@/content/contentSchemas";
+
+type Lang = "en" | "fa" | "ps";
 
 const fallbackHome = {
   hero: {
@@ -24,12 +21,7 @@ const fallbackHome = {
   featuredProduct: {
     title: { en: "", fa: "", ps: "" },
     description: { en: "", fa: "", ps: "" },
-    bullets: [
-      { text: { en: "", fa: "", ps: "" } },
-      { text: { en: "", fa: "", ps: "" } },
-      { text: { en: "", fa: "", ps: "" } },
-      { text: { en: "", fa: "", ps: "" } },
-    ],
+    bullets: ["", "", "", ""],
   },
   story: {
     title: { en: "", fa: "", ps: "" },
@@ -82,57 +74,7 @@ const fallbackFaq = {
   ],
 };
 
-const fallbackTerms = {
-  effectiveDate: "",
-  title: { en: "", fa: "", ps: "" },
-  intro: { en: "", fa: "", ps: "" },
-  sections: [
-    { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
-  ],
-};
-
-const fallbackPrivacy = {
-  effectiveDate: "",
-  title: { en: "", fa: "", ps: "" },
-  intro: { en: "", fa: "", ps: "" },
-  sections: [
-    { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
-  ],
-};
-
-const fallbackHelp = {
-  center: {
-    title: { en: "", fa: "", ps: "" },
-    subtitle: { en: "", fa: "", ps: "" },
-    contactEmail: "",
-    sections: [
-      {
-        slug: "",
-        title: { en: "", fa: "", ps: "" },
-        description: { en: "", fa: "", ps: "" },
-        icon: "lifeBuoy",
-      },
-    ],
-    faqs: [
-      {
-        question: { en: "", fa: "", ps: "" },
-        answer: { en: "", fa: "", ps: "" },
-      },
-    ],
-  },
-  articles: [
-    {
-      slug: "",
-      title: { en: "", fa: "", ps: "" },
-      updated: "",
-      intro: { en: "", fa: "", ps: "" },
-      steps: { en: "", fa: "", ps: "" },
-      tips: { en: "", fa: "", ps: "" },
-    },
-  ],
-};
-
-const CONTENT_KEYS = ["home", "about", "faq", "terms", "privacy", "help"] as const;
+const CONTENT_KEYS = ["home", "about", "faq"] as const;
 
 export default function DashboardContent() {
   const [key, setKey] = useState<(typeof CONTENT_KEYS)[number]>("home");
@@ -150,72 +92,68 @@ export default function DashboardContent() {
   const initialData = useMemo(() => {
     if (key === "home") return fallbackHome;
     if (key === "about") return fallbackAbout;
-    if (key === "faq") return fallbackFaq;
-    if (key === "terms") return fallbackTerms;
-    if (key === "privacy") return fallbackPrivacy;
-    return fallbackHelp;
+    return fallbackFaq;
   }, [key]);
 
   const [formData, setFormData] = useState<any>(initialData);
 
   useEffect(() => {
-    if (data?.data) {
-      const nextData = { ...initialData, ...data.data };
-      if (key === "home" && Array.isArray(nextData.values)) {
-        nextData.values = nextData.values.map((item: any) => ({
-          ...item,
-          title:
-            item.title && typeof item.title === "object"
-              ? {
-                  en: item.title.en || "",
-                  fa: item.title.fa || "",
-                  ps: item.title.ps || "",
-                }
-              : { en: item.title || "", fa: "", ps: "" },
-          body:
-            item.body && typeof item.body === "object"
-              ? {
-                  en: item.body.en || "",
-                  fa: item.body.fa || "",
-                  ps: item.body.ps || "",
-                }
-              : { en: item.body || "", fa: "", ps: "" },
-        }));
-      }
-      if (key === "home" && Array.isArray(nextData.featuredProduct?.bullets)) {
-        nextData.featuredProduct.bullets = nextData.featuredProduct.bullets.map(
-          (item: any) => {
-            if (item && typeof item === "object" && "text" in item) {
-              const text = (item as any).text;
-              return {
-                ...item,
-                text:
-                  text && typeof text === "object"
-                    ? {
-                        en: text.en || "",
-                        fa: text.fa || "",
-                        ps: text.ps || "",
-                      }
-                    : { en: text || "", fa: "", ps: "" },
-              };
-            }
+    const nextData = { ...initialData, ...(data?.data || {}) };
+
+    if (key === "home" && Array.isArray(nextData.values)) {
+      nextData.values = nextData.values.map((item: any) => ({
+        ...item,
+        title:
+          item.title && typeof item.title === "object"
+            ? {
+                en: item.title.en || "",
+                fa: item.title.fa || "",
+                ps: item.title.ps || "",
+              }
+            : { en: item.title || "", fa: "", ps: "" },
+        body:
+          item.body && typeof item.body === "object"
+            ? {
+                en: item.body.en || "",
+                fa: item.body.fa || "",
+                ps: item.body.ps || "",
+              }
+            : { en: item.body || "", fa: "", ps: "" },
+      }));
+    }
+
+    if (key === "home" && Array.isArray(nextData.featuredProduct?.bullets)) {
+      nextData.featuredProduct.bullets = nextData.featuredProduct.bullets.map(
+        (item: any) => {
+          if (item && typeof item === "object" && "text" in item) {
+            const text = (item as any).text;
             return {
+              ...item,
               text:
-                item && typeof item === "object"
+                text && typeof text === "object"
                   ? {
-                      en: item.en || "",
-                      fa: item.fa || "",
-                      ps: item.ps || "",
+                      en: text.en || "",
+                      fa: text.fa || "",
+                      ps: text.ps || "",
                     }
-                  : { en: item || "", fa: "", ps: "" },
+                  : { en: text || "", fa: "", ps: "" },
             };
           }
-        );
-      }
-      setFormData(nextData);
-    } else {
-      setFormData(initialData);
+          return {
+            text:
+              item && typeof item === "object"
+                ? {
+                    en: item.en || "",
+                    fa: item.fa || "",
+                    ps: item.ps || "",
+                  }
+                : { en: item || "", fa: "", ps: "" },
+          };
+        }
+      );
     }
+
+    setFormData(nextData);
   }, [data, initialData, key]);
 
   const setDeep = (obj: any, path: string[], value: any) => {
@@ -229,19 +167,28 @@ export default function DashboardContent() {
     return clone;
   };
 
-  const getDeep = (obj: any, path: string[]) =>
-    path.reduce((acc, key) => (acc == null ? acc : acc[key]), obj);
+  const updateLangField = (path: string[], value: string) => {
+    setFormData((prev: any) => setDeep(prev, [...path, activeLang], value));
+  };
 
   const updateField = (path: string[], value: any) => {
     setFormData((prev: any) => setDeep(prev, path, value));
   };
 
-  const updateLangField = (path: string[], value: string) => {
-    setFormData((prev: any) => setDeep(prev, [...path, activeLang], value));
-  };
-
   const openMediaPicker = (path: string[]) => {
     setImageTarget({ path });
+    setShowMediaPicker(true);
+  };
+
+  const openHeroMediaPicker = () => {
+    setImageTarget({ path: ["images", "heroVideo"] });
+    setMediaAccept("both");
+    setShowMediaPicker(true);
+  };
+
+  const openImagePicker = (path: string[]) => {
+    setImageTarget({ path });
+    setMediaAccept("image");
     setShowMediaPicker(true);
   };
 
@@ -255,256 +202,6 @@ export default function DashboardContent() {
       },
     });
   };
-
-  const renderTextInput = (
-    field: Field,
-    value: string,
-    onChange: (value: string) => void
-  ) => (
-    <input
-      className="border rounded-lg px-3 py-2 w-full"
-      placeholder={field.label}
-      value={value}
-      onChange={e => onChange(e.target.value)}
-    />
-  );
-
-  const renderField = (field: Field) => {
-    if (field.type === "text") {
-      const value = field.localized
-        ? getDeep(formData, [...field.path, activeLang]) || ""
-        : getDeep(formData, field.path) || "";
-      return renderTextInput(field, value, nextValue => {
-        if (field.localized) {
-          updateLangField(field.path, nextValue);
-        } else {
-          updateField(field.path, nextValue);
-        }
-      });
-    }
-
-    if (field.type === "richtext") {
-      const value = field.localized
-        ? getDeep(formData, [...field.path, activeLang]) || ""
-        : getDeep(formData, field.path) || "";
-      return (
-        <BlogRichTextEditor
-          value={value}
-          onChange={nextValue => {
-            if (field.localized) {
-              updateLangField(field.path, nextValue);
-            } else {
-              updateField(field.path, nextValue);
-            }
-          }}
-          placeholder={field.label}
-        />
-      );
-    }
-
-    if (field.type === "media") {
-      const value = getDeep(formData, field.path) || "";
-      return (
-        <div className="flex items-center gap-2">
-          <input
-            className="border rounded-lg px-3 py-2 w-full"
-            placeholder={field.label}
-            value={value}
-            onChange={e => updateField(field.path, e.target.value)}
-          />
-          <button
-            type="button"
-            className="p-2 border rounded-lg"
-            onClick={() => {
-              setMediaAccept(field.accept);
-              openMediaPicker(field.path);
-            }}
-          >
-            Select
-          </button>
-        </div>
-      );
-    }
-
-    if (field.type === "select") {
-      const value = getDeep(formData, field.path) || field.options[0]?.value;
-      return (
-        <select
-          className="border rounded-lg px-3 py-2 w-full"
-          value={value}
-          onChange={e => updateField(field.path, e.target.value)}
-        >
-          {field.options.map(option => (
-            <option key={option.value} value={option.value}>
-              {option.label}
-            </option>
-          ))}
-        </select>
-      );
-    }
-
-    if (field.type === "string-list") {
-      const items: string[] = getDeep(formData, field.path) || [];
-      return (
-        <div className="grid md:grid-cols-2 gap-4">
-          {items.map((item, idx) => (
-            <div key={`${field.label}-${idx}`} className="flex gap-2">
-              <input
-                className="border rounded-lg px-3 py-2 w-full"
-                placeholder={`${field.label} ${idx + 1}`}
-                value={item}
-                onChange={e => {
-                  const next = [...items];
-                  next[idx] = e.target.value;
-                  updateField(field.path, next);
-                }}
-              />
-              <button
-                type="button"
-                className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                onClick={() => {
-                  const next = items.filter((_, i) => i !== idx);
-                  updateField(field.path, next);
-                }}
-                title="Remove"
-              >
-                <Trash2 className="w-4 h-4" />
-              </button>
-            </div>
-          ))}
-          {(!field.maxItems || items.length < field.maxItems) && (
-            <button
-              type="button"
-              className="text-sm text-primary hover:underline text-left"
-              onClick={() => {
-                updateField(field.path, [...items, ""]);
-              }}
-            >
-              + Add item
-            </button>
-          )}
-        </div>
-      );
-    }
-
-    if (field.type === "object-list") {
-      const items: any[] = getDeep(formData, field.path) || [];
-      return (
-        <div className="space-y-4">
-          {items.map((item, index) => (
-            <div key={`${field.label}-${index}`} className="border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-3">
-                <h3 className="font-medium text-gray-900">
-                  {field.itemLabel(index)}
-                </h3>
-                <button
-                  type="button"
-                  className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                  onClick={() => {
-                    const next = items.filter((_, i) => i !== index);
-                    updateField(field.path, next);
-                  }}
-                  title="Remove"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
-              </div>
-              <div className="grid md:grid-cols-2 gap-4">
-                {field.fields.map(itemField => {
-                  const itemPath = [...field.path, index, ...itemField.path];
-                  if (itemField.type === "text") {
-                    const value = itemField.localized
-                      ? getDeep(formData, [...itemPath, activeLang]) || ""
-                      : getDeep(formData, itemPath) || "";
-                    return (
-                      <div key={itemField.label}>
-                        <label className="text-xs text-gray-500">
-                          {itemField.label}
-                        </label>
-                        {renderTextInput(itemField, value, nextValue => {
-                          if (itemField.localized) {
-                            updateLangField(itemPath, nextValue);
-                          } else {
-                            updateField(itemPath, nextValue);
-                          }
-                        })}
-                      </div>
-                    );
-                  }
-
-                  if (itemField.type === "richtext") {
-                    const value = itemField.localized
-                      ? getDeep(formData, [...itemPath, activeLang]) || ""
-                      : getDeep(formData, itemPath) || "";
-                    return (
-                      <div key={itemField.label}>
-                        <label className="text-xs text-gray-500">
-                          {itemField.label}
-                        </label>
-                        <BlogRichTextEditor
-                          value={value}
-                          onChange={nextValue => {
-                            if (itemField.localized) {
-                              updateLangField(itemPath, nextValue);
-                            } else {
-                              updateField(itemPath, nextValue);
-                            }
-                          }}
-                          placeholder={itemField.label}
-                        />
-                      </div>
-                    );
-                  }
-
-                  if (itemField.type === "select") {
-                    const value =
-                      getDeep(formData, itemPath) || itemField.options[0]?.value;
-                    return (
-                      <div key={itemField.label}>
-                        <label className="text-xs text-gray-500">
-                          {itemField.label}
-                        </label>
-                        <select
-                          className="border rounded-lg px-3 py-2 w-full"
-                          value={value}
-                          onChange={e => updateField(itemPath, e.target.value)}
-                        >
-                          {itemField.options.map(option => (
-                            <option key={option.value} value={option.value}>
-                              {option.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    );
-                  }
-
-                  return null;
-                })}
-              </div>
-            </div>
-          ))}
-          <button
-            type="button"
-            className="text-sm text-primary hover:underline"
-            onClick={() => {
-              const nextItem = structuredClone(field.itemDefaults);
-              if ("id" in nextItem && !nextItem.id) {
-                nextItem.id = `item-${items.length + 1}`;
-              }
-              updateField(field.path, [...items, nextItem]);
-            }}
-          >
-            + Add {field.label}
-          </button>
-        </div>
-      );
-    }
-
-    return null;
-  };
-
-  const schema = contentSchemas[key];
 
   return (
     <div className="space-y-6">
@@ -567,29 +264,399 @@ export default function DashboardContent() {
         <div className="text-sm text-gray-500">Loading content...</div>
       )}
 
-      {schema.sections.map(section => (
-        <div key={section.title} className="bg-white border rounded-xl p-4 space-y-4">
-          <h2 className="font-serif text-xl font-bold">{section.title}</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            {section.fields
-              .filter(field => field.type !== "object-list" && field.type !== "string-list")
-              .map(field => (
-                <div key={field.label} className="space-y-2">
-                  <label className="text-xs text-gray-500">{field.label}</label>
-                  {renderField(field)}
+      {/* Home Editor */}
+      {key === "home" && (
+        <div className="space-y-6">
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Hero</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Hero title"
+                value={formData.hero?.title?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["hero", "title"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Hero subtitle"
+                value={formData.hero?.subtitle?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["hero", "subtitle"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Hero CTA"
+                value={formData.hero?.cta?.[activeLang] || ""}
+                onChange={e => updateLangField(["hero", "cta"], e.target.value)}
+              />
+              <div className="flex items-center gap-2">
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Hero media URL (video or image)"
+                  value={formData.images?.heroVideo || ""}
+                  onChange={e =>
+                    updateField(["images", "heroVideo"], e.target.value)
+                  }
+                />
+                <button
+                  type="button"
+                  className="p-2 border rounded-lg"
+                  onClick={openHeroMediaPicker}
+                >
+                  <ImageIcon className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Featured Product</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.featuredProduct?.title?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["featuredProduct", "title"], e.target.value)
+                }
+              />
+              <div>
+                <label className="text-xs text-gray-500">Description</label>
+                <BlogRichTextEditor
+                  value={
+                    formData.featuredProduct?.description?.[activeLang] || ""
+                  }
+                  onChange={value =>
+                    updateLangField(["featuredProduct", "description"], value)
+                  }
+                  placeholder="Description"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Image URL"
+                  value={formData.images?.featuredProduct || ""}
+                  onChange={e =>
+                    updateField(["images", "featuredProduct"], e.target.value)
+                  }
+                />
+                <button
+                  type="button"
+                  className="p-2 border rounded-lg"
+                  onClick={() => openImagePicker(["images", "featuredProduct"])}
+                >
+                  <ImageIcon className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              {formData.featuredProduct?.bullets?.map(
+                (item: string, idx: number) => (
+                  <input
+                    key={idx}
+                    className="border rounded-lg px-3 py-2"
+                    placeholder={`Bullet ${idx + 1}`}
+                    value={item}
+                    onChange={e => {
+                      const next = [...formData.featuredProduct.bullets];
+                      next[idx] = e.target.value;
+                      updateField(["featuredProduct", "bullets"], next);
+                    }}
+                  />
+                )
+              )}
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Story</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.story?.title?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["story", "title"], e.target.value)
+                }
+              />
+              <div>
+                <label className="text-xs text-gray-500">Body</label>
+                <BlogRichTextEditor
+                  value={formData.story?.body?.[activeLang] || ""}
+                  onChange={value => updateLangField(["story", "body"], value)}
+                  placeholder="Story body"
+                />
+              </div>
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="CTA"
+                value={formData.story?.cta?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["story", "cta"], e.target.value)
+                }
+              />
+              <div className="flex items-center gap-2">
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Story image URL"
+                  value={formData.images?.storyImage || ""}
+                  onChange={e =>
+                    updateField(["images", "storyImage"], e.target.value)
+                  }
+                />
+                <button
+                  type="button"
+                  className="p-2 border rounded-lg"
+                  onClick={() => openImagePicker(["images", "storyImage"])}
+                >
+                  <ImageIcon className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Values Cards</h2>
+            <div className="grid md:grid-cols-3 gap-4">
+              {formData.values?.map((item: any, idx: number) => (
+                <div key={`value-${idx}`} className="space-y-3">
+                  <input
+                    className="border rounded-lg px-3 py-2 w-full"
+                    placeholder={`Title ${idx + 1}`}
+                    value={item.title || ""}
+                    onChange={e => {
+                      const next = structuredClone(formData.values);
+                      next[idx] = { ...next[idx], title: e.target.value };
+                      updateField(["values"], next);
+                    }}
+                  />
+                  <div>
+                    <label className="text-xs text-gray-500">Body</label>
+                    <BlogRichTextEditor
+                      value={item.body || ""}
+                      onChange={value => {
+                        const next = structuredClone(formData.values);
+                        next[idx] = { ...next[idx], body: value };
+                        updateField(["values"], next);
+                      }}
+                      placeholder={`Body ${idx + 1}`}
+                    />
+                  </div>
+                  <select
+                    className="border rounded-lg px-3 py-2 w-full"
+                    value={item.icon || "star"}
+                    onChange={e => {
+                      const next = structuredClone(formData.values);
+                      next[idx] = { ...next[idx], icon: e.target.value };
+                      updateField(["values"], next);
+                    }}
+                  >
+                    <option value="star">Star</option>
+                    <option value="shield">Shield</option>
+                    <option value="globe">Globe</option>
+                  </select>
                 </div>
               ))}
+            </div>
           </div>
-          {section.fields
-            .filter(field => field.type === "object-list" || field.type === "string-list")
-            .map(field => (
-              <div key={field.label} className="space-y-3">
-                <h3 className="text-sm font-medium text-gray-700">{field.label}</h3>
-                {renderField(field)}
+        </div>
+      )}
+
+      {/* About Editor */}
+      {key === "about" && (
+        <div className="space-y-6">
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Hero</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.hero?.title?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["hero", "title"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Subtitle"
+                value={formData.hero?.subtitle?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["hero", "subtitle"], e.target.value)
+                }
+              />
+            </div>
+          </div>
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Story</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.story?.title?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["story", "title"], e.target.value)
+                }
+              />
+              <div>
+                <label className="text-xs text-gray-500">Body</label>
+                <BlogRichTextEditor
+                  value={formData.story?.body?.[activeLang] || ""}
+                  onChange={value => updateLangField(["story", "body"], value)}
+                  placeholder="Story body"
+                />
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Story image URL"
+                  value={formData.images?.story || ""}
+                  onChange={e =>
+                    updateField(["images", "story"], e.target.value)
+                  }
+                />
+                <button
+                  type="button"
+                  className="p-2 border rounded-lg"
+                  onClick={() => openImagePicker(["images", "story"])}
+                >
+                  <ImageIcon className="w-4 h-4" />
+                </button>
+              </div>
+            </div>
+          </div>
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Mission</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.mission?.title?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["mission", "title"], e.target.value)
+                }
+              />
+              <div>
+                <label className="text-xs text-gray-500">Body</label>
+                <BlogRichTextEditor
+                  value={formData.mission?.body?.[activeLang] || ""}
+                  onChange={value =>
+                    updateLangField(["mission", "body"], value)
+                  }
+                  placeholder="Mission body"
+                />
+              </div>
+            </div>
+          </div>
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Founder</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.founder?.title?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["founder", "title"], e.target.value)
+                }
+              />
+              <div>
+                <label className="text-xs text-gray-500">Body</label>
+                <BlogRichTextEditor
+                  value={formData.founder?.body?.[activeLang] || ""}
+                  onChange={value =>
+                    updateLangField(["founder", "body"], value)
+                  }
+                  placeholder="Founder body"
+                />
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* FAQ Editor */}
+      {key === "faq" && (
+        <div className="space-y-6">
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">FAQ</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.title?.[activeLang] || ""}
+                onChange={e => updateLangField(["title"], e.target.value)}
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Subtitle"
+                value={formData.subtitle?.[activeLang] || ""}
+                onChange={e => updateLangField(["subtitle"], e.target.value)}
+              />
+            </div>
+          </div>
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Questions</h2>
+            {formData.items?.map((item: any, idx: number) => (
+              <div
+                key={item.id || idx}
+                className="grid md:grid-cols-1 gap-4 items-start"
+              >
+                <div className="flex flex-col py-2">
+                  <label className="text-xs text-gray-500">Question</label>
+                  <input
+                    className="border rounded-lg mt-1 px-3 py-2"
+                    placeholder={`Question ${idx + 1}`}
+                    value={item.question?.[activeLang] || ""}
+                    onChange={e => {
+                      const next = structuredClone(formData.items);
+                      next[idx].question = {
+                        ...(next[idx].question || {}),
+                        [activeLang]: e.target.value,
+                      };
+                      updateField(["items"], next);
+                    }}
+                  />
+                </div>
+                <div>
+                  <label className="text-xs text-gray-500">Answer</label>
+                  <BlogRichTextEditor
+                    value={item.answer?.[activeLang] || ""}
+                    onChange={value => {
+                      const next = structuredClone(formData.items);
+                      next[idx].answer = {
+                        ...(next[idx].answer || {}),
+                        [activeLang]: value,
+                      };
+                      updateField(["items"], next);
+                    }}
+                    placeholder={`Answer ${idx + 1}`}
+                  />
+                </div>
               </div>
             ))}
+            <button
+              type="button"
+              onClick={() => {
+                const next = [
+                  ...formData.items,
+                  {
+                    id: `q${formData.items.length + 1}`,
+                    question: { en: "", fa: "", ps: "" },
+                    answer: { en: "", fa: "", ps: "" },
+                  },
+                ];
+                updateField(["items"], next);
+              }}
+              className="text-sm text-primary hover:underline"
+            >
+              + Add Question
+            </button>
+          </div>
         </div>
-      ))}
+      )}
 
       <MediaPicker
         open={showMediaPicker}

@@ -33,7 +33,7 @@ export default function Privacy() {
             Effective Date: {effectiveDate}
           </p>
         </div>
-
+        {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
         <div
           className="prose prose-lg dark:prose-invert max-w-none"
           dangerouslySetInnerHTML={{ __html: sanitizedIntro }}
