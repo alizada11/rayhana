@@ -64,6 +64,25 @@ export interface GallerySubmissionPayload {
   description?: string;
 }
 
+export interface GalleryLikeUser {
+  id: string;
+  name?: string | null;
+  email?: string | null;
+  imageUrl?: string | null;
+}
+
+export interface GalleryLike {
+  id: string;
+  userId: string;
+  submissionId: string;
+  user?: GalleryLikeUser | null;
+}
+
+export interface GalleryLikesResponse {
+  items: GalleryLike[];
+  nextCursor: string | null;
+}
+
 // ---------- USERS API ----------
 export const syncUser = async (userData: UserData) => {
   const { data } = await api.post("/users/sync", userData);
@@ -91,9 +110,26 @@ export const getAllGallery = async () => {
   return data;
 };
 
-export const createGallerySubmission = async (payload: FormData) => {
+export interface GalleryUploadRequest {
+  payload: FormData;
+  onProgress?: (percent: number) => void;
+}
+
+export const createGallerySubmission = async ({
+  payload,
+  onProgress,
+}: GalleryUploadRequest) => {
   const { data } = await api.post("/gallery", payload, {
     headers: { "Content-Type": "multipart/form-data" },
+    onUploadProgress: event => {
+      if (!onProgress) return;
+      const ratio =
+        event.progress ??
+        (event.total ? event.loaded / event.total : undefined);
+      if (ratio === undefined) return;
+      const percent = Math.round(ratio * 100);
+      onProgress(Math.min(100, Math.max(0, percent)));
+    },
   });
   return data;
 };
@@ -121,6 +157,25 @@ export const toggleGalleryLike = async (id: string) => {
 export const deleteMyGallerySubmission = async (id: string) => {
   const { data } = await api.delete(`/gallery/my/${id}`);
   return data;
+};
+
+export const getGalleryLikes = async ({
+  id,
+  cursor,
+  limit,
+}: {
+  id: string;
+  cursor?: string | null;
+  limit?: number;
+}) => {
+  const params = new URLSearchParams();
+  if (cursor) params.set("cursor", cursor);
+  if (limit) params.set("limit", String(limit));
+  const query = params.toString();
+  const { data } = await api.get(
+    `/gallery/${id}/likes${query ? `?${query}` : ""}`
+  );
+  return data as GalleryLikesResponse;
 };
 
 // ---------- PRODUCTS API ----------

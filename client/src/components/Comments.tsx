@@ -58,12 +58,10 @@ export default function Comments({ postId }: CommentsProps) {
           setMessage("");
           setShowSuccess(true);
           setTimeout(() => setShowSuccess(false), 2500);
-          toast.success(isRTL ? "نظر شما ثبت شد" : "Comment posted.");
+          toast.success(t("toast.comment_posted", "Comment posted."));
         },
         onError: () => {
-          toast.error(
-            isRTL ? "ارسال نظر ناموفق بود" : "Failed to submit comment"
-          );
+          toast.error(t("toast.comment_submit_failed", "Failed to submit comment"));
         },
       }
     );
@@ -82,10 +80,10 @@ export default function Comments({ postId }: CommentsProps) {
         onSuccess: () => {
           setEditingId(null);
           setEditingMessage("");
-          toast.success(isRTL ? "نظر به‌روزرسانی شد" : "Comment updated.");
+          toast.success(t("toast.comment_updated", "Comment updated."));
         },
         onError: () => {
-          toast.error(isRTL ? "ویرایش ناموفق بود" : "Update failed");
+          toast.error(t("toast.comment_update_failed", "Update failed"));
         },
       }
     );
@@ -97,10 +95,10 @@ export default function Comments({ postId }: CommentsProps) {
       { blogId: postId, commentId },
       {
         onSuccess: () => {
-          toast.success(isRTL ? "نظر حذف شد" : "Comment deleted.");
+          toast.success(t("toast.comment_deleted", "Comment deleted."));
         },
         onError: () => {
-          toast.error(isRTL ? "حذف ناموفق بود" : "Delete failed");
+          toast.error(t("toast.comment_delete_failed", "Delete failed"));
         },
       }
     );

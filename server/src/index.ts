@@ -13,7 +13,8 @@ import contentRoutes from "./routes/contentRoutes";
 import mediaRoutes from "./routes/mediaRoutes";
 
 const app = exprss();
-app.use(cors({ origin: ENV.FRONTEND_URL, credentials: true }));
+const allowedOrigin = ENV.FRONTEND_URL || "http://localhost:5173";
+app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(clerkMiddleware());
 app.use(exprss.json());
 app.use(exprss.urlencoded({ extended: true }));

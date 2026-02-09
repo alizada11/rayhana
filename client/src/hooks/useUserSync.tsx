@@ -1,41 +1,40 @@
 import { useAuth, useUser } from "@clerk/clerk-react";
 import { useMutation } from "@tanstack/react-query";
-import { useEffect, useState } from "react";
+import { useEffect, useRef } from "react";
 import { syncUser } from "../lib/api";
 
-// the best way to implement this is by using webhooks
-const SYNC_KEY = "user_synced";
+// Best: use Clerk webhooks; fallback: sync once per session on client.
 function useUserSync() {
   const { isSignedIn } = useAuth();
   const { user } = useUser();
-  const [hasSynced, setHasSynced] = useState(
-    () => sessionStorage.getItem(SYNC_KEY) === "true"
-  );
-  const {
-    mutate: syncUserMutation,
-    isPending,
-    isSuccess,
-  } = useMutation({
+  const attemptedRef = useRef(false);
+
+  const { mutate: syncUserMutation, isPending, isSuccess } = useMutation({
     mutationFn: syncUser,
     onSuccess: () => {
-      sessionStorage.setItem(SYNC_KEY, "true");
-      setHasSynced(true);
+      attemptedRef.current = true;
+    },
+    onError: () => {
+      attemptedRef.current = false; // allow retry on next render
     },
   });
+
   useEffect(() => {
-    if (!isSignedIn) return;
+    if (!isSignedIn) {
+      attemptedRef.current = false;
+      return;
+    }
     if (!user?.id) return;
-    if (isPending || isSuccess || hasSynced) return;
+    if (isPending || isSuccess) return;
+    if (attemptedRef.current) return;
 
-    setHasSynced(true);
-    sessionStorage.setItem(SYNC_KEY, "true");
-
+    attemptedRef.current = true;
     syncUserMutation({
       email: user.primaryEmailAddress?.emailAddress,
       name: user.fullName || user.firstName,
       imageUrl: user.imageUrl,
     });
-  }, [isSignedIn, user?.id, isPending, isSuccess, hasSynced, syncUserMutation]);
+  }, [isSignedIn, user?.id, user?.fullName, user?.firstName, user?.imageUrl, user?.primaryEmailAddress, isPending, isSuccess, syncUserMutation]);
 
   return { isSynced: isSuccess };
 }

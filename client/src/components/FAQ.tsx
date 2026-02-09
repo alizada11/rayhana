@@ -7,6 +7,7 @@ import {
 } from "@/components/ui/accordion";
 import { motion } from "framer-motion";
 import { useContent } from "@/hooks/useContent";
+import DOMPurify from "dompurify";
 
 export default function FAQ() {
   const { t, i18n } = useTranslation();
@@ -15,19 +16,25 @@ export default function FAQ() {
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
+  const toPlainText = (value?: string) =>
+    typeof value === "string"
+      ? DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim()
+      : "";
 
-  const questions =
-    faqContent?.data?.items?.map((item: any, index: number) => ({
+  const questions = faqContent?.data?.items?.map(
+    (item: any, index: number) => ({
       id: item.id || `q${index + 1}`,
-      question: getLocalized(item.question, t(`faq.q${index + 1}`)),
-      answer: getLocalized(item.answer, t(`faq.a${index + 1}`)),
-    })) ??
-    [
-      { id: "q1", question: t("faq.q1"), answer: t("faq.a1") },
-      { id: "q2", question: t("faq.q2"), answer: t("faq.a2") },
-      { id: "q3", question: t("faq.q3"), answer: t("faq.a3") },
-      { id: "q4", question: t("faq.q4"), answer: t("faq.a4") },
-    ];
+      question: toPlainText(
+        getLocalized(item.question, t(`faq.q${index + 1}`))
+      ),
+      answer: toPlainText(getLocalized(item.answer, t(`faq.a${index + 1}`))),
+    })
+  ) ?? [
+    { id: "q1", question: toPlainText(t("faq.q1")), answer: toPlainText(t("faq.a1")) },
+    { id: "q2", question: toPlainText(t("faq.q2")), answer: toPlainText(t("faq.a2")) },
+    { id: "q3", question: toPlainText(t("faq.q3")), answer: toPlainText(t("faq.a3")) },
+    { id: "q4", question: toPlainText(t("faq.q4")), answer: toPlainText(t("faq.a4")) },
+  ];
 
   return (
     <section className="py-20 bg-muted/30">
@@ -55,8 +62,8 @@ export default function FAQ() {
         >
           <Accordion type="single" collapsible className="w-full space-y-4">
             {questions.map((item, index) => (
-              <AccordionItem 
-                key={item.id} 
+              <AccordionItem
+                key={item.id}
                 value={item.id}
                 className="bg-card border rounded-lg px-4 shadow-sm"
               >

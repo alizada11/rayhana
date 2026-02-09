@@ -4,6 +4,12 @@ import { useLocation } from "wouter";
 import { Heart, Search } from "lucide-react";
 import { useApprovedGallery, useToggleGalleryLike } from "@/hooks/useGallery";
 import { Button } from "@/components/ui/button";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 
 export default function Gallery() {
   const { t, i18n } = useTranslation();
@@ -16,6 +22,7 @@ export default function Gallery() {
   const [sortBy, setSortBy] = useState<"newest" | "popular">("newest");
   const [page, setPage] = useState(1);
   const pageSize = 12;
+  const [activeImage, setActiveImage] = useState<any | null>(null);
 
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
   const resolveImageUrl = (url: string) => {
@@ -66,10 +73,7 @@ export default function Gallery() {
               )}
             </p>
           </div>
-          <Button
-            className="rounded-full"
-            onClick={() => setLocation("/submit-photo")}
-          >
+          <Button className="rounded-full" onClick={() => setLocation("/")}>
             {t("gallery.share_button", "Share Your Photo")}
           </Button>
         </div>
@@ -123,6 +127,7 @@ export default function Gallery() {
             <div
               key={item.id}
               className="group relative aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow"
+              onClick={() => setActiveImage(item)}
             >
               <img
                 src={resolveImageUrl(item.imageUrl)}
@@ -137,7 +142,10 @@ export default function Gallery() {
               </div>
               <button
                 type="button"
-                onClick={() => handleToggleLike(item.id)}
+                onClick={e => {
+                  e.stopPropagation();
+                  handleToggleLike(item.id);
+                }}
                 className="absolute top-3 right-3 inline-flex items-center gap-1 rounded-full bg-white/90 px-2 py-1 text-xs font-medium text-primary shadow"
               >
                 <Heart
@@ -176,6 +184,57 @@ export default function Gallery() {
           </div>
         )}
       </div>
+
+      <Dialog open={Boolean(activeImage)} onOpenChange={() => setActiveImage(null)}>
+        <DialogContent className="max-w-4xl">
+          {activeImage && (
+            <div className="grid md:grid-cols-2 gap-6">
+              <div className="rounded-xl overflow-hidden bg-black">
+                <img
+                  src={resolveImageUrl(activeImage.imageUrl)}
+                  alt={activeImage.dishName}
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="space-y-3">
+                <DialogHeader>
+                  <DialogTitle className="text-2xl font-serif font-bold">
+                    {activeImage.dishName}
+                  </DialogTitle>
+                </DialogHeader>
+                <p className="text-sm text-muted-foreground">
+                  {activeImage.user?.name || (isRTL ? "مهمان" : "Guest")}
+                </p>
+                {activeImage.description && (
+                  <p className="text-sm text-muted-foreground">
+                    {activeImage.description}
+                  </p>
+                )}
+                <div className="flex items-center gap-2 text-sm text-muted-foreground">
+                  <Heart className="w-4 h-4" />
+                  <span>{activeImage.likesCount ?? 0}</span>
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {new Date(activeImage.createdAt).toLocaleDateString()}
+                </div>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    handleToggleLike(activeImage.id);
+                  }}
+                  disabled={toggleLikeMutation.isPending}
+                >
+                  {toggleLikeMutation.isPending
+                    ? t("common.loading", "Loading...")
+                    : activeImage.viewerHasLiked
+                    ? t("gallery.unlike", "Unlike")
+                    : t("gallery.like", "Like")}
+                </Button>
+              </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

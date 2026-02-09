@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { eq, and, sql, desc } from "drizzle-orm";
+import { eq, and, sql, desc, lt, or } from "drizzle-orm";
 import {
   users,
   comments,
@@ -405,6 +405,49 @@ export const getGalleryLikesByUserId = async (userId: string) => {
   return db.query.galleryLikes.findMany({
     where: eq(galleryLikes.userId, userId),
   });
+};
+
+export const getGalleryLikesBySubmissionId = async (
+  submissionId: string,
+  limit: number,
+  cursorId?: string | null
+) => {
+  let cursorLike:
+    | { id: string; createdAt: Date | null }
+    | null
+    | undefined = null;
+
+  if (cursorId) {
+    cursorLike = await db.query.galleryLikes.findFirst({
+      where: eq(galleryLikes.id, cursorId),
+      columns: { id: true, createdAt: true },
+    });
+  }
+
+  const items = await db.query.galleryLikes.findMany({
+    where: cursorLike
+      ? and(
+          eq(galleryLikes.submissionId, submissionId),
+          or(
+            lt(galleryLikes.createdAt, cursorLike.createdAt ?? new Date(0)),
+            and(
+              eq(galleryLikes.createdAt, cursorLike.createdAt ?? new Date(0)),
+              lt(galleryLikes.id, cursorLike.id)
+            )
+          )
+        )
+      : eq(galleryLikes.submissionId, submissionId),
+    with: { user: true },
+    orderBy: [
+      desc(galleryLikes.createdAt),
+      desc(galleryLikes.id), // tie-breaker for stable ordering
+    ],
+    limit,
+  });
+
+  const nextCursor = items.length === limit ? items[items.length - 1].id : null;
+
+  return { items, nextCursor };
 };
 
 export const updateGallerySubmissionStatus = async (

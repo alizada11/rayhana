@@ -6,10 +6,13 @@ import {
   getAllGallery,
   getApprovedGallery,
   getMyGallery,
+  getGalleryLikes,
   rejectGallerySubmission,
   toggleGalleryLike,
   deleteMyGallerySubmission,
+  type GalleryLike,
 } from "@/lib/api";
+import { useInfiniteQuery } from "@tanstack/react-query";
 
 export type GalleryStatus = "pending" | "approved" | "rejected";
 
@@ -141,5 +144,19 @@ export const useDeleteMyGallerySubmission = () => {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["gallery", "my"] });
     },
+  });
+};
+
+export const useGalleryLikes = (id?: string) => {
+  return useInfiniteQuery<{
+    items: GalleryLike[];
+    nextCursor: string | null;
+  }>({
+    queryKey: ["gallery", "likes", id],
+    enabled: Boolean(id),
+    initialPageParam: null as string | null,
+    queryFn: ({ pageParam }) =>
+      getGalleryLikes({ id: id!, cursor: pageParam ?? undefined, limit: 50 }),
+    getNextPageParam: lastPage => lastPage.nextCursor,
   });
 };

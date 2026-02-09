@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useContent } from "@/hooks/useContent";
+import DOMPurify from "dompurify";
 
 export default function About() {
   const { t, i18n } = useTranslation();
@@ -9,38 +10,50 @@ export default function About() {
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
+  const plain = (value: string) =>
+    DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
 
-  const heroTitle = getLocalized(
-    aboutContent?.data?.hero?.title,
-    t("about_page.title")
+  const heroTitle = plain(
+    getLocalized(aboutContent?.data?.hero?.title, t("about_page.title"))
   );
-  const heroSubtitle = getLocalized(
-    aboutContent?.data?.hero?.subtitle,
-    t("about_page.subtitle")
+  const heroSubtitle = plain(
+    getLocalized(aboutContent?.data?.hero?.subtitle, t("about_page.subtitle"))
   );
-  const storyTitle = getLocalized(
-    aboutContent?.data?.story?.title,
-    t("about_page.story_title")
+  const storyTitle = plain(
+    getLocalized(aboutContent?.data?.story?.title, t("about_page.story_title"))
   );
-  const storyBody = getLocalized(
-    aboutContent?.data?.story?.body,
-    t("about_page.story_content")
+  const storyBody = plain(
+    getLocalized(aboutContent?.data?.story?.body, t("about_page.story_content"))
   );
-  const missionTitle = getLocalized(
-    aboutContent?.data?.mission?.title,
-    t("about_page.mission_title")
+  const missionTitle = plain(
+    getLocalized(
+      aboutContent?.data?.mission?.title,
+      t("about_page.mission_title")
+    )
   );
-  const missionBody = getLocalized(
-    aboutContent?.data?.mission?.body,
-    t("about_page.mission_content")
+  const missionBody = plain(
+    getLocalized(
+      aboutContent?.data?.mission?.body,
+      t("about_page.mission_content")
+    )
   );
-  const founderTitle = getLocalized(
-    aboutContent?.data?.founder?.title,
-    t("about_page.founder_title")
+  const founderTitle = plain(
+    getLocalized(
+      aboutContent?.data?.founder?.title,
+      t("about_page.founder_title")
+    )
   );
-  const founderBody = getLocalized(
-    aboutContent?.data?.founder?.body,
-    t("about_page.founder_content")
+  const founderBody = plain(
+    getLocalized(
+      aboutContent?.data?.founder?.body,
+      t("about_page.founder_content")
+    )
+  );
+  const quoteText = plain(
+    getLocalized(
+      aboutContent?.data?.quote?.text,
+      t("about_page.quote", '"Rayhana is not just a product, it is a bridge connecting hearts to home."')
+    )
   );
   const storyImage =
     aboutContent?.data?.images?.story || "/images/about-user.jpg";
@@ -146,7 +159,7 @@ export default function About() {
               </p>
               <div className="pt-4 border-l-4 border-primary pl-6">
                 <p className="text-sm text-muted-foreground italic">
-                  "Rayhana is not just a product, it is a bridge connecting hearts to home."
+                  {quoteText}
                 </p>
               </div>
             </motion.div>
