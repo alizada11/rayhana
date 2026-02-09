@@ -1,5 +1,5 @@
 import { useMyGallery, useDeleteMyGallerySubmission } from "@/hooks/useGallery";
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import {
@@ -88,6 +88,12 @@ export default function GuestDashboard() {
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
   const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
 
   if (isLoading) {
     return (

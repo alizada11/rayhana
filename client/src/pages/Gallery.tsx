@@ -22,7 +22,7 @@ export default function Gallery() {
   const [sortBy, setSortBy] = useState<"newest" | "popular">("newest");
   const [page, setPage] = useState(1);
   const pageSize = 12;
-  const [activeImage, setActiveImage] = useState<any | null>(null);
+  const [activeImageId, setActiveImageId] = useState<string | null>(null);
 
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
   const resolveImageUrl = (url: string) => {
@@ -57,6 +57,12 @@ export default function Gallery() {
   const handleToggleLike = (id: string) => {
     toggleLikeMutation.mutate(id);
   };
+
+  const activeImage =
+    useMemo(
+      () => galleryImages.find(item => item.id === activeImageId) || null,
+      [activeImageId, galleryImages]
+    );
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">
@@ -127,7 +133,7 @@ export default function Gallery() {
             <div
               key={item.id}
               className="group relative aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow"
-              onClick={() => setActiveImage(item)}
+              onClick={() => setActiveImageId(item.id)}
             >
               <img
                 src={resolveImageUrl(item.imageUrl)}
@@ -185,7 +191,10 @@ export default function Gallery() {
         )}
       </div>
 
-      <Dialog open={Boolean(activeImage)} onOpenChange={() => setActiveImage(null)}>
+      <Dialog
+        open={Boolean(activeImageId)}
+        onOpenChange={() => setActiveImageId(null)}
+      >
         <DialogContent className="max-w-4xl">
           {activeImage && (
             <div className="grid md:grid-cols-2 gap-6">
@@ -220,7 +229,9 @@ export default function Gallery() {
                 <Button
                   variant="outline"
                   onClick={() => {
-                    handleToggleLike(activeImage.id);
+                    if (activeImage) {
+                      handleToggleLike(activeImage.id);
+                    }
                   }}
                   disabled={toggleLikeMutation.isPending}
                 >

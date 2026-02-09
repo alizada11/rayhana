@@ -192,7 +192,7 @@ export default function DashboardGallery() {
                       className="flex items-center gap-1.5 text-gray-700 hover:text-gray-900"
                     >
                       <ThumbsUp className="w-4 h-4" />
-                      <span>{item.likesCount} likes</span>
+                      <span>{item.likesCount ?? 0} likes</span>
                     </button>
                   </div>
                   <div className="flex items-center gap-1.5">
@@ -389,7 +389,8 @@ export default function DashboardGallery() {
                       onClick={() => setLikesDialogId(preview.id)}
                       className="font-medium text-left text-gray-800 hover:text-gray-900 underline-offset-2 hover:underline"
                     >
-                      {preview.likesCount} {likesLoading ? "(loading...)" : ""}
+                      {preview.likesCount ?? 0}{" "}
+                      {likesLoading ? "(loading...)" : ""}
                     </button>
                   </div>
                   <div className="space-y-1">

@@ -211,9 +211,21 @@ export default function DashboardContent() {
 
     // Normalize about.quote shape
     if (key === "about") {
-      nextData.quote = nextData.quote || { text: { en: "", fa: "", ps: "" } };
+      if (!nextData.quote || typeof nextData.quote !== "object") {
+        const quoteString =
+          typeof nextData.quote === "string" ? nextData.quote : "";
+        nextData.quote = { text: { en: quoteString, fa: "", ps: "" } };
+      }
+
       if (!nextData.quote.text || typeof nextData.quote.text !== "object") {
-        nextData.quote.text = { en: nextData.quote.text || "", fa: "", ps: "" };
+        nextData.quote.text = {
+          en:
+            typeof nextData.quote.text === "string"
+              ? nextData.quote.text
+              : "",
+          fa: "",
+          ps: "",
+        };
       } else {
         nextData.quote.text = {
           en: nextData.quote.text.en || "",

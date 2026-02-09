@@ -158,8 +158,8 @@
   },
   "comments": {
     "message": "پیام",
-    "signedIn": "واد سیستم شده اید",
-    "title": "نظریات",
+    "signedIn": "وارد سیستم شده\u200cاید",
+    "title": "نظرات",
     "submit": "ارسال نظر"
   },
   "privacy": {

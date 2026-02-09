@@ -13,6 +13,10 @@ import contentRoutes from "./routes/contentRoutes";
 import mediaRoutes from "./routes/mediaRoutes";
 
 const app = exprss();
+const isProduction = process.env.NODE_ENV === "production";
+if (isProduction && !ENV.FRONTEND_URL) {
+  throw new Error("FRONTEND_URL environment variable is required in production");
+}
 const allowedOrigin = ENV.FRONTEND_URL || "http://localhost:5173";
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(clerkMiddleware());

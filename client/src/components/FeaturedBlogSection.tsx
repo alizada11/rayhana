@@ -3,7 +3,6 @@ import { Link } from "wouter";
 import { motion } from "framer-motion";
 import { ArrowRight, Star } from "lucide-react";
 import { useBlogs } from "@/hooks/useBlogs";
-import { Button } from "./ui/button";
 
 export default function FeaturedBlogSection() {
   const { t, i18n } = useTranslation();
@@ -85,14 +84,14 @@ export default function FeaturedBlogSection() {
                       {t("blog.featuredStory", "Featured story")}
                     </span>
                     <span className="text-primary font-semibold group-hover:translate-x-1 transition-transform">
-                      <Button className="bg-primary hover:bg-primary/90 text-white border-none  h-auto rounded-full">
+                      <span className="inline-flex items-center bg-primary text-white px-4 py-2 rounded-full text-sm font-medium">
                         {t("blog.readMore", "Read")}{" "}
                         {isRTL ? (
                           <ArrowRight className="mr-2 h-5 w-5 rotate-180" />
                         ) : (
                           <ArrowRight className="ml-2 h-5 w-5" />
                         )}
-                      </Button>
+                      </span>
                     </span>
                   </div>
                 </div>

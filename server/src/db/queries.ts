@@ -415,11 +415,14 @@ export const getGalleryLikesBySubmissionId = async (
   let cursorLike:
     | { id: string; createdAt: Date | null }
     | null
-    | undefined = null;
+  | undefined = null;
 
   if (cursorId) {
     cursorLike = await db.query.galleryLikes.findFirst({
-      where: eq(galleryLikes.id, cursorId),
+      where: and(
+        eq(galleryLikes.id, cursorId),
+        eq(galleryLikes.submissionId, submissionId)
+      ),
       columns: { id: true, createdAt: true },
     });
   }
