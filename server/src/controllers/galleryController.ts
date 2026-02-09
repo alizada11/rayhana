@@ -170,3 +170,22 @@ export const toggleLike = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to toggle like" });
   }
 };
+
+export const getGalleryLikes = async (req: Request, res: Response) => {
+  try {
+    const id = getId(req.params.id);
+    const limitParam = Number(req.query.limit) || 50;
+    const limit = Math.min(Math.max(1, limitParam), 100); // clamp 1..100
+    const cursor = (req.query.cursor as string | undefined) || null;
+
+    const likes = await queries.getGalleryLikesBySubmissionId(
+      id,
+      limit,
+      cursor
+    );
+    res.status(200).json(likes);
+  } catch (error) {
+    console.error("Error getting gallery likes:", error);
+    res.status(500).json({ error: "Failed to get likes" });
+  }
+};

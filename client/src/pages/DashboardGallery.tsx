@@ -4,6 +4,7 @@ import {
   useRejectGallerySubmission,
   useDeleteGallerySubmission,
   type GallerySubmission,
+  useGalleryLikes,
 } from "@/hooks/useGallery";
 import { useState } from "react";
 import { Dialog, DialogContent, DialogHeader } from "@/components/ui/dialog";
@@ -17,6 +18,7 @@ import {
   User,
   Calendar,
   Eye,
+  Heart,
 } from "lucide-react";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { toast } from "sonner";
@@ -33,6 +35,16 @@ export default function DashboardGallery() {
   const [preview, setPreview] = useState<GallerySubmission | null>(null);
   const [page, setPage] = useState(1);
   const pageSize = 8;
+  const [likesDialogId, setLikesDialogId] = useState<string | null>(null);
+  const activeLikesId = likesDialogId || preview?.id;
+  const {
+    data: likesPages,
+    isLoading: likesLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useGalleryLikes(activeLikesId);
+  const likes = likesPages?.pages.flatMap(page => page.items) ?? [];
 
   const resolveImageUrl = (url?: string) => {
     if (!url) return "";
@@ -174,10 +186,14 @@ export default function DashboardGallery() {
                       <User className="w-4 h-4" />
                       <span>{item.user?.name || "Anonymous"}</span>
                     </div>
-                    <div className="flex items-center gap-1.5">
+                    <button
+                      type="button"
+                      onClick={() => setLikesDialogId(item.id)}
+                      className="flex items-center gap-1.5 text-gray-700 hover:text-gray-900"
+                    >
                       <ThumbsUp className="w-4 h-4" />
-                      <span>{item.likesCount} likes</span>
-                    </div>
+                      <span>{item.likesCount ?? 0} likes</span>
+                    </button>
                   </div>
                   <div className="flex items-center gap-1.5">
                     <Calendar className="w-4 h-4" />
@@ -368,7 +384,17 @@ export default function DashboardGallery() {
                   </div>
                   <div className="space-y-1">
                     <div className="text-gray-500">Likes</div>
-                    <div className="font-medium">{preview.likesCount}</div>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setLikesDialogId(preview.id);
+                        setPreview(null);
+                      }}
+                      className="font-medium text-left text-gray-800 hover:text-gray-900 underline-offset-2 hover:underline"
+                    >
+                      {preview.likesCount ?? 0}{" "}
+                      {likesLoading ? "(loading...)" : ""}
+                    </button>
                   </div>
                   <div className="space-y-1">
                     <div className="text-gray-500">Status</div>
@@ -383,7 +409,63 @@ export default function DashboardGallery() {
                     </div>
                   </div>
                 </div>
+                {/* Likes list moved to dedicated dialog */}
               </div>
+            </div>
+          )}
+        </DialogContent>
+      </Dialog>
+
+      {/* Likes Dialog */}
+      <Dialog
+        open={Boolean(likesDialogId)}
+        onOpenChange={open => {
+          if (!open) setLikesDialogId(null);
+        }}
+      >
+        <DialogContent className="max-w-lg">
+          <DialogHeader>
+            <DialogTitle className="text-lg font-semibold">Likes</DialogTitle>
+          </DialogHeader>
+          {likesLoading ? (
+            <div className="text-sm text-gray-500">Loading likes...</div>
+          ) : likes.length === 0 ? (
+            <div className="text-sm text-gray-500">
+              No likes yet for this submission.
+            </div>
+          ) : (
+            <div className="space-y-3">
+              <div className="max-h-72 overflow-auto space-y-2">
+                {likes.map(like => (
+                  <div
+                    key={like.id}
+                    className="flex items-center justify-between text-sm text-gray-800 border border-gray-100 rounded-lg px-3 py-2"
+                  >
+                    <div className="flex flex-col">
+                      <span className="font-medium">
+                        {like.user?.name || "Anonymous"}
+                      </span>
+                      {like.user?.email && (
+                        <span className="text-xs text-gray-500">
+                          {like.user.email}
+                        </span>
+                      )}
+                    </div>
+                    <div className="text-xs text-gray-500">
+                      <Heart className="fill-primary" />
+                    </div>
+                  </div>
+                ))}
+              </div>
+              {hasNextPage && (
+                <button
+                  onClick={() => fetchNextPage()}
+                  disabled={isFetchingNextPage}
+                  className="w-full text-sm font-medium text-gray-700 border border-gray-200 rounded-lg py-2 hover:bg-gray-50 disabled:opacity-50"
+                >
+                  {isFetchingNextPage ? "Loading..." : "Load more"}
+                </button>
+              )}
             </div>
           )}
         </DialogContent>

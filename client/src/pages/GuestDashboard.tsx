@@ -1,5 +1,6 @@
 import { useMyGallery, useDeleteMyGallerySubmission } from "@/hooks/useGallery";
-import { useState } from "react";
+import { useState, useMemo, useEffect } from "react";
+import { useTranslation } from "react-i18next";
 import { format } from "date-fns";
 import {
   ThumbsUp,
@@ -31,6 +32,7 @@ import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
 
 export default function GuestDashboard() {
+  const { t } = useTranslation();
   const { data: submissions = [], isLoading } = useMyGallery();
   const deleteMutation = useDeleteMyGallerySubmission();
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
@@ -38,6 +40,8 @@ export default function GuestDashboard() {
     "all" | "pending" | "approved" | "rejected"
   >("all");
   const [previewImage, setPreviewImage] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const pageSize = 6;
 
   const resolveImageUrl = (url?: string) => {
     if (!url) return "";
@@ -74,9 +78,22 @@ export default function GuestDashboard() {
     }
   };
 
-  const filtered = submissions.filter(s =>
-    statusFilter === "all" ? true : s.status === statusFilter
+  const filtered = useMemo(
+    () =>
+      submissions.filter(s =>
+        statusFilter === "all" ? true : s.status === statusFilter
+      ),
+    [submissions, statusFilter]
   );
+
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
+  const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
+
+  useEffect(() => {
+    if (page > totalPages) {
+      setPage(totalPages);
+    }
+  }, [page, totalPages]);
 
   if (isLoading) {
     return (
@@ -124,7 +141,10 @@ export default function GuestDashboard() {
 
             <Tabs
               value={statusFilter}
-              onValueChange={v => setStatusFilter(v as any)}
+              onValueChange={v => {
+                setStatusFilter(v as any);
+                setPage(1);
+              }}
               className="w-full sm:w-auto"
             >
               <TabsList className="grid grid-cols-4 w-full sm:w-auto">
@@ -152,12 +172,12 @@ export default function GuestDashboard() {
                 : `No ${statusFilter} submissions found.`}
             </p>
             <Button asChild>
-              <a href="/submit-photo">Submit Your First Photo</a>
+              <a href="/">Submit Your First Photo</a>
             </Button>
           </div>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {filtered.map(item => {
+            {pageItems.map(item => {
               const statusConfig = getStatusConfig(item.status);
               const imageUrl = resolveImageUrl(item.imageUrl);
 
@@ -248,10 +268,17 @@ export default function GuestDashboard() {
                         ) {
                           deleteMutation.mutate(item.id, {
                             onSuccess: () => {
-                              toast.success("Submission deleted.");
+                              toast.success(
+                                t("gallery.toast.submission_deleted", "Submission deleted.")
+                              );
                             },
                             onError: () => {
-                              toast.error("Failed to delete submission.");
+                              toast.error(
+                                t(
+                                  "gallery.toast.submission_delete_failed",
+                                  "Failed to delete submission."
+                                )
+                              );
                             },
                           });
                         }
@@ -265,6 +292,28 @@ export default function GuestDashboard() {
                 </Card>
               );
             })}
+          </div>
+        )}
+
+        {filtered.length > 0 && totalPages > 1 && (
+          <div className="flex items-center justify-center gap-2 pt-10">
+            <Button
+              variant="outline"
+              onClick={() => setPage(p => Math.max(1, p - 1))}
+              disabled={page === 1}
+            >
+              Previous
+            </Button>
+            <div className="text-sm text-gray-600">
+              Page {page} of {totalPages}
+            </div>
+            <Button
+              variant="outline"
+              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              disabled={page === totalPages}
+            >
+              Next
+            </Button>
           </div>
         )}
 

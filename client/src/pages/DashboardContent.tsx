@@ -55,6 +55,9 @@ const fallbackAbout = {
     title: { en: "", fa: "", ps: "" },
     body: { en: "", fa: "", ps: "" },
   },
+  quote: {
+    text: { en: "", fa: "", ps: "" },
+  },
 };
 
 const fallbackFaq = {
@@ -204,6 +207,32 @@ export default function DashboardContent() {
           };
         }
       );
+    }
+
+    // Normalize about.quote shape
+    if (key === "about") {
+      if (!nextData.quote || typeof nextData.quote !== "object") {
+        const quoteString =
+          typeof nextData.quote === "string" ? nextData.quote : "";
+        nextData.quote = { text: { en: quoteString, fa: "", ps: "" } };
+      }
+
+      if (!nextData.quote.text || typeof nextData.quote.text !== "object") {
+        nextData.quote.text = {
+          en:
+            typeof nextData.quote.text === "string"
+              ? nextData.quote.text
+              : "",
+          fa: "",
+          ps: "",
+        };
+      } else {
+        nextData.quote.text = {
+          en: nextData.quote.text.en || "",
+          fa: nextData.quote.text.fa || "",
+          ps: nextData.quote.text.ps || "",
+        };
+      }
     }
 
     setFormData(nextData);
@@ -489,8 +518,8 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
-            <h2 className="font-serif text-xl font-bold">Values Cards</h2>
+      <div className="bg-white border rounded-xl p-4 space-y-4">
+        <h2 className="font-serif text-xl font-bold">Values Cards</h2>
             <div className="grid md:grid-cols-3 gap-4">
               {formData.values?.map((item: any, idx: number) => (
                 <div key={`value-${idx}`} className="space-y-3">
@@ -531,7 +560,94 @@ export default function DashboardContent() {
                       }}
                       placeholder={`Body ${idx + 1}`}
                     />
-                  </div>
+      </div>
+
+      {/* About Editor */}
+      {key === "about" && (
+        <div className="space-y-6">
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Hero</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Hero title"
+                value={formData.hero?.title?.[activeLang] || ""}
+                onChange={e => updateLangField(["hero", "title"], e.target.value)}
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Hero subtitle"
+                value={formData.hero?.subtitle?.[activeLang] || ""}
+                onChange={e => updateLangField(["hero", "subtitle"], e.target.value)}
+              />
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Story</h2>
+            <div className="space-y-4">
+              <input
+                className="border rounded-lg px-3 py-2 w-full"
+                placeholder="Story title"
+                value={formData.story?.title?.[activeLang] || ""}
+                onChange={e => updateLangField(["story", "title"], e.target.value)}
+              />
+              <BlogRichTextEditor
+                value={formData.story?.body?.[activeLang] || ""}
+                onChange={value => updateLangField(["story", "body"], value)}
+                placeholder="Story body"
+              />
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Mission</h2>
+            <div className="space-y-4">
+              <input
+                className="border rounded-lg px-3 py-2 w-full"
+                placeholder="Mission title"
+                value={formData.mission?.title?.[activeLang] || ""}
+                onChange={e => updateLangField(["mission", "title"], e.target.value)}
+              />
+              <BlogRichTextEditor
+                value={formData.mission?.body?.[activeLang] || ""}
+                onChange={value => updateLangField(["mission", "body"], value)}
+                placeholder="Mission body"
+              />
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Founder</h2>
+            <div className="space-y-4">
+              <input
+                className="border rounded-lg px-3 py-2 w-full"
+                placeholder="Founder title"
+                value={formData.founder?.title?.[activeLang] || ""}
+                onChange={e => updateLangField(["founder", "title"], e.target.value)}
+              />
+              <BlogRichTextEditor
+                value={formData.founder?.body?.[activeLang] || ""}
+                onChange={value => updateLangField(["founder", "body"], value)}
+                placeholder="Founder body"
+              />
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Quote</h2>
+            <input
+              className="border rounded-lg px-3 py-2 w-full"
+              placeholder="Quote text"
+              value={formData.quote?.text?.[activeLang] || ""}
+              onChange={e => updateLangField(["quote", "text"], e.target.value)}
+            />
+            <p className="text-xs text-gray-500">
+              This appears in the founder section; HTML is stripped on render.
+            </p>
+          </div>
+        </div>
+      )}
                   <select
                     className="border rounded-lg px-3 py-2 w-full"
                     value={item.icon || "star"}
@@ -659,6 +775,19 @@ export default function DashboardContent() {
                 />
               </div>
             </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-3">
+            <h2 className="font-serif text-xl font-bold">Quote</h2>
+            <input
+              className="border rounded-lg px-3 py-2 w-full"
+              placeholder="Quote text"
+              value={formData.quote?.text?.[activeLang] || ""}
+              onChange={e => updateLangField(["quote", "text"], e.target.value)}
+            />
+            <p className="text-xs text-gray-500">
+              Appears in the founder section; HTML is stripped on render.
+            </p>
           </div>
         </div>
       )}

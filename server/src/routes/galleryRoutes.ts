@@ -53,5 +53,11 @@ router.delete(
 
 // Any signed-in user: like/unlike
 router.post("/:id/like", requireAuth(), galleryController.toggleLike);
+router.get(
+  "/:id/likes",
+  requireAuth(),
+  requireAdmin,
+  galleryController.getGalleryLikes
+);
 
 export default router;

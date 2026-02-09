@@ -2,7 +2,8 @@ import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Camera, Heart, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { useState } from "react";
+import { Progress } from "@/components/ui/progress";
+import { useEffect, useState } from "react";
 import {
   Dialog,
   DialogContent,
@@ -32,6 +33,8 @@ export function CustomerGallery() {
   const [description, setDescription] = useState("");
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [activeImage, setActiveImage] = useState<any | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [objectUrl, setObjectUrl] = useState<string | null>(null);
 
   const { isSignedIn } = useAuth();
   const { data: me } = useUserRole();
@@ -47,28 +50,48 @@ export function CustomerGallery() {
     return `${apiBase}${url}`;
   };
 
-  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setImageFile(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedImage(reader.result as string);
-      };
-      reader.readAsDataURL(file);
+  const revokePreview = () => {
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+      setObjectUrl(null);
     }
   };
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const maxBytes = 5 * 1024 * 1024; // 5MB client cap
+    if (file.size > maxBytes) {
+      toast.error(
+        isRTL
+          ? "حجم تصویر باید کمتر از ۵ مگابایت باشد"
+          : "Please choose an image under 5MB"
+      );
+      e.target.value = "";
+      return;
+    }
+
+    revokePreview();
+    const preview = URL.createObjectURL(file);
+    setObjectUrl(preview);
+    setSelectedImage(preview);
+    setImageFile(file);
+  };
+
+  // Cleanup created object URLs on unmount
+  useEffect(() => {
+    return () => revokePreview();
+  }, []);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!imageFile) {
-      toast.error(
-        isRTL ? "لطفاً یک تصویر انتخاب کنید" : "Please select an image"
-      );
+      toast.error(t("gallery.toast.no_image", "Please select an image"));
       return;
     }
     if (!dishName.trim()) {
-      toast.error(isRTL ? "نام غذا الزامی است" : "Dish name is required");
+      toast.error(t("gallery.toast.no_name", "Dish name is required"));
       return;
     }
 
@@ -77,20 +100,30 @@ export function CustomerGallery() {
     payload.append("dishName", dishName.trim());
     if (description.trim()) payload.append("description", description.trim());
 
-    createMutation.mutate(payload, {
-      onSuccess: () => {
-        toast.success(
-          isRTL
-            ? "عکس شما ارسال شد و پس از تایید نمایش داده می‌شود"
-            : "Photo submitted. It will appear after approval."
-        );
-        setIsOpen(false);
-        setSelectedImage(null);
-        setImageFile(null);
-        setDishName("");
-        setDescription("");
-      },
-    });
+    setUploadProgress(0);
+    createMutation.mutate(
+      { payload, onProgress: setUploadProgress },
+      {
+        onSuccess: () => {
+          toast.success(
+            t(
+              "gallery.toast.submitted",
+              "Photo submitted. It will appear after approval."
+            )
+          );
+          setIsOpen(false);
+          setSelectedImage(null);
+          setImageFile(null);
+          setDishName("");
+          setDescription("");
+          revokePreview();
+          setUploadProgress(null);
+        },
+        onError: () => {
+          setUploadProgress(null);
+        },
+      }
+    );
   };
 
   const canSubmit = isSignedIn && me?.role === "guest";
@@ -129,7 +162,7 @@ export function CustomerGallery() {
               {isRTL ? "هنوز عکسی ارسال نشده" : "No photos yet"}
             </div>
           )}
-          {galleryImages.map((img, index) => (
+          {galleryImages.slice(0, 8).map((img, index) => (
             <motion.div
               key={img.id}
               initial={{ opacity: 0, scale: 0.9 }}
@@ -185,25 +218,29 @@ export function CustomerGallery() {
                   setLocation("/pamik-sign-in");
                 } else {
                   toast.error(
-                    isRTL
-                      ? "فقط مهمان‌ها می‌توانند ارسال کنند"
-                      : "Only guests can submit"
+                    t("gallery.toast.guests_only", "Only guests can submit")
                   );
                 }
                 return;
               }
               setIsOpen(open);
+              if (open) {
+                setUploadProgress(null);
+                revokePreview();
+                setSelectedImage(null);
+                setImageFile(null);
+              }
             }}
-            >
-              <DialogTrigger asChild>
-                <Button
-                  size="lg"
-                  className="rounded-full bg-amber-700 hover:bg-amber-800 text-white px-8 shadow-lg hover:shadow-xl transition-all gap-2"
-                >
-                  <Camera className="w-5 h-5" />
-                  {t("gallery.share_button")}
-                </Button>
-              </DialogTrigger>
+          >
+            <DialogTrigger asChild>
+              <Button
+                size="lg"
+                className="rounded-full bg-amber-700 hover:bg-amber-800 text-white px-8 shadow-lg hover:shadow-xl transition-all gap-2"
+              >
+                <Camera className="w-5 h-5" />
+                {t("gallery.share_button")}
+              </Button>
+            </DialogTrigger>
             <DialogContent className={`sm:max-w-md ${isRTL ? "rtl" : "ltr"}`}>
               <DialogHeader>
                 <DialogTitle className="text-center font-serif text-2xl text-amber-900 dark:text-amber-500">
@@ -257,6 +294,17 @@ export function CustomerGallery() {
                 </div>
 
                 <div className="space-y-4">
+                  {(createMutation.isPending || uploadProgress !== null) && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs text-stone-500">
+                        <span>
+                          {isRTL ? "در حال آپلود..." : "Uploading..."}
+                        </span>
+                        <span>{uploadProgress ?? 0}%</span>
+                      </div>
+                      <Progress value={uploadProgress ?? 0} />
+                    </div>
+                  )}
                   <div className="space-y-2">
                     <Label
                       htmlFor="dish-name"
@@ -295,9 +343,12 @@ export function CustomerGallery() {
 
                 <Button
                   type="submit"
+                  disabled={createMutation.isPending}
                   className="w-full rounded-full bg-amber-700 hover:bg-amber-800 text-white h-11 text-base font-medium shadow-md hover:shadow-lg transition-all"
                 >
-                  {t("gallery.submit_photo")}
+                  {createMutation.isPending
+                    ? t("gallery.uploading", "Uploading...")
+                    : t("gallery.submit_photo")}
                 </Button>
               </form>
             </DialogContent>

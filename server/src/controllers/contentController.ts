@@ -10,7 +10,9 @@ export const getContentByKey = async (req: Request, res: Response) => {
   try {
     const key = getParam(req.params.key);
     const content = await queries.getSiteContentByKey(key);
-    if (!content) return res.status(404).json({ error: "Not found" });
+    if (!content) {
+      return res.status(200).json({ key, data: {}, updatedAt: null });
+    }
     res.status(200).json(content);
   } catch (error) {
     console.error("Error fetching content:", error);

@@ -134,7 +134,10 @@
     "featuredTitle": "داستان‌های ویژه",
     "featuredSubtitle": "محبوب‌ترین دستورها و سفرهای فرهنگی ما.",
     "featured": "ویژه",
-    "viewAll": "مشاهده همه"
+    "viewAll": "مشاهده همه",
+    "cookWithUs": "آماده پخت قابلی پلو اصیل هستی؟",
+    "featuredStory": "داستان ویژه",
+    "readMore": "ادامه خواندن"
   },
   "help": {
     "notFound": "مطلب راهنما پیدا نشد",
@@ -152,6 +155,12 @@
       "needHelp": "کمک می‌خواهید؟ سری بزنید به",
       "helpCenter": "مرکز راهنما"
     }
+  },
+  "comments": {
+    "message": "پیام",
+    "signedIn": "وارد سیستم شده\u200cاید",
+    "title": "نظرات",
+    "submit": "ارسال نظر"
   },
   "privacy": {
     "effectiveDate": "تاریخ اجرا",

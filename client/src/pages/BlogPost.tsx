@@ -88,7 +88,7 @@ export default function BlogPost() {
               {title}
             </motion.h1>
 
-            <div className="flex flex-wrap items-center gap-6 text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-6 text-muted-foreground text-sm md:text-base">
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5" />
                 <span>
@@ -112,14 +112,22 @@ export default function BlogPost() {
 
       {/* Content */}
       <div className="container mx-auto px-4">
-        <div className="max-w-3xl mx-auto">
-          // biome-ignore lint/security/noDangerouslySetInnerHtml: sanitized via
-          DOMPurify
+        <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ delay: 0.2 }}
-            className="prose prose-lg dark:prose-invert max-w-none font-sans"
+            className={`prose prose-lg dark:prose-invert max-w-none font-sans
+              prose-headings:font-serif prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl
+              prose-headings:mt-8 prose-headings:mb-3
+              prose-p:text-base prose-p:leading-8 prose-p:mt-3 prose-p:mb-5
+              prose-li:leading-8 prose-li:mt-2 prose-li:mb-2
+              prose-img:rounded-2xl prose-img:shadow-md prose-img:border prose-img:border-border prose-img:my-6
+              prose-blockquote:border-l-4 prose-blockquote:border-primary/50 prose-blockquote:bg-muted/30 prose-blockquote:px-4 prose-blockquote:py-3 prose-blockquote:rounded-lg prose-blockquote:my-6
+              prose-ul:list-disc prose-ol:list-decimal prose-ul:pl-6 prose-ol:pl-6 prose-ul:my-4 prose-ol:my-4
+              prose-table:shadow-sm prose-table:border prose-td:border prose-th:border prose-table:my-6
+              prose-a:text-primary hover:prose-a:text-primary/80
+              ${isRTL ? "rtl prose-headings:font-[inherit]" : ""}`}
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
           <div className="mt-16 pt-8 border-t border-border">
