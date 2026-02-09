@@ -58,11 +58,10 @@ export default function Gallery() {
     toggleLikeMutation.mutate(id);
   };
 
-  const activeImage =
-    useMemo(
-      () => galleryImages.find(item => item.id === activeImageId) || null,
-      [activeImageId, galleryImages]
-    );
+  const activeImage = useMemo(
+    () => galleryImages.find(item => item.id === activeImageId) || null,
+    [activeImageId, galleryImages]
+  );
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">
@@ -134,6 +133,14 @@ export default function Gallery() {
               key={item.id}
               className="group relative aspect-square rounded-2xl overflow-hidden shadow-sm hover:shadow-lg transition-shadow"
               onClick={() => setActiveImageId(item.id)}
+              role="button"
+              tabIndex={0}
+              onKeyDown={e => {
+                if (e.key === "Enter" || e.key === " ") {
+                  e.preventDefault();
+                  setActiveImageId(item.id);
+                }
+              }}
             >
               <img
                 src={resolveImageUrl(item.imageUrl)}
@@ -238,8 +245,8 @@ export default function Gallery() {
                   {toggleLikeMutation.isPending
                     ? t("common.loading", "Loading...")
                     : activeImage.viewerHasLiked
-                    ? t("gallery.unlike", "Unlike")
-                    : t("gallery.like", "Like")}
+                      ? t("gallery.unlike", "Unlike")
+                      : t("gallery.like", "Like")}
                 </Button>
               </div>
             </div>

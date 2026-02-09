@@ -386,7 +386,10 @@ export default function DashboardGallery() {
                     <div className="text-gray-500">Likes</div>
                     <button
                       type="button"
-                      onClick={() => setLikesDialogId(preview.id)}
+                      onClick={() => {
+                        setLikesDialogId(preview.id);
+                        setPreview(null);
+                      }}
                       className="font-medium text-left text-gray-800 hover:text-gray-900 underline-offset-2 hover:underline"
                     >
                       {preview.likesCount ?? 0}{" "}
