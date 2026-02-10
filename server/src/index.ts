@@ -11,6 +11,9 @@ import galleryRoutes from "./routes/galleryRoutes";
 import blogRoutes from "./routes/blogRoutes";
 import contentRoutes from "./routes/contentRoutes";
 import mediaRoutes from "./routes/mediaRoutes";
+import contactRoutes from "./routes/contactRoutes";
+import newsletterRoutes from "./routes/newsletterRoutes";
+import dashboardRoutes from "./routes/dashboardRoutes";
 
 const app = exprss();
 const isProduction = process.env.NODE_ENV === "production";
@@ -35,6 +38,9 @@ app.use("/api/gallery", galleryRoutes);
 app.use("/api/blogs", blogRoutes);
 app.use("/api/content", contentRoutes);
 app.use("/api/media", mediaRoutes);
+app.use("/api/contact", contactRoutes);
+app.use("/api/newsletter", newsletterRoutes);
+app.use("/api/dashboard", dashboardRoutes);
 
 app.listen(ENV.PORT, () =>
   console.log("Server is up and running on port:", ENV.PORT)

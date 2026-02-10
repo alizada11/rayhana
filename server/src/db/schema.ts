@@ -19,6 +19,16 @@ export const galleryStatusEnum = pgEnum("gallery_status", [
   "rejected",
 ]);
 
+export const contactStatusEnum = pgEnum("contact_status", ["new", "resolved"]);
+
+export const newsletterSubscriptions = pgTable("newsletter_subscriptions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  email: text("email").notNull(),
+  country: text("country"),
+  ip: text("ip"),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
+
 export const blogStatusEnum = pgEnum("blog_status", ["draft", "published"]);
 
 export const users = pgTable("users", {
@@ -141,6 +151,20 @@ export const mediaAssets = pgTable("media_assets", {
     .notNull()
     .references(() => users.id, { onDelete: "cascade" }),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const contactMessages = pgTable("contact_messages", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  name: text("name").notNull(),
+  email: text("email").notNull(),
+  subject: text("subject"),
+  message: text("message").notNull(),
+  status: contactStatusEnum("status").notNull().default("new"),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
 });
 
 export const gallerySubmissions = pgTable("gallery_submissions", {
@@ -280,3 +304,9 @@ export type NewGallerySubmission = typeof gallerySubmissions.$inferInsert;
 
 export type GalleryLike = typeof galleryLikes.$inferSelect;
 export type NewGalleryLike = typeof galleryLikes.$inferInsert;
+
+export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
+export type NewNewsletterSubscription = typeof newsletterSubscriptions.$inferInsert;
+
+export type ContactMessage = typeof contactMessages.$inferSelect;
+export type NewContactMessage = typeof contactMessages.$inferInsert;

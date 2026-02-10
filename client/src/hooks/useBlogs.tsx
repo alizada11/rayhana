@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useInfiniteQuery,
+} from "@tanstack/react-query";
 import {
   createBlogPost,
   deleteBlogPost,
@@ -6,6 +11,7 @@ import {
   getBlogPosts,
   updateBlogPost,
   getBlogComments,
+  getAllBlogComments,
   createBlogComment,
   updateBlogComment,
   deleteBlogComment,
@@ -106,6 +112,19 @@ export const useBlogComments = (blogId?: ID) => {
     queryKey: ["blogComments", blogId],
     queryFn: () => getBlogComments(blogId as ID),
     enabled: Boolean(blogId),
+  });
+};
+
+export const useAllBlogComments = () => {
+  return useInfiniteQuery<{ items: BlogComment[]; nextCursor: string | null }>({
+    queryKey: ["blogComments", "admin"],
+    initialPageParam: null as string | null,
+    queryFn: ({ pageParam }) =>
+      getAllBlogComments({
+        cursor: (pageParam as string | null | undefined) ?? null,
+        limit: 20,
+      }),
+    getNextPageParam: last => last.nextCursor,
   });
 };
 

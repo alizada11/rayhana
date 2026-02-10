@@ -156,7 +156,11 @@ export const useGalleryLikes = (id?: string) => {
     enabled: Boolean(id),
     initialPageParam: null as string | null,
     queryFn: ({ pageParam }) =>
-      getGalleryLikes({ id: id!, cursor: pageParam ?? undefined, limit: 50 }),
+      getGalleryLikes({
+        id: id!,
+        cursor: (pageParam as string | null | undefined) ?? undefined,
+        limit: 50,
+      }),
     getNextPageParam: lastPage => lastPage.nextCursor,
   });
 };

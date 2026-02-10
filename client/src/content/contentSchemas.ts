@@ -60,7 +60,7 @@ export type ContentSection = {
 };
 
 export type ContentSchema = {
-  key: "home" | "about" | "faq" | "terms" | "privacy" | "help";
+  key: "home" | "about" | "faq" | "terms" | "privacy" | "help" | "contact";
   sections: ContentSection[];
 };
 
@@ -582,6 +582,110 @@ export const contentSchemas: Record<ContentSchema["key"], ContentSchema> = {
                 localized: true,
               },
             ],
+          },
+        ],
+      },
+    ],
+  },
+  contact: {
+    key: "contact",
+    sections: [
+      {
+        title: "Hero",
+        fields: [
+          {
+            type: "text",
+            label: "Title",
+            path: ["hero", "title"],
+            localized: true,
+          },
+          {
+            type: "text",
+            label: "Subtitle",
+            path: ["hero", "subtitle"],
+            localized: true,
+          },
+        ],
+      },
+      {
+        title: "Info Cards",
+        fields: [
+          {
+            type: "object-list",
+            label: "Info Items",
+            path: ["info"],
+            itemLabel: index => `Item ${index + 1}`,
+            itemDefaults: {
+              icon: "mapPin",
+              title: { en: "", fa: "", ps: "" },
+              value: { en: "", fa: "", ps: "" },
+            },
+            fields: [
+              {
+                type: "text",
+                label: "Icon (lucide name)",
+                path: ["icon"],
+              },
+              {
+                type: "text",
+                label: "Title",
+                path: ["title"],
+                localized: true,
+              },
+              {
+                type: "text",
+                label: "Value",
+                path: ["value"],
+                localized: true,
+              },
+            ],
+          },
+        ],
+      },
+      {
+        title: "Form",
+        fields: [
+          {
+            type: "text",
+            label: "Name Label",
+            path: ["form", "nameLabel"],
+            localized: true,
+          },
+          {
+            type: "text",
+            label: "Email Label",
+            path: ["form", "emailLabel"],
+            localized: true,
+          },
+          {
+            type: "text",
+            label: "Subject Label",
+            path: ["form", "subjectLabel"],
+            localized: true,
+          },
+          {
+            type: "text",
+            label: "Message Label",
+            path: ["form", "messageLabel"],
+            localized: true,
+          },
+          {
+            type: "text",
+            label: "Submit Label",
+            path: ["form", "submitLabel"],
+            localized: true,
+          },
+          {
+            type: "text",
+            label: "Success Message",
+            path: ["form", "successMessage"],
+            localized: true,
+          },
+          {
+            type: "text",
+            label: "Error Message",
+            path: ["form", "errorMessage"],
+            localized: true,
           },
         ],
       },

@@ -1,5 +1,5 @@
 import { db } from "./index";
-import { eq, and, sql, desc, lt, or } from "drizzle-orm";
+import { eq, and, sql, desc, lt, or, gte, lte } from "drizzle-orm";
 import {
   users,
   comments,
@@ -10,6 +10,8 @@ import {
   mediaAssets,
   gallerySubmissions,
   galleryLikes,
+  contactMessages,
+  newsletterSubscriptions,
   type NewUser,
   type NewComment,
   type NewProduct,
@@ -19,6 +21,8 @@ import {
   type NewMediaAsset,
   type NewGallerySubmission,
   type NewGalleryLike,
+  type NewContactMessage,
+  type NewNewsletterSubscription,
 } from "./schema";
 
 // USER QUERIES
@@ -304,6 +308,47 @@ export const deleteBlogComment = async (id: string) => {
   return comment;
 };
 
+export const getAllBlogCommentsPaged = async ({
+  limit,
+  cursorId,
+}: {
+  limit: number;
+  cursorId?: string | null;
+}) => {
+  let cursor:
+    | { id: string; createdAt: Date | null }
+    | null
+    | undefined = null;
+
+  if (cursorId) {
+    cursor = await db.query.blogComments.findFirst({
+      where: eq(blogComments.id, cursorId),
+      columns: { id: true, createdAt: true },
+    });
+  }
+
+  const items = await db.query.blogComments.findMany({
+    with: { user: true, blog: true },
+    where: cursor
+      ? or(
+          lt(blogComments.createdAt, cursor.createdAt ?? new Date(0)),
+          and(
+            eq(blogComments.createdAt, cursor.createdAt ?? new Date(0)),
+            lt(blogComments.id, cursor.id)
+          )
+        )
+      : undefined,
+    orderBy: [
+      desc(blogComments.createdAt),
+      desc(blogComments.id),
+    ],
+    limit,
+  });
+
+  const nextCursor = items.length === limit ? items[items.length - 1].id : null;
+  return { items, nextCursor };
+};
+
 export const getBlogCommentById = async (id: string) => {
   return db.query.blogComments.findFirst({
     where: eq(blogComments.id, id),
@@ -353,6 +398,46 @@ export const getMediaAssets = async () => {
     with: { user: true },
     orderBy: (mediaAssets, { desc }) => [desc(mediaAssets.createdAt)],
   });
+};
+
+export const getMediaAssetsPaged = async ({
+  limit,
+  cursorId,
+}: {
+  limit: number;
+  cursorId?: string | null;
+}) => {
+  let cursor:
+    | { id: string; createdAt: Date | null }
+    | null
+    | undefined = null;
+
+  if (cursorId) {
+    cursor = await db.query.mediaAssets.findFirst({
+      where: eq(mediaAssets.id, cursorId),
+      columns: { id: true, createdAt: true },
+    });
+  }
+
+  const items = await db.query.mediaAssets.findMany({
+    where: cursor
+      ? or(
+          lt(mediaAssets.createdAt, cursor.createdAt ?? new Date(0)),
+          and(
+            eq(mediaAssets.createdAt, cursor.createdAt ?? new Date(0)),
+            lt(mediaAssets.id, cursor.id)
+          )
+        )
+      : undefined,
+    orderBy: [
+      desc(mediaAssets.createdAt),
+      desc(mediaAssets.id),
+    ],
+    limit,
+  });
+
+  const nextCursor = items.length === limit ? items[items.length - 1].id : null;
+  return { items, nextCursor };
 };
 
 export const deleteMediaAsset = async (id: string) => {
@@ -517,4 +602,198 @@ export const toggleGalleryLike = async (
 
     return { liked: true, like };
   });
+};
+
+// CONTACT MESSAGES
+export const createContactMessage = async (data: NewContactMessage) => {
+  const [record] = await db.insert(contactMessages).values(data).returning();
+  return record;
+};
+
+export const listContactMessages = async ({
+  status,
+  limit,
+  cursorId,
+}: {
+  status?: "new" | "resolved";
+  limit: number;
+  cursorId?: string | null;
+}) => {
+  let cursor:
+    | { id: string; createdAt: Date | null }
+    | null
+    | undefined = null;
+
+  if (cursorId) {
+    cursor = await db.query.contactMessages.findFirst({
+      where: eq(contactMessages.id, cursorId),
+      columns: { id: true, createdAt: true },
+    });
+  }
+
+  const items = await db.query.contactMessages.findMany({
+    where: and(
+      status ? eq(contactMessages.status, status) : undefined,
+      cursor
+        ? or(
+            lt(contactMessages.createdAt, cursor.createdAt ?? new Date(0)),
+            and(
+              eq(contactMessages.createdAt, cursor.createdAt ?? new Date(0)),
+              lt(contactMessages.id, cursor.id)
+            )
+          )
+        : undefined
+    ),
+    orderBy: [
+      desc(contactMessages.createdAt),
+      desc(contactMessages.id),
+    ],
+    limit,
+  });
+
+  const nextCursor = items.length === limit ? items[items.length - 1].id : null;
+  return { items, nextCursor };
+};
+
+export const updateContactMessageStatus = async (
+  id: string,
+  status: "new" | "resolved"
+) => {
+  const [record] = await db
+    .update(contactMessages)
+    .set({ status })
+    .where(eq(contactMessages.id, id))
+    .returning();
+  return record;
+};
+
+export const deleteContactMessage = async (id: string) => {
+  const [record] = await db
+    .delete(contactMessages)
+    .where(eq(contactMessages.id, id))
+    .returning();
+  return record;
+};
+
+// NEWSLETTER SUBSCRIPTIONS
+export const createNewsletterSubscription = async (
+  data: NewNewsletterSubscription
+) => {
+  const [record] = await db
+    .insert(newsletterSubscriptions)
+    .values(data)
+    .returning();
+  return record;
+};
+
+export const listNewsletterSubscriptions = async ({
+  from,
+  to,
+  country,
+  search,
+  limit,
+  cursorId,
+}: {
+  from?: Date;
+  to?: Date;
+  country?: string;
+  search?: string;
+  limit: number;
+  cursorId?: string | null;
+}) => {
+  const filters = [];
+  if (from) filters.push(gte(newsletterSubscriptions.createdAt, from));
+  if (to) filters.push(lte(newsletterSubscriptions.createdAt, to));
+  if (country)
+    filters.push(
+      eq(newsletterSubscriptions.country, country.trim().toLowerCase())
+    );
+  if (search) {
+    const term = `%${search.toLowerCase()}%`;
+    filters.push(
+      sql`LOWER(${newsletterSubscriptions.email}) LIKE ${term} OR LOWER(${newsletterSubscriptions.country}) LIKE ${term}`
+    );
+  }
+
+  let cursor:
+    | { id: string; createdAt: Date | null }
+    | null
+    | undefined = null;
+  if (cursorId) {
+    cursor = await db.query.newsletterSubscriptions.findFirst({
+      where: eq(newsletterSubscriptions.id, cursorId),
+      columns: { id: true, createdAt: true },
+    });
+  }
+
+  const items = await db.query.newsletterSubscriptions.findMany({
+    where: and(
+      ...filters,
+      cursor
+        ? or(
+            lt(newsletterSubscriptions.createdAt, cursor.createdAt ?? new Date(0)),
+            and(
+              eq(newsletterSubscriptions.createdAt, cursor.createdAt ?? new Date(0)),
+              lt(newsletterSubscriptions.id, cursor.id)
+            )
+          )
+        : undefined
+    ),
+    orderBy: [
+      desc(newsletterSubscriptions.createdAt),
+      desc(newsletterSubscriptions.id),
+    ],
+    limit,
+  });
+
+  const nextCursor = items.length === limit ? items[items.length - 1].id : null;
+  return { items, nextCursor };
+};
+
+export const exportNewsletterSubscriptions = async (params: {
+  from?: Date;
+  to?: Date;
+  country?: string;
+  search?: string;
+}) => {
+  const { from, to, country, search } = params;
+  const filters = [];
+  if (from) filters.push(gte(newsletterSubscriptions.createdAt, from));
+  if (to) filters.push(lte(newsletterSubscriptions.createdAt, to));
+  if (country)
+    filters.push(
+      eq(newsletterSubscriptions.country, country.trim().toLowerCase())
+    );
+  if (search) {
+    const term = `%${search.toLowerCase()}%`;
+    filters.push(
+      sql`LOWER(${newsletterSubscriptions.email}) LIKE ${term} OR LOWER(${newsletterSubscriptions.country}) LIKE ${term}`
+    );
+  }
+
+  return db.query.newsletterSubscriptions.findMany({
+    where: filters.length ? and(...filters) : undefined,
+    orderBy: (table, { desc }) => [desc(table.createdAt)],
+  });
+};
+export const getDashboardStats = async () => {
+  const [usersCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(users);
+  const [blogsCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(blogPosts);
+  const [galleryCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(gallerySubmissions);
+  const [newsletterCount] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(newsletterSubscriptions);
+
+  return {
+    users: Number(usersCount?.count ?? 0),
+    blogs: Number(blogsCount?.count ?? 0),
+    gallery: Number(galleryCount?.count ?? 0),
+    newsletter: Number(newsletterCount?.count ?? 0),
+  };
 };

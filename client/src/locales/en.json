@@ -89,7 +89,14 @@
     "upload_title": "Share Your Masterpiece",
     "upload_placeholder": "Click to upload photo",
     "upload_note": "Share your cooking moments with Rayhana pot",
-    "submit_photo": "Submit Photo"
+    "submit_photo": "Submit Photo",
+    "search": "Search by dish or name",
+    "view_all": "View All",
+    "sort_newest": "Newest",
+    "sort_popular": "Most liked",
+    "empty": "No photos found.",
+    "unlike": "Unlike",
+    "like": "Like"
   },
   "newsletter": {
     "title": "Join the Rayhana Family",
@@ -136,7 +143,13 @@
     "featuredTitle": "Featured Stories",
     "featuredSubtitle": "Our most loved recipes and cultural journeys.",
     "featured": "Featured",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "featuredStory": "Featured Story",
+    "readMore": "Read",
+    "title": "Rayhana Culinary Journal",
+    "subtitle": "Exploring the rich heritage of Silk Road cuisine, one story at a time.",
+    "next": "Next",
+    "prev": "Previous"
   },
   "help": {
     "notFound": "Help Article Not Found",

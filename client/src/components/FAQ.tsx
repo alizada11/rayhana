@@ -21,13 +21,15 @@ export default function FAQ() {
       ? DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim()
       : "";
 
-  const questions = faqContent?.data?.items?.map(
-    (item: any, index: number) => ({
-      id: item.id || `q${index + 1}`,
+  type Question = { id: string; question: string; answer: string };
+
+  const questions: Question[] = faqContent?.data?.items?.map(
+    (item: any, index: number): Question => ({
+      id: item?.id || `q${index + 1}`,
       question: toPlainText(
-        getLocalized(item.question, t(`faq.q${index + 1}`))
+        getLocalized(item?.question, t(`faq.q${index + 1}`))
       ),
-      answer: toPlainText(getLocalized(item.answer, t(`faq.a${index + 1}`))),
+      answer: toPlainText(getLocalized(item?.answer, t(`faq.a${index + 1}`))),
     })
   ) ?? [
     { id: "q1", question: toPlainText(t("faq.q1")), answer: toPlainText(t("faq.a1")) },
@@ -61,7 +63,7 @@ export default function FAQ() {
           transition={{ duration: 0.6, delay: 0.2 }}
         >
           <Accordion type="single" collapsible className="w-full space-y-4">
-            {questions.map((item, index) => (
+            {questions.map((item: Question, index: number) => (
               <AccordionItem
                 key={item.id}
                 value={item.id}

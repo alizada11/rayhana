@@ -1,10 +1,18 @@
 import { useRef, useState } from "react";
 import { useDeleteMedia, useMedia, useUploadMedia } from "@/hooks/useMedia";
-import { Trash2, Upload } from "lucide-react";
+import { Trash2, Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
 
 export default function DashboardMedia() {
-  const { data: media = [], isLoading } = useMedia();
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    refetch,
+  } = useMedia();
+  const media = data?.pages.flatMap(page => page.items) ?? [];
   const uploadMutation = useUploadMedia();
   const deleteMutation = useDeleteMedia();
   const [file, setFile] = useState<File | null>(null);
@@ -58,6 +66,32 @@ export default function DashboardMedia() {
           <p className="text-sm text-gray-500">
             Upload and manage site images
           </p>
+        </div>
+        <div className="flex gap-2">
+          <button
+            onClick={() => refetch()}
+            className="inline-flex items-center gap-2 border px-3 py-2 rounded-lg text-sm"
+            disabled={isLoading}
+          >
+            {isLoading ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "Refresh"
+            )}
+          </button>
+          {hasNextPage && (
+            <button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              className="inline-flex items-center gap-2 border px-3 py-2 rounded-lg text-sm"
+            >
+              {isFetchingNextPage ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Load more"
+              )}
+            </button>
+          )}
         </div>
       </div>
 
@@ -134,6 +168,21 @@ export default function DashboardMedia() {
           </div>
         ))}
       </div>
+      {hasNextPage && (
+        <div className="flex justify-center">
+          <button
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="inline-flex items-center gap-2 border px-4 py-2 rounded-lg text-sm"
+          >
+            {isFetchingNextPage ? (
+              <Loader2 className="w-4 h-4 animate-spin" />
+            ) : (
+              "Load more"
+            )}
+          </button>
+        </div>
+      )}
     </div>
   );
 }

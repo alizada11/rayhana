@@ -71,10 +71,15 @@ export const uploadMedia = async (req: Request, res: Response) => {
 };
 
 // GET /api/media (admin)
-export const listMedia = async (_req: Request, res: Response) => {
+export const listMedia = async (req: Request, res: Response) => {
   try {
-    const assets = await queries.getMediaAssets();
-    res.status(200).json(assets);
+    const { limit = 24, cursor } = req.query;
+    const pageSize = Math.min(Number(limit) || 24, 100);
+    const result = await queries.getMediaAssetsPaged({
+      limit: pageSize,
+      cursorId: cursor ? String(cursor) : undefined,
+    });
+    res.status(200).json(result);
   } catch (error) {
     console.error("Error listing media:", error);
     res.status(500).json({ error: "Failed to list media" });
