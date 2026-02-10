@@ -262,12 +262,13 @@ export default function Contact() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">
+                  <label htmlFor="contactemail" className="text-sm font-medium">
                     {content.form.emailLabel[
                       i18n.language as "en" | "fa" | "ps"
                     ] || content.form.emailLabel.en}
                   </label>
                   <Input
+                    id="contact-email"
                     type="email"
                     placeholder={
                       content.form.emailLabel[
@@ -284,12 +285,13 @@ export default function Contact() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">
+                <label htmlFor="subject" className="text-sm font-medium">
                   {content.form.subjectLabel[
                     i18n.language as "en" | "fa" | "ps"
                   ] || content.form.subjectLabel.en}
                 </label>
                 <Input
+                  id="contact-subjec"
                   placeholder={
                     content.form.subjectLabel[
                       i18n.language as "en" | "fa" | "ps"
@@ -303,12 +305,16 @@ export default function Contact() {
               </div>
 
               <div className="space-y-2">
-                <label className="text-sm font-medium">
+                <label
+                  htmlFor="contact-message"
+                  className="text-sm font-medium"
+                >
                   {content.form.messageLabel[
                     i18n.language as "en" | "fa" | "ps"
                   ] || content.form.messageLabel.en}
                 </label>
                 <Textarea
+                  id="contact-message"
                   placeholder={
                     content.form.messageLabel[
                       i18n.language as "en" | "fa" | "ps"
