@@ -65,7 +65,7 @@ export default function Contact() {
           ps: "ستاسو پیام په بریالیتوب سره ثبت شو",
         },
         errorMessage: {
-          t("common.error", "Failed to send")
+          en: t("common.error", "Failed to send"),
           fa: "",
           ps: "",
         },
@@ -248,7 +248,7 @@ export default function Contact() {
                     ] || content.form.nameLabel.en}
                   </label>
                   <Input
-                  id="contact-name"
+                    id="contact-name"
                     placeholder={
                       content.form.nameLabel[
                         i18n.language as "en" | "fa" | "ps"

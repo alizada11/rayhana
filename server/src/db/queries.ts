@@ -643,6 +643,9 @@ export const updateContactMessageStatus = async (
     .set({ status })
     .where(eq(contactMessages.id, id))
     .returning();
+  if (!record) {
+    throw new Error(`Contact message with id ${id} not found`);
+  }
   return record;
 };
 
@@ -651,6 +654,9 @@ export const deleteContactMessage = async (id: string) => {
     .delete(contactMessages)
     .where(eq(contactMessages.id, id))
     .returning();
+  if (!record) {
+    throw new Error(`Contact message with id ${id} not found`);
+  }
   return record;
 };
 
