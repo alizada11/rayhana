@@ -19,7 +19,8 @@ import { toast } from "sonner";
 
 export default function Contact() {
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "fa";
+  const rtlLangs = ["fa", "ps", "ar", "ku"];
+  const isRTL = rtlLangs.includes(i18n.language) || i18n.dir?.() === "rtl";
   const { data } = useContent("contact");
   const mutation = useSendContactMessage();
   const [form, setForm] = useState({
@@ -104,7 +105,7 @@ export default function Contact() {
     }, {} as any);
 
     return { hero, info, form };
-  }, [data, t]);
+  }, [data, t, i18n.language]);
 
   const iconMap: Record<string, React.ComponentType<any>> = {
     mapPin: MapPin,

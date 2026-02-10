@@ -130,7 +130,8 @@
     "comment_deleted": "The comment has been deleted successfully.",
     "comment_delete_failed": "Failed to delete the comment. Please try again.",
     "comment_delete_title": "Delete comment?",
-    "comment_delete_body": "This will permanently remove your comment."
+    "comment_delete_body": "This will permanently remove your comment.",
+    "contact_sent": "Message sent successfully"
   },
   "faq": {
     "title": "Frequently Asked Questions",

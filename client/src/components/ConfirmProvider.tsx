@@ -47,6 +47,7 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
   const handleClose = useCallback(
     (result: boolean) => {
       if (resolver) resolver(result);
+      setResolver(undefined);
       setOpen(false);
     },
     [resolver]
@@ -65,7 +66,13 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
   return (
     <ConfirmContext.Provider value={value}>
       {children}
-      <AlertDialog open={open} onOpenChange={setOpen}>
+      <AlertDialog
+        open={open}
+        onOpenChange={isOpen => {
+          if (!isOpen) handleClose(false);
+          else setOpen(true);
+        }}
+      >
         <AlertDialogContent className="bg-white/95 dark:bg-slate-900/90 backdrop-blur-sm border border-slate-200/70 dark:border-slate-800 shadow-2xl">
           <AlertDialogHeader>
             <AlertDialogTitle className="font-serif flex items-center gap-2 text-lg font-semibold">

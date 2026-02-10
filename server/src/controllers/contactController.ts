@@ -5,18 +5,38 @@ import { sendContactEmail } from "../utils/mailer";
 
 export const createMessage = async (req: Request, res: Response) => {
   try {
+    const toSafeString = (val: unknown) =>
+      typeof val === "string" ? val.trim() : String(val ?? "").trim();
+
     const { name, email, message, subject } = req.body || {};
-    if (!name || !email || !message) {
+    const safeName = toSafeString(name);
+    const safeEmail = toSafeString(email);
+    const safeMessage = toSafeString(message);
+    const safeSubject = subject !== undefined ? toSafeString(subject) : "";
+
+    if (
+      typeof name !== "string" ||
+      typeof email !== "string" ||
+      typeof message !== "string"
+    ) {
       return res
         .status(400)
         .json({ error: "Name, email, and message are required" });
     }
-
+    const nameValue = name.trim();
+    const emailValue = email.trim();
+    const messageValue = message.trim();
+    const subjectValue = typeof subject === "string" ? subject.trim() : "";
+    if (!nameValue || !emailValue || !messageValue) {
+      return res
+        .status(400)
+        .json({ error: "Name, email, and message are required" });
+    }
     const record = await queries.createContactMessage({
-      name,
-      email,
-      message,
-      subject,
+      name: nameValue,
+      email: emailValue,
+      message: messageValue,
+      subject: subjectValue || undefined,
       status: "new",
     });
     const escapeHtml = (str: string) =>
@@ -30,10 +50,10 @@ export const createMessage = async (req: Request, res: Response) => {
     sendContactEmail({
       to: ENV.CONTACT_EMAIL_TO || "codewithja@gmail.com",
       from: ENV.SMTP_FROM_EMAIL || ENV.SMTP_USER || "no-reply@rayhana.com",
-      subject: subject || `New contact message from ${name}`,
-      html: `<p><b>Name:</b> ${escapeHtml(name)}</p><p><b>Email:</b> ${escapeHtml(email)}</p><p><b>Subject:</b> ${escapeHtml(
-        subject || "(none)"
-      )}</p><p>${escapeHtml(message)}</p>`,
+      subject: subjectValue || `New contact message from ${nameValue}`,
+      html: `<p><b>Name:</b> ${escapeHtml(nameValue)}</p><p><b>Email:</b> ${escapeHtml(emailValue)}</p><p><b>Subject:</b> ${escapeHtml(
+        subjectValue || "(none)"
+      )}</p><p>${escapeHtml(messageValue)}</p>`,
     }).catch(err => console.error("Failed to send contact email", err));
 
     res.status(201).json(record);

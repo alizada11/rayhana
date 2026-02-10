@@ -188,9 +188,7 @@ export const getBlogPostsPaginated = async (filters: BlogListFilters = {}) => {
 
   const where =
     whereClauses.length > 0
-      ? whereClauses.reduce((acc, clause) =>
-          acc ? and(acc, clause) : clause
-        )
+      ? whereClauses.reduce((acc, clause) => (acc ? and(acc, clause) : clause))
       : undefined;
 
   const [countRow] = await db
@@ -315,10 +313,7 @@ export const getAllBlogCommentsPaged = async ({
   limit: number;
   cursorId?: string | null;
 }) => {
-  let cursor:
-    | { id: string; createdAt: Date | null }
-    | null
-    | undefined = null;
+  let cursor: { id: string; createdAt: Date | null } | null | undefined = null;
 
   if (cursorId) {
     cursor = await db.query.blogComments.findFirst({
@@ -338,10 +333,7 @@ export const getAllBlogCommentsPaged = async ({
           )
         )
       : undefined,
-    orderBy: [
-      desc(blogComments.createdAt),
-      desc(blogComments.id),
-    ],
+    orderBy: [desc(blogComments.createdAt), desc(blogComments.id)],
     limit,
   });
 
@@ -407,10 +399,7 @@ export const getMediaAssetsPaged = async ({
   limit: number;
   cursorId?: string | null;
 }) => {
-  let cursor:
-    | { id: string; createdAt: Date | null }
-    | null
-    | undefined = null;
+  let cursor: { id: string; createdAt: Date | null } | null | undefined = null;
 
   if (cursorId) {
     cursor = await db.query.mediaAssets.findFirst({
@@ -429,10 +418,8 @@ export const getMediaAssetsPaged = async ({
           )
         )
       : undefined,
-    orderBy: [
-      desc(mediaAssets.createdAt),
-      desc(mediaAssets.id),
-    ],
+    with: { user: true },
+    orderBy: [desc(mediaAssets.createdAt), desc(mediaAssets.id)],
     limit,
   });
 
@@ -497,10 +484,8 @@ export const getGalleryLikesBySubmissionId = async (
   limit: number,
   cursorId?: string | null
 ) => {
-  let cursorLike:
-    | { id: string; createdAt: Date | null }
-    | null
-  | undefined = null;
+  let cursorLike: { id: string; createdAt: Date | null } | null | undefined =
+    null;
 
   if (cursorId) {
     cursorLike = await db.query.galleryLikes.findFirst({
@@ -619,10 +604,7 @@ export const listContactMessages = async ({
   limit: number;
   cursorId?: string | null;
 }) => {
-  let cursor:
-    | { id: string; createdAt: Date | null }
-    | null
-    | undefined = null;
+  let cursor: { id: string; createdAt: Date | null } | null | undefined = null;
 
   if (cursorId) {
     cursor = await db.query.contactMessages.findFirst({
@@ -644,10 +626,7 @@ export const listContactMessages = async ({
           )
         : undefined
     ),
-    orderBy: [
-      desc(contactMessages.createdAt),
-      desc(contactMessages.id),
-    ],
+    orderBy: [desc(contactMessages.createdAt), desc(contactMessages.id)],
     limit,
   });
 
@@ -717,14 +696,11 @@ export const listNewsletterSubscriptions = async ({
   if (search) {
     const term = `%${search.toLowerCase()}%`;
     filters.push(
-      sql`LOWER(${newsletterSubscriptions.email}) LIKE ${term} OR LOWER(${newsletterSubscriptions.country}) LIKE ${term}`
+      sql`(LOWER(${newsletterSubscriptions.email}) LIKE ${term} OR LOWER(${newsletterSubscriptions.country}) LIKE ${term})`
     );
   }
 
-  let cursor:
-    | { id: string; createdAt: Date | null }
-    | null
-    | undefined = null;
+  let cursor: { id: string; createdAt: Date | null } | null | undefined = null;
   if (cursorId) {
     cursor = await db.query.newsletterSubscriptions.findFirst({
       where: eq(newsletterSubscriptions.id, cursorId),
@@ -737,9 +713,15 @@ export const listNewsletterSubscriptions = async ({
       ...filters,
       cursor
         ? or(
-            lt(newsletterSubscriptions.createdAt, cursor.createdAt ?? new Date(0)),
+            lt(
+              newsletterSubscriptions.createdAt,
+              cursor.createdAt ?? new Date(0)
+            ),
             and(
-              eq(newsletterSubscriptions.createdAt, cursor.createdAt ?? new Date(0)),
+              eq(
+                newsletterSubscriptions.createdAt,
+                cursor.createdAt ?? new Date(0)
+              ),
               lt(newsletterSubscriptions.id, cursor.id)
             )
           )
@@ -773,7 +755,7 @@ export const exportNewsletterSubscriptions = async (params: {
   if (search) {
     const term = `%${search.toLowerCase()}%`;
     filters.push(
-      sql`LOWER(${newsletterSubscriptions.email}) LIKE ${term} OR LOWER(${newsletterSubscriptions.country}) LIKE ${term}`
+      sql`(LOWER(${newsletterSubscriptions.email}) LIKE ${term} OR LOWER(${newsletterSubscriptions.country}) LIKE ${term})`
     );
   }
 
