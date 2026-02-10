@@ -60,12 +60,12 @@ export default function Contact() {
         messageLabel: { en: t("contact_page.form_message"), fa: "", ps: "" },
         submitLabel: { en: t("contact_page.form_submit"), fa: "", ps: "" },
         successMessage: {
-          en: t("common.success", "Message sent"),
-          fa: t("common.success", "پیام شما با موفقیت ارسال شد"),
-          ps: t("common.success", "ستاسو پیام په بریالیتوب سره ثبت شو"),
+          en: "Message sent",
+          fa: "پیام شما با موفقیت ارسال شد",
+          ps: "ستاسو پیام په بریالیتوب سره ثبت شو",
         },
         errorMessage: {
-          en: t("common.error", "Failed to send"),
+          t("common.error", "Failed to send")
           fa: "",
           ps: "",
         },
@@ -132,7 +132,7 @@ export default function Contact() {
       onError: () => {
         toast.error(
           content.form.errorMessage[i18n.language as "en" | "fa" | "ps"] ||
-            "Failed to send"
+            t("common.error", "Failed to send")
         );
       },
     });
@@ -242,12 +242,13 @@ export default function Contact() {
             <form className="space-y-6" onSubmit={handleSubmit}>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
-                  <label className="text-sm font-medium">
+                  <label htmlFor="contact-name" className="text-sm font-medium">
                     {content.form.nameLabel[
                       i18n.language as "en" | "fa" | "ps"
                     ] || content.form.nameLabel.en}
                   </label>
                   <Input
+                  id="contact-name"
                     placeholder={
                       content.form.nameLabel[
                         i18n.language as "en" | "fa" | "ps"

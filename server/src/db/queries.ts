@@ -691,7 +691,7 @@ export const listNewsletterSubscriptions = async ({
   if (to) filters.push(lte(newsletterSubscriptions.createdAt, to));
   if (country)
     filters.push(
-      eq(newsletterSubscriptions.country, country.trim().toLowerCase())
+      sql`LOWER(${newsletterSubscriptions.country}) = ${country.trim().toLowerCase()}`
     );
   if (search) {
     const term = `%${search.toLowerCase()}%`;
@@ -750,7 +750,7 @@ export const exportNewsletterSubscriptions = async (params: {
   if (to) filters.push(lte(newsletterSubscriptions.createdAt, to));
   if (country)
     filters.push(
-      eq(newsletterSubscriptions.country, country.trim().toLowerCase())
+      sql`LOWER(${newsletterSubscriptions.country}) = ${country.trim().toLowerCase()}`
     );
   if (search) {
     const term = `%${search.toLowerCase()}%`;
