@@ -14,6 +14,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 export default function DashboardContactMessages() {
   const {
@@ -26,6 +27,7 @@ export default function DashboardContactMessages() {
   } = useContactMessages();
   const updateStatus = useUpdateContactMessageStatus();
   const deleteMutation = useDeleteContactMessage();
+  const confirm = useConfirm();
 
   const messages = data?.pages.flatMap(page => page.items) ?? [];
 
@@ -45,6 +47,8 @@ export default function DashboardContactMessages() {
             variant="outline"
             onClick={() => refetch()}
             disabled={isLoading}
+            aria-label="Refresh messages"
+            title="Refresh messages"
           >
             {isLoading ? (
               <Loader2 className="h-4 w-4 animate-spin" />
@@ -113,6 +117,16 @@ export default function DashboardContactMessages() {
                   <Button
                     size="sm"
                     variant={msg.status === "resolved" ? "outline" : "default"}
+                    aria-label={
+                      msg.status === "resolved"
+                        ? "Mark as new"
+                        : "Mark as resolved"
+                    }
+                    title={
+                      msg.status === "resolved"
+                        ? "Mark as new"
+                        : "Mark as resolved"
+                    }
                     onClick={() =>
                       updateStatus.mutate(
                         {
@@ -138,12 +152,23 @@ export default function DashboardContactMessages() {
                   <Button
                     size="sm"
                     variant="destructive"
-                    onClick={() =>
+                    aria-label="Delete message"
+                    title="Delete message"
+                    onClick={async () => {
+                      const ok = await confirm({
+                        title: "Delete this message?",
+                        description:
+                          "This will permanently remove the contact submission.",
+                        confirmText: "Delete",
+                        cancelText: "Cancel",
+                        tone: "danger",
+                      });
+                      if (!ok) return;
                       deleteMutation.mutate(msg.id, {
                         onSuccess: () => toast.success("Message deleted"),
                         onError: () => toast.error("Delete failed"),
-                      })
-                    }
+                      });
+                    }}
                   >
                     <Trash2Icon className="w-5 h-5" />
                   </Button>

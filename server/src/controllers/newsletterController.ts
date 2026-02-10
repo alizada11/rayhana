@@ -1,7 +1,13 @@
 import type { Request, Response } from "express";
 import { getAuth } from "@clerk/express";
 import * as queries from "../db/queries";
-import { Parser } from "json2csv";
+import { Parser } from "@json2csv/plainjs";
+
+const isAdminUser = async (userId?: string | null) => {
+  if (!userId) return false;
+  const user = await queries.getUserById(userId);
+  return user?.role === "admin";
+};
 
 export const subscribe = async (req: Request, res: Response) => {
   try {
@@ -9,11 +15,19 @@ export const subscribe = async (req: Request, res: Response) => {
     if (!email) {
       return res.status(400).json({ error: "Email is required" });
     }
-    const ip = req.ip;
+    const normalizedEmail = String(email).trim().toLowerCase();
+    const existing = await queries.getNewsletterSubscriptionByEmail(normalizedEmail);
+    if (existing) {
+      return res
+        .status(200)
+        .json({ message: "You already subscribed. Thanks for your interest!" });
+    }
+    // NOTE: We intentionally do not persist raw requester IPs from req.ip to respect GDPR/CCPA.
+    // Any IP handling must stay anonymized per our privacy policy.
     const record = await queries.createNewsletterSubscription({
-      email,
+      email: normalizedEmail,
       country: country ? String(country).toLowerCase() : null,
-      ip,
+      ip: null,
     });
     res.status(201).json(record);
   } catch (error) {
@@ -24,8 +38,12 @@ export const subscribe = async (req: Request, res: Response) => {
 
 export const list = async (req: Request, res: Response) => {
   try {
-    const auth = getAuth(req);
-    if (!auth.userId) return res.status(401).json({ error: "Unauthorized" });
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const isAdmin = await isAdminUser(userId);
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
 
     const { from, to, country, search, limit = 20, cursor } = req.query;
     const result = await queries.listNewsletterSubscriptions({
@@ -45,8 +63,12 @@ export const list = async (req: Request, res: Response) => {
 
 export const exportCsv = async (req: Request, res: Response) => {
   try {
-    const auth = getAuth(req);
-    if (!auth.userId) return res.status(401).json({ error: "Unauthorized" });
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const isAdmin = await isAdminUser(userId);
+    if (!isAdmin) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
 
     const { from, to, country, search } = req.query;
     const rows = await queries.exportNewsletterSubscriptions({
@@ -56,7 +78,8 @@ export const exportCsv = async (req: Request, res: Response) => {
       search: search ? String(search) : undefined,
     });
 
-    const parser = new Parser({ fields: ["email", "country", "ip", "createdAt"] });
+    // Export excludes raw IPs to avoid distributing personal data; see privacy policy.
+    const parser = new Parser({ fields: ["email", "country", "createdAt"] });
     const csv = parser.parse(rows);
     res.header("Content-Type", "text/csv");
     res.attachment("newsletter.csv");

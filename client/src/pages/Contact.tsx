@@ -60,8 +60,8 @@ export default function Contact() {
         submitLabel: { en: t("contact_page.form_submit"), fa: "", ps: "" },
         successMessage: {
           en: t("common.success", "Message sent"),
-          fa: "",
-          ps: "",
+          fa: t("common.success", "پیام شما با موفقیت ارسال شد"),
+          ps: t("common.success", "ستاسو پیام په بریالیتوب سره ثبت شو"),
         },
         errorMessage: {
           en: t("common.error", "Failed to send"),
@@ -124,7 +124,7 @@ export default function Contact() {
       onSuccess: () => {
         toast.success(
           content.form.successMessage[i18n.language as "en" | "fa" | "ps"] ||
-            "Message sent"
+            t("toast.contact_sent", "Message sent")
         );
         setForm({ name: "", email: "", subject: "", message: "" });
       },
@@ -187,7 +187,14 @@ export default function Contact() {
                             {item.title[i18n.language as "en" | "fa" | "ps"] ||
                               item.title.en}
                           </h3>
-                          <p className="text-muted-foreground">
+                          <p
+                            dir="ltr"
+                            className={
+                              isRTL
+                                ? "text-right text-muted-foreground"
+                                : "text-left text-muted-foreground"
+                            }
+                          >
                             {item.value[i18n.language as "en" | "fa" | "ps"] ||
                               item.value.en}
                           </p>
@@ -321,7 +328,7 @@ export default function Contact() {
                 disabled={mutation.isPending}
               >
                 {mutation.isPending
-                  ? t("common.loading", "Loading...")
+                  ? t("contact.sending", "Sending...")
                   : content.form.submitLabel[
                       i18n.language as "en" | "fa" | "ps"
                     ] || content.form.submitLabel.en}

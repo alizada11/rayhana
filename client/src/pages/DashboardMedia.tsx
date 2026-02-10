@@ -2,6 +2,7 @@ import { useRef, useState } from "react";
 import { useDeleteMedia, useMedia, useUploadMedia } from "@/hooks/useMedia";
 import { Trash2, Upload, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 export default function DashboardMedia() {
   const {
@@ -15,6 +16,7 @@ export default function DashboardMedia() {
   const media = data?.pages.flatMap(page => page.items) ?? [];
   const uploadMutation = useUploadMedia();
   const deleteMutation = useDeleteMedia();
+  const confirm = useConfirm();
   const [file, setFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
@@ -44,8 +46,15 @@ export default function DashboardMedia() {
     );
   };
 
-  const handleDelete = (id: string) => {
-    if (!confirm("Delete this media item?")) return;
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "Delete this media item?",
+      description: "This will permanently remove the file from the library.",
+      confirmText: "Delete media",
+      cancelText: "Cancel",
+      tone: "danger",
+    });
+    if (!ok) return;
     deleteMutation.mutate(id, {
       onSuccess: () => {
         toast.success("Media deleted.");

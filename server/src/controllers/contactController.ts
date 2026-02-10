@@ -19,14 +19,21 @@ export const createMessage = async (req: Request, res: Response) => {
       subject,
       status: "new",
     });
+    const escapeHtml = (str: string) =>
+      str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
 
     sendContactEmail({
       to: ENV.CONTACT_EMAIL_TO || "codewithja@gmail.com",
       from: ENV.SMTP_FROM_EMAIL || ENV.SMTP_USER || "no-reply@rayhana.com",
       subject: subject || `New contact message from ${name}`,
-      html: `<p><b>Name:</b> ${name}</p><p><b>Email:</b> ${email}</p><p><b>Subject:</b> ${
+      html: `<p><b>Name:</b> ${escapeHtml(name)}</p><p><b>Email:</b> ${escapeHtml(email)}</p><p><b>Subject:</b> ${escapeHtml(
         subject || "(none)"
-      }</p><p>${message}</p>`,
+      )}</p><p>${escapeHtml(message)}</p>`,
     }).catch(err => console.error("Failed to send contact email", err));
 
     res.status(201).json(record);
@@ -52,7 +59,9 @@ export const listMessages = async (req: Request, res: Response) => {
     );
     const rawCursor = req.query.cursor;
     const cursor: string | undefined = Array.isArray(rawCursor)
-      ? (typeof rawCursor[0] === "string" ? rawCursor[0] : undefined)
+      ? typeof rawCursor[0] === "string"
+        ? rawCursor[0]
+        : undefined
       : typeof rawCursor === "string"
         ? rawCursor
         : undefined;

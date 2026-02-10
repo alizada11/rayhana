@@ -23,7 +23,7 @@ export const contactStatusEnum = pgEnum("contact_status", ["new", "resolved"]);
 
 export const newsletterSubscriptions = pgTable("newsletter_subscriptions", {
   id: uuid("id").defaultRandom().primaryKey(),
-  email: text("email").notNull(),
+  email: text("email").notNull().unique(),
   country: text("country"),
   ip: text("ip"),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
@@ -66,17 +66,6 @@ export const products = pgTable("products", {
     .defaultNow()
     .$onUpdate(() => new Date()),
 });
-// export const products = pgTable("products", {
-//   id: uuid("id").defaultRandom().primaryKey(),
-//   title: text("title").notNull(),
-//   description: text("description").notNull(),
-//   imageUrl: text("image_url").notNull(),
-//   userId: text("user_id")
-//     .notNull()
-//     .references(() => users.id, { onDelete: "cascade" }),
-//   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-//   updatedAt: timestamp("updated_at", { mode: "date" }).notNull().defaultNow(),
-// });
 
 export const comments = pgTable("comments", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -190,9 +179,7 @@ export const galleryLikes = pgTable(
     userId: text("user_id")
       .notNull()
       .references(() => users.id, { onDelete: "cascade" }),
-    createdAt: timestamp("created_at", { mode: "date" })
-      .notNull()
-      .defaultNow(),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   },
   table => ({
     uniqueSubmissionUser: uniqueIndex("gallery_like_unique").on(
@@ -305,8 +292,10 @@ export type NewGallerySubmission = typeof gallerySubmissions.$inferInsert;
 export type GalleryLike = typeof galleryLikes.$inferSelect;
 export type NewGalleryLike = typeof galleryLikes.$inferInsert;
 
-export type NewsletterSubscription = typeof newsletterSubscriptions.$inferSelect;
-export type NewNewsletterSubscription = typeof newsletterSubscriptions.$inferInsert;
+export type NewsletterSubscription =
+  typeof newsletterSubscriptions.$inferSelect;
+export type NewNewsletterSubscription =
+  typeof newsletterSubscriptions.$inferInsert;
 
 export type ContactMessage = typeof contactMessages.$inferSelect;
 export type NewContactMessage = typeof contactMessages.$inferInsert;

@@ -7,6 +7,7 @@ import {
 import { Edit, Trash2, Save, Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 export default function DashboardBlogComments() {
   const {
@@ -19,6 +20,7 @@ export default function DashboardBlogComments() {
   const comments = data?.pages.flatMap(page => page.items) ?? [];
   const updateMutation = useUpdateBlogComment();
   const deleteMutation = useDeleteBlogComment();
+  const confirm = useConfirm();
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState("");
@@ -51,10 +53,17 @@ export default function DashboardBlogComments() {
     );
   };
 
-  const handleDelete = (commentId: string) => {
+  const handleDelete = async (commentId: string) => {
     const comment = comments.find(c => String(c.id) === commentId);
     if (!comment) return;
-    if (!confirm("Delete this comment?")) return;
+    const ok = await confirm({
+      title: "Delete this comment?",
+      description: "This will permanently remove the comment from the blog.",
+      confirmText: "Delete comment",
+      cancelText: "Cancel",
+      tone: "danger",
+    });
+    if (!ok) return;
     deleteMutation.mutate(
       { blogId: comment.blogId, commentId },
       {

@@ -14,6 +14,7 @@ import {
 } from "lucide-react";
 import { Link } from "wouter";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 function DashboardBlogs() {
   const [editingPost, setEditingPost] = useState<any | null>(null);
@@ -27,6 +28,7 @@ function DashboardBlogs() {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const confirm = useConfirm();
 
   useEffect(() => {
     setCurrentPage(1);
@@ -70,17 +72,23 @@ function DashboardBlogs() {
     setShowForm(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this post?")) {
-      deleteMutation.mutate(id, {
-        onSuccess: () => {
-          toast.success("Blog post deleted.");
-        },
-        onError: () => {
-          toast.error("Failed to delete blog post.");
-        },
-      });
-    }
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "Delete this blog post?",
+      description: "This will permanently remove the post and its content.",
+      confirmText: "Delete post",
+      cancelText: "Keep post",
+      tone: "danger",
+    });
+    if (!ok) return;
+    deleteMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success("Blog post deleted.");
+      },
+      onError: () => {
+        toast.error("Failed to delete blog post.");
+      },
+    });
   };
 
   const handlePageChange = (page: number) => {

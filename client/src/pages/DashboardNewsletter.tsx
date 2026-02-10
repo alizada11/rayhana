@@ -15,6 +15,7 @@ export default function DashboardNewsletter() {
     country: "",
     search: "",
   });
+  const [revealedIps, setRevealedIps] = useState<Record<string, boolean>>({});
 
   const query = useNewsletterSubscriptions(filters);
   const exportMutation = useExportNewsletterCsv();
@@ -36,6 +37,15 @@ export default function DashboardNewsletter() {
       },
       onError: () => toast.error("Export failed"),
     });
+  };
+
+  const maskIp = (ip?: string) => {
+    if (!ip) return "";
+    const parts = ip.split(".");
+    if (parts.length === 4) {
+      return `${parts[0]}.${parts[1]}.***`;
+    }
+    return "****";
   };
 
   return (
@@ -116,7 +126,25 @@ export default function DashboardNewsletter() {
               </div>
               <div className="flex items-center gap-3 text-sm text-muted-foreground">
                 {sub.country && <Badge variant="outline">{sub.country}</Badge>}
-                {sub.ip && <span className="text-xs">IP: {sub.ip}</span>}
+                {sub.ip && (
+                  <div className="flex items-center gap-1 text-xs">
+                    <span>IP: {revealedIps[sub.id] ? sub.ip : maskIp(sub.ip)}</span>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      onClick={() =>
+                        setRevealedIps(prev => ({ ...prev, [sub.id]: !prev[sub.id] }))
+                      }
+                      aria-label={
+                        revealedIps[sub.id]
+                          ? `Hide IP for ${sub.email}`
+                          : `Reveal IP for ${sub.email}`
+                      }
+                    >
+                      {revealedIps[sub.id] ? "Hide" : "Show"}
+                    </Button>
+                  </div>
+                )}
               </div>
             </div>
           ))}

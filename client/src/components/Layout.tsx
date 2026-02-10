@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "wouter";
 import { Menu, X, Globe, Moon, Sun } from "lucide-react";
@@ -106,6 +106,35 @@ export default function Layout({ children }: LayoutProps) {
         { href: "https://www.instagram.com", label: "Instagram" },
         { href: "https://www.facebook.com", label: "Facebook" },
       ];
+
+  const { data: contactContent } = useContent("contact");
+  const contactInfo = useMemo(() => {
+    const fallback = {
+      email: t("contact_page.email_value"),
+      phone: t("contact_page.phone_value"),
+    };
+
+    const info = contactContent?.data?.info;
+    const pickValue = (icons: string[]) => {
+      if (!Array.isArray(info)) return null;
+      const match = info.find((item: any) =>
+        icons.includes((item?.icon || "").toLowerCase())
+      );
+      if (!match?.value) return null;
+      return (
+        match.value?.[currentLang] ||
+        match.value?.en ||
+        match.value?.fa ||
+        match.value?.ps ||
+        null
+      );
+    };
+
+    return {
+      email: pickValue(["mail", "email"]) || fallback.email,
+      phone: pickValue(["phone", "call"]) || fallback.phone,
+    };
+  }, [contactContent, currentLang, t]);
 
   const getLocalizedLabel = (label: LocalizedLabel) => {
     if (typeof label === "string") return label;
@@ -277,11 +306,11 @@ export default function Layout({ children }: LayoutProps) {
               </h4>
 
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>info@rayhana.com</li>
+                <li>{contactInfo.email}</li>
 
                 {/* Phone: LTR content, RTL position */}
                 <li dir="ltr" className={isRTL ? "text-right" : "text-left"}>
-                  +86 13867932870
+                  {contactInfo.phone}
                 </li>
 
                 {/* Social links */}

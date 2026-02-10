@@ -686,6 +686,12 @@ export const createNewsletterSubscription = async (
   return record;
 };
 
+export const getNewsletterSubscriptionByEmail = async (email: string) => {
+  return db.query.newsletterSubscriptions.findFirst({
+    where: eq(newsletterSubscriptions.email, email),
+  });
+};
+
 export const listNewsletterSubscriptions = async ({
   from,
   to,

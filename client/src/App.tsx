@@ -18,6 +18,7 @@ import HelpPage from "./pages/HelpPage";
 import Privacy from "./pages/Privacy";
 import useAuthReq from "./hooks/useAuthReq";
 import useUserSync from "./hooks/useUserSync";
+import { ConfirmProvider } from "./components/ConfirmProvider";
 import LoginPage from "./pages/LoginPage";
 import GuestDashboard from "./pages/GuestDashboard";
 import Gallery from "./pages/Gallery";
@@ -125,10 +126,12 @@ function App() {
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
+        <ConfirmProvider>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </ConfirmProvider>
       </ThemeProvider>
     </ErrorBoundary>
   );
