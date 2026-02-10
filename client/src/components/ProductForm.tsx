@@ -21,7 +21,18 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     resolveImageUrl(product?.imageUrl) || null
   );
 
-  const [formData, setFormData] = useState({
+  type ProductFormState = {
+    title: Record<string, string>;
+    description: Record<string, string>;
+    category: string;
+    imageUrl: string;
+    rating: number;
+    sizes: number[];
+    colors: string[];
+    prices: Record<number, number>;
+  };
+
+  const [formData, setFormData] = useState<ProductFormState>({
     title: product?.title || { en: "", fa: "", ps: "" },
     description: product?.description || { en: "", fa: "", ps: "" },
     category: product?.category || "",
@@ -109,9 +120,14 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
   ) => {
     setFormData(prev => ({
       ...prev,
-      [field]: prev[field].includes(value)
-        ? prev[field].filter((v: any) => v !== value)
-        : [...prev[field], value],
+      [field]:
+        field === "sizes"
+          ? (prev.sizes.includes(value as number)
+              ? prev.sizes.filter((v: number) => v !== value)
+              : [...prev.sizes, value as number]) as any
+          : (prev.colors.includes(value as string)
+              ? prev.colors.filter((v: string) => v !== value)
+              : [...prev.colors, value as string]) as any,
     }));
   };
 
@@ -158,7 +174,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
 
   const removeSize = (size: number) => {
     setFormData(prev => {
-      const nextSizes = prev.sizes.filter(s => s !== size);
+      const nextSizes = prev.sizes.filter((s: number) => s !== size);
       const nextPrices = { ...prev.prices };
       delete nextPrices[size];
       return { ...prev, sizes: nextSizes, prices: nextPrices };

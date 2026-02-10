@@ -13,11 +13,13 @@ import {
   Plus,
 } from "lucide-react";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 export default function DashboardProducts() {
   const { data: products = [], isLoading } = useMyProducts();
   const deleteMutation = useDeleteProduct();
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const confirm = useConfirm();
 
   const resolveImageUrl = (url?: string) => {
     if (!url) return "";
@@ -73,17 +75,23 @@ export default function DashboardProducts() {
     setShowForm(true);
   };
 
-  const handleDelete = (id: string) => {
-    if (confirm("Are you sure you want to delete this product?")) {
-      deleteMutation.mutate(id, {
-        onSuccess: () => {
-          toast.success("Product deleted.");
-        },
-        onError: () => {
-          toast.error("Failed to delete product.");
-        },
-      });
-    }
+  const handleDelete = async (id: string) => {
+    const ok = await confirm({
+      title: "Delete this product?",
+      description: "This will permanently remove the product from inventory.",
+      confirmText: "Delete product",
+      cancelText: "Cancel",
+      tone: "danger",
+    });
+    if (!ok) return;
+    deleteMutation.mutate(id, {
+      onSuccess: () => {
+        toast.success("Product deleted.");
+      },
+      onError: () => {
+        toast.error("Failed to delete product.");
+      },
+    });
   };
 
   const handleView = (product: any) => {

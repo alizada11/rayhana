@@ -127,10 +127,51 @@ const fallbackHelp = {
   ],
 };
 
-const CONTENT_KEYS = ["home", "about", "faq", "terms", "privacy", "help"] as const;
+const fallbackContact = {
+  hero: {
+    title: { en: "", fa: "", ps: "" },
+    subtitle: { en: "", fa: "", ps: "" },
+  },
+  info: [
+    {
+      icon: "mapPin",
+      title: { en: "", fa: "", ps: "" },
+      value: { en: "", fa: "", ps: "" },
+    },
+    {
+      icon: "phone",
+      title: { en: "", fa: "", ps: "" },
+      value: { en: "", fa: "", ps: "" },
+    },
+    {
+      icon: "mail",
+      title: { en: "", fa: "", ps: "" },
+      value: { en: "", fa: "", ps: "" },
+    },
+  ],
+  form: {
+    nameLabel: { en: "", fa: "", ps: "" },
+    emailLabel: { en: "", fa: "", ps: "" },
+    subjectLabel: { en: "", fa: "", ps: "" },
+    messageLabel: { en: "", fa: "", ps: "" },
+    submitLabel: { en: "", fa: "", ps: "" },
+    successMessage: { en: "", fa: "", ps: "" },
+    errorMessage: { en: "", fa: "", ps: "" },
+  },
+};
+
+const CONTENT_KEYS = [
+  "home",
+  "about",
+  "faq",
+  "terms",
+  "privacy",
+  "help",
+  "contact",
+] as const;
 
 export default function DashboardContent() {
-  const [key, setKey] = useState<(typeof CONTENT_KEYS)[number]>("home");
+  const [key, setKey] = useState<string>("home");
   const { data, isLoading } = useContent(key);
   const upsert = useUpsertContent(key);
   const [activeLang, setActiveLang] = useState<Lang>("en");
@@ -148,6 +189,7 @@ export default function DashboardContent() {
     if (key === "faq") return fallbackFaq;
     if (key === "terms") return fallbackTerms;
     if (key === "privacy") return fallbackPrivacy;
+    if (key === "contact") return fallbackContact;
     return fallbackHelp;
   }, [key]);
 
@@ -220,9 +262,7 @@ export default function DashboardContent() {
       if (!nextData.quote.text || typeof nextData.quote.text !== "object") {
         nextData.quote.text = {
           en:
-            typeof nextData.quote.text === "string"
-              ? nextData.quote.text
-              : "",
+            typeof nextData.quote.text === "string" ? nextData.quote.text : "",
           fa: "",
           ps: "",
         };
@@ -233,6 +273,59 @@ export default function DashboardContent() {
           ps: nextData.quote.text.ps || "",
         };
       }
+    }
+
+    if (key === "contact") {
+      nextData.hero = nextData.hero || { title: {}, subtitle: {} };
+      nextData.hero.title = {
+        en: nextData.hero.title?.en || "",
+        fa: nextData.hero.title?.fa || "",
+        ps: nextData.hero.title?.ps || "",
+      };
+      nextData.hero.subtitle = {
+        en: nextData.hero.subtitle?.en || "",
+        fa: nextData.hero.subtitle?.fa || "",
+        ps: nextData.hero.subtitle?.ps || "",
+      };
+
+      nextData.info = Array.isArray(nextData.info) ? nextData.info : [];
+      nextData.info = nextData.info.map((item: any) => ({
+        icon: item?.icon || "mapPin",
+        title:
+          item?.title && typeof item.title === "object"
+            ? {
+                en: item.title.en || "",
+                fa: item.title.fa || "",
+                ps: item.title.ps || "",
+              }
+            : { en: item?.title || "", fa: "", ps: "" },
+        value:
+          item?.value && typeof item.value === "object"
+            ? {
+                en: item.value.en || "",
+                fa: item.value.fa || "",
+                ps: item.value.ps || "",
+              }
+            : { en: item?.value || "", fa: "", ps: "" },
+      }));
+
+      nextData.form = nextData.form || {};
+      const formKeys = [
+        "nameLabel",
+        "emailLabel",
+        "subjectLabel",
+        "messageLabel",
+        "submitLabel",
+        "successMessage",
+        "errorMessage",
+      ];
+      formKeys.forEach(keyName => {
+        const val = (nextData.form as any)[keyName];
+        (nextData.form as any)[keyName] =
+          val && typeof val === "object"
+            ? { en: val.en || "", fa: val.fa || "", ps: val.ps || "" }
+            : { en: val || "", fa: "", ps: "" };
+      });
     }
 
     setFormData(nextData);
@@ -518,8 +611,8 @@ export default function DashboardContent() {
             </div>
           </div>
 
-      <div className="bg-white border rounded-xl p-4 space-y-4">
-        <h2 className="font-serif text-xl font-bold">Values Cards</h2>
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Values Cards</h2>
             <div className="grid md:grid-cols-3 gap-4">
               {formData.values?.map((item: any, idx: number) => (
                 <div key={`value-${idx}`} className="space-y-3">
@@ -560,94 +653,8 @@ export default function DashboardContent() {
                       }}
                       placeholder={`Body ${idx + 1}`}
                     />
-      </div>
+                  </div>
 
-      {/* About Editor */}
-      {key === "about" && (
-        <div className="space-y-6">
-          <div className="bg-white border rounded-xl p-4 space-y-4">
-            <h2 className="font-serif text-xl font-bold">Hero</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                className="border rounded-lg px-3 py-2"
-                placeholder="Hero title"
-                value={formData.hero?.title?.[activeLang] || ""}
-                onChange={e => updateLangField(["hero", "title"], e.target.value)}
-              />
-              <input
-                className="border rounded-lg px-3 py-2"
-                placeholder="Hero subtitle"
-                value={formData.hero?.subtitle?.[activeLang] || ""}
-                onChange={e => updateLangField(["hero", "subtitle"], e.target.value)}
-              />
-            </div>
-          </div>
-
-          <div className="bg-white border rounded-xl p-4 space-y-4">
-            <h2 className="font-serif text-xl font-bold">Story</h2>
-            <div className="space-y-4">
-              <input
-                className="border rounded-lg px-3 py-2 w-full"
-                placeholder="Story title"
-                value={formData.story?.title?.[activeLang] || ""}
-                onChange={e => updateLangField(["story", "title"], e.target.value)}
-              />
-              <BlogRichTextEditor
-                value={formData.story?.body?.[activeLang] || ""}
-                onChange={value => updateLangField(["story", "body"], value)}
-                placeholder="Story body"
-              />
-            </div>
-          </div>
-
-          <div className="bg-white border rounded-xl p-4 space-y-4">
-            <h2 className="font-serif text-xl font-bold">Mission</h2>
-            <div className="space-y-4">
-              <input
-                className="border rounded-lg px-3 py-2 w-full"
-                placeholder="Mission title"
-                value={formData.mission?.title?.[activeLang] || ""}
-                onChange={e => updateLangField(["mission", "title"], e.target.value)}
-              />
-              <BlogRichTextEditor
-                value={formData.mission?.body?.[activeLang] || ""}
-                onChange={value => updateLangField(["mission", "body"], value)}
-                placeholder="Mission body"
-              />
-            </div>
-          </div>
-
-          <div className="bg-white border rounded-xl p-4 space-y-4">
-            <h2 className="font-serif text-xl font-bold">Founder</h2>
-            <div className="space-y-4">
-              <input
-                className="border rounded-lg px-3 py-2 w-full"
-                placeholder="Founder title"
-                value={formData.founder?.title?.[activeLang] || ""}
-                onChange={e => updateLangField(["founder", "title"], e.target.value)}
-              />
-              <BlogRichTextEditor
-                value={formData.founder?.body?.[activeLang] || ""}
-                onChange={value => updateLangField(["founder", "body"], value)}
-                placeholder="Founder body"
-              />
-            </div>
-          </div>
-
-          <div className="bg-white border rounded-xl p-4 space-y-4">
-            <h2 className="font-serif text-xl font-bold">Quote</h2>
-            <input
-              className="border rounded-lg px-3 py-2 w-full"
-              placeholder="Quote text"
-              value={formData.quote?.text?.[activeLang] || ""}
-              onChange={e => updateLangField(["quote", "text"], e.target.value)}
-            />
-            <p className="text-xs text-gray-500">
-              This appears in the founder section; HTML is stripped on render.
-            </p>
-          </div>
-        </div>
-      )}
                   <select
                     className="border rounded-lg px-3 py-2 w-full"
                     value={item.icon || "star"}
@@ -669,7 +676,7 @@ export default function DashboardContent() {
       )}
 
       {/* About Editor */}
-      {key === "about" && (
+      {(key as string) === "about" && (
         <div className="space-y-6">
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Hero</h2>
@@ -694,15 +701,18 @@ export default function DashboardContent() {
           </div>
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Story</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                className="border rounded-lg px-3 py-2"
-                placeholder="Title"
-                value={formData.story?.title?.[activeLang] || ""}
-                onChange={e =>
-                  updateLangField(["story", "title"], e.target.value)
-                }
-              />
+            <div className="grid md:grid-cols-2 gap-4 items-start">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs text-gray-500">Title</label>
+                <input
+                  className="border rounded-lg px-3 py-2"
+                  placeholder="Title"
+                  value={formData.story?.title?.[activeLang] || ""}
+                  onChange={e =>
+                    updateLangField(["story", "title"], e.target.value)
+                  }
+                />
+              </div>
               <div>
                 <label className="text-xs text-gray-500">Body</label>
                 <BlogRichTextEditor
@@ -730,17 +740,20 @@ export default function DashboardContent() {
               </div>
             </div>
           </div>
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-white border rounded-xl p-4 space-y-4 ">
             <h2 className="font-serif text-xl font-bold">Mission</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                className="border rounded-lg px-3 py-2"
-                placeholder="Title"
-                value={formData.mission?.title?.[activeLang] || ""}
-                onChange={e =>
-                  updateLangField(["mission", "title"], e.target.value)
-                }
-              />
+            <div className="grid md:grid-cols-2 gap-4 items-start">
+              <div className="flex flex-col gap-2">
+                <label className="text-xs text-gray-500">Title</label>
+                <input
+                  className="border rounded-lg px-3 py-2"
+                  placeholder="Title"
+                  value={formData.mission?.title?.[activeLang] || ""}
+                  onChange={e =>
+                    updateLangField(["mission", "title"], e.target.value)
+                  }
+                />
+              </div>
               <div>
                 <label className="text-xs text-gray-500">Body</label>
                 <BlogRichTextEditor
@@ -755,15 +768,18 @@ export default function DashboardContent() {
           </div>
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Founder</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                className="border rounded-lg px-3 py-2"
-                placeholder="Title"
-                value={formData.founder?.title?.[activeLang] || ""}
-                onChange={e =>
-                  updateLangField(["founder", "title"], e.target.value)
-                }
-              />
+            <div className="grid md:grid-cols-2 gap-4 items-start">
+              <div className="flex flex-col gap-1.5">
+                <label className="text-xs text-gray-500">Title</label>
+                <input
+                  className="border rounded-lg px-3 py-2"
+                  placeholder="Title"
+                  value={formData.founder?.title?.[activeLang] || ""}
+                  onChange={e =>
+                    updateLangField(["founder", "title"], e.target.value)
+                  }
+                />
+              </div>
               <div>
                 <label className="text-xs text-gray-500">Body</label>
                 <BlogRichTextEditor
@@ -905,7 +921,10 @@ export default function DashboardContent() {
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Sections</h2>
             {formData.sections?.map((section: any, idx: number) => (
-              <div key={`terms-section-${idx}`} className="border rounded-lg p-4 space-y-3">
+              <div
+                key={`terms-section-${idx}`}
+                className="border rounded-lg p-4 space-y-3"
+              >
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium text-gray-700">
                     Section {idx + 1}
@@ -930,7 +949,10 @@ export default function DashboardContent() {
                     const next = structuredClone(formData.sections);
                     next[idx] = {
                       ...next[idx],
-                      title: { ...next[idx].title, [activeLang]: e.target.value },
+                      title: {
+                        ...next[idx].title,
+                        [activeLang]: e.target.value,
+                      },
                     };
                     updateField(["sections"], next);
                   }}
@@ -958,7 +980,10 @@ export default function DashboardContent() {
               onClick={() => {
                 const next = [
                   ...(formData.sections || []),
-                  { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
+                  {
+                    title: { en: "", fa: "", ps: "" },
+                    body: { en: "", fa: "", ps: "" },
+                  },
                 ];
                 updateField(["sections"], next);
               }}
@@ -1001,7 +1026,10 @@ export default function DashboardContent() {
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Sections</h2>
             {formData.sections?.map((section: any, idx: number) => (
-              <div key={`privacy-section-${idx}`} className="border rounded-lg p-4 space-y-3">
+              <div
+                key={`privacy-section-${idx}`}
+                className="border rounded-lg p-4 space-y-3"
+              >
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium text-gray-700">
                     Section {idx + 1}
@@ -1026,7 +1054,10 @@ export default function DashboardContent() {
                     const next = structuredClone(formData.sections);
                     next[idx] = {
                       ...next[idx],
-                      title: { ...next[idx].title, [activeLang]: e.target.value },
+                      title: {
+                        ...next[idx].title,
+                        [activeLang]: e.target.value,
+                      },
                     };
                     updateField(["sections"], next);
                   }}
@@ -1054,7 +1085,10 @@ export default function DashboardContent() {
               onClick={() => {
                 const next = [
                   ...(formData.sections || []),
-                  { title: { en: "", fa: "", ps: "" }, body: { en: "", fa: "", ps: "" } },
+                  {
+                    title: { en: "", fa: "", ps: "" },
+                    body: { en: "", fa: "", ps: "" },
+                  },
                 ];
                 updateField(["sections"], next);
               }}
@@ -1107,7 +1141,10 @@ export default function DashboardContent() {
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Help Sections</h2>
             {formData.center?.sections?.map((section: any, idx: number) => (
-              <div key={`help-section-${idx}`} className="border rounded-lg p-4 space-y-3">
+              <div
+                key={`help-section-${idx}`}
+                className="border rounded-lg p-4 space-y-3"
+              >
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium text-gray-700">
                     Section {idx + 1}
@@ -1142,7 +1179,10 @@ export default function DashboardContent() {
                     const next = structuredClone(formData.center.sections);
                     next[idx] = {
                       ...next[idx],
-                      title: { ...next[idx].title, [activeLang]: e.target.value },
+                      title: {
+                        ...next[idx].title,
+                        [activeLang]: e.target.value,
+                      },
                     };
                     updateField(["center", "sections"], next);
                   }}
@@ -1202,7 +1242,10 @@ export default function DashboardContent() {
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">FAQs</h2>
             {formData.center?.faqs?.map((faq: any, idx: number) => (
-              <div key={`faq-${idx}`} className="border rounded-lg p-4 space-y-3">
+              <div
+                key={`faq-${idx}`}
+                className="border rounded-lg p-4 space-y-3"
+              >
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium text-gray-700">FAQ {idx + 1}</h3>
                   <button
@@ -1225,7 +1268,10 @@ export default function DashboardContent() {
                     const next = structuredClone(formData.center.faqs);
                     next[idx] = {
                       ...next[idx],
-                      question: { ...next[idx].question, [activeLang]: e.target.value },
+                      question: {
+                        ...next[idx].question,
+                        [activeLang]: e.target.value,
+                      },
                     };
                     updateField(["center", "faqs"], next);
                   }}
@@ -1253,7 +1299,10 @@ export default function DashboardContent() {
               onClick={() => {
                 const next = [
                   ...(formData.center?.faqs || []),
-                  { question: { en: "", fa: "", ps: "" }, answer: { en: "", fa: "", ps: "" } },
+                  {
+                    question: { en: "", fa: "", ps: "" },
+                    answer: { en: "", fa: "", ps: "" },
+                  },
                 ];
                 updateField(["center", "faqs"], next);
               }}
@@ -1265,7 +1314,10 @@ export default function DashboardContent() {
           <div className="bg-white border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Help Articles</h2>
             {formData.articles?.map((article: any, idx: number) => (
-              <div key={`article-${idx}`} className="border rounded-lg p-4 space-y-3">
+              <div
+                key={`article-${idx}`}
+                className="border rounded-lg p-4 space-y-3"
+              >
                 <div className="flex items-center justify-between">
                   <h3 className="font-medium text-gray-700">
                     Article {idx + 1}
@@ -1300,7 +1352,10 @@ export default function DashboardContent() {
                     const next = structuredClone(formData.articles);
                     next[idx] = {
                       ...next[idx],
-                      title: { ...next[idx].title, [activeLang]: e.target.value },
+                      title: {
+                        ...next[idx].title,
+                        [activeLang]: e.target.value,
+                      },
                     };
                     updateField(["articles"], next);
                   }}
@@ -1382,6 +1437,183 @@ export default function DashboardContent() {
             >
               + Add Article
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* Contact Editor */}
+      {key === "contact" && (
+        <div className="space-y-6">
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Hero</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Title"
+                value={formData.hero?.title?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["hero", "title"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Subtitle"
+                value={formData.hero?.subtitle?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["hero", "subtitle"], e.target.value)
+                }
+              />
+            </div>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Contact Info</h2>
+            {formData.info?.map((item: any, idx: number) => (
+              <div
+                key={`contact-info-${idx}`}
+                className="border rounded-lg p-4 space-y-3"
+              >
+                <div className="flex items-center justify-between">
+                  <h3 className="font-medium text-gray-700">Info {idx + 1}</h3>
+                  <button
+                    type="button"
+                    className="text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      const next = structuredClone(formData.info || []);
+                      next.splice(idx, 1);
+                      updateField(["info"], next);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Icon name (lucide)"
+                  value={item.icon || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.info || []);
+                    next[idx] = { ...next[idx], icon: e.target.value };
+                    updateField(["info"], next);
+                  }}
+                />
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Title"
+                  value={item?.title?.[activeLang] || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.info || []);
+                    const current = next[idx] || {};
+                    const title =
+                      current.title && typeof current.title === "object"
+                        ? { ...current.title }
+                        : { en: "", fa: "", ps: "" };
+                    next[idx] = {
+                      ...current,
+                      title: { ...title, [activeLang]: e.target.value },
+                    };
+                    updateField(["info"], next);
+                  }}
+                />
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Value"
+                  value={item?.value?.[activeLang] || ""}
+                  onChange={e => {
+                    const next = structuredClone(formData.info || []);
+                    const current = next[idx] || {};
+                    const value =
+                      current.value && typeof current.value === "object"
+                        ? { ...current.value }
+                        : { en: "", fa: "", ps: "" };
+                    next[idx] = {
+                      ...current,
+                      value: { ...value, [activeLang]: e.target.value },
+                    };
+                    updateField(["info"], next);
+                  }}
+                />
+              </div>
+            ))}
+            <button
+              type="button"
+              className="text-sm text-primary hover:underline"
+              onClick={() => {
+                const next = [
+                  ...(formData.info || []),
+                  {
+                    icon: "mapPin",
+                    title: { en: "", fa: "", ps: "" },
+                    value: { en: "", fa: "", ps: "" },
+                  },
+                ];
+                updateField(["info"], next);
+              }}
+            >
+              + Add Info Item
+            </button>
+          </div>
+
+          <div className="bg-white border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Form</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Name label"
+                value={formData.form?.nameLabel?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["form", "nameLabel"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Email label"
+                value={formData.form?.emailLabel?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["form", "emailLabel"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Subject label"
+                value={formData.form?.subjectLabel?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["form", "subjectLabel"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Message label"
+                value={formData.form?.messageLabel?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["form", "messageLabel"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Submit label"
+                value={formData.form?.submitLabel?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["form", "submitLabel"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Success message"
+                value={formData.form?.successMessage?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["form", "successMessage"], e.target.value)
+                }
+              />
+              <input
+                className="border rounded-lg px-3 py-2"
+                placeholder="Error message"
+                value={formData.form?.errorMessage?.[activeLang] || ""}
+                onChange={e =>
+                  updateLangField(["form", "errorMessage"], e.target.value)
+                }
+              />
+            </div>
           </div>
         </div>
       )}

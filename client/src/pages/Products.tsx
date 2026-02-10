@@ -341,7 +341,7 @@ function ProductCard({
               </div>
               <div className="h-12 w-px bg-border mx-2"></div>
               <div>
-                <h4 className="font-bold text-lg">
+                <h4 className="font-serif font-bold text-lg">
                   {t("products_page.amazon_reviews")}
                 </h4>
                 <p className="text-sm text-muted-foreground">

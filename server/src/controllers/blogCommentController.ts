@@ -131,3 +131,24 @@ export const deleteBlogComment = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to delete blog comment" });
   }
 };
+
+// Admin: list all comments paginated
+export const listAllComments = async (req: Request, res: Response) => {
+  try {
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const isAdmin = await isAdminUser(userId);
+    if (!isAdmin) return res.status(403).json({ error: "Forbidden" });
+
+    const { limit = 20, cursor } = req.query;
+    const pageSize = Math.min(Number(limit) || 20, 100);
+    const result = await queries.getAllBlogCommentsPaged({
+      limit: pageSize,
+      cursorId: cursor ? String(cursor) : undefined,
+    });
+    res.status(200).json(result);
+  } catch (error) {
+    console.error("Error listing comments:", error);
+    res.status(500).json({ error: "Failed to fetch comments" });
+  }
+};

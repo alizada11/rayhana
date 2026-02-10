@@ -1,35 +1,29 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState } from "react";
 import {
-  useBlogs,
-  useBlogComments,
+  useAllBlogComments,
   useUpdateBlogComment,
   useDeleteBlogComment,
 } from "@/hooks/useBlogs";
-import { Edit, Trash2, Save } from "lucide-react";
+import { Edit, Trash2, Save, Loader2 } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 export default function DashboardBlogComments() {
-  const { data: blogsData } = useBlogs({ page: 1, limit: 100 });
-  const blogs = blogsData?.items ?? [];
-  const [selectedBlogId, setSelectedBlogId] = useState<string>("");
-  const { data: comments = [], isLoading } = useBlogComments(selectedBlogId);
+  const {
+    data,
+    isLoading,
+    isFetchingNextPage,
+    fetchNextPage,
+    hasNextPage,
+  } = useAllBlogComments();
+  const comments = data?.pages.flatMap(page => page.items) ?? [];
   const updateMutation = useUpdateBlogComment();
   const deleteMutation = useDeleteBlogComment();
+  const confirm = useConfirm();
 
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingContent, setEditingContent] = useState("");
-
-  useEffect(() => {
-    if (!selectedBlogId && blogs[0]?.id) {
-      setSelectedBlogId(String(blogs[0].id));
-    }
-  }, [blogs, selectedBlogId]);
-
-  const selectedBlog = useMemo(
-    () => blogs.find(b => String(b.id) === selectedBlogId),
-    [blogs, selectedBlogId]
-  );
 
   const startEdit = (comment: any) => {
     setEditingId(String(comment.id));
@@ -37,10 +31,12 @@ export default function DashboardBlogComments() {
   };
 
   const handleSave = (commentId: string) => {
+    const comment = comments.find(c => String(c.id) === commentId);
+    if (!comment) return;
     if (!editingContent.trim()) return;
     updateMutation.mutate(
       {
-        blogId: selectedBlogId,
+        blogId: comment.blogId,
         commentId,
         content: editingContent.trim(),
       },
@@ -57,10 +53,19 @@ export default function DashboardBlogComments() {
     );
   };
 
-  const handleDelete = (commentId: string) => {
-    if (!confirm("Delete this comment?")) return;
+  const handleDelete = async (commentId: string) => {
+    const comment = comments.find(c => String(c.id) === commentId);
+    if (!comment) return;
+    const ok = await confirm({
+      title: "Delete this comment?",
+      description: "This will permanently remove the comment from the blog.",
+      confirmText: "Delete comment",
+      cancelText: "Cancel",
+      tone: "danger",
+    });
+    if (!ok) return;
     deleteMutation.mutate(
-      { blogId: selectedBlogId, commentId },
+      { blogId: comment.blogId, commentId },
       {
         onSuccess: () => {
           toast.success("Comment deleted.");
@@ -84,27 +89,13 @@ export default function DashboardBlogComments() {
             Review and manage blog comments
           </p>
         </div>
-        <div className="min-w-[240px]">
-          <label className="text-xs text-gray-500">Blog Post</label>
-          <select
-            value={selectedBlogId}
-            onChange={e => setSelectedBlogId(e.target.value)}
-            className="mt-2 w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
-          >
-            {blogs.map(blog => (
-              <option key={blog.id} value={String(blog.id)}>
-                {blog.title?.en || blog.slug}
-              </option>
-            ))}
-          </select>
+        <div className="text-sm text-gray-500">
+          {comments.length} comment{comments.length === 1 ? "" : "s"}
         </div>
       </div>
 
       {/* List */}
       <div className="bg-white border border-gray-200 rounded-xl p-4">
-        <div className="mb-4 text-sm text-gray-500">
-          {selectedBlog?.title?.en || selectedBlog?.slug || "Select a blog"}
-        </div>
         {isLoading && (
           <div className="text-center text-gray-500 py-8">Loading...</div>
         )}
@@ -117,17 +108,28 @@ export default function DashboardBlogComments() {
           {comments.map(comment => (
             <div
               key={comment.id}
-              className="border border-gray-200 rounded-xl p-4"
+              className="border border-gray-200 rounded-xl p-4 shadow-sm"
             >
               <div className="flex items-center justify-between mb-2">
-                <div>
+                <div className="space-y-1">
                   <p className="font-medium text-gray-900">
                     {comment.user?.name || comment.user?.email || "User"}
                   </p>
-                  <p className="text-xs text-gray-500">
-                    {comment.createdAt
-                      ? new Date(comment.createdAt).toLocaleString()
-                      : ""}
+                  <p className="text-xs text-gray-500 flex flex-wrap gap-2 items-center">
+                    <span>
+                      {comment.createdAt
+                        ? new Date(comment.createdAt).toLocaleString()
+                        : ""}
+                    </span>
+                    <span className="text-gray-300">•</span>
+                    <a
+                      className="text-primary hover:underline"
+                      href={`/blog/${comment.blog?.slug ?? comment.blogId ?? ""}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                    >
+                      {comment.blog?.title?.en || comment.blog?.slug || "Blog"}
+                    </a>
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
@@ -165,11 +167,29 @@ export default function DashboardBlogComments() {
                   className="min-h-[100px]"
                 />
               ) : (
-                <p className="text-sm text-gray-700">{comment.content}</p>
+                <p className="text-sm text-gray-700 leading-6">
+                  {comment.content}
+                </p>
               )}
             </div>
           ))}
         </div>
+
+        {hasNextPage && (
+          <div className="flex justify-center pt-4">
+            <button
+              onClick={() => fetchNextPage()}
+              disabled={isFetchingNextPage}
+              className="inline-flex items-center gap-2 border px-4 py-2 rounded-lg text-sm"
+            >
+              {isFetchingNextPage ? (
+                <Loader2 className="w-4 h-4 animate-spin" />
+              ) : (
+                "Load more"
+              )}
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

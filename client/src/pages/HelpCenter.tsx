@@ -20,12 +20,11 @@ const ICONS: Record<string, ComponentType<{ className?: string }>> = {
 
 export default function HelpCenter() {
   const { data } = useContent("help");
-  const { i18n } = useTranslation();
+  const { t, i18n } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
-
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
-
+  const isRTL = ["fa", "ps"].includes(i18n.language);
   const title = getLocalized(data?.data?.center?.title, "Help Center");
   const subtitle = getLocalized(
     data?.data?.center?.subtitle,
@@ -40,15 +39,13 @@ export default function HelpCenter() {
     : [];
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-16">
+    <div className="min-h-screen bg-background py-16">
       <div className="container mx-auto px-4">
         <div className="max-w-3xl">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary">
             {title}
           </h1>
-          <p className="text-muted-foreground mt-3">
-            {subtitle}
-          </p>
+          <p className="text-muted-foreground mt-3">{subtitle}</p>
         </div>
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -65,14 +62,19 @@ export default function HelpCenter() {
                     <Icon className="w-6 h-6" />
                   </div>
                   <div className="flex-1">
-                    <h2 className="text-xl font-semibold text-foreground group-hover:text-primary">
+                    <h2 className="font-serif text-xl font-semibold text-foreground group-hover:text-primary">
                       {getLocalized(section.title, "Help Topic")}
                     </h2>
                     <p className="text-muted-foreground mt-2">
                       {getLocalized(section.description, "")}
                     </p>
                     <div className="mt-4 inline-flex items-center text-sm text-primary">
-                      Read more <ArrowRight className="w-4 h-4 ml-2" />
+                      {t("blog.readMore", "Read")}
+                      {isRTL ? (
+                        <ArrowRight className="mr-2 h-5 w-5 rotate-180" />
+                      ) : (
+                        <ArrowRight className="ml-2 h-5 w-5" />
+                      )}
                     </div>
                   </div>
                 </div>
@@ -83,20 +85,21 @@ export default function HelpCenter() {
 
         <div className="mt-12 bg-muted/40 border rounded-2xl p-6 md:p-8">
           <h2 className="text-2xl font-serif font-bold text-foreground">
-            Popular Questions
+            {t("faq.title", "Frequently Asked Questions")}
           </h2>
           <div className="mt-4 space-y-4">
             {faqs.map((item: any, index: number) => (
-              <div key={`${item.question}-${index}`} className="border-b border-border pb-4">
+              <div
+                key={`${item.question}-${index}`}
+                className="border-b border-border pb-4"
+              >
                 <p className="font-medium text-foreground">
                   {getLocalized(item.question, "Question")}
                 </p>
                 <div
                   className="text-muted-foreground mt-2 prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(
-                      getLocalized(item.answer, "")
-                    ),
+                    __html: DOMPurify.sanitize(getLocalized(item.answer, "")),
                   }}
                 />
               </div>
@@ -105,7 +108,7 @@ export default function HelpCenter() {
         </div>
 
         <div className="mt-10 text-sm text-muted-foreground">
-          Need more help? Email us at{" "}
+          {t("help.needHelp", "Need more help? Email us at")}{" "}
           <span className="font-medium text-foreground">{contactEmail}</span>.
         </div>
       </div>

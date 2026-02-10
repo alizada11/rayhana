@@ -45,7 +45,7 @@ export default function Privacy() {
               key={`${section.title}-${index}`}
               className="bg-card border rounded-xl p-6"
             >
-              <h2 className="text-xl font-semibold text-foreground">
+              <h2 className="font-serif text-xl font-semibold text-foreground">
                 {getLocalized(section.title, `Section ${index + 1}`)}
               </h2>
               <div

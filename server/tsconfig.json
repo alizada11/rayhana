@@ -11,6 +11,9 @@
     "resolveJsonModule": true, // Allows importing .json files
     "forceConsistentCasingInFileNames": true // Prevents case-sensitivity bugs
   },
-  "include": ["src/**/*.ts"], // Which files to compile
-  "exclude": ["node_modules"] // Which files to ignore
+  "include": ["src/**/*.ts", "src/**/*.d.ts"], // Which files to compile
+  "exclude": ["node_modules"], // Which files to ignore
+  "ts-node": {
+    "files": true
+  }
 }

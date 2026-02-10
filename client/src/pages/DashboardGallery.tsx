@@ -22,6 +22,7 @@ import {
 } from "lucide-react";
 import { DialogTitle } from "@radix-ui/react-dialog";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 export default function DashboardGallery() {
   const { data: submissions = [], isLoading } = useAllGallery();
@@ -36,6 +37,7 @@ export default function DashboardGallery() {
   const [page, setPage] = useState(1);
   const pageSize = 8;
   const [likesDialogId, setLikesDialogId] = useState<string | null>(null);
+  const confirm = useConfirm();
   const activeLikesId = likesDialogId || preview?.id;
   const {
     data: likesPages,
@@ -278,21 +280,24 @@ export default function DashboardGallery() {
                     </button>
                   )}
                   <button
-                    onClick={() => {
-                      if (
-                        confirm(
-                          "Are you sure you want to delete this submission?"
-                        )
-                      ) {
-                        deleteMutation.mutate(item.id, {
-                          onSuccess: () => {
-                            toast.success("Gallery submission deleted.");
-                          },
-                          onError: () => {
-                            toast.error("Failed to delete submission.");
-                          },
-                        });
-                      }
+                    onClick={async () => {
+                      const ok = await confirm({
+                        title: "Delete this submission?",
+                        description:
+                          "This will permanently remove the gallery submission.",
+                        confirmText: "Delete submission",
+                        cancelText: "Cancel",
+                        tone: "danger",
+                      });
+                      if (!ok) return;
+                      deleteMutation.mutate(item.id, {
+                        onSuccess: () => {
+                          toast.success("Gallery submission deleted.");
+                        },
+                        onError: () => {
+                          toast.error("Failed to delete submission.");
+                        },
+                      });
                     }}
                     className="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center"
                     title="Delete"

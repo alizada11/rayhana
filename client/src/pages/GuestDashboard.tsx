@@ -30,12 +30,14 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Skeleton } from "@/components/ui/skeleton";
 import { toast } from "sonner";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 export default function GuestDashboard() {
   const { t } = useTranslation();
   const { data: submissions = [], isLoading } = useMyGallery();
   const deleteMutation = useDeleteMyGallerySubmission();
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const confirm = useConfirm();
   const [statusFilter, setStatusFilter] = useState<
     "all" | "pending" | "approved" | "rejected"
   >("all");
@@ -256,35 +258,40 @@ export default function GuestDashboard() {
                   </CardContent>
 
                   <CardFooter className="p-4 pt-0">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
-                      onClick={() => {
-                        if (
-                          window.confirm(
-                            "Are you sure you want to delete this submission?"
-                          )
-                        ) {
-                          deleteMutation.mutate(item.id, {
-                            onSuccess: () => {
-                              toast.success(
-                                t("gallery.toast.submission_deleted", "Submission deleted.")
-                              );
-                            },
-                            onError: () => {
-                              toast.error(
-                                t(
-                                  "gallery.toast.submission_delete_failed",
-                                  "Failed to delete submission."
-                                )
-                              );
-                            },
-                          });
-                        }
-                      }}
-                      disabled={deleteMutation.isPending}
-                    >
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                    onClick={async () => {
+                      const ok = await confirm({
+                        title: t("gallery.delete_title", "Delete this submission?"),
+                        description: t(
+                          "gallery.delete_body",
+                          "This will permanently remove your photo."
+                        ),
+                        confirmText: t("common.delete", "Delete"),
+                        cancelText: t("common.cancel", "Cancel"),
+                        tone: "danger",
+                      });
+                      if (!ok) return;
+                      deleteMutation.mutate(item.id, {
+                        onSuccess: () => {
+                          toast.success(
+                            t("gallery.toast.submission_deleted", "Submission deleted.")
+                          );
+                        },
+                        onError: () => {
+                          toast.error(
+                            t(
+                              "gallery.toast.submission_delete_failed",
+                              "Failed to delete submission."
+                            )
+                          );
+                        },
+                      });
+                    }}
+                    disabled={deleteMutation.isPending}
+                  >
                       <Trash2 className="w-4 h-4 mr-2" />
                       {deleteMutation.isPending ? "Deleting..." : "Remove"}
                     </Button>

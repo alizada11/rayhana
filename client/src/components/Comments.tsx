@@ -16,6 +16,7 @@ import { useAuth, useUser } from "@clerk/clerk-react";
 import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { useConfirm } from "@/components/ConfirmProvider";
 
 interface CommentsProps {
   postId: string;
@@ -28,6 +29,7 @@ export default function Comments({ postId }: CommentsProps) {
   const { user } = useUser();
   const { data: me } = useUserRole();
   const [, setLocation] = useLocation();
+  const confirm = useConfirm();
 
   const { data: comments = [], isLoading } = useBlogComments(postId);
   const createMutation = useCreateBlogComment();
@@ -61,7 +63,9 @@ export default function Comments({ postId }: CommentsProps) {
           toast.success(t("toast.comment_posted", "Comment posted."));
         },
         onError: () => {
-          toast.error(t("toast.comment_submit_failed", "Failed to submit comment"));
+          toast.error(
+            t("toast.comment_submit_failed", "Failed to submit comment")
+          );
         },
       }
     );
@@ -89,8 +93,18 @@ export default function Comments({ postId }: CommentsProps) {
     );
   };
 
-  const handleDelete = (commentId: string) => {
-    if (!confirm("Delete this comment?")) return;
+  const handleDelete = async (commentId: string) => {
+    const ok = await confirm({
+      title: t("toast.comment_delete_title", "Delete comment?"),
+      description: t(
+        "toast.comment_delete_body",
+        "This will permanently remove your comment."
+      ),
+      confirmText: t("common.delete", "Delete"),
+      cancelText: t("common.cancel", "Cancel"),
+      tone: "danger",
+    });
+    if (!ok) return;
     deleteMutation.mutate(
       { blogId: postId, commentId },
       {
@@ -160,13 +174,15 @@ export default function Comments({ postId }: CommentsProps) {
               <Button
                 type="submit"
                 disabled={createMutation.isPending}
-                className="bg-primary text-primary-foreground hover:bg-primary/90"
+                className={`bg-primary text-primary-foreground hover:bg-primary/90
+              flex items-center gap-2
+              ${isRTL ? "flex-row-reverse" : "flex-row"}`}
               >
                 {createMutation.isPending ? (
                   <span className="animate-pulse">...</span>
                 ) : (
                   <>
-                    <Send className={`w-4 h-4 ${isRTL ? "ml-2" : "mr-2"}`} />
+                    <Send className="w-4 h-4" />
                     {t("comments.submit", "Post Comment")}
                   </>
                 )}
@@ -191,13 +207,13 @@ export default function Comments({ postId }: CommentsProps) {
           <div className="space-y-6">
             {isLoading && (
               <p className="text-center text-muted-foreground py-8">
-                {t("comments.loading", "Loading comments...")}
+                {t("common.loading", "Loading comments...")}
               </p>
             )}
             {!isLoading && comments.length === 0 ? (
               <p className="text-center text-muted-foreground py-8">
                 {t(
-                  "comments.noComments",
+                  "common.noComments",
                   "No comments yet. Be the first to share your thoughts!"
                 )}
               </p>

@@ -10,6 +10,14 @@ const router = Router();
 // GET /api/blogs => Get all blog posts (public)
 router.get("/", blogController.getAllBlogPosts);
 
+// Admin: all comments (must be before slug routes)
+router.get(
+  "/admin/comments",
+  requireAuth(),
+  requireAdmin,
+  blogCommentController.listAllComments
+);
+
 // POST /api/blogs/uploads => Upload blog content image (admin only)
 router.post(
   "/uploads",

@@ -154,7 +154,7 @@ export function CustomerGallery() {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
           {isLoading && (
             <div className="text-stone-500 col-span-full text-center">
-              {isRTL ? "در حال بارگذاری..." : "Loading..."}
+              {t("common.loading", "Loading...")}
             </div>
           )}
           {!isLoading && galleryImages.length === 0 && (
@@ -279,7 +279,7 @@ export function CustomerGallery() {
                           {t("gallery.upload_placeholder")}
                         </p>
                         <p className="text-xs opacity-70">
-                          JPG, PNG (MAX. 5MB)
+                          {t("gallery.uploadSize", "JPG, PNG (MAX. 5MB)")}
                         </p>
                       </div>
                     )}

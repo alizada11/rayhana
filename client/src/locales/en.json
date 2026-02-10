@@ -30,10 +30,26 @@
     "name": "Name",
     "email": "Email",
     "message": "Message",
-    "send": "Send Message"
+    "send": "Send Message",
+    "sending": "Sending..."
   },
   "common": {
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of",
+    "success": "Success",
+    "error": "Error",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "noComments": "No comments yet. Be the first to share your thoughts!"
+  },
+  "confirm": {
+    "title": "Are you sure?",
+    "description": "This action cannot be undone.",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
   },
   "products_page": {
     "title": "Our Premium Collection",
@@ -89,7 +105,14 @@
     "upload_title": "Share Your Masterpiece",
     "upload_placeholder": "Click to upload photo",
     "upload_note": "Share your cooking moments with Rayhana pot",
-    "submit_photo": "Submit Photo"
+    "submit_photo": "Submit Photo",
+    "search": "Search by dish or name",
+    "view_all": "View All",
+    "sort_newest": "Newest",
+    "sort_popular": "Most liked",
+    "empty": "No photos found.",
+    "unlike": "Unlike",
+    "like": "Like"
   },
   "newsletter": {
     "title": "Join the Rayhana Family",
@@ -98,6 +121,17 @@
     "disclaimer": "We respect your privacy. Unsubscribe at any time.",
     "success_title": "Welcome to the Rayhana Family!",
     "success_message": "You are now part of our story. Get ready to receive exclusive tastes and traditions in your inbox."
+  },
+  "toast": {
+    "comment_posted": "Comment Posted Successfully",
+    "comment_submit_failed": "Failed to submit your comment. Please try again.",
+    "comment_updated": "Your comment has been updated successfully.",
+    "comment_update_failed": "Unable to update the comment. Please try again.",
+    "comment_deleted": "The comment has been deleted successfully.",
+    "comment_delete_failed": "Failed to delete the comment. Please try again.",
+    "comment_delete_title": "Delete comment?",
+    "comment_delete_body": "This will permanently remove your comment.",
+    "contact_sent": "Message sent successfully"
   },
   "faq": {
     "title": "Frequently Asked Questions",
@@ -136,7 +170,13 @@
     "featuredTitle": "Featured Stories",
     "featuredSubtitle": "Our most loved recipes and cultural journeys.",
     "featured": "Featured",
-    "viewAll": "View all"
+    "viewAll": "View all",
+    "featuredStory": "Featured Story",
+    "readMore": "Read",
+    "title": "Rayhana Culinary Journal",
+    "subtitle": "Exploring the rich heritage of Silk Road cuisine, one story at a time.",
+    "next": "Next",
+    "prev": "Previous"
   },
   "help": {
     "notFound": "Help Article Not Found",

@@ -15,7 +15,9 @@ export default function HelpPage() {
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
 
-  const articles = Array.isArray(data?.data?.articles) ? data?.data?.articles : [];
+  const articles = Array.isArray(data?.data?.articles)
+    ? data?.data?.articles
+    : [];
   const article = articles.find((item: any) => item.slug === params.slug);
 
   if (!article) {
@@ -43,7 +45,7 @@ export default function HelpPage() {
   }
 
   return (
-    <div className="min-h-screen bg-background pt-24 pb-16">
+    <div className="min-h-screen bg-background py-16">
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-sm text-muted-foreground">
           <Link href="/help" className="hover:underline">
@@ -65,40 +67,36 @@ export default function HelpPage() {
           <div
             className="text-foreground prose prose-sm max-w-none"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(
-                getLocalized(article.intro, "")
-              ),
+              __html: DOMPurify.sanitize(getLocalized(article.intro, "")),
             }}
           />
         </div>
 
         <div className="mt-8 space-y-6">
           <section className="bg-card border rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-foreground">
+            <h2 className="font-serif text-xl font-semibold text-foreground">
               {t("help.stepByStep", "Step-by-step")}
             </h2>
             {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
             <div
-              className="mt-3 text-muted-foreground prose prose-sm max-w-none"
+              className="mt-3 text-muted-foreground prose prose-sm max-w-none
+             prose-ul:list-disc prose-ul:pl-6
+             prose-li:my-1"
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(
-                  getLocalized(article.steps, "")
-                ),
+                __html: DOMPurify.sanitize(getLocalized(article.steps, "")),
               }}
             />
           </section>
 
           <section className="bg-card border rounded-2xl p-6">
-            <h2 className="text-xl font-semibold text-foreground">
+            <h2 className="font-serif text-xl font-semibold text-foreground">
               {t("help.tips", "Tips")}
             </h2>
             {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
             <div
               className="mt-3 text-muted-foreground prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(
-                  getLocalized(article.tips, "")
-                ),
+                __html: DOMPurify.sanitize(getLocalized(article.tips, "")),
               }}
             />
           </section>

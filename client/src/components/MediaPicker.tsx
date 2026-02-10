@@ -15,7 +15,14 @@ export default function MediaPicker({
   onSelect,
   accept = "image",
 }: MediaPickerProps) {
-  const { data: media = [], isLoading } = useMedia();
+  const {
+    data,
+    isLoading,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useMedia();
+  const media = data?.pages.flatMap(page => page.items) ?? [];
   const uploadMutation = useUploadMedia();
   const [file, setFile] = useState<File | null>(null);
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
@@ -116,6 +123,17 @@ export default function MediaPicker({
               </button>
             ))}
           </div>
+          {hasNextPage && (
+            <div className="flex justify-center pt-4">
+              <button
+                onClick={() => fetchNextPage()}
+                disabled={isFetchingNextPage}
+                className="inline-flex items-center gap-2 border px-4 py-2 rounded-lg text-sm"
+              >
+                {isFetchingNextPage ? "Loading..." : "Load more"}
+              </button>
+            </div>
+          )}
         </div>
       </div>
     </div>

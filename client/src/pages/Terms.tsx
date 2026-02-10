@@ -28,14 +28,14 @@ export default function Terms() {
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-10">
           <h1
-            className={`text-4xl md:text-5xl font-bold text-primary ${
+            className={`font-serif text-4xl md:text-5xl font-bold text-primary ${
               isRTL ? "font-vazir" : "font-serif"
             }`}
           >
             {title}
           </h1>
           <p className="text-muted-foreground mt-3">
-            {t("terms.effectiveDate", "Effective Date")}: {effectiveDate}
+            {t("privacy.effectiveDate", "Effective Date")}: {effectiveDate}
           </p>
         </div>
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
@@ -50,7 +50,7 @@ export default function Terms() {
               className="bg-card border rounded-xl p-6"
             >
               <h2
-                className={`text-xl font-semibold text-foreground ${
+                className={`font-serif text-xl font-semibold text-foreground ${
                   isRTL ? "font-vazir" : "font-serif"
                 }`}
               >

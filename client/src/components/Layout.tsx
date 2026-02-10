@@ -1,4 +1,4 @@
-import { ReactNode } from "react";
+import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation } from "wouter";
 import { Menu, X, Globe, Moon, Sun } from "lucide-react";
@@ -18,6 +18,9 @@ interface LayoutProps {
   children: ReactNode;
 }
 
+type LocalizedLabel = string | Record<string, string>;
+type NavItem = { href: string; label: LocalizedLabel };
+
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
   const { data: settingsContent } = useContent("settings");
@@ -26,6 +29,29 @@ export default function Layout({ children }: LayoutProps) {
   const { theme, setTheme } = useTheme();
   const isRTL = ["fa", "ar", "ps", "ku"].includes(i18n.language);
   const currentLang = i18n.language as "en" | "fa" | "ps";
+  const LANG_KEY = "rayhana_lang";
+  const LANG_TTL_MS = 24 * 60 * 60 * 1000;
+
+  const saveLang = (code: string) => {
+    const payload = { code, expiresAt: Date.now() + LANG_TTL_MS };
+    sessionStorage.setItem(LANG_KEY, JSON.stringify(payload));
+  };
+
+  const loadLang = (): string | null => {
+    const raw = sessionStorage.getItem(LANG_KEY);
+    if (!raw) return null;
+    try {
+      const { code, expiresAt } = JSON.parse(raw);
+      if (!expiresAt || expiresAt < Date.now()) {
+        sessionStorage.removeItem(LANG_KEY);
+        return null;
+      }
+      return code;
+    } catch {
+      sessionStorage.removeItem(LANG_KEY);
+      return null;
+    }
+  };
 
   useEffect(() => {
     document.dir = isRTL ? "rtl" : "ltr";
@@ -42,14 +68,21 @@ export default function Layout({ children }: LayoutProps) {
 
   const changeLanguage = (langCode: string) => {
     i18n.changeLanguage(langCode);
+    saveLang(langCode);
     setShowLangMenu(false);
   };
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
+  useEffect(() => {
+    const stored = loadLang();
+    if (stored && stored !== i18n.language) {
+      i18n.changeLanguage(stored);
+    }
+  }, []);
 
-  const navItems = Array.isArray(settingsContent?.data?.nav)
+  const navItems: NavItem[] = Array.isArray(settingsContent?.data?.nav)
     ? settingsContent.data.nav
     : [
         { href: "/", label: t("nav.home") },
@@ -58,21 +91,52 @@ export default function Layout({ children }: LayoutProps) {
         { href: "/blog", label: t("nav.blog") },
         { href: "/contact", label: t("nav.contact") },
       ];
-  const footerLinks = Array.isArray(settingsContent?.data?.footerLinks)
+  const footerLinks: NavItem[] = Array.isArray(
+    settingsContent?.data?.footerLinks
+  )
     ? settingsContent.data.footerLinks
     : [
         { href: "/privacy", label: "Privacy Policy" },
         { href: "/terms", label: "Terms of Service" },
         { href: "/help", label: "Help Center" },
       ];
-  const socialLinks = Array.isArray(settingsContent?.data?.social)
+  const socialLinks: NavItem[] = Array.isArray(settingsContent?.data?.social)
     ? settingsContent.data.social
     : [
         { href: "https://www.instagram.com", label: "Instagram" },
         { href: "https://www.facebook.com", label: "Facebook" },
       ];
 
-  const getLocalizedLabel = (label: any) => {
+  const { data: contactContent } = useContent("contact");
+  const contactInfo = useMemo(() => {
+    const fallback = {
+      email: t("contact_page.email_value"),
+      phone: t("contact_page.phone_value"),
+    };
+
+    const info = contactContent?.data?.info;
+    const pickValue = (icons: string[]) => {
+      if (!Array.isArray(info)) return null;
+      const match = info.find((item: any) =>
+        icons.includes((item?.icon || "").toLowerCase())
+      );
+      if (!match?.value) return null;
+      return (
+        match.value?.[currentLang] ||
+        match.value?.en ||
+        match.value?.fa ||
+        match.value?.ps ||
+        null
+      );
+    };
+
+    return {
+      email: pickValue(["mail", "email"]) || fallback.email,
+      phone: pickValue(["phone", "call"]) || fallback.phone,
+    };
+  }, [contactContent, currentLang, t]);
+
+  const getLocalizedLabel = (label: LocalizedLabel) => {
     if (typeof label === "string") return label;
     return label?.[currentLang] || label?.en || "";
   };
@@ -130,7 +194,9 @@ export default function Layout({ children }: LayoutProps) {
               </Button>
 
               {showLangMenu && (
-                <div className="absolute top-full right-0 mt-2 w-40 bg-card border rounded-lg shadow-lg py-2 z-50">
+                <div
+                  className={`absolute top-full ${isRTL ? "left-0" : "right-0"} mt-2 w-40 bg-card border rounded-lg shadow-lg py-2 z-50`}
+                >
                   {languages.map(lang => (
                     <button
                       key={lang.code}
@@ -220,7 +286,7 @@ export default function Layout({ children }: LayoutProps) {
               </p>
             </div>
             <div>
-              <h4 className="font-bold mb-4">{t("nav.products")}</h4>
+              <h4 className="font-serif font-bold mb-4">{t("nav.products")}</h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {footerLinks.map((item: any, idx: number) => (
                   <li key={`${item.href}-${idx}`}>
@@ -234,12 +300,21 @@ export default function Layout({ children }: LayoutProps) {
                 ))}
               </ul>
             </div>
-            <div>
-              <h4 className="font-bold mb-4">{t("contact.title")}</h4>
+            <div className={isRTL ? "text-right" : "text-left"}>
+              <h4 className="font-serif font-bold mb-4">
+                {t("contact.title")}
+              </h4>
+
               <ul className="space-y-2 text-sm text-muted-foreground">
-                <li>info@rayhana.com</li>
-                <li dir="ltr">+86 13867932870</li>
-                <li className="flex gap-4 mt-4">
+                <li>{contactInfo.email}</li>
+
+                {/* Phone: LTR content, RTL position */}
+                <li dir="ltr" className={isRTL ? "text-right" : "text-left"}>
+                  {contactInfo.phone}
+                </li>
+
+                {/* Social links */}
+                <li className="flex gap-4 mt-4 ">
                   {socialLinks.map((item: any, idx: number) => (
                     <a
                       key={`${item.href}-${idx}`}

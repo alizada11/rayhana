@@ -83,6 +83,30 @@ export interface GalleryLikesResponse {
   nextCursor: string | null;
 }
 
+// Contact
+export interface ContactMessagePayload {
+  name: string;
+  email: string;
+  subject?: string;
+  message: string;
+}
+
+export interface ContactMessage extends ContactMessagePayload {
+  id: string;
+  status: "new" | "resolved";
+  createdAt: string;
+  updatedAt: string;
+}
+
+// Newsletter
+export interface NewsletterSubscription {
+  id: string;
+  email: string;
+  country?: string | null;
+  ip?: string | null;
+  createdAt: string;
+}
+
 // ---------- USERS API ----------
 export const syncUser = async (userData: UserData) => {
   const { data } = await api.post("/users/sync", userData);
@@ -263,6 +287,22 @@ export const getBlogComments = async (blogId: string | number) => {
   return data;
 };
 
+export const getAllBlogComments = async ({
+  cursor,
+  limit,
+}: {
+  cursor?: string | null;
+  limit?: number;
+}) => {
+  const params = new URLSearchParams();
+  if (cursor) params.set("cursor", cursor);
+  if (limit) params.set("limit", String(limit));
+  const { data } = await api.get(
+    `/blogs/admin/comments${params.toString() ? `?${params.toString()}` : ""}`
+  );
+  return data as { items: BlogComment[]; nextCursor: string | null };
+};
+
 export const createBlogComment = async ({ blogId, content }: BlogCommentData) => {
   const { data } = await api.post(`/blogs/${blogId}/comments`, { content });
   return data;
@@ -313,9 +353,18 @@ export const uploadMedia = async ({ file }: MediaUploadPayload) => {
   return data;
 };
 
-export const getMedia = async () => {
-  const { data } = await api.get("/media");
-  return data;
+export const getMedia = async ({
+  cursor,
+  limit,
+}: {
+  cursor?: string | null;
+  limit?: number;
+} = {}) => {
+  const params = new URLSearchParams();
+  if (cursor) params.set("cursor", cursor);
+  if (limit) params.set("limit", String(limit));
+  const { data } = await api.get(`/media${params.toString() ? `?${params}` : ""}`);
+  return data as { items: MediaAsset[]; nextCursor: string | null };
 };
 
 export const deleteMedia = async (id: string | number) => {
@@ -333,3 +382,125 @@ export const deleteComment = async ({ commentId }: DeleteCommentParams) => {
   const { data } = await api.delete(`/comments/${commentId}`);
   return data;
 };
+
+// ---------- CONTACT API ----------
+export const sendContactMessage = async (payload: ContactMessagePayload) => {
+  const { data } = await api.post("/contact", payload);
+  return data as ContactMessage;
+};
+
+export const getContactMessages = async ({
+  status,
+  cursor,
+  limit,
+}: {
+  status?: "new" | "resolved";
+  cursor?: string | null;
+  limit?: number;
+}) => {
+  const params = new URLSearchParams();
+  if (status) params.set("status", status);
+  if (cursor) params.set("cursor", cursor);
+  if (limit) params.set("limit", String(limit));
+  const query = params.toString();
+  const { data } = await api.get(`/contact/messages${query ? `?${query}` : ""}`);
+  return data as { items: ContactMessage[]; nextCursor: string | null };
+};
+
+export const updateContactMessageStatus = async (
+  id: string,
+  status: "new" | "resolved"
+) => {
+  const { data } = await api.patch(`/contact/messages/${id}`, { status });
+  return data as ContactMessage;
+};
+
+export const deleteContactMessage = async (id: string) => {
+  const { data } = await api.delete(`/contact/messages/${id}`);
+  return data as ContactMessage;
+};
+
+// ---------- NEWSLETTER API ----------
+export const subscribeNewsletter = async (email: string, country?: string) => {
+  const { data } = await api.post("/newsletter", { email, country });
+  return data as NewsletterSubscription;
+};
+
+export const getNewsletterSubscriptions = async ({
+  from,
+  to,
+  country,
+  search,
+  cursor,
+  limit,
+}: {
+  from?: string;
+  to?: string;
+  country?: string;
+  search?: string;
+  cursor?: string | null;
+  limit?: number;
+}) => {
+  const params = new URLSearchParams();
+  if (from) params.set("from", from);
+  if (to) params.set("to", to);
+  if (country) params.set("country", country);
+  if (search) params.set("search", search);
+  if (cursor) params.set("cursor", cursor);
+  if (limit) params.set("limit", String(limit));
+  const { data } = await api.get(
+    `/newsletter/admin${params.toString() ? `?${params.toString()}` : ""}`
+  );
+  return data as { items: NewsletterSubscription[]; nextCursor: string | null };
+};
+
+export const exportNewsletterCsv = async (params: {
+  from?: string;
+  to?: string;
+  country?: string;
+  search?: string;
+}) => {
+  const searchParams = new URLSearchParams();
+  if (params.from) searchParams.set("from", params.from);
+  if (params.to) searchParams.set("to", params.to);
+  if (params.country) searchParams.set("country", params.country);
+  if (params.search) searchParams.set("search", params.search);
+
+  const response = await api.get(
+    `/newsletter/admin/export${
+      searchParams.toString() ? `?${searchParams.toString()}` : ""
+    }`,
+    { responseType: "blob" }
+  );
+  return response.data as Blob;
+};
+export interface MediaAsset {
+  id: string;
+  url: string;
+  fileName: string;
+  mimeType: string;
+  sizeBytes: number;
+  width?: number | null;
+  height?: number | null;
+  altText?: string | null;
+  createdAt?: string;
+}
+export interface DashboardStats {
+  users: number;
+  blogs: number;
+  gallery: number;
+  newsletter: number;
+}
+
+export const getDashboardStats = async () => {
+  const { data } = await api.get("/dashboard/stats");
+  return data as DashboardStats;
+};
+export interface BlogComment {
+  id: string;
+  content?: string;
+  blogId: string;
+  createdAt?: string;
+  user?: { name?: string | null; email?: string | null } | null;
+  blog?: { title?: Record<string, string> | null; slug?: string | null } | null;
+}
