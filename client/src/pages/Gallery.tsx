@@ -30,7 +30,7 @@ export default function Gallery() {
   const createMutation = useCreateGallerySubmission();
   const toggleLikeMutation = useToggleGalleryLike();
   const { isSignedIn } = useAuth();
-  const { data: me } = useUserRole();
+  const { data: me, isLoading: isRoleLoading } = useUserRole();
   const [, setLocation] = useLocation();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -61,9 +61,12 @@ export default function Gallery() {
   };
 
   useEffect(() => {
-    return () => revokePreview();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+    return () => {
+      if (objectUrl) {
+        URL.revokeObjectURL(objectUrl);
+      }
+    };
+  }, [objectUrl]);
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -181,6 +184,9 @@ export default function Gallery() {
           <Dialog
             open={isDialogOpen}
             onOpenChange={open => {
+              if (isRoleLoading) {
+                return;
+              }
               if (open && !canSubmit) {
                 if (!isSignedIn) {
                   setLocation("/pamik-sign-in");
