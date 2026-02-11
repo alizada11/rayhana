@@ -19,7 +19,9 @@ const app = exprss();
 const distPath = path.join(process.cwd(), "dist");
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction && !ENV.FRONTEND_URL) {
-  throw new Error("FRONTEND_URL environment variable is required in production");
+  throw new Error(
+    "FRONTEND_URL environment variable is required in production"
+  );
 }
 const allowedOrigin = ENV.FRONTEND_URL || "http://localhost:5173";
 app.set("trust proxy", 1);
@@ -29,9 +31,9 @@ app.use(exprss.json());
 app.use(exprss.urlencoded({ extended: true }));
 app.use("/uploads", exprss.static(path.join(process.cwd(), "uploads")));
 
-app.get("/", (req, res) => {
-  res.json({ success: true });
-});
+// app.get("/", (req, res) => {
+//   res.json({ success: true });
+// });
 
 app.use("/api/users", userRoutes);
 app.use("/api/products", productRoutes);
