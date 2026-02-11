@@ -1,4 +1,4 @@
-import exprss from "express";
+import express from "express";
 import path from "path";
 import cors from "cors";
 import { ENV } from "./config/env";
@@ -15,7 +15,7 @@ import contactRoutes from "./routes/contactRoutes";
 import newsletterRoutes from "./routes/newsletterRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 
-const app = exprss();
+const app = express();
 const distPath = path.join(process.cwd(), "dist");
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction && !ENV.FRONTEND_URL) {
@@ -27,11 +27,11 @@ const allowedOrigin = ENV.FRONTEND_URL || "http://localhost:5173";
 app.set("trust proxy", 1);
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(clerkMiddleware());
-app.use(exprss.json());
-app.use(exprss.urlencoded({ extended: true }));
-app.use("/uploads", exprss.static(path.join(process.cwd(), "uploads")));
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
-app.get("/", (req, res) => {
+app.get("/test", (req, res) => {
   res.json({ success: true });
 });
 
@@ -47,10 +47,17 @@ app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 
 // Serve built client assets in production
-app.use(exprss.static(distPath));
-app.get("/", (req, res) => {
-  res.sendFile(path.join(distPath, "index.html"));
-});
+if (ENV.NODE_ENV === "production") {
+  const __dirname = path.resolve();
+
+  // serve static files from frontend/dist
+  app.use(express.static(path.join(__dirname, "../dist")));
+
+  // handle SPA routing - send all non-API routes to index.html - react app
+  app.get("/{*any}", (req, res) => {
+    res.sendFile(path.join(__dirname, "../dist/index.html"));
+  });
+}
 
 app.listen(ENV.PORT, () =>
   console.log("Server is up and running on port:", ENV.PORT)
