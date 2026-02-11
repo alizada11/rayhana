@@ -16,7 +16,7 @@ import newsletterRoutes from "./routes/newsletterRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 
 const app = exprss();
-const distPath = path.join(process.cwd(), "dist");
+const distPath = path.join(process.cwd(), "dist", "public");
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction && !ENV.FRONTEND_URL) {
   throw new Error(
