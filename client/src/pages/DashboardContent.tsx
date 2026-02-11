@@ -382,10 +382,10 @@ export default function DashboardContent() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">
+          <h1 className="text-2xl font-serif font-bold text-foreground">
             Site Content
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Edit dynamic content for Home, About, and FAQ.
           </p>
         </div>
@@ -399,15 +399,15 @@ export default function DashboardContent() {
         </button>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl p-4">
+      <div className="bg-card border border-border rounded-xl p-4">
         <div className="flex items-center gap-3">
-          <label className="text-sm text-gray-500">Content Key</label>
+          <label className="text-sm text-muted-foreground">Content Key</label>
           <select
             value={key}
             onChange={e =>
               setKey(e.target.value as (typeof CONTENT_KEYS)[number])
             }
-            className="px-3 py-2 border border-gray-300 rounded-lg"
+            className="px-3 py-2 border border-border rounded-lg"
           >
             {CONTENT_KEYS.map(contentKey => (
               <option key={contentKey} value={contentKey}>
@@ -425,7 +425,7 @@ export default function DashboardContent() {
                 className={`px-3 py-1 rounded-full text-xs font-medium ${
                   activeLang === lang
                     ? "bg-primary text-white"
-                    : "bg-gray-100 text-gray-600"
+                    : "bg-muted/80 text-muted-foreground"
                 }`}
               >
                 {lang.toUpperCase()}
@@ -436,13 +436,13 @@ export default function DashboardContent() {
       </div>
 
       {isLoading && (
-        <div className="text-sm text-gray-500">Loading content...</div>
+        <div className="text-sm text-muted-foreground">Loading content...</div>
       )}
 
       {/* Home Editor */}
       {key === "home" && (
         <div className="space-y-6">
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Hero</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <input
@@ -487,11 +487,11 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Featured Product</h2>
             <div className="grid md:grid-cols-2 gap-4 items-start">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-gray-500">Title</label>
+                <label className="text-xs text-muted-foreground">Title</label>
                 <input
                   className="border rounded-lg px-3 py-2"
                   placeholder="Title"
@@ -505,7 +505,7 @@ export default function DashboardContent() {
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-500">Description</label>
+                <label className="text-xs text-muted-foreground">Description</label>
                 <BlogRichTextEditor
                   value={
                     formData.featuredProduct?.description?.[activeLang] || ""
@@ -561,11 +561,11 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Story</h2>
             <div className="grid md:grid-cols-2 gap-4 items-start">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-gray-500">title</label>
+                <label className="text-xs text-muted-foreground">title</label>
                 <input
                   className="border rounded-lg px-3 py-2"
                   placeholder="Title"
@@ -576,7 +576,7 @@ export default function DashboardContent() {
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-500">Body</label>
+                <label className="text-xs text-muted-foreground">Body</label>
                 <BlogRichTextEditor
                   value={formData.story?.body?.[activeLang] || ""}
                   onChange={value => updateLangField(["story", "body"], value)}
@@ -611,7 +611,7 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Values Cards</h2>
             <div className="grid md:grid-cols-3 gap-4">
               {formData.values?.map((item: any, idx: number) => (
@@ -635,7 +635,7 @@ export default function DashboardContent() {
                     }}
                   />
                   <div>
-                    <label className="text-xs text-gray-500">Body</label>
+                    <label className="text-xs text-muted-foreground">Body</label>
                     <BlogRichTextEditor
                       value={item?.body?.[activeLang] || ""}
                       onChange={value => {
@@ -678,7 +678,7 @@ export default function DashboardContent() {
       {/* About Editor */}
       {(key as string) === "about" && (
         <div className="space-y-6">
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Hero</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <input
@@ -699,11 +699,11 @@ export default function DashboardContent() {
               />
             </div>
           </div>
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Story</h2>
             <div className="grid md:grid-cols-2 gap-4 items-start">
               <div className="flex flex-col gap-2">
-                <label className="text-xs text-gray-500">Title</label>
+                <label className="text-xs text-muted-foreground">Title</label>
                 <input
                   className="border rounded-lg px-3 py-2"
                   placeholder="Title"
@@ -714,7 +714,7 @@ export default function DashboardContent() {
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-500">Body</label>
+                <label className="text-xs text-muted-foreground">Body</label>
                 <BlogRichTextEditor
                   value={formData.story?.body?.[activeLang] || ""}
                   onChange={value => updateLangField(["story", "body"], value)}
@@ -740,11 +740,11 @@ export default function DashboardContent() {
               </div>
             </div>
           </div>
-          <div className="bg-white border rounded-xl p-4 space-y-4 ">
+          <div className="bg-card border rounded-xl p-4 space-y-4 ">
             <h2 className="font-serif text-xl font-bold">Mission</h2>
             <div className="grid md:grid-cols-2 gap-4 items-start">
               <div className="flex flex-col gap-2">
-                <label className="text-xs text-gray-500">Title</label>
+                <label className="text-xs text-muted-foreground">Title</label>
                 <input
                   className="border rounded-lg px-3 py-2"
                   placeholder="Title"
@@ -755,7 +755,7 @@ export default function DashboardContent() {
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-500">Body</label>
+                <label className="text-xs text-muted-foreground">Body</label>
                 <BlogRichTextEditor
                   value={formData.mission?.body?.[activeLang] || ""}
                   onChange={value =>
@@ -766,11 +766,11 @@ export default function DashboardContent() {
               </div>
             </div>
           </div>
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Founder</h2>
             <div className="grid md:grid-cols-2 gap-4 items-start">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-gray-500">Title</label>
+                <label className="text-xs text-muted-foreground">Title</label>
                 <input
                   className="border rounded-lg px-3 py-2"
                   placeholder="Title"
@@ -781,7 +781,7 @@ export default function DashboardContent() {
                 />
               </div>
               <div>
-                <label className="text-xs text-gray-500">Body</label>
+                <label className="text-xs text-muted-foreground">Body</label>
                 <BlogRichTextEditor
                   value={formData.founder?.body?.[activeLang] || ""}
                   onChange={value =>
@@ -793,7 +793,7 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-3">
+          <div className="bg-card border rounded-xl p-4 space-y-3">
             <h2 className="font-serif text-xl font-bold">Quote</h2>
             <input
               className="border rounded-lg px-3 py-2 w-full"
@@ -801,7 +801,7 @@ export default function DashboardContent() {
               value={formData.quote?.text?.[activeLang] || ""}
               onChange={e => updateLangField(["quote", "text"], e.target.value)}
             />
-            <p className="text-xs text-gray-500">
+            <p className="text-xs text-muted-foreground">
               Appears in the founder section; HTML is stripped on render.
             </p>
           </div>
@@ -811,7 +811,7 @@ export default function DashboardContent() {
       {/* FAQ Editor */}
       {key === "faq" && (
         <div className="space-y-6">
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">FAQ</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <input
@@ -828,7 +828,7 @@ export default function DashboardContent() {
               />
             </div>
           </div>
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Questions</h2>
             {formData.items?.map((item: any, idx: number) => (
               <div
@@ -836,7 +836,7 @@ export default function DashboardContent() {
                 className="grid md:grid-cols-1 gap-4 items-start"
               >
                 <div className="flex flex-col py-2">
-                  <label className="text-xs text-gray-500">Question</label>
+                  <label className="text-xs text-muted-foreground">Question</label>
                   <input
                     className="border rounded-lg mt-1 px-3 py-2"
                     placeholder={`Question ${idx + 1}`}
@@ -852,7 +852,7 @@ export default function DashboardContent() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500">Answer</label>
+                  <label className="text-xs text-muted-foreground">Answer</label>
                   <BlogRichTextEditor
                     value={item.answer?.[activeLang] || ""}
                     onChange={value => {
@@ -892,7 +892,7 @@ export default function DashboardContent() {
       {/* Terms Editor */}
       {key === "terms" && (
         <div className="space-y-6">
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Terms Page</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <input
@@ -908,7 +908,7 @@ export default function DashboardContent() {
                 onChange={e => updateLangField(["title"], e.target.value)}
               />
               <div className="md:col-span-2">
-                <label className="text-xs text-gray-500">Intro</label>
+                <label className="text-xs text-muted-foreground">Intro</label>
                 <BlogRichTextEditor
                   value={formData.intro?.[activeLang] || ""}
                   onChange={value => updateLangField(["intro"], value)}
@@ -918,7 +918,7 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Sections</h2>
             {formData.sections?.map((section: any, idx: number) => (
               <div
@@ -926,7 +926,7 @@ export default function DashboardContent() {
                 className="border rounded-lg p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium text-gray-700">
+                  <h3 className="font-medium text-foreground/90">
                     Section {idx + 1}
                   </h3>
                   <button
@@ -958,7 +958,7 @@ export default function DashboardContent() {
                   }}
                 />
                 <div>
-                  <label className="text-xs text-gray-500">Body</label>
+                  <label className="text-xs text-muted-foreground">Body</label>
                   <BlogRichTextEditor
                     value={section.body?.[activeLang] || ""}
                     onChange={value => {
@@ -997,7 +997,7 @@ export default function DashboardContent() {
       {/* Privacy Editor */}
       {key === "privacy" && (
         <div className="space-y-6">
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Privacy Policy</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <input
@@ -1013,7 +1013,7 @@ export default function DashboardContent() {
                 onChange={e => updateLangField(["title"], e.target.value)}
               />
               <div className="md:col-span-2">
-                <label className="text-xs text-gray-500">Intro</label>
+                <label className="text-xs text-muted-foreground">Intro</label>
                 <BlogRichTextEditor
                   value={formData.intro?.[activeLang] || ""}
                   onChange={value => updateLangField(["intro"], value)}
@@ -1023,7 +1023,7 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Sections</h2>
             {formData.sections?.map((section: any, idx: number) => (
               <div
@@ -1031,7 +1031,7 @@ export default function DashboardContent() {
                 className="border rounded-lg p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium text-gray-700">
+                  <h3 className="font-medium text-foreground/90">
                     Section {idx + 1}
                   </h3>
                   <button
@@ -1063,7 +1063,7 @@ export default function DashboardContent() {
                   }}
                 />
                 <div>
-                  <label className="text-xs text-gray-500">Body</label>
+                  <label className="text-xs text-muted-foreground">Body</label>
                   <BlogRichTextEditor
                     value={section.body?.[activeLang] || ""}
                     onChange={value => {
@@ -1102,7 +1102,7 @@ export default function DashboardContent() {
       {/* Help Editor */}
       {key === "help" && (
         <div className="space-y-6">
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Help Center</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <input
@@ -1138,7 +1138,7 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Help Sections</h2>
             {formData.center?.sections?.map((section: any, idx: number) => (
               <div
@@ -1146,7 +1146,7 @@ export default function DashboardContent() {
                 className="border rounded-lg p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium text-gray-700">
+                  <h3 className="font-medium text-foreground/90">
                     Section {idx + 1}
                   </h3>
                   <button
@@ -1239,7 +1239,7 @@ export default function DashboardContent() {
             </button>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">FAQs</h2>
             {formData.center?.faqs?.map((faq: any, idx: number) => (
               <div
@@ -1247,7 +1247,7 @@ export default function DashboardContent() {
                 className="border rounded-lg p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium text-gray-700">FAQ {idx + 1}</h3>
+                  <h3 className="font-medium text-foreground/90">FAQ {idx + 1}</h3>
                   <button
                     type="button"
                     className="text-sm text-red-600 hover:underline"
@@ -1277,7 +1277,7 @@ export default function DashboardContent() {
                   }}
                 />
                 <div>
-                  <label className="text-xs text-gray-500">Answer</label>
+                  <label className="text-xs text-muted-foreground">Answer</label>
                   <BlogRichTextEditor
                     value={faq.answer?.[activeLang] || ""}
                     onChange={value => {
@@ -1311,7 +1311,7 @@ export default function DashboardContent() {
             </button>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Help Articles</h2>
             {formData.articles?.map((article: any, idx: number) => (
               <div
@@ -1319,7 +1319,7 @@ export default function DashboardContent() {
                 className="border rounded-lg p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium text-gray-700">
+                  <h3 className="font-medium text-foreground/90">
                     Article {idx + 1}
                   </h3>
                   <button
@@ -1371,7 +1371,7 @@ export default function DashboardContent() {
                   }}
                 />
                 <div>
-                  <label className="text-xs text-gray-500">Intro</label>
+                  <label className="text-xs text-muted-foreground">Intro</label>
                   <BlogRichTextEditor
                     value={article.intro?.[activeLang] || ""}
                     onChange={value => {
@@ -1386,7 +1386,7 @@ export default function DashboardContent() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500">Steps (HTML)</label>
+                  <label className="text-xs text-muted-foreground">Steps (HTML)</label>
                   <BlogRichTextEditor
                     value={article.steps?.[activeLang] || ""}
                     onChange={value => {
@@ -1401,7 +1401,7 @@ export default function DashboardContent() {
                   />
                 </div>
                 <div>
-                  <label className="text-xs text-gray-500">Tips (HTML)</label>
+                  <label className="text-xs text-muted-foreground">Tips (HTML)</label>
                   <BlogRichTextEditor
                     value={article.tips?.[activeLang] || ""}
                     onChange={value => {
@@ -1444,7 +1444,7 @@ export default function DashboardContent() {
       {/* Contact Editor */}
       {key === "contact" && (
         <div className="space-y-6">
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Hero</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <input
@@ -1466,7 +1466,7 @@ export default function DashboardContent() {
             </div>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Contact Info</h2>
             {formData.info?.map((item: any, idx: number) => (
               <div
@@ -1474,7 +1474,7 @@ export default function DashboardContent() {
                 className="border rounded-lg p-4 space-y-3"
               >
                 <div className="flex items-center justify-between">
-                  <h3 className="font-medium text-gray-700">Info {idx + 1}</h3>
+                  <h3 className="font-medium text-foreground/90">Info {idx + 1}</h3>
                   <button
                     type="button"
                     className="text-sm text-red-600 hover:underline"
@@ -1554,7 +1554,7 @@ export default function DashboardContent() {
             </button>
           </div>
 
-          <div className="bg-white border rounded-xl p-4 space-y-4">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
             <h2 className="font-serif text-xl font-bold">Form</h2>
             <div className="grid md:grid-cols-2 gap-4">
               <input

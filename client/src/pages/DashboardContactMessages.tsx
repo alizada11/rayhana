@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/ConfirmProvider";
+import { useTranslation } from "react-i18next";
 
 export default function DashboardContactMessages() {
   const {
@@ -29,13 +30,15 @@ export default function DashboardContactMessages() {
   const deleteMutation = useDeleteContactMessage();
   const confirm = useConfirm();
 
+  const { t, i18n } = useTranslation();
+  const isRTL = ["fa", "ps"].includes(i18n.language);
   const messages = data?.pages.flatMap(page => page.items) ?? [];
 
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">
+          <h1 className="text-2xl font-serif font-bold text-foreground">
             Contact Messages
           </h1>
           <p className="text-sm text-muted-foreground">
@@ -81,12 +84,12 @@ export default function DashboardContactMessages() {
           {messages.map(msg => (
             <div
               key={msg.id}
-              className="relative border rounded-xl p-4 bg-white shadow-sm"
+              className="relative border rounded-xl p-4 bg-card shadow-sm"
             >
               <div className="flex items-start justify-between gap-4">
                 <div className="space-y-2">
                   <div className="flex items-center gap-3">
-                    <h3 className="font-serif text-lg font-semibold text-gray-900">
+                    <h3 className="font-serif text-lg font-semibold text-foreground">
                       {msg.name}
                     </h3>
                     <Badge
@@ -101,19 +104,21 @@ export default function DashboardContactMessages() {
                     {msg.email}
                   </div>
                   {msg.subject && (
-                    <div className="text-sm text-gray-800">
+                    <div className="text-sm text-foreground">
                       <span className="font-medium">Subject:</span>{" "}
                       {msg.subject}
                     </div>
                   )}
-                  <p className="text-gray-800 whitespace-pre-wrap">
+                  <p className="text-foreground whitespace-pre-wrap">
                     {msg.message}
                   </p>
                   <div className="text-xs text-muted-foreground">
                     {format(new Date(msg.createdAt), "MMM d, yyyy h:mm a")}
                   </div>
                 </div>
-                <div className="absolute right-3 top-3 flex flex-col gap-2">
+                <div
+                  className={`absolute ${isRTL ? "left-3" : "right-3"} top-3 flex flex-col gap-2`}
+                >
                   <Button
                     size="sm"
                     variant={msg.status === "resolved" ? "outline" : "default"}

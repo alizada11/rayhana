@@ -151,6 +151,7 @@ function ProductCard({
 
   const currentPrice =
     product.prices && selectedSize ? product.prices[selectedSize] : undefined;
+  const productLink = product.productUrl;
 
   const reviews = [
     {
@@ -249,10 +250,10 @@ function ProductCard({
                       selectedSize ? `size ${selectedSize}` : ""
                     }`
                   );
-                  window.open(
-                    `https://www.amazon.com/s?k=${searchQuery}`,
-                    "_blank"
-                  );
+                  const href =
+                    productLink ||
+                    `https://www.amazon.com/s?k=${searchQuery}`;
+                  window.open(href, "_blank", "noopener,noreferrer");
                 }}
               >
                 <ShoppingBag className="w-4 h-4 mr-2" />
@@ -295,10 +296,10 @@ function ProductCard({
                       selectedSize ? `size ${selectedSize}` : ""
                     }`
                   );
-                  window.open(
-                    `https://www.amazon.com/s?k=${searchQuery}`,
-                    "_blank"
-                  );
+                  const href =
+                    productLink ||
+                    `https://www.amazon.com/s?k=${searchQuery}`;
+                  window.open(href, "_blank", "noopener,noreferrer");
                 }}
               >
                 <ShoppingBag className="w-4 h-4 mr-2" />

@@ -57,13 +57,13 @@ export default function DashboardGallery() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "approved":
-        return "bg-green-100 text-green-800";
+        return "bg-emerald-100 text-emerald-800 dark:bg-emerald-500/20 dark:text-emerald-100";
       case "rejected":
-        return "bg-red-100 text-red-800";
+        return "bg-red-100 text-red-800 dark:bg-red-500/20 dark:text-red-100";
       case "pending":
-        return "bg-yellow-100 text-yellow-800";
+        return "bg-amber-100 text-amber-800 dark:bg-amber-500/20 dark:text-amber-100";
       default:
-        return "bg-gray-100 text-gray-800";
+        return "bg-muted/80 text-foreground";
     }
   };
 
@@ -76,7 +76,7 @@ export default function DashboardGallery() {
   if (isLoading) {
     return (
       <div className="flex items-center justify-center min-h-[400px]">
-        <div className="text-gray-500">Loading submissions...</div>
+        <div className="text-muted-foreground">Loading submissions...</div>
       </div>
     );
   }
@@ -85,10 +85,10 @@ export default function DashboardGallery() {
     <div className="space-y-6 p-4 max-w-7xl mx-auto">
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
         <div>
-          <h1 className="text-2xl font-semibold text-gray-900">
+          <h1 className="text-2xl font-semibold text-foreground">
             Gallery Submissions
           </h1>
-          <p className="text-gray-500 text-sm mt-1">
+          <p className="text-muted-foreground text-sm mt-1">
             {filtered.length} submission{filtered.length !== 1 ? "s" : ""} total
           </p>
         </div>
@@ -120,8 +120,8 @@ export default function DashboardGallery() {
               }}
               className={`px-4 py-2 rounded-lg border text-sm font-medium transition-all flex items-center gap-1.5 ${
                 statusFilter === key
-                  ? "bg-gray-900 text-white border-gray-900"
-                  : "bg-white text-gray-700 border-gray-300 hover:border-gray-400"
+                  ? "bg-primary text-primary-foreground border-primary shadow-sm"
+                  : "bg-card text-foreground/90 border-border hover:border-primary/50"
               }`}
             >
               {icon}
@@ -132,9 +132,9 @@ export default function DashboardGallery() {
       </div>
 
       {pageItems.length === 0 ? (
-        <div className="text-center py-12 border-2 border-dashed border-gray-300 rounded-xl">
-          <div className="text-gray-400">No submissions found</div>
-          <div className="text-sm text-gray-500 mt-1">
+        <div className="text-center py-12 border-2 border-dashed border-border rounded-xl">
+          <div className="text-muted-foreground/80">No submissions found</div>
+          <div className="text-sm text-muted-foreground mt-1">
             Try selecting a different filter
           </div>
         </div>
@@ -143,10 +143,10 @@ export default function DashboardGallery() {
           {pageItems.map(item => (
             <div
               key={item.id}
-              className="bg-white border border-gray-200 rounded-xl overflow-hidden hover:shadow-md transition-shadow"
+              className="bg-card border border-border rounded-xl overflow-hidden hover:shadow-md transition-shadow"
             >
               {/* Image Preview */}
-              <div className="relative aspect-square bg-gray-100">
+              <div className="relative aspect-square bg-muted/80">
                 <button
                   onClick={() => setPreview(item)}
                   className="absolute inset-0 w-full h-full group"
@@ -171,18 +171,18 @@ export default function DashboardGallery() {
               {/* Content */}
               <div className="p-4 space-y-3">
                 <div>
-                  <h3 className="font-semibold text-gray-900 line-clamp-1">
+                  <h3 className="font-semibold text-foreground line-clamp-1">
                     {item.dishName}
                   </h3>
                   {item.description && (
-                    <p className="text-sm text-gray-600 mt-1 line-clamp-2">
+                    <p className="text-sm text-muted-foreground mt-1 line-clamp-2">
                       {item.description}
                     </p>
                   )}
                 </div>
 
                 {/* Metadata */}
-                <div className="space-y-2 text-sm text-gray-500">
+                <div className="space-y-2 text-sm text-muted-foreground">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-1.5">
                       <User className="w-4 h-4" />
@@ -191,7 +191,7 @@ export default function DashboardGallery() {
                     <button
                       type="button"
                       onClick={() => setLikesDialogId(item.id)}
-                      className="flex items-center gap-1.5 text-gray-700 hover:text-gray-900"
+                      className="flex items-center gap-1.5 text-foreground/90 hover:text-foreground"
                     >
                       <ThumbsUp className="w-4 h-4" />
                       <span>{item.likesCount ?? 0} likes</span>
@@ -299,7 +299,7 @@ export default function DashboardGallery() {
                         },
                       });
                     }}
-                    className="px-3 py-2 bg-gray-100 text-gray-700 text-sm font-medium rounded-lg hover:bg-gray-200 transition-colors flex items-center justify-center"
+                    className="px-3 py-2 bg-muted/80 text-foreground/90 text-sm font-medium rounded-lg hover:bg-muted transition-colors flex items-center justify-center"
                     title="Delete"
                   >
                     <Trash2 className="w-4 h-4" />
@@ -317,7 +317,7 @@ export default function DashboardGallery() {
           <button
             onClick={() => setPage(p => Math.max(1, p - 1))}
             disabled={page === 1}
-            className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium rounded-lg border border-border bg-card text-foreground/90 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Previous
           </button>
@@ -328,8 +328,8 @@ export default function DashboardGallery() {
                 onClick={() => setPage(p)}
                 className={`w-9 h-9 text-sm font-medium rounded-lg ${
                   page === p
-                    ? "bg-gray-900 text-white"
-                    : "bg-white text-gray-700 hover:bg-gray-100"
+                    ? "bg-primary text-white"
+                    : "bg-card text-foreground/90 hover:bg-muted/80"
                 }`}
               >
                 {p}
@@ -339,7 +339,7 @@ export default function DashboardGallery() {
           <button
             onClick={() => setPage(p => Math.min(totalPages, p + 1))}
             disabled={page === totalPages}
-            className="px-4 py-2 text-sm font-medium rounded-lg border border-gray-300 bg-white text-gray-700 hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-4 py-2 text-sm font-medium rounded-lg border border-border bg-card text-foreground/90 hover:bg-muted disabled:opacity-50 disabled:cursor-not-allowed"
           >
             Next
           </button>
@@ -350,12 +350,12 @@ export default function DashboardGallery() {
       <Dialog open={Boolean(preview)} onOpenChange={() => setPreview(null)}>
         <DialogContent className="max-w-4xl p-0 border-0">
           <DialogHeader>
-            <DialogTitle className="text-center font-serif p-2 text-2xl text-gray-900 dark:text-amber-500">
+            <DialogTitle className="text-center font-serif p-2 text-2xl text-foreground dark:text-amber-500">
               Submission Details
             </DialogTitle>
           </DialogHeader>
           {preview && (
-            <div className="bg-white rounded-xl overflow-hidden">
+            <div className="bg-card rounded-xl overflow-hidden">
               <div className="relative">
                 <img
                   src={resolveImageUrl(preview.imageUrl)}
@@ -373,42 +373,42 @@ export default function DashboardGallery() {
               </div>
               <div className="p-6 space-y-4">
                 <div>
-                  <h2 className="text-xl font-semibold text-gray-900">
+                  <h2 className="text-xl font-semibold text-foreground">
                     {preview.dishName}
                   </h2>
                   {preview.description && (
-                    <p className="text-gray-600 mt-2">{preview.description}</p>
+                    <p className="text-muted-foreground mt-2">{preview.description}</p>
                   )}
                 </div>
                 <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
                   <div className="space-y-1">
-                    <div className="text-gray-500">Submitted by</div>
+                    <div className="text-muted-foreground">Submitted by</div>
                     <div className="font-medium">
                       {preview.user?.name || "Anonymous"}
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-gray-500">Likes</div>
+                    <div className="text-muted-foreground">Likes</div>
                     <button
                       type="button"
                       onClick={() => {
                         setLikesDialogId(preview.id);
                         setPreview(null);
                       }}
-                      className="font-medium text-left text-gray-800 hover:text-gray-900 underline-offset-2 hover:underline"
+                      className="font-medium text-left text-foreground hover:text-foreground underline-offset-2 hover:underline"
                     >
                       {preview.likesCount ?? 0}{" "}
                       {likesLoading ? "(loading...)" : ""}
                     </button>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-gray-500">Status</div>
+                    <div className="text-muted-foreground">Status</div>
                     <div className="font-medium capitalize">
                       {preview.status}
                     </div>
                   </div>
                   <div className="space-y-1">
-                    <div className="text-gray-500">Submitted on</div>
+                    <div className="text-muted-foreground">Submitted on</div>
                     <div className="font-medium">
                       {format(new Date(preview.createdAt), "MMM d, yyyy")}
                     </div>
@@ -433,9 +433,9 @@ export default function DashboardGallery() {
             <DialogTitle className="text-lg font-semibold">Likes</DialogTitle>
           </DialogHeader>
           {likesLoading ? (
-            <div className="text-sm text-gray-500">Loading likes...</div>
+            <div className="text-sm text-muted-foreground">Loading likes...</div>
           ) : likes.length === 0 ? (
-            <div className="text-sm text-gray-500">
+            <div className="text-sm text-muted-foreground">
               No likes yet for this submission.
             </div>
           ) : (
@@ -444,19 +444,19 @@ export default function DashboardGallery() {
                 {likes.map(like => (
                   <div
                     key={like.id}
-                    className="flex items-center justify-between text-sm text-gray-800 border border-gray-100 rounded-lg px-3 py-2"
+                    className="flex items-center justify-between text-sm text-foreground border border-border/80 rounded-lg px-3 py-2"
                   >
                     <div className="flex flex-col">
                       <span className="font-medium">
                         {like.user?.name || "Anonymous"}
                       </span>
                       {like.user?.email && (
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-muted-foreground">
                           {like.user.email}
                         </span>
                       )}
                     </div>
-                    <div className="text-xs text-gray-500">
+                    <div className="text-xs text-muted-foreground">
                       <Heart className="fill-primary" />
                     </div>
                   </div>
@@ -466,7 +466,7 @@ export default function DashboardGallery() {
                 <button
                   onClick={() => fetchNextPage()}
                   disabled={isFetchingNextPage}
-                  className="w-full text-sm font-medium text-gray-700 border border-gray-200 rounded-lg py-2 hover:bg-gray-50 disabled:opacity-50"
+                  className="w-full text-sm font-medium text-foreground/90 border border-border rounded-lg py-2 hover:bg-muted disabled:opacity-50"
                 >
                   {isFetchingNextPage ? "Loading..." : "Load more"}
                 </button>

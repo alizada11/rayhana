@@ -1,11 +1,19 @@
-import { Router } from "express";
+import { Router, type RequestHandler } from "express";
 import { requireAuth } from "@clerk/express";
+import rateLimit from "express-rate-limit";
 import { upload } from "../middleware/upload";
 import { requireAdmin } from "../middleware/requireAdmin";
 import * as blogController from "../controllers/blogController";
 import * as blogCommentController from "../controllers/blogCommentController";
 
 const router = Router();
+
+const commentLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 30,
+  standardHeaders: true,
+  legacyHeaders: false,
+}) as unknown as RequestHandler;
 
 // GET /api/blogs => Get all blog posts (public)
 router.get("/", blogController.getAllBlogPosts);
@@ -62,6 +70,7 @@ router.get("/:id/comments", blogCommentController.getBlogComments);
 // POST /api/blogs/:id/comments => Create blog comment (auth)
 router.post(
   "/:id/comments",
+  commentLimiter,
   requireAuth(),
   blogCommentController.createBlogComment
 );

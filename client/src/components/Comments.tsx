@@ -37,6 +37,7 @@ export default function Comments({ postId }: CommentsProps) {
   const deleteMutation = useDeleteBlogComment();
 
   const [message, setMessage] = useState("");
+  const [trap, setTrap] = useState(""); // honeypot
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingMessage, setEditingMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
@@ -54,10 +55,11 @@ export default function Comments({ postId }: CommentsProps) {
     }
 
     createMutation.mutate(
-      { blogId: postId, content: message.trim() },
+      { blogId: postId, content: message.trim(), website: trap },
       {
         onSuccess: () => {
           setMessage("");
+          setTrap("");
           setShowSuccess(true);
           setTimeout(() => setShowSuccess(false), 2500);
           toast.success(t("toast.comment_posted", "Comment posted."));
@@ -133,6 +135,17 @@ export default function Comments({ postId }: CommentsProps) {
             onSubmit={handleSubmit}
             className="mb-12 bg-card p-6 rounded-xl border shadow-sm"
           >
+            {/* Honeypot field */}
+            <input
+              type="text"
+              name="website"
+              value={trap}
+              onChange={e => setTrap(e.target.value)}
+              tabIndex={-1}
+              autoComplete="off"
+              className="hidden"
+              aria-hidden="true"
+            />
             <div className="flex items-center gap-3 mb-4">
               <Avatar className="w-10 h-10 border-2 border-background">
                 <AvatarImage src={user?.imageUrl} />
@@ -159,7 +172,7 @@ export default function Comments({ postId }: CommentsProps) {
                 htmlFor="message"
                 className="text-sm font-medium text-muted-foreground"
               >
-                {t("comments.message", "Message")}
+                {t("comments.message", "Comment")}
               </label>
               <Textarea
                 id="message"

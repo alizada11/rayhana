@@ -82,25 +82,25 @@ export default function DashboardBlogComments() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">
+          <h1 className="text-2xl font-serif font-bold text-foreground">
             Comment Moderation
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Review and manage blog comments
           </p>
         </div>
-        <div className="text-sm text-gray-500">
+        <div className="text-sm text-muted-foreground">
           {comments.length} comment{comments.length === 1 ? "" : "s"}
         </div>
       </div>
 
       {/* List */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4">
+      <div className="bg-card border border-border rounded-xl p-4">
         {isLoading && (
-          <div className="text-center text-gray-500 py-8">Loading...</div>
+          <div className="text-center text-muted-foreground py-8">Loading...</div>
         )}
         {!isLoading && comments.length === 0 && (
-          <div className="text-center text-gray-500 py-8">
+          <div className="text-center text-muted-foreground py-8">
             No comments yet.
           </div>
         )}
@@ -108,20 +108,20 @@ export default function DashboardBlogComments() {
           {comments.map(comment => (
             <div
               key={comment.id}
-              className="border border-gray-200 rounded-xl p-4 shadow-sm"
+              className="border border-border rounded-xl p-4 shadow-sm"
             >
               <div className="flex items-center justify-between mb-2">
                 <div className="space-y-1">
-                  <p className="font-medium text-gray-900">
+                  <p className="font-medium text-foreground">
                     {comment.user?.name || comment.user?.email || "User"}
                   </p>
-                  <p className="text-xs text-gray-500 flex flex-wrap gap-2 items-center">
+                  <p className="text-xs text-muted-foreground flex flex-wrap gap-2 items-center">
                     <span>
                       {comment.createdAt
                         ? new Date(comment.createdAt).toLocaleString()
                         : ""}
                     </span>
-                    <span className="text-gray-300">•</span>
+                    <span className="text-muted-foreground/60">•</span>
                     <a
                       className="text-primary hover:underline"
                       href={`/blog/${comment.blog?.slug ?? comment.blogId ?? ""}`}
@@ -167,7 +167,7 @@ export default function DashboardBlogComments() {
                   className="min-h-[100px]"
                 />
               ) : (
-                <p className="text-sm text-gray-700 leading-6">
+                <p className="text-sm text-foreground/90 leading-6">
                   {comment.content}
                 </p>
               )}

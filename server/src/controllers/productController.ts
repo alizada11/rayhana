@@ -81,6 +81,7 @@ export const createProduct = async (req: Request, res: Response) => {
       sizes,
       colors,
       prices,
+      productUrl,
     } = req.body;
 
     const uploadedImageUrl = req.file
@@ -102,6 +103,7 @@ export const createProduct = async (req: Request, res: Response) => {
         ps: "",
       }),
       imageUrl: uploadedImageUrl ?? imageUrl,
+      productUrl: productUrl || undefined,
       category,
       rating: Number(rating ?? 5),
       sizes: parseJSON<number[]>(sizes, []),
@@ -135,6 +137,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       sizes,
       colors,
       prices,
+      productUrl,
     } = req.body;
 
     const uploadedImageUrl = req.file
@@ -169,6 +172,7 @@ export const updateProduct = async (req: Request, res: Response) => {
           })
         : undefined,
       imageUrl: uploadedImageUrl ?? imageUrl,
+      productUrl: productUrl,
       category,
       rating: rating !== undefined ? Number(rating) : undefined,
       sizes: sizes ? parseJSON<number[]>(sizes, []) : undefined,

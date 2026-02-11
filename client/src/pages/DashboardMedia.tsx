@@ -69,10 +69,10 @@ export default function DashboardMedia() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">
+          <h1 className="text-2xl font-serif font-bold text-foreground">
             Media Library
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Upload and manage site images
           </p>
         </div>
@@ -104,7 +104,7 @@ export default function DashboardMedia() {
         </div>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-xl p-4">
+      <div className="bg-card border border-border rounded-xl p-4">
         <div className="flex flex-col md:flex-row gap-3 items-start md:items-center">
           <input
             ref={fileInputRef}
@@ -125,11 +125,11 @@ export default function DashboardMedia() {
       </div>
 
       {isLoading && (
-        <div className="text-center text-gray-500 py-8">Loading...</div>
+        <div className="text-center text-muted-foreground py-8">Loading...</div>
       )}
 
       {!isLoading && media.length === 0 && (
-        <div className="text-center text-gray-500 py-8">
+        <div className="text-center text-muted-foreground py-8">
           No media uploaded yet.
         </div>
       )}
@@ -138,9 +138,9 @@ export default function DashboardMedia() {
         {media.map((item: any) => (
           <div
             key={item.id}
-            className="border rounded-xl overflow-hidden bg-white shadow-sm"
+            className="border rounded-xl overflow-hidden bg-card shadow-sm"
           >
-            <div className="aspect-square bg-gray-50">
+            <div className="aspect-square bg-muted">
               {item.mimeType?.startsWith("video/") ? (
                 <video
                   src={resolveUrl(item.url)}
@@ -156,18 +156,18 @@ export default function DashboardMedia() {
               )}
             </div>
             <div className="p-3 space-y-2">
-              <p className="text-xs text-gray-500 line-clamp-1">
+              <p className="text-xs text-muted-foreground line-clamp-1">
                 {item.fileName}
               </p>
               <div className="flex items-center justify-between">
-                <span className="text-xs text-gray-400">
+                <span className="text-xs text-muted-foreground/80">
                   {item.width && item.height
                     ? `${item.width}x${item.height}`
                     : ""}
                 </span>
                 <button
                   onClick={() => handleDelete(String(item.id))}
-                  className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                  className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                   title="Delete"
                 >
                   <Trash2 className="w-4 h-4" />

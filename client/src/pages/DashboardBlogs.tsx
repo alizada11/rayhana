@@ -100,7 +100,7 @@ function DashboardBlogs() {
       <div className="flex items-center justify-center h-64">
         <div className="text-center">
           <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-4" />
-          <p className="text-gray-500">Loading blog posts...</p>
+          <p className="text-muted-foreground">Loading blog posts...</p>
         </div>
       </div>
     );
@@ -111,8 +111,8 @@ function DashboardBlogs() {
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">Blogs</h1>
-          <p className="text-sm text-gray-500">Create and manage blog posts</p>
+          <h1 className="text-2xl font-serif font-bold text-foreground">Blogs</h1>
+          <p className="text-sm text-muted-foreground">Create and manage blog posts</p>
         </div>
         <button
           onClick={handleAdd}
@@ -124,27 +124,27 @@ function DashboardBlogs() {
       </div>
 
       {/* Search & Filter Bar */}
-      <div className="bg-white border border-gray-200 rounded-xl p-4">
+      <div className="bg-card border border-border rounded-xl p-4">
         <div className="flex flex-col md:flex-row gap-4">
           <div className="flex-1 relative">
-            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 w-5 h-5" />
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/80 w-5 h-5" />
             <input
               type="text"
               placeholder="Search by title or slug..."
               value={searchTerm}
               onChange={e => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              className="w-full pl-10 pr-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             />
           </div>
 
           <div className="flex items-center gap-2">
-            <Filter className="w-5 h-5 text-gray-400" />
+            <Filter className="w-5 h-5 text-muted-foreground/80" />
             <select
               value={statusFilter}
               onChange={e =>
                 setStatusFilter(e.target.value as "all" | "published" | "draft")
               }
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              className="px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             >
               <option value="all">All Status</option>
               <option value="published">Published</option>
@@ -153,13 +153,13 @@ function DashboardBlogs() {
           </div>
 
           <div className="flex items-center gap-2">
-            <Star className="w-5 h-5 text-gray-400" />
+            <Star className="w-5 h-5 text-muted-foreground/80" />
             <select
               value={featuredFilter}
               onChange={e =>
                 setFeaturedFilter(e.target.value as "all" | "featured")
               }
-              className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              className="px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             >
               <option value="all">All</option>
               <option value="featured">Featured</option>
@@ -170,19 +170,19 @@ function DashboardBlogs() {
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-sm text-gray-500">Total Posts</p>
-          <p className="text-2xl font-bold text-gray-900">{data?.total ?? 0}</p>
+        <div className="bg-card border border-border rounded-xl p-4">
+          <p className="text-sm text-muted-foreground">Total Posts</p>
+          <p className="text-2xl font-bold text-foreground">{data?.total ?? 0}</p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-sm text-gray-500">Showing</p>
-          <p className="text-2xl font-bold text-gray-900">
+        <div className="bg-card border border-border rounded-xl p-4">
+          <p className="text-sm text-muted-foreground">Showing</p>
+          <p className="text-2xl font-bold text-foreground">
             {filteredPosts.length}
           </p>
         </div>
-        <div className="bg-white border border-gray-200 rounded-xl p-4">
-          <p className="text-sm text-gray-500">Featured</p>
-          <p className="text-2xl font-bold text-gray-900">
+        <div className="bg-card border border-border rounded-xl p-4">
+          <p className="text-sm text-muted-foreground">Featured</p>
+          <p className="text-2xl font-bold text-foreground">
             {posts.filter(p => p.featured).length}
           </p>
         </div>
@@ -193,7 +193,7 @@ function DashboardBlogs() {
         {filteredPosts.map(post => (
           <div
             key={post.id}
-            className="border rounded-xl p-4 bg-white shadow-sm w-full box-border"
+            className="border rounded-xl p-4 bg-card shadow-sm w-full box-border"
           >
             <div className="flex items-center gap-3">
               <img
@@ -202,18 +202,18 @@ function DashboardBlogs() {
                 className="w-16 h-16 object-cover rounded-lg"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-gray-900 ">{post.title?.en}</p>
-                <p className="text-xs text-gray-500 ">{post.slug}</p>
+                <p className="font-medium text-foreground ">{post.title?.en}</p>
+                <p className="text-xs text-muted-foreground ">{post.slug}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-2 mt-3 text-xs">
-              <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+              <span className="px-2 py-1 rounded-full bg-muted/80 text-foreground/90">
                 {post.status}
               </span>
-              <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+              <span className="px-2 py-1 rounded-full bg-muted/80 text-foreground/90">
                 {post.featured ? "Featured" : "Standard"}
               </span>
-              <span className="px-2 py-1 rounded-full bg-gray-100 text-gray-700">
+              <span className="px-2 py-1 rounded-full bg-muted/80 text-foreground/90">
                 {post.publishedAt
                   ? new Date(post.publishedAt).toLocaleDateString()
                   : "-"}
@@ -222,7 +222,7 @@ function DashboardBlogs() {
             <div className="flex  gap-2 mt-3">
               <Link href={`/blog/${post.slug}`}>
                 <button
-                  className="p-2 text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                  className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                   title="View"
                 >
                   <Eye className="w-4 h-4" />
@@ -230,7 +230,7 @@ function DashboardBlogs() {
               </Link>
               <button
                 onClick={() => handleEdit(post)}
-                className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                className="p-2 text-muted-foreground hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
                 title="Edit"
               >
                 <Edit className="w-4 h-4" />
@@ -248,34 +248,34 @@ function DashboardBlogs() {
       </div>
 
       {/* Blog Table (desktop) */}
-      <div className="bg-white border border-gray-200 rounded-xl overflow-hidden hidden md:block">
+      <div className="bg-card border border-border rounded-xl overflow-hidden hidden md:block">
         <div className="overflow-x-auto">
           <table className="w-full min-w-[720px]">
-            <thead className="bg-gray-50">
+            <thead className="bg-muted">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Post
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Status
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Featured
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Published
                 </th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                <th className="px-6 py-3 text-left text-xs font-medium text-muted-foreground uppercase tracking-wider">
                   Actions
                 </th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-200">
+            <tbody className="divide-y divide-border">
               {filteredPosts.length > 0 ? (
                 filteredPosts.map(post => (
                   <tr
                     key={post.id}
-                    className="hover:bg-gray-50 transition-colors"
+                    className="hover:bg-muted transition-colors"
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
@@ -285,10 +285,10 @@ function DashboardBlogs() {
                           className="w-12 h-12 object-cover rounded-lg"
                         />
                         <div>
-                          <p className="font-medium text-gray-900">
+                          <p className="font-medium text-foreground">
                             {post.title?.en}
                           </p>
-                          <p className="text-sm text-gray-500 line-clamp-1 max-w-xs">
+                          <p className="text-sm text-muted-foreground line-clamp-1 max-w-xs">
                             {post.slug}
                           </p>
                         </div>
@@ -312,7 +312,7 @@ function DashboardBlogs() {
                           Yes
                         </span>
                       ) : (
-                        <span className="text-gray-400">No</span>
+                        <span className="text-muted-foreground/80">No</span>
                       )}
                     </td>
                     <td className="px-6 py-4">
@@ -324,7 +324,7 @@ function DashboardBlogs() {
                       <div className="flex items-center gap-2">
                         <Link href={`/blog/${post.slug}`}>
                           <button
-                            className="p-2 text-gray-600 hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
+                            className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"
                             title="View"
                           >
                             <Eye className="w-4 h-4" />
@@ -332,14 +332,14 @@ function DashboardBlogs() {
                         </Link>
                         <button
                           onClick={() => handleEdit(post)}
-                          className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                          className="p-2 text-muted-foreground hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
                           title="Edit"
                         >
                           <Edit className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => handleDelete(String(post.id))}
-                          className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
                           title="Delete"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -351,14 +351,14 @@ function DashboardBlogs() {
               ) : (
                 <tr>
                   <td colSpan={5} className="px-6 py-12 text-center">
-                    <div className="text-gray-400">
-                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-gray-100 flex items-center justify-center">
+                    <div className="text-muted-foreground/80">
+                      <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-muted/80 flex items-center justify-center">
                         <span className="text-2xl">📝</span>
                       </div>
-                      <p className="text-lg font-medium text-gray-900 mb-2">
+                      <p className="text-lg font-medium text-foreground mb-2">
                         No posts found
                       </p>
-                      <p className="text-gray-500">
+                      <p className="text-muted-foreground">
                         {searchTerm ||
                         statusFilter !== "all" ||
                         featuredFilter !== "all"
@@ -387,8 +387,8 @@ function DashboardBlogs() {
 
       {/* Pagination (visible on all breakpoints) */}
       {totalPages > 1 && (
-        <div className="bg-white border border-gray-200 rounded-xl px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="text-sm text-gray-500">
+        <div className="bg-card border border-border rounded-xl px-4 py-4 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="text-sm text-muted-foreground">
             Page <span className="font-medium">{currentPage}</span> of{" "}
             <span className="font-medium">{totalPages}</span>
           </div>
@@ -396,7 +396,7 @@ function DashboardBlogs() {
             <button
               onClick={() => handlePageChange(currentPage - 1)}
               disabled={currentPage === 1}
-              className="p-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              className="p-2 border border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
             >
               <ChevronLeft className="w-5 h-5" />
             </button>
@@ -418,7 +418,7 @@ function DashboardBlogs() {
                   className={`w-10 h-10 rounded-lg font-medium transition-colors ${
                     currentPage === pageNum
                       ? "bg-primary text-white"
-                      : "text-gray-700 hover:bg-gray-100"
+                      : "text-foreground/90 hover:bg-muted/80"
                   }`}
                 >
                   {pageNum}
@@ -428,7 +428,7 @@ function DashboardBlogs() {
             <button
               onClick={() => handlePageChange(currentPage + 1)}
               disabled={currentPage === totalPages}
-              className="p-2 border border-gray-300 rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-gray-50 transition-colors"
+              className="p-2 border border-border rounded-lg disabled:opacity-50 disabled:cursor-not-allowed hover:bg-muted transition-colors"
             >
               <ChevronRight className="w-5 h-5" />
             </button>

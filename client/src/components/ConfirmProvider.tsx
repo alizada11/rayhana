@@ -56,10 +56,10 @@ export function ConfirmProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => confirm, [confirm]);
 
   const {
-    title = t("confirm.title", "Are you sure?"),
-    description = t("confirm.description", "This action cannot be undone."),
-    confirmText = t("confirm.confirm", "Confirm"),
-    cancelText = t("confirm.cancel", "Cancel"),
+    title = t("confirm.title"),
+    description = t("confirm.description"),
+    confirmText = t("confirm.confirm"),
+    cancelText = t("confirm.cancel"),
     tone = "danger",
   } = options;
 

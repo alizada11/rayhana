@@ -1,21 +1,36 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { useLocation } from "wouter";
-import { Heart, Search } from "lucide-react";
-import { useApprovedGallery, useToggleGalleryLike } from "@/hooks/useGallery";
+import { Camera, Heart, Search, Upload, X } from "lucide-react";
+import {
+  useApprovedGallery,
+  useCreateGallerySubmission,
+  useToggleGalleryLike,
+} from "@/hooks/useGallery";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Progress } from "@/components/ui/progress";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
+  DialogTrigger,
 } from "@/components/ui/dialog";
+import { useUserRole } from "@/hooks/useUserRole";
+import { useAuth } from "@clerk/clerk-react";
+import { toast } from "sonner";
 
 export default function Gallery() {
   const { t, i18n } = useTranslation();
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const { data: galleryImages = [], isLoading } = useApprovedGallery();
+  const createMutation = useCreateGallerySubmission();
   const toggleLikeMutation = useToggleGalleryLike();
+  const { isSignedIn } = useAuth();
+  const { data: me } = useUserRole();
   const [, setLocation] = useLocation();
 
   const [searchTerm, setSearchTerm] = useState("");
@@ -23,6 +38,13 @@ export default function Gallery() {
   const [page, setPage] = useState(1);
   const pageSize = 12;
   const [activeImageId, setActiveImageId] = useState<string | null>(null);
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [dishName, setDishName] = useState("");
+  const [description, setDescription] = useState("");
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
+  const [objectUrl, setObjectUrl] = useState<string | null>(null);
 
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
   const resolveImageUrl = (url: string) => {
@@ -30,6 +52,84 @@ export default function Gallery() {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
+
+  const revokePreview = () => {
+    if (objectUrl) {
+      URL.revokeObjectURL(objectUrl);
+      setObjectUrl(null);
+    }
+  };
+
+  useEffect(() => {
+    return () => revokePreview();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    const maxBytes = 5 * 1024 * 1024; // 5MB cap
+    if (file.size > maxBytes) {
+      toast.error(
+        isRTL
+          ? "حجم تصویر باید کمتر از ۵ مگابایت باشد"
+          : "Please choose an image under 5MB"
+      );
+      e.target.value = "";
+      return;
+    }
+
+    revokePreview();
+    const preview = URL.createObjectURL(file);
+    setObjectUrl(preview);
+    setSelectedImage(preview);
+    setImageFile(file);
+  };
+
+  const handleSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!imageFile) {
+      toast.error(t("gallery.toast.no_image", "Please select an image"));
+      return;
+    }
+    if (!dishName.trim()) {
+      toast.error(t("gallery.toast.no_name", "Dish name is required"));
+      return;
+    }
+
+    const payload = new FormData();
+    payload.append("image", imageFile);
+    payload.append("dishName", dishName.trim());
+    if (description.trim()) payload.append("description", description.trim());
+
+    setUploadProgress(0);
+    createMutation.mutate(
+      { payload, onProgress: setUploadProgress },
+      {
+        onSuccess: () => {
+          toast.success(
+            t(
+              "gallery.toast.submitted",
+              "Photo submitted. It will appear after approval."
+            )
+          );
+          setIsDialogOpen(false);
+          setSelectedImage(null);
+          setImageFile(null);
+          setDishName("");
+          setDescription("");
+          revokePreview();
+          setUploadProgress(null);
+        },
+        onError: () => {
+          setUploadProgress(null);
+        },
+      }
+    );
+  };
+
+  const canSubmit = isSignedIn && me?.role === "guest";
 
   const filtered = useMemo(() => {
     const term = searchTerm.trim().toLowerCase();
@@ -78,9 +178,137 @@ export default function Gallery() {
               )}
             </p>
           </div>
-          <Button className="rounded-full" onClick={() => setLocation("/")}>
-            {t("gallery.share_button", "Share Your Photo")}
-          </Button>
+          <Dialog
+            open={isDialogOpen}
+            onOpenChange={open => {
+              if (open && !canSubmit) {
+                if (!isSignedIn) {
+                  setLocation("/pamik-sign-in");
+                } else {
+                  toast.error(
+                    t("gallery.toast.guests_only", "Only guests can submit")
+                  );
+                }
+                return;
+              }
+              setIsDialogOpen(open);
+              if (open) {
+                setUploadProgress(null);
+                revokePreview();
+                setSelectedImage(null);
+                setImageFile(null);
+              }
+            }}
+          >
+            <DialogTrigger asChild>
+              <Button className="rounded-full gap-2">
+                <Camera className="w-4 h-4" />
+                {t("gallery.share_button", "Share Your Photo")}
+              </Button>
+            </DialogTrigger>
+            <DialogContent className={`sm:max-w-md ${isRTL ? "rtl" : "ltr"}`}>
+              <DialogHeader>
+                <DialogTitle className="text-center font-serif text-2xl">
+                  {t("gallery.upload_title")}
+                </DialogTitle>
+              </DialogHeader>
+
+              <form onSubmit={handleSubmit} className="space-y-6 py-4">
+                <div className="flex flex-col items-center justify-center w-full">
+                  <Label
+                    htmlFor="dropzone-file"
+                    className="flex flex-col items-center justify-center w-full h-64 border-2 border-border border-dashed rounded-xl cursor-pointer bg-muted/60 hover:bg-muted transition-all duration-300 group"
+                  >
+                    {selectedImage ? (
+                      <div className="relative w-full h-full group-hover:opacity-90 transition-opacity">
+                        <img
+                          src={selectedImage}
+                          alt="Preview"
+                          className="w-full h-full object-cover rounded-xl"
+                        />
+                        <button
+                          type="button"
+                          onClick={e => {
+                            e.preventDefault();
+                            setSelectedImage(null);
+                          }}
+                          className="absolute top-2 right-2 bg-black/50 text-white p-1.5 rounded-full hover:bg-destructive transition-colors"
+                        >
+                          <X className="w-4 h-4" />
+                        </button>
+                      </div>
+                    ) : (
+                      <div className="flex flex-col items-center justify-center pt-5 pb-6 text-muted-foreground group-hover:text-primary transition-colors">
+                        <Upload className="w-12 h-12 mb-3" />
+                        <p className="mb-2 text-sm font-medium">
+                          {t("gallery.upload_placeholder")}
+                        </p>
+                        <p className="text-xs opacity-70">
+                          {t("gallery.uploadSize", "JPG, PNG (MAX. 5MB)")}
+                        </p>
+                      </div>
+                    )}
+                    <Input
+                      id="dropzone-file"
+                      type="file"
+                      accept="image/*"
+                      className="hidden"
+                      onChange={handleImageUpload}
+                    />
+                  </Label>
+                </div>
+
+                <div className="space-y-4">
+                  {(createMutation.isPending || uploadProgress !== null) && (
+                    <div className="space-y-2">
+                      <div className="flex items-center justify-between text-xs text-muted-foreground">
+                        <span>
+                          {isRTL ? "در حال آپلود..." : "Uploading..."}
+                        </span>
+                        <span>{uploadProgress ?? 0}%</span>
+                      </div>
+                      <Progress value={uploadProgress ?? 0} />
+                    </div>
+                  )}
+                  <div className="space-y-2">
+                    <Label htmlFor="dish-name">
+                      {isRTL ? "نام غذا" : "Dish Name"}
+                    </Label>
+                    <Input
+                      id="dish-name"
+                      placeholder={isRTL ? "مثلاً: قابلی پلو" : "e.g. Qabili Palau"}
+                      required
+                      value={dishName}
+                      onChange={e => setDishName(e.target.value)}
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="description">
+                      {isRTL ? "توضیحات (اختیاری)" : "Description (Optional)"}
+                    </Label>
+                    <Textarea
+                      id="description"
+                      placeholder={t("gallery.upload_note")}
+                      value={description}
+                      onChange={e => setDescription(e.target.value)}
+                      className="resize-none min-h-[80px]"
+                    />
+                  </div>
+                </div>
+
+                <Button
+                  type="submit"
+                  disabled={createMutation.isPending}
+                  className="w-full rounded-full"
+                >
+                  {createMutation.isPending
+                    ? t("gallery.uploading", "Uploading...")
+                    : t("gallery.submit_photo")}
+                </Button>
+              </form>
+            </DialogContent>
+          </Dialog>
         </div>
 
         <div className="bg-card border rounded-2xl p-4 mb-8">

@@ -8,7 +8,12 @@ export const createMessage = async (req: Request, res: Response) => {
     const toSafeString = (val: unknown) =>
       typeof val === "string" ? val.trim() : String(val ?? "").trim();
 
-    const { name, email, message, subject } = req.body || {};
+    const { name, email, message, subject, website } = req.body || {};
+
+    // Honeypot: if bots fill this hidden field, quietly accept but do nothing
+    if (typeof website === "string" && website.trim().length > 0) {
+      return res.status(204).end();
+    }
     const safeName = toSafeString(name);
     const safeEmail = toSafeString(email);
     const safeMessage = toSafeString(message);

@@ -51,6 +51,53 @@
     "confirm": "Confirm",
     "cancel": "Cancel"
   },
+  "login_page": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to access your account",
+    "sign_in": "Sign In",
+    "sign_up_prompt": "Don't have an account?",
+    "sign_up": "Create Account",
+    "welcome": "Welcome!",
+    "access_granted": "Full access granted",
+    "sign_out": "Sign Out",
+    "dashboard": "Dashboard",
+    "guest_dashboard": "My Photos",
+    "profile": "Profile",
+    "go_home": "Go to Home",
+    "help": "Help",
+    "privacy": "Privacy",
+    "terms": "Terms"
+  },
+  "my_submissions": {
+    "title": "My Gallery Submissions",
+    "subtitle": "View all your submitted photos. Your photos are reviewed by our team before appearing in the public gallery.",
+    "total": "Total Submissions",
+    "filters": {
+      "all": "All",
+      "pending": "Reviewing",
+      "approved": "Approved",
+      "rejected": "Not Selected"
+    },
+    "status": {
+      "approved": "Approved",
+      "pending": "Under Review",
+      "rejected": "Not Selected"
+    },
+    "empty": {
+      "title": "No submissions found",
+      "body_all": "You haven't submitted any photos yet.",
+      "body_filtered": "No submissions found for this filter.",
+      "cta": "Submit your first photo"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page_of": "Page {{page}} of {{total}}"
+    },
+    "live": "Live in Gallery",
+    "remove": "Remove",
+    "deleting": "Deleting..."
+  },
   "products_page": {
     "title": "Our Premium Collection",
     "subtitle": "Discover the perfect blend of tradition and modern engineering.",
@@ -82,7 +129,8 @@
     "brand_message_highlight": "Your support changes lives.",
     "brand_message_p2": "This Qabili pilaf Pot is just the beginning. We started with this traditional vessel, and soon you will welcome more Rayhana products into your kitchen—each crafted with the same precision and excellence.",
     "brand_signature": "With love and gratitude - The Rayhana Family - Roots and authenticity in modern life",
-    "price": "$"
+    "price": "$",
+    "no_products": "No Products Found"
   },
   "referral": {
     "card_title": "Rayhana Golden Invitation",

@@ -58,7 +58,7 @@ export default function DashboardSettings() {
   };
 
   const renderList = (key: "nav" | "footerLinks" | "social", title: string) => (
-    <div className="bg-white border rounded-xl p-4 space-y-3">
+    <div className="bg-card border rounded-xl p-4 space-y-3">
       <div className="flex items-center justify-between">
         <h2 className="font-serif text-lg font-bold">{title}</h2>
         <button
@@ -144,10 +144,10 @@ export default function DashboardSettings() {
     <div className="space-y-6">
       <div className="flex items-center justify-between">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">
+          <h1 className="text-2xl font-serif font-bold text-foreground">
             Settings
           </h1>
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-muted-foreground">
             Manage navigation, footer links, and social profiles.
           </p>
         </div>

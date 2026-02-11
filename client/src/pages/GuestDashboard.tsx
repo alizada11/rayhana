@@ -56,26 +56,26 @@ export default function GuestDashboard() {
       case "approved":
         return {
           icon: <CheckCircle className="w-4 h-4" />,
-          label: "Approved",
+          label: t("my_submissions.status.approved", "Approved"),
           className: "bg-green-50 text-green-700 border-green-200",
         };
       case "rejected":
         return {
           icon: <XCircle className="w-4 h-4" />,
-          label: "Not Selected",
+          label: t("my_submissions.status.rejected", "Not Selected"),
           className: "bg-red-50 text-red-700 border-red-200",
         };
       case "pending":
         return {
           icon: <Clock className="w-4 h-4" />,
-          label: "Under Review",
+          label: t("my_submissions.status.pending", "Under Review"),
           className: "bg-yellow-50 text-yellow-700 border-yellow-200",
         };
       default:
         return {
           icon: <Clock className="w-4 h-4" />,
           label: status,
-          className: "bg-gray-50 text-gray-700 border-gray-200",
+          className: "bg-muted text-foreground/90 border-border",
         };
     }
   };
@@ -120,16 +120,18 @@ export default function GuestDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-muted">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         {/* Header */}
         <div className="mb-12 text-center">
-          <h1 className="text-3xl font-serif font-bold text-gray-900 mb-2">
-            My Gallery Submissions
+          <h1 className="text-3xl font-serif font-bold text-foreground mb-2">
+            {t("my_submissions.title", "My Gallery Submissions")}
           </h1>
-          <p className="text-gray-600 max-w-2xl mx-auto">
-            View all your submitted photos. Your photos are reviewed by our team
-            before appearing in the public gallery.
+          <p className="text-muted-foreground max-w-2xl mx-auto">
+            {t(
+              "my_submissions.subtitle",
+              "View all your submitted photos. Your photos are reviewed by our team before appearing in the public gallery."
+            )}
           </p>
         </div>
 
@@ -137,7 +139,9 @@ export default function GuestDashboard() {
         <div className="mb-8">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
             <div>
-              <p className="text-sm text-gray-500">Total Submissions</p>
+              <p className="text-sm text-muted-foreground">
+                {t("my_submissions.total", "Total Submissions")}
+              </p>
               <p className="text-2xl font-semibold">{submissions.length}</p>
             </div>
 
@@ -150,10 +154,18 @@ export default function GuestDashboard() {
               className="w-full sm:w-auto"
             >
               <TabsList className="grid grid-cols-4 w-full sm:w-auto">
-                <TabsTrigger value="all">All</TabsTrigger>
-                <TabsTrigger value="pending">Reviewing</TabsTrigger>
-                <TabsTrigger value="approved">Approved</TabsTrigger>
-                <TabsTrigger value="rejected">Not Selected</TabsTrigger>
+                <TabsTrigger value="all">
+                  {t("my_submissions.filters.all", "All")}
+                </TabsTrigger>
+                <TabsTrigger value="pending">
+                  {t("my_submissions.filters.pending", "Reviewing")}
+                </TabsTrigger>
+                <TabsTrigger value="approved">
+                  {t("my_submissions.filters.approved", "Approved")}
+                </TabsTrigger>
+                <TabsTrigger value="rejected">
+                  {t("my_submissions.filters.rejected", "Not Selected")}
+                </TabsTrigger>
               </TabsList>
             </Tabs>
           </div>
@@ -161,20 +173,28 @@ export default function GuestDashboard() {
 
         {/* Empty State */}
         {filtered.length === 0 ? (
-          <div className="text-center py-16 border-2 border-dashed border-gray-300 rounded-2xl bg-white">
-            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-gray-100 mb-4">
-              <ImageIcon className="w-8 h-8 text-gray-400" />
+          <div className="text-center py-16 border-2 border-dashed border-border rounded-2xl bg-card">
+            <div className="inline-flex items-center justify-center w-16 h-16 rounded-full bg-muted/80 mb-4">
+              <ImageIcon className="w-8 h-8 text-muted-foreground/80" />
             </div>
-            <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              No submissions found
+            <h3 className="font-serif text-lg font-semibold text-foreground mb-2">
+              {t("my_submissions.empty.title", "No submissions found")}
             </h3>
-            <p className="text-gray-500 mb-6">
+            <p className="text-muted-foreground mb-6">
               {statusFilter === "all"
-                ? "You haven't submitted any photos yet."
-                : `No ${statusFilter} submissions found.`}
+                ? t(
+                    "my_submissions.empty.body_all",
+                    "You haven't submitted any photos yet."
+                  )
+                : t(
+                    "my_submissions.empty.body_filtered",
+                    "No submissions found for this filter."
+                  )}
             </p>
             <Button asChild>
-              <a href="/">Submit Your First Photo</a>
+              <a href="/gallery">
+                {t("my_submissions.empty.cta", "Submit your first photo")}
+              </a>
             </Button>
           </div>
         ) : (
@@ -189,7 +209,7 @@ export default function GuestDashboard() {
                   className="group overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
                   {/* Image with Overlay */}
-                  <div className="relative aspect-[4/3] bg-gray-100 overflow-hidden">
+                  <div className="relative aspect-[4/3] bg-muted/80 overflow-hidden">
                     <img
                       src={imageUrl}
                       alt={item.dishName}
@@ -229,11 +249,11 @@ export default function GuestDashboard() {
                   {/* Content */}
                   <CardHeader className="p-4 pb-2">
                     <div className="space-y-1">
-                      <h3 className="font-semibold text-gray-900 line-clamp-1">
+                      <h3 className="font-semibold text-foreground line-clamp-1">
                         {item.dishName}
                       </h3>
                       {item.description && (
-                        <p className="text-sm text-gray-600 line-clamp-2">
+                        <p className="text-sm text-muted-foreground line-clamp-2">
                           {item.description}
                         </p>
                       )}
@@ -241,7 +261,7 @@ export default function GuestDashboard() {
                   </CardHeader>
 
                   <CardContent className="p-4 pt-0">
-                    <div className="flex items-center justify-between text-sm text-gray-500">
+                    <div className="flex items-center justify-between text-sm text-muted-foreground">
                       <div className="flex items-center gap-1.5">
                         <Calendar className="w-4 h-4" />
                         <span>
@@ -251,49 +271,54 @@ export default function GuestDashboard() {
 
                       {item.status === "approved" && (
                         <span className="text-green-600 font-medium">
-                          Live in Gallery
+                          {t("my_submissions.live", "Live in Gallery")}
                         </span>
                       )}
                     </div>
                   </CardContent>
 
                   <CardFooter className="p-4 pt-0">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
-                    onClick={async () => {
-                      const ok = await confirm({
-                        title: t("gallery.delete_title", "Delete this submission?"),
-                        description: t(
-                          "gallery.delete_body",
-                          "This will permanently remove your photo."
-                        ),
-                        confirmText: t("common.delete", "Delete"),
-                        cancelText: t("common.cancel", "Cancel"),
-                        tone: "danger",
-                      });
-                      if (!ok) return;
-                      deleteMutation.mutate(item.id, {
-                        onSuccess: () => {
-                          toast.success(
-                            t("gallery.toast.submission_deleted", "Submission deleted.")
-                          );
-                        },
-                        onError: () => {
-                          toast.error(
-                            t(
-                              "gallery.toast.submission_delete_failed",
-                              "Failed to delete submission."
-                            )
-                          );
-                        },
-                      });
-                    }}
-                    disabled={deleteMutation.isPending}
-                  >
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
+                      onClick={async () => {
+                        const ok = await confirm({
+                          title: t("confirm.title", "Delete this submission?"),
+                          description: t(
+                            "confirm.description",
+                            "This will permanently remove your photo."
+                          ),
+                          confirmText: t("common.delete", "Delete"),
+                          cancelText: t("common.cancel", "Cancel"),
+                          tone: "danger",
+                        });
+                        if (!ok) return;
+                        deleteMutation.mutate(item.id, {
+                          onSuccess: () => {
+                            toast.success(
+                              t(
+                                "gallery.toast.submission_deleted",
+                                "Submission deleted."
+                              )
+                            );
+                          },
+                          onError: () => {
+                            toast.error(
+                              t(
+                                "gallery.toast.submission_delete_failed",
+                                "Failed to delete submission."
+                              )
+                            );
+                          },
+                        });
+                      }}
+                      disabled={deleteMutation.isPending}
+                    >
                       <Trash2 className="w-4 h-4 mr-2" />
-                      {deleteMutation.isPending ? "Deleting..." : "Remove"}
+                      {deleteMutation.isPending
+                        ? t("my_submissions.deleting", "Deleting...")
+                        : t("my_submissions.remove", "Remove")}
                     </Button>
                   </CardFooter>
                 </Card>
@@ -309,17 +334,24 @@ export default function GuestDashboard() {
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page === 1}
             >
-              Previous
+              {t("my_submissions.pagination.prev", "Previous")}
             </Button>
-            <div className="text-sm text-gray-600">
-              Page {page} of {totalPages}
+            <div className="text-sm text-muted-foreground">
+              {t(
+                "my_submissions.pagination.page_of",
+                "Page {{page}} of {{total}}",
+                {
+                  page,
+                  total: totalPages,
+                }
+              )}
             </div>
             <Button
               variant="outline"
               onClick={() => setPage(p => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
             >
-              Next
+              {t("my_submissions.pagination.next", "Next")}
             </Button>
           </div>
         )}
