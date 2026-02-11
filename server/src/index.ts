@@ -16,8 +16,11 @@ import newsletterRoutes from "./routes/newsletterRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 
 const app = exprss();
-const distPath = path.join(process.cwd(), "dist", "public");
+
 const isProduction = process.env.NODE_ENV === "production";
+const distPath = isProduction
+  ? path.join(process.cwd(), "dist", "public")
+  : path.join(process.cwd(), "dist");
 if (isProduction && !ENV.FRONTEND_URL) {
   throw new Error(
     "FRONTEND_URL environment variable is required in production"
@@ -48,7 +51,7 @@ app.use("/api/dashboard", dashboardRoutes);
 
 // Serve built client assets in production
 app.use(exprss.static(distPath));
-app.get(/.*/, (req, res) => {
+app.get("*", (req, res) => {
   res.sendFile(path.join(distPath, "index.html"));
 });
 
