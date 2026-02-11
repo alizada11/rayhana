@@ -30,8 +30,7 @@ function useUserSync() {
 
   const mutation = useMutation({
     mutationFn: syncUser,
-    retry: 3,
-    retryDelay: attempt => Math.min(1000 * 2 ** attempt, 8000),
+    retry: false, // avoid hammering the endpoint
     onSuccess: () => {
       attemptedRef.current = true;
       lastSyncedUserIdRef.current = user?.id ?? null;
@@ -59,12 +58,25 @@ function useUserSync() {
     if (alreadySyncedCurrentUser) return;
     if (attemptedRef.current) return;
 
+    // cross-tab throttling (24h)
+    const lsKey = `user_sync:last:${user.id}`;
+    const last = lsKey ? Number(localStorage.getItem(lsKey)) : 0;
+    const ONE_DAY = 24 * 60 * 60 * 1000;
+    if (last && Date.now() - last < ONE_DAY) return;
+
     attemptedRef.current = true;
     mutation.mutate({
       email: user.primaryEmailAddress?.emailAddress,
       name: user.fullName || user.firstName,
       imageUrl: user.imageUrl,
     });
+    if (lsKey) {
+      try {
+        localStorage.setItem(lsKey, `${Date.now()}`);
+      } catch {
+        /* ignore */
+      }
+    }
   }, [isSignedIn, user?.id, mutation]);
 
   useEffect(() => {

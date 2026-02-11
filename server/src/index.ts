@@ -1,6 +1,7 @@
 import express from "express";
 import path from "path";
 import cors from "cors";
+import compression from "compression";
 import { ENV } from "./config/env";
 import { clerkMiddleware } from "@clerk/express";
 
@@ -25,11 +26,20 @@ if (isProduction && !ENV.FRONTEND_URL) {
 }
 const allowedOrigin = ENV.FRONTEND_URL || "http://localhost:5173";
 app.set("trust proxy", 1);
+app.use(compression());
 app.use(cors({ origin: allowedOrigin, credentials: true }));
+// Serve static assets early, with caching
+app.use(
+  express.static(distPath, {
+    maxAge: "1y",
+    immutable: true,
+    index: false,
+  })
+);
+app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 app.use(clerkMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
 
 app.get("/test", (req, res) => {
   res.json({ success: true });
@@ -48,7 +58,6 @@ app.use("/api/dashboard", dashboardRoutes);
 
 // Serve built client assets in production
 if (ENV.NODE_ENV === "production") {
-  app.use(express.static(distPath));
   app.get(/.*/, (req, res) => res.sendFile(path.join(distPath, "index.html")));
 }
 if (ENV.NODE_ENV === "development") {
