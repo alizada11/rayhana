@@ -52,6 +52,7 @@ export const products = pgTable("products", {
   description: jsonb("description").$type<Record<string, string>>().notNull(),
   category: text("category").notNull(),
   imageUrl: text("image_url").notNull(),
+  productUrl: text("product_url"),
   rating: integer("rating").notNull().default(5),
   sizes: jsonb("sizes").$type<number[]>().notNull().default([]),
   colors: jsonb("colors").$type<string[]>().notNull().default([]),

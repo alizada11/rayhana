@@ -32,6 +32,12 @@
     "message": "Peyam",
     "send": "Peyam Bişînin"
   },
+  "confirm": {
+    "title": "Tu dilniya yî?",
+    "description": "Ev kirin nayê vegerandin.",
+    "confirm": "Piştrast bike",
+    "cancel": "Betal bike"
+  },
   "products_page": {
     "title": "Koleksiyona Me ya Premium",
     "subtitle": "Têkeliya bêkêmasî ya kevneşopî û endezyariya nûjen kifş bikin.",

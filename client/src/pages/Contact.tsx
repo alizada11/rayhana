@@ -28,6 +28,7 @@ export default function Contact() {
     email: "",
     subject: "",
     message: "",
+    website: "", // honeypot
   });
 
   const content = useMemo(() => {
@@ -127,7 +128,7 @@ export default function Contact() {
           content.form.successMessage[i18n.language as "en" | "fa" | "ps"] ||
             t("toast.contact_sent", "Message sent")
         );
-        setForm({ name: "", email: "", subject: "", message: "" });
+        setForm({ name: "", email: "", subject: "", message: "", website: "" });
       },
       onError: () => {
         toast.error(
@@ -236,15 +237,26 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, x: isRTL ? -50 : 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-            viewport={{ once: true }}
-            className="bg-card p-8 rounded-3xl shadow-lg border border-border/50"
-          >
-            <form className="space-y-6" onSubmit={handleSubmit}>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div className="space-y-2">
-                  <label htmlFor="contact-name" className="text-sm font-medium">
-                    {content.form.nameLabel[
-                      i18n.language as "en" | "fa" | "ps"
+        viewport={{ once: true }}
+        className="bg-card p-8 rounded-3xl shadow-lg border border-border/50"
+      >
+        <form className="space-y-6" onSubmit={handleSubmit}>
+          {/* Honeypot field for bots */}
+          <input
+            type="text"
+            name="website"
+            value={form.website}
+            onChange={e => setForm(prev => ({ ...prev, website: e.target.value }))}
+            tabIndex={-1}
+            autoComplete="off"
+            className="hidden"
+            aria-hidden="true"
+          />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div className="space-y-2">
+              <label htmlFor="contact-name" className="text-sm font-medium">
+                {content.form.nameLabel[
+                  i18n.language as "en" | "fa" | "ps"
                     ] || content.form.nameLabel.en}
                   </label>
                   <Input

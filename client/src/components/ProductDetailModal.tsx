@@ -172,6 +172,23 @@ export default function ProductDetailModal({
                 </div>
               </div>
 
+              {/* Product Link */}
+              {product.productUrl && (
+                <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
+                  <p className="text-sm text-blue-700 font-medium mb-2">
+                    Purchase Link
+                  </p>
+                  <a
+                    href={product.productUrl}
+                    target="_blank"
+                    rel="noreferrer noopener"
+                    className="text-blue-800 underline break-all"
+                  >
+                    {product.productUrl}
+                  </a>
+                </div>
+              )}
+
               {/* Summary */}
               <div className="bg-primary/5 rounded-xl p-4">
                 <div className="grid grid-cols-2 gap-4">

@@ -17,7 +17,7 @@ function LoginPage() {
   const { data: me } = useUserRole();
 
   return (
-    <div className="p-2 bg-gradient-to-br from-gray-50 to-gray-100">
+    <div className="min-h-screen p-2 bg-gradient-to-br from-background via-background/95 to-muted/60 dark:from-background dark:via-background dark:to-muted/20 text-foreground transition-colors">
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-md mx-auto">
@@ -26,11 +26,11 @@ function LoginPage() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.5 }}
-              className="bg-white rounded-2xl shadow-xl overflow-hidden"
+              className="bg-card text-card-foreground rounded-2xl shadow-xl shadow-primary/10 dark:shadow-primary/20 border border-border overflow-hidden transition-colors"
             >
               {/* Card Header */}
-              <div className="bg-primary/10 p-8 text-center">
-                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/20 flex items-center justify-center">
+              <div className="bg-primary/10 dark:bg-primary/20 p-8 text-center transition-colors">
+                <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/20 dark:bg-primary/30 flex items-center justify-center">
                   <span className="text-2xl">🔐</span>
                 </div>
                 <h1 className="font-serif text-3xl font-bold text-primary">
@@ -42,7 +42,7 @@ function LoginPage() {
               </div>
 
               {/* Card Body */}
-              <div className="p-8">
+              <div className="p-8 bg-gradient-to-b from-card to-muted/40 dark:from-card dark:to-muted/10 transition-colors">
                 {/* Clerk Authentication Buttons */}
                 <div className="space-y-6">
                   {/* Signed Out State - Show Login Links */}
@@ -106,7 +106,7 @@ function LoginPage() {
                             }}
                           />
                           <div className="text-left">
-                            <h3 className="font-semibold text-lg text-foreground">
+                            <h3 className="font-serif font-semibold text-lg text-foreground">
                               {t("login_page.welcome", "Welcome!")}
                             </h3>
                             <p className="text-sm text-muted-foreground">
@@ -168,7 +168,7 @@ function LoginPage() {
               </div>
 
               {/* Card Footer */}
-              <div className="bg-gray-50 px-8 py-4">
+              <div className="bg-muted/70 dark:bg-muted/20 px-8 py-4 border-t border-border transition-colors">
                 <div className="flex justify-center space-x-6">
                   <Link
                     to="/help"

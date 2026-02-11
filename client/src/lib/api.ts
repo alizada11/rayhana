@@ -29,6 +29,7 @@ export interface UpdateBlogPostParams {
 export interface BlogCommentData {
   blogId: string | number;
   content: string;
+  website?: string; // honeypot
 }
 
 export interface UpdateBlogCommentParams {
@@ -89,6 +90,7 @@ export interface ContactMessagePayload {
   email: string;
   subject?: string;
   message: string;
+  website?: string; // honeypot
 }
 
 export interface ContactMessage extends ContactMessagePayload {
@@ -303,8 +305,15 @@ export const getAllBlogComments = async ({
   return data as { items: BlogComment[]; nextCursor: string | null };
 };
 
-export const createBlogComment = async ({ blogId, content }: BlogCommentData) => {
-  const { data } = await api.post(`/blogs/${blogId}/comments`, { content });
+export const createBlogComment = async ({
+  blogId,
+  content,
+  website,
+}: BlogCommentData) => {
+  const { data } = await api.post(`/blogs/${blogId}/comments`, {
+    content,
+    website,
+  });
   return data;
 };
 

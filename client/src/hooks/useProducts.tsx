@@ -13,6 +13,7 @@ export type ID = string | number;
 
 export interface Product {
   id: ID;
+  productUrl?: string | null;
   [key: string]: any;
 }
 

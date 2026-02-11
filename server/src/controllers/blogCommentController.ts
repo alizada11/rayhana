@@ -41,7 +41,12 @@ export const createBlogComment = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const blogId = getId(req.params.id);
-    const { content } = req.body;
+    const { content, website } = req.body;
+
+    // Honeypot: reject silently if filled
+    if (typeof website === "string" && website.trim().length > 0) {
+      return res.status(204).end();
+    }
 
     if (!content)
       return res.status(400).json({ error: "Comment content is required" });

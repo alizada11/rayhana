@@ -20,6 +20,19 @@ const parseJSON = <T>(value: unknown, fallback: T): T => {
   return value as T;
 };
 
+const normalizeProductUrl = (raw?: unknown) => {
+  if (typeof raw !== "string") return undefined;
+  const trimmed = raw.trim();
+  if (!trimmed) return undefined;
+  try {
+    const parsed = new URL(trimmed);
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    return parsed.toString();
+  } catch {
+    return null;
+  }
+};
+
 // -------------------------
 // GET ALL PRODUCTS (public)
 // -------------------------
@@ -81,6 +94,7 @@ export const createProduct = async (req: Request, res: Response) => {
       sizes,
       colors,
       prices,
+      productUrl,
     } = req.body;
 
     const uploadedImageUrl = req.file
@@ -94,6 +108,11 @@ export const createProduct = async (req: Request, res: Response) => {
       });
     }
 
+    const normalizedProductUrl = normalizeProductUrl(productUrl);
+    if (normalizedProductUrl === null) {
+      return res.status(400).json({ error: "Invalid productUrl protocol" });
+    }
+
     const product = await queries.createProduct({
       title: parseJSON<Record<string, string>>(title, { en: "", fa: "", ps: "" }),
       description: parseJSON<Record<string, string>>(description, {
@@ -102,6 +121,7 @@ export const createProduct = async (req: Request, res: Response) => {
         ps: "",
       }),
       imageUrl: uploadedImageUrl ?? imageUrl,
+      productUrl: normalizedProductUrl,
       category,
       rating: Number(rating ?? 5),
       sizes: parseJSON<number[]>(sizes, []),
@@ -135,6 +155,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       sizes,
       colors,
       prices,
+      productUrl,
     } = req.body;
 
     const uploadedImageUrl = req.file
@@ -157,6 +178,12 @@ export const updateProduct = async (req: Request, res: Response) => {
       }
     }
 
+    const normalizedProductUrl =
+      productUrl !== undefined ? normalizeProductUrl(productUrl) : undefined;
+    if (normalizedProductUrl === null) {
+      return res.status(400).json({ error: "Invalid productUrl protocol" });
+    }
+
     const product = await queries.updateProduct(id, {
       title: title
         ? parseJSON<Record<string, string>>(title, { en: "", fa: "", ps: "" })
@@ -169,6 +196,7 @@ export const updateProduct = async (req: Request, res: Response) => {
           })
         : undefined,
       imageUrl: uploadedImageUrl ?? imageUrl,
+      productUrl: normalizedProductUrl,
       category,
       rating: rating !== undefined ? Number(rating) : undefined,
       sizes: sizes ? parseJSON<number[]>(sizes, []) : undefined,

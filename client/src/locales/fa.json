@@ -43,6 +43,53 @@
     "confirm": "تایید",
     "cancel": "انصراف"
   },
+  "login_page": {
+    "title": "خوش آمدید",
+    "subtitle": "برای دسترسی وارد حساب خود شوید",
+    "sign_in": "ورود",
+    "sign_up_prompt": "حساب ندارید؟",
+    "sign_up": "ایجاد حساب",
+    "welcome": "خوش آمدید!",
+    "access_granted": "دسترسی کامل فعال شد",
+    "sign_out": "خروج",
+    "dashboard": "داشبورد",
+    "guest_dashboard": "عکس‌های من",
+    "profile": "پروفایل",
+    "go_home": "بازگشت به خانه",
+    "help": "راهنما",
+    "privacy": "حریم خصوصی",
+    "terms": "قوانین"
+  },
+  "my_submissions": {
+    "title": "ارسال‌های من",
+    "subtitle": "تمام عکس‌های ارسالی خود را ببینید. عکس‌ها پس از بررسی نمایش داده می‌شوند.",
+    "total": "مجموع ارسال‌ها",
+    "filters": {
+      "all": "همه",
+      "pending": "در حال بررسی",
+      "approved": "تایید شده",
+      "rejected": "رد شده"
+    },
+    "status": {
+      "approved": "تایید شده",
+      "pending": "در حال بررسی",
+      "rejected": "رد شده"
+    },
+    "empty": {
+      "title": "هیچ ارسالی یافت نشد",
+      "body_all": "هنوز عکسی ارسال نکرده‌اید.",
+      "body_filtered": "ارسالی با این فیلتر پیدا نشد.",
+      "cta": "اولین عکس خود را ارسال کنید"
+    },
+    "pagination": {
+      "prev": "قبلی",
+      "next": "بعدی",
+      "page_of": "صفحه {{page}} از {{total}}"
+    },
+    "live": "در گالری منتشر شد",
+    "remove": "حذف",
+    "deleting": "در حال حذف..."
+  },
   "contact": {
     "title": "تماس با ما",
     "name": "نام",
@@ -200,10 +247,11 @@
     }
   },
   "comments": {
-    "message": "پیام",
+    "message": "نظر",
     "signedIn": "وارد سیستم شده\u200cاید",
     "title": "نظرات",
     "submit": "ارسال نظر",
+    "signInToComment": "برای نظر دادن باید وارد شوید.",
     "success": "نظر با موفقیت ارسال شد!"
   },
   "privacy": {

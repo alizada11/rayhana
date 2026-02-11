@@ -26,6 +26,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     description: Record<string, string>;
     category: string;
     imageUrl: string;
+    productUrl?: string;
     rating: number;
     sizes: number[];
     colors: string[];
@@ -37,6 +38,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     description: product?.description || { en: "", fa: "", ps: "" },
     category: product?.category || "",
     imageUrl: product?.imageUrl || "",
+    productUrl: product?.productUrl || "",
     rating: product?.rating || 5,
     sizes: product?.sizes || [],
     colors: product?.colors || [],
@@ -69,6 +71,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     payload.append("description", JSON.stringify(formData.description));
     payload.append("category", formData.category);
     payload.append("imageUrl", formData.imageUrl);
+    if (formData.productUrl) payload.append("productUrl", formData.productUrl);
     payload.append("rating", String(formData.rating));
     payload.append("sizes", JSON.stringify(formData.sizes));
     payload.append("colors", JSON.stringify(formData.colors));
@@ -284,6 +287,22 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                 className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
                 required
               />
+            </div>
+
+            <div>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Product URL (optional)
+              </label>
+              <input
+                type="url"
+                placeholder="https://example.com/product"
+                value={formData.productUrl}
+                onChange={e => handleChange("productUrl", e.target.value)}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                This link will be used for the “Buy” button on the products page.
+              </p>
             </div>
 
             <div>

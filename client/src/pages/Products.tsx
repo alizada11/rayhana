@@ -151,6 +151,18 @@ function ProductCard({
 
   const currentPrice =
     product.prices && selectedSize ? product.prices[selectedSize] : undefined;
+  const productLink = (() => {
+    const url = product.productUrl;
+    if (!url || typeof url !== "string") return null;
+    try {
+      const parsed = new URL(url);
+      const proto = parsed.protocol.toLowerCase();
+      if (proto === "http:" || proto === "https:") return parsed.toString();
+    } catch {
+      return null;
+    }
+    return null;
+  })();
 
   const reviews = [
     {
@@ -249,10 +261,10 @@ function ProductCard({
                       selectedSize ? `size ${selectedSize}` : ""
                     }`
                   );
-                  window.open(
-                    `https://www.amazon.com/s?k=${searchQuery}`,
-                    "_blank"
-                  );
+                  const href =
+                    productLink ||
+                    `https://www.amazon.com/s?k=${searchQuery}`;
+                  window.open(href, "_blank", "noopener,noreferrer");
                 }}
               >
                 <ShoppingBag className="w-4 h-4 mr-2" />
@@ -295,10 +307,10 @@ function ProductCard({
                       selectedSize ? `size ${selectedSize}` : ""
                     }`
                   );
-                  window.open(
-                    `https://www.amazon.com/s?k=${searchQuery}`,
-                    "_blank"
-                  );
+                  const href =
+                    productLink ||
+                    `https://www.amazon.com/s?k=${searchQuery}`;
+                  window.open(href, "_blank", "noopener,noreferrer");
                 }}
               >
                 <ShoppingBag className="w-4 h-4 mr-2" />

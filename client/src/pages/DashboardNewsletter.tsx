@@ -52,7 +52,7 @@ export default function DashboardNewsletter() {
     <div className="space-y-6">
       <div className="flex items-center justify-between gap-4 flex-wrap">
         <div>
-          <h1 className="text-2xl font-serif font-bold text-gray-900">Newsletter Subscribers</h1>
+          <h1 className="text-2xl font-serif font-bold text-foreground">Newsletter Subscribers</h1>
           <p className="text-sm text-muted-foreground">Filter, review, and export signups.</p>
         </div>
         <div className="flex gap-2">
@@ -117,9 +117,9 @@ export default function DashboardNewsletter() {
       ) : (
         <div className="space-y-3">
           {subscriptions.map(sub => (
-            <div key={sub.id} className="border rounded-xl p-4 bg-white shadow-sm flex items-center justify-between">
+            <div key={sub.id} className="border rounded-xl p-4 bg-card shadow-sm flex items-center justify-between">
               <div className="space-y-1">
-                <div className="font-medium text-gray-900">{sub.email}</div>
+                <div className="font-medium text-foreground">{sub.email}</div>
                 <div className="text-xs text-muted-foreground">
                   {format(new Date(sub.createdAt), "MMM d, yyyy h:mm a")}
                 </div>

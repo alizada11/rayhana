@@ -32,6 +32,12 @@
     "message": "Mesaj",
     "send": "Mesaj Gönder"
   },
+  "confirm": {
+    "title": "Emin misiniz?",
+    "description": "Bu işlem geri alınamaz.",
+    "confirm": "Onayla",
+    "cancel": "İptal"
+  },
   "products_page": {
     "title": "Premium Koleksiyonumuz",
     "subtitle": "Gelenek ve modern mühendisliğin mükemmel uyumunu keşfedin.",
