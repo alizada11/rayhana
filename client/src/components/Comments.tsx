@@ -178,7 +178,7 @@ export default function Comments({ postId }: CommentsProps) {
                 id="message"
                 value={message}
                 onChange={e => setMessage(e.target.value)}
-                placeholder={t("comments.message", "Message")}
+                placeholder={t("comments.message", "Comment")}
                 required
                 className="min-h-[100px] bg-background"
               />

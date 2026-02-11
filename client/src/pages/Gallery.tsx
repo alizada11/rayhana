@@ -231,6 +231,7 @@ export default function Gallery() {
                           onClick={e => {
                             e.preventDefault();
                             setSelectedImage(null);
+                            setImageFile(null);
                           }}
                           className="absolute top-2 right-2 bg-black/50 text-white p-1.5 rounded-full hover:bg-destructive transition-colors"
                         >

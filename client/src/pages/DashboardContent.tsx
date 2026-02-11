@@ -565,7 +565,7 @@ export default function DashboardContent() {
             <h2 className="font-serif text-xl font-bold">Story</h2>
             <div className="grid md:grid-cols-2 gap-4 items-start">
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs text-muted-foreground">title</label>
+                <label className="text-xs text-muted-foreground">Title</label>
                 <input
                   className="border rounded-lg px-3 py-2"
                   placeholder="Title"

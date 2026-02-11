@@ -181,7 +181,7 @@ export default function ProductDetailModal({
                   <a
                     href={product.productUrl}
                     target="_blank"
-                    rel="noreferrer"
+                    rel="noreferrer noopener"
                     className="text-blue-800 underline break-all"
                   >
                     {product.productUrl}

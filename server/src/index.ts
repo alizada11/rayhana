@@ -21,6 +21,7 @@ if (isProduction && !ENV.FRONTEND_URL) {
   throw new Error("FRONTEND_URL environment variable is required in production");
 }
 const allowedOrigin = ENV.FRONTEND_URL || "http://localhost:5173";
+app.set("trust proxy", 1);
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(clerkMiddleware());
 app.use(exprss.json());

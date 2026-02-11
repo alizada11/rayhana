@@ -202,8 +202,8 @@ function DashboardBlogs() {
                 className="w-16 h-16 object-cover rounded-lg"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-foreground ">{post.title?.en}</p>
-                <p className="text-xs text-muted-foreground ">{post.slug}</p>
+                <p className="font-medium text-foreground">{post.title?.en}</p>
+                <p className="text-xs text-muted-foreground">{post.slug}</p>
               </div>
             </div>
             <div className="flex flex-wrap gap-2 mt-3 text-xs">
@@ -219,7 +219,7 @@ function DashboardBlogs() {
                   : "-"}
               </span>
             </div>
-            <div className="flex  gap-2 mt-3">
+            <div className="flex gap-2 mt-3">
               <Link href={`/blog/${post.slug}`}>
                 <button
                   className="p-2 text-muted-foreground hover:text-primary hover:bg-primary/10 rounded-lg transition-colors"

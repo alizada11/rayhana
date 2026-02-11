@@ -151,7 +151,18 @@ function ProductCard({
 
   const currentPrice =
     product.prices && selectedSize ? product.prices[selectedSize] : undefined;
-  const productLink = product.productUrl;
+  const productLink = (() => {
+    const url = product.productUrl;
+    if (!url || typeof url !== "string") return null;
+    try {
+      const parsed = new URL(url);
+      const proto = parsed.protocol.toLowerCase();
+      if (proto === "http:" || proto === "https:") return parsed.toString();
+    } catch {
+      return null;
+    }
+    return null;
+  })();
 
   const reviews = [
     {
