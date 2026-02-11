@@ -6,7 +6,7 @@
   "scripts": {
     "dev": "vite --host",
     "build": "pnpm install --frozen-lockfile --prod=false && pnpm --dir server install --frozen-lockfile --prod=false && vite build && esbuild server/src/index.ts --platform=node --bundle --format=cjs --outdir=dist --out-extension:.js=.cjs",
-    "start": "node dist/index.cjs",
+    "start": "node server/dist/index.js",
     "db:push": "pnpm --dir server db:push",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
