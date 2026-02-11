@@ -16,7 +16,7 @@ import newsletterRoutes from "./routes/newsletterRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 
 const app = express();
-const distPath = path.join(process.cwd(), "dist");
+const distPath = path.join(process.cwd(), "dist", "public");
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction && !ENV.FRONTEND_URL) {
   throw new Error(
@@ -48,15 +48,8 @@ app.use("/api/dashboard", dashboardRoutes);
 
 // Serve built client assets in production
 if (ENV.NODE_ENV === "production") {
-  const __dirname = path.resolve();
-
-  // serve static files from frontend/dist
-  app.use(express.static(path.join(__dirname, "../dist")));
-
-  // handle SPA routing - send all non-API routes to index.html - react app
-  app.get("/{*any}", (req, res) => {
-    res.sendFile(path.join(__dirname, "../dist/index.html"));
-  });
+  app.use(express.static(distPath));
+  app.get(/.*/, (req, res) => res.sendFile(path.join(distPath, "index.html")));
 }
 if (ENV.NODE_ENV === "development") {
   console.log("Hey donkey, you are developing I mean in development mode!");

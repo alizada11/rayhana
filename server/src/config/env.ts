@@ -1,5 +1,11 @@
 import dotenv from "dotenv";
+import path from "path";
 
+// Load environment variables from server/.env first (for local dev), then fall back to root .env or process env (for Render)
+dotenv.config({
+  path: path.resolve(process.cwd(), "server", ".env"),
+  override: false,
+});
 dotenv.config({ quiet: true });
 
 export const ENV = {
