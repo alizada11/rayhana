@@ -1,12 +1,18 @@
-import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
 import tailwindcss from "@tailwindcss/vite";
 import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "path";
 import { defineConfig } from "vite";
 import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
+import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
 
-const plugins = [react(), tailwindcss(), jsxLocPlugin(), vitePluginManusRuntime()];
+const isProd = process.env.NODE_ENV === "production";
+const plugins = [
+  react(),
+  tailwindcss(),
+  !isProd && jsxLocPlugin(),
+  vitePluginManusRuntime(),
+].filter(Boolean);
 
 export default defineConfig({
   plugins,
