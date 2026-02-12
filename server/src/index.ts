@@ -18,6 +18,7 @@ import dashboardRoutes from "./routes/dashboardRoutes";
 
 const app = express();
 const distPath = path.join(process.cwd(), "dist", "public");
+const uploadsPath = path.join(process.cwd(), "server", "uploads");
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction && !ENV.FRONTEND_URL) {
   throw new Error(
@@ -36,7 +37,14 @@ app.use(
     index: false,
   })
 );
-app.use("/uploads", express.static(path.join(process.cwd(), "uploads")));
+// serve uploaded assets (Render uses ephemeral FS; consider S3 if you need persistence)
+app.use(
+  "/uploads",
+  express.static(uploadsPath, {
+    maxAge: "7d",
+    immutable: false,
+  })
+);
 app.use(clerkMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
