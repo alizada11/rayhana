@@ -25,8 +25,16 @@ type AuthState = {
 };
 
 type AuthContextValue = AuthState & {
-  login: (email: string, password: string) => Promise<void>;
-  register: (email: string, password: string, name?: string) => Promise<void>;
+  login: (email: string, password: string) => Promise<any>;
+  register: (
+    email: string,
+    password: string,
+    name?: string
+  ) => Promise<{
+    verificationRequired?: boolean;
+    email?: string;
+    message?: string;
+  }>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
 };
@@ -66,7 +74,11 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const login = async (email: string, password: string) => {
-    const res = await api.post("/auth/login", { email, password }, { withCredentials: true });
+    const res = await api.post(
+      "/auth/login",
+      { email, password },
+      { withCredentials: true }
+    );
     await fetchMe();
     return res.data;
   };
@@ -138,10 +150,7 @@ type ButtonLikeProps = {
   mode?: "modal" | "redirect";
 };
 
-export function SignInButton({
-  children,
-  forceRedirectUrl,
-}: ButtonLikeProps) {
+export function SignInButton({ children, forceRedirectUrl }: ButtonLikeProps) {
   const [, setLocation] = useLocation();
   return (
     <span
@@ -156,10 +165,7 @@ export function SignInButton({
   );
 }
 
-export function SignUpButton({
-  children,
-  forceRedirectUrl,
-}: ButtonLikeProps) {
+export function SignUpButton({ children, forceRedirectUrl }: ButtonLikeProps) {
   const [, setLocation] = useLocation();
   return (
     <span
@@ -189,7 +195,7 @@ export function SignOutButton({ children }: { children: ReactNode }) {
   );
 }
 
-export function UserButton({}) {
+export function UserButton() {
   const { user } = useUser();
   const initial = user?.name?.[0] || user?.email?.[0] || "U";
   return (

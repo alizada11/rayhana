@@ -75,29 +75,33 @@ export async function authMiddleware(
   res: Response,
   next: NextFunction
 ) {
-  const header = req.headers.authorization;
-  const bearer = header?.startsWith("Bearer ")
-    ? header.slice("Bearer ".length)
-    : undefined;
-  const raw = (req.cookies?.[SESSION_COOKIE] as string | undefined) || bearer;
-  if (!raw) return next();
-  const tokenHash = hashToken(raw);
+  try {
+    const header = req.headers.authorization;
+    const bearer = header?.startsWith("Bearer ")
+      ? header.slice("Bearer ".length)
+      : undefined;
+    const raw = (req.cookies?.[SESSION_COOKIE] as string | undefined) || bearer;
+    if (!raw) return next();
+    const tokenHash = hashToken(raw);
 
-  const session = await queries.findSessionByTokenHash(tokenHash);
-  if (!session || session.revoked || session.expiresAt < new Date()) {
+    const session = await queries.findSessionByTokenHash(tokenHash);
+    if (!session || session.revoked || session.expiresAt < new Date()) {
+      return next();
+    }
+
+    const user = await db.query.users.findFirst({
+      where: eq(users.id, session.userId),
+    });
+
+    if (!user) return next();
+
+    // attach auth context
+    (req as any).auth = { userId: user.id, sessionId: session.id };
+    (req as any).user = user;
     return next();
+  } catch (err) {
+    return next(err);
   }
-
-  const user = await db.query.users.findFirst({
-    where: eq(users.id, session.userId),
-  });
-
-  if (!user) return next();
-
-  // attach auth context
-  (req as any).auth = { userId: user.id, sessionId: session.id };
-  (req as any).user = user;
-  return next();
 }
 
 export function getAuth(req: Request): AuthContext | { userId: null } {

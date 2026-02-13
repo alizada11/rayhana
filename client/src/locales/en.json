@@ -25,14 +25,6 @@
     "connection": "Connection",
     "simplicity": "Simplicity"
   },
-  "contact": {
-    "title": "Get in Touch",
-    "name": "Name",
-    "email": "Email",
-    "message": "Message",
-    "send": "Send Message",
-    "sending": "Sending..."
-  },
   "common": {
     "loading": "Loading...",
     "prev": "Previous",
@@ -44,6 +36,14 @@
     "delete": "Delete",
     "cancel": "Cancel",
     "noComments": "No comments yet. Be the first to share your thoughts!"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send Message",
+    "sending": "Sending..."
   },
   "confirm": {
     "title": "Are you sure?",
@@ -160,7 +160,8 @@
     "sort_popular": "Most liked",
     "empty": "No photos found.",
     "unlike": "Unlike",
-    "like": "Like"
+    "like": "Like",
+    "uploadSize": "JPG, PNG (MAX. 5MB)"
   },
   "newsletter": {
     "title": "Join the Rayhana Family",
@@ -224,7 +225,9 @@
     "title": "Rayhana Culinary Journal",
     "subtitle": "Exploring the rich heritage of Silk Road cuisine, one story at a time.",
     "next": "Next",
-    "prev": "Previous"
+    "prev": "Previous",
+    "cookWithUs": "Cook with us",
+    "loading": "Loading stories..."
   },
   "help": {
     "notFound": "Help Article Not Found",
@@ -235,13 +238,15 @@
     "stepByStep": "Step-by-step",
     "tips": "Tips",
     "needHelpEmail": "Still need help? Email",
-    "lastUpdated": "Last updated"
+    "lastUpdated": "Last updated",
+    "needHelp": "Need help?"
   },
   "terms": {
     "footer": {
       "needHelp": "Need help? Visit the",
       "helpCenter": "Help Center"
-    }
+    },
+    "effectiveDate": "Effective Date"
   },
   "privacy": {
     "effectiveDate": "Effective Date",
@@ -269,5 +274,13 @@
   },
   "footer": {
     "rights": "© 2026 Rayhana Kitchen Appliance. All rights reserved."
+  },
+  "comments": {
+    "message": "comments.message",
+    "signedIn": "comments.signedIn",
+    "title": "comments.title",
+    "submit": "comments.submit",
+    "signInToComment": "comments.signInToComment",
+    "success": "comments.success"
   }
 }

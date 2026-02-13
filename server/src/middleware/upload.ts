@@ -3,7 +3,7 @@ import path from "path";
 import multer from "multer";
 
 // Keep uploads aligned with static serving in server/src/index.ts
-const uploadsDir = path.resolve(process.cwd(), "server", "uploads");
+const uploadsDir = path.resolve(__dirname, "..", "..", "uploads");
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });

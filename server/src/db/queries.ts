@@ -86,7 +86,11 @@ export const createSession = async (data: NewAuthSession) => {
 
 export const findSessionByTokenHash = async (tokenHash: string) => {
   return db.query.authSessions.findFirst({
-    where: and(eq(authSessions.tokenHash, tokenHash), eq(authSessions.revoked, false)),
+    where: and(
+      eq(authSessions.tokenHash, tokenHash),
+      eq(authSessions.revoked, false),
+      gte(authSessions.expiresAt, new Date())
+    ),
   });
 };
 
@@ -106,13 +110,8 @@ export const revokeSessionsByUserId = async (userId: string) => {
     .where(eq(authSessions.userId, userId));
 };
 
-export const createPasswordResetToken = async (
-  data: NewPasswordResetToken
-) => {
-  const [token] = await db
-    .insert(passwordResetTokens)
-    .values(data)
-    .returning();
+export const createPasswordResetToken = async (data: NewPasswordResetToken) => {
+  const [token] = await db.insert(passwordResetTokens).values(data).returning();
   return token;
 };
 
@@ -130,7 +129,8 @@ export const findValidEmailVerificationToken = async (tokenHash: string) => {
   return db.query.emailVerificationTokens.findFirst({
     where: and(
       eq(emailVerificationTokens.tokenHash, tokenHash),
-      eq(emailVerificationTokens.used, false)
+      eq(emailVerificationTokens.used, false),
+      gte(emailVerificationTokens.expiresAt, new Date())
     ),
   });
 };
@@ -142,13 +142,12 @@ export const markEmailVerificationTokenUsed = async (id: string) => {
     .where(eq(emailVerificationTokens.id, id));
 };
 
-export const findValidPasswordResetToken = async (
-  tokenHash: string
-) => {
+export const findValidPasswordResetToken = async (tokenHash: string) => {
   return db.query.passwordResetTokens.findFirst({
     where: and(
       eq(passwordResetTokens.tokenHash, tokenHash),
-      eq(passwordResetTokens.used, false)
+      eq(passwordResetTokens.used, false),
+      gte(passwordResetTokens.expiresAt, new Date())
     ),
   });
 };
@@ -177,7 +176,10 @@ export const upsertOauthAccount = async (data: NewOauthAccount) => {
   return record;
 };
 
-export const findOauthAccount = async (provider: string, providerUserId: string) => {
+export const findOauthAccount = async (
+  provider: string,
+  providerUserId: string
+) => {
   return db.query.oauthAccounts.findFirst({
     where: and(
       eq(oauthAccounts.provider, provider),

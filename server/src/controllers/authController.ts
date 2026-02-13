@@ -25,8 +25,10 @@ export async function register(req: Request, res: Response) {
     return res.status(400).json({ error: "Email and password are required" });
   }
 
+  const normalizedEmail = email.toLowerCase().trim();
+
   const existing = await db.query.users.findFirst({
-    where: eq(users.email, email.toLowerCase().trim()),
+    where: eq(users.email, normalizedEmail),
   });
   if (existing) {
     return res.status(409).json({ error: "Email already in use" });
@@ -34,28 +36,35 @@ export async function register(req: Request, res: Response) {
 
   const passwordHash = await hashPassword(password);
   const id = crypto.randomUUID();
-  const [user] = await db
-    .insert(users)
-    .values({
-      id,
-      email: email.toLowerCase().trim(),
-      name,
-      passwordHash,
-    })
-    .returning();
+  let user;
+  try {
+    [user] = await db
+      .insert(users)
+      .values({
+        id,
+        email: normalizedEmail,
+        name,
+        passwordHash,
+      })
+      .returning();
+  } catch (err: any) {
+    if (err?.code === "23505") {
+      return res.status(409).json({ error: "Email already in use" });
+    }
+    console.error("Error creating user:", err);
+    return res.status(500).json({ error: "Failed to create user" });
+  }
 
   // send verification email, but do not log user in
   sendVerificationEmail(user).catch(err =>
     console.error("verification email failed", err)
   );
 
-  return res
-    .status(201)
-    .json({
-      verificationRequired: true,
-      email: user.email,
-      message: "Check your email to verify your account.",
-    });
+  return res.status(201).json({
+    verificationRequired: true,
+    email: user.email,
+    message: "Check your email to verify your account.",
+  });
 }
 
 export async function login(req: Request, res: Response) {
@@ -95,7 +104,9 @@ export async function login(req: Request, res: Response) {
     res,
   });
 
-  return res.json({ user: { id: user.id, email: user.email, role: user.role } });
+  return res.json({
+    user: { id: user.id, email: user.email, role: user.role },
+  });
 }
 
 export async function logout(req: Request, res: Response) {
@@ -112,7 +123,9 @@ export async function me(req: Request, res: Response) {
   if (!auth.userId) return res.status(401).json({ error: "Unauthorized" });
   const user = await queries.getUserById(auth.userId);
   if (!user) return res.status(401).json({ error: "Unauthorized" });
-  return res.json({ user });
+  // Never expose password hash (defense in depth)
+  const { passwordHash: _passwordHash, ...safeUser } = user as any;
+  return res.json({ user: safeUser });
 }
 
 export async function requestPasswordReset(req: Request, res: Response) {
@@ -128,13 +141,17 @@ export async function requestPasswordReset(req: Request, res: Response) {
 
   const { token, expiresAt } = await issuePasswordResetToken(user.id);
   const resetUrl = `${ENV.FRONTEND_URL || "http://localhost:5173"}/reset-password?token=${token}`;
-
-  await sendContactEmail({
-    to: user.email,
-    from: ENV.SMTP_FROM_EMAIL || "no-reply@example.com",
-    subject: "Reset your Rayhana password",
-    html: `<p>Reset your password:</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>This link expires at ${expiresAt.toISOString()}.</p>`,
-  });
+  try {
+    await sendContactEmail({
+      to: user.email,
+      from: ENV.SMTP_FROM_EMAIL || "no-reply@example.com",
+      subject: "Reset your Rayhana password",
+      html: `<p>Reset your password:</p><p><a href="${resetUrl}">${resetUrl}</a></p><p>This link expires at ${expiresAt.toISOString()}.</p>`,
+    });
+  } catch (err) {
+    console.error("password reset email failed", err);
+    // Intentionally still return success to avoid user enumeration.
+  }
 
   return res.json({ success: true });
 }
@@ -142,11 +159,14 @@ export async function requestPasswordReset(req: Request, res: Response) {
 export async function resetPassword(req: Request, res: Response) {
   const { token, password } = req.body || {};
   if (!token || !password) {
-    return res.status(400).json({ error: "Token and new password are required" });
+    return res
+      .status(400)
+      .json({ error: "Token and new password are required" });
   }
 
   const record = await verifyPasswordResetToken(token);
-  if (!record) return res.status(400).json({ error: "Invalid or expired token" });
+  if (!record)
+    return res.status(400).json({ error: "Invalid or expired token" });
 
   const passwordHash = await hashPassword(password);
   await queries.updateUser(record.userId, { passwordHash });
@@ -191,7 +211,12 @@ export async function resendEmailVerification(req: Request, res: Response) {
   if (user.emailVerifiedAt) {
     return res.json({ success: true, alreadyVerified: true });
   }
-  await sendVerificationEmail(user);
+  try {
+    await sendVerificationEmail(user);
+  } catch (err) {
+    console.error("verification email failed", err);
+  }
+
   return res.json({ success: true });
 }
 
@@ -199,7 +224,8 @@ export async function verifyEmail(req: Request, res: Response) {
   const { token } = req.body || {};
   if (!token) return res.status(400).json({ error: "Token required" });
   const record = await verifyEmailVerificationToken(token);
-  if (!record) return res.status(400).json({ error: "Invalid or expired token" });
+  if (!record)
+    return res.status(400).json({ error: "Invalid or expired token" });
   await queries.updateUser(record.userId, { emailVerifiedAt: new Date() });
   await queries.markEmailVerificationTokenUsed(record.id);
   return res.json({ success: true, redirect: "/login" });
@@ -211,7 +237,8 @@ const GOOGLE_TOKEN_URL = "https://oauth2.googleapis.com/token";
 const GOOGLE_USERINFO_URL = "https://www.googleapis.com/oauth2/v3/userinfo";
 
 const googleRedirectUri =
-  ENV.GOOGLE_REDIRECT_URI || "http://localhost:3001/api/auth/oauth/google/callback";
+  ENV.GOOGLE_REDIRECT_URI ||
+  "http://localhost:3001/api/auth/oauth/google/callback";
 
 export async function startGoogleOAuth(req: Request, res: Response) {
   if (!ENV.GOOGLE_CLIENT_ID || !ENV.GOOGLE_CLIENT_SECRET) {
@@ -219,8 +246,14 @@ export async function startGoogleOAuth(req: Request, res: Response) {
   }
   const state = crypto.randomBytes(16).toString("hex");
   const nonce = crypto.randomBytes(16).toString("hex");
-  res.cookie("oauth_state", state, { httpOnly: true, sameSite: "lax", maxAge: 10 * 60 * 1000 });
-  res.cookie("oauth_nonce", nonce, { httpOnly: true, sameSite: "lax", maxAge: 10 * 60 * 1000 });
+  const cookieOpts = {
+    httpOnly: true,
+    sameSite: "lax" as const,
+    secure: ENV.NODE_ENV === "production",
+    maxAge: 10 * 60 * 1000,
+  };
+  res.cookie("oauth_state", state, cookieOpts);
+  res.cookie("oauth_nonce", nonce, cookieOpts);
 
   const url = new URL(GOOGLE_AUTH_URL);
   url.searchParams.set("client_id", ENV.GOOGLE_CLIENT_ID);
@@ -229,9 +262,6 @@ export async function startGoogleOAuth(req: Request, res: Response) {
   url.searchParams.set("scope", "openid email profile");
   url.searchParams.set("state", state);
   url.searchParams.set("nonce", nonce);
-
-  console.log("[google oauth] redirect_uri", googleRedirectUri);
-  console.log("[google oauth] auth_url", url.toString());
 
   return res.redirect(url.toString());
 }
@@ -265,40 +295,25 @@ export async function googleOAuthCallback(req: Request, res: Response) {
   }
   const tokenData = (await tokenRes.json()) as any;
   const accessToken = tokenData.access_token as string | undefined;
-  const idToken = tokenData.id_token as string | undefined;
-
-  if (!accessToken && !idToken) {
-    return res.status(400).send("Invalid token response");
+  if (!accessToken) {
+    return res.status(400).send("Invalid token response: missing access token");
   }
 
-  let email: string | undefined;
-  let name: string | undefined;
-  let providerUserId: string | undefined;
-
-  if (idToken) {
-    try {
-      const payload = decodeJwt(idToken);
-      email = payload.email?.toLowerCase();
-      name = payload.name || payload.given_name;
-      providerUserId = payload.sub;
-    } catch {
-      /* ignore */
-    }
+  const uiRes = await fetch(GOOGLE_USERINFO_URL, {
+    headers: { Authorization: `Bearer ${accessToken}` },
+  });
+  if (!uiRes.ok) {
+    return res.status(400).send("Failed to fetch user info");
   }
+  const ui = (await uiRes.json()) as any;
 
-  if (!email && accessToken) {
-    const uiRes = await fetch(GOOGLE_USERINFO_URL, {
-      headers: { Authorization: `Bearer ${accessToken}` },
-    });
-    if (uiRes.ok) {
-      const ui = (await uiRes.json()) as any;
-      email = (ui.email as string | undefined)?.toLowerCase();
-      name = (ui.name as string | undefined) || ui.given_name;
-      providerUserId = ui.sub as string | undefined;
-    }
+  const email = (ui.email as string | undefined)?.toLowerCase();
+  const name = (ui.name as string | undefined) || ui.given_name;
+  const providerUserId = ui.sub as string | undefined;
+
+  if (!email || !providerUserId) {
+    return res.status(400).send("Email is required from provider");
   }
-
-  if (!email) return res.status(400).send("Email is required from provider");
 
   let user = await db.query.users.findFirst({ where: eq(users.email, email) });
   if (!user) {
@@ -338,14 +353,23 @@ export async function googleOAuthCallback(req: Request, res: Response) {
     res,
   });
 
-  const frontendBase = (ENV.FRONTEND_URL || "http://localhost:3000").replace(/\/+$/, "");
+  const frontendBase = (ENV.FRONTEND_URL || "http://localhost:3000").replace(
+    /\/+$/,
+    ""
+  );
   const redirectTo = `${frontendBase}/login`;
   return res.redirect(redirectTo);
 }
 
 function decodeJwt(token: string): any {
   const [, payload] = token.split(".");
-  const pad = payload.padEnd(payload.length + (4 - (payload.length % 4)) % 4, "=");
-  const json = Buffer.from(pad.replace(/-/g, "+").replace(/_/g, "/"), "base64").toString("utf8");
+  const pad = payload.padEnd(
+    payload.length + ((4 - (payload.length % 4)) % 4),
+    "="
+  );
+  const json = Buffer.from(
+    pad.replace(/-/g, "+").replace(/_/g, "/"),
+    "base64"
+  ).toString("utf8");
   return JSON.parse(json);
 }

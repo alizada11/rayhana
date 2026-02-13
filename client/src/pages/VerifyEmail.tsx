@@ -11,9 +11,9 @@ export default function VerifyEmail() {
   const params = new URLSearchParams(window.location.search);
   const token = params.get("token") || "";
   const emailParam = params.get("email") || "";
-  const [status, setStatus] = useState<"pending" | "success" | "error" | "awaiting">(
-    token ? "pending" : "awaiting"
-  );
+  const [status, setStatus] = useState<
+    "pending" | "success" | "error" | "awaiting"
+  >(token ? "pending" : "awaiting");
   const [email, setEmail] = useState(emailParam);
   const [sending, setSending] = useState(false);
 
@@ -132,8 +132,6 @@ export default function VerifyEmail() {
             {ResendBlock}
           </div>
         )}
-
-        {status === "pending" && token === "" && ResendBlock}
       </div>
     </div>
   );

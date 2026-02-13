@@ -13,6 +13,7 @@ import {
   resendEmailVerification,
 } from "../controllers/authController";
 import { requireAuth } from "../lib/auth";
+import rateLimit from "express-rate-limit";
 
 const router = Router();
 
@@ -24,7 +25,13 @@ router.get("/me", requireAuth(), me);
 router.post("/password/forgot", requestPasswordReset);
 router.post("/password/reset", resetPassword);
 router.post("/email/verify/request", requireAuth(), requestEmailVerification);
-router.post("/email/verify/resend", resendEmailVerification);
+const resendLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 5,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+router.post("/email/verify/resend", resendLimiter, resendEmailVerification);
 router.post("/email/verify", verifyEmail);
 
 router.get("/oauth/google", startGoogleOAuth);
