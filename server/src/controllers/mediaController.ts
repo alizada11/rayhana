@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import * as queries from "../db/queries";
-import { getAuth } from "@clerk/express";
+import { getAuth } from "../lib/auth";
 import fs from "fs";
 import path from "path";
 
@@ -50,7 +50,7 @@ export const uploadMedia = async (req: Request, res: Response) => {
     }
 
     const url = `/uploads/${req.file.filename}`;
-    const fullPath = path.join(process.cwd(), "uploads", req.file.filename);
+    const fullPath = path.resolve(__dirname, "..", "..", "uploads", req.file.filename);
     const { width, height } = await getImageSize(fullPath);
 
     const asset = await queries.createMediaAsset({

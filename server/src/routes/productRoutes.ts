@@ -1,6 +1,6 @@
 import { Router } from "express";
 import * as productController from "../controllers/productController";
-import { requireAuth } from "@clerk/express";
+import { requireAuth } from "../lib/auth";
 import { upload } from "../middleware/upload";
 import { requireAdmin } from "../middleware/requireAdmin";
 

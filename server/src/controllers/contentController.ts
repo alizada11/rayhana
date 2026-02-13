@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import * as queries from "../db/queries";
-import { getAuth } from "@clerk/express";
+import { getAuth } from "../lib/auth";
 
 const getParam = (value: string | string[]) =>
   Array.isArray(value) ? value[0] : value;

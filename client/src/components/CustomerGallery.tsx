@@ -20,7 +20,7 @@ import {
   useToggleGalleryLike,
 } from "@/hooks/useGallery";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useAuth } from "@clerk/clerk-react";
+import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
@@ -189,7 +189,7 @@ export function CustomerGallery() {
                       e.preventDefault();
                       e.stopPropagation();
                       if (!isSignedIn) {
-                        setLocation("/pamik-sign-in");
+                        setLocation("/login");
                         return;
                       }
                       toggleLikeMutation.mutate(img.id);
@@ -215,7 +215,7 @@ export function CustomerGallery() {
             onOpenChange={open => {
               if (open && !canSubmit) {
                 if (!isSignedIn) {
-                  setLocation("/pamik-sign-in");
+                  setLocation("/login");
                 } else {
                   toast.error(
                     t("gallery.toast.guests_only", "Only guests can submit")

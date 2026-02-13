@@ -1,5 +1,5 @@
 import type { Request, Response } from "express";
-import { getAuth } from "@clerk/express";
+import { getAuth } from "../lib/auth";
 import * as queries from "../db/queries";
 import { Parser } from "@json2csv/plainjs";
 

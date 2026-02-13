@@ -14,16 +14,20 @@ import useAuthReq from "@/hooks/useAuthReq";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import FullPageLoader from "./FullPageLoader";
+import { useTranslation } from "react-i18next";
 
 export default function DashboardShell() {
-  const { isSignedIn, isClerkLoaded } = useAuthReq();
+  const { t } = useTranslation();
+
+  const { isSignedIn, isLoaded } = useAuthReq();
   const { data, isLoading } = useUserRole();
   const hasShownToast = useRef(false);
-  if (!isClerkLoaded) {
-    return null;
+  if (!isLoaded) {
+    return <FullPageLoader />;
   }
   if (!isSignedIn) {
-    return <Redirect to="/pamik-sign-in" />;
+    return <Redirect to="/login" />;
   }
   if (isLoading) {
     return null;
@@ -31,9 +35,9 @@ export default function DashboardShell() {
   if (data?.role !== "admin") {
     if (!hasShownToast.current) {
       hasShownToast.current = true;
-      toast.error("Admin access required");
+      toast.error(t("login_page.adminRequired", "Admin access required"));
     }
-    return <Redirect to="/pamik-sign-in" />;
+    return <Redirect to="/login" />;
   }
 
   return (
@@ -41,7 +45,10 @@ export default function DashboardShell() {
       <Switch>
         <Route path="/dashboard" component={Dashboard} />
         <Route path="/dashboard/content" component={DashboardContent} />
-        <Route path="/dashboard/contact-messages" component={DashboardContactMessages} />
+        <Route
+          path="/dashboard/contact-messages"
+          component={DashboardContactMessages}
+        />
         <Route path="/dashboard/products" component={DashboardProducts} />
         <Route path="/dashboard/blogs" component={DashboardBlogs} />
         <Route path="/dashboard/comments" component={DashboardBlogComments} />

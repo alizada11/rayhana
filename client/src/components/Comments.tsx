@@ -12,7 +12,7 @@ import {
   useDeleteBlogComment,
   useUpdateBlogComment,
 } from "@/hooks/useBlogs";
-import { useAuth, useUser } from "@clerk/clerk-react";
+import { useAuth, useUser } from "@/lib/auth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
@@ -50,7 +50,7 @@ export default function Comments({ postId }: CommentsProps) {
     if (!message.trim()) return;
 
     if (!isSignedIn) {
-      setLocation("/pamik-sign-in");
+      setLocation("/login");
       return;
     }
 
@@ -148,16 +148,14 @@ export default function Comments({ postId }: CommentsProps) {
             />
             <div className="flex items-center gap-3 mb-4">
               <Avatar className="w-10 h-10 border-2 border-background">
-                <AvatarImage src={user?.imageUrl} />
+                <AvatarImage src={user?.imageUrl || undefined} />
                 <AvatarFallback>
                   <User className="w-5 h-5" />
                 </AvatarFallback>
               </Avatar>
               <div>
                 <p className="text-sm font-medium">
-                  {user?.fullName ||
-                    user?.username ||
-                    t("comments.guest", "Guest")}
+                  {user?.name || t("comments.guest", "Guest")}
                 </p>
                 <p className="text-xs text-muted-foreground">
                   {isSignedIn
