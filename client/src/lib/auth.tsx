@@ -5,6 +5,7 @@ import {
   useMemo,
   useState,
   ReactNode,
+  useRef,
 } from "react";
 import { useLocation } from "wouter";
 import api from "./axios";
@@ -48,11 +49,14 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     isSignedIn: false,
     error: null,
   });
+  const latestFetchIdRef = useRef(0);
 
   const fetchMe = async () => {
+    const fetchId = ++latestFetchIdRef.current;
     try {
       const res = await api.get("/auth/me", { withCredentials: true });
       const user = res.data?.user as User;
+      if (fetchId !== latestFetchIdRef.current) return;
       setState({
         user,
         isLoaded: true,
@@ -60,6 +64,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error: null,
       });
     } catch {
+      if (fetchId !== latestFetchIdRef.current) return;
       setState({
         user: null,
         isLoaded: true,
