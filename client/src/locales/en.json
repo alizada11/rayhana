@@ -66,7 +66,8 @@
     "go_home": "Go to Home",
     "help": "Help",
     "privacy": "Privacy",
-    "terms": "Terms"
+    "terms": "Terms",
+    "adminRequired": "Admin access required."
   },
   "my_submissions": {
     "title": "My Gallery Submissions",
