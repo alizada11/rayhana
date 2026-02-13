@@ -5,8 +5,8 @@
   "license": "MIT",
   "scripts": {
     "dev": "vite --host",
-    "build": "pnpm install --frozen-lockfile --prod=false && pnpm --dir server install --frozen-lockfile --prod=false && vite build && esbuild server/src/index.ts --platform=node --bundle --format=cjs --outdir=dist --out-extension:.js=.cjs",
-    "start": "cross-env NODE_ENV=production node dist/index.cjs",
+    "build": "pnpm install --frozen-lockfile --prod=false && pnpm --dir server install --frozen-lockfile --prod=false && vite build && esbuild server/src/index.ts --platform=node --bundle --format=cjs --external:argon2 --outdir=dist --out-extension:.js=.cjs",
+    "start": "cross-env NODE_ENV=production NODE_PATH=./server/node_modules node dist/index.cjs",
     "db:push": "pnpm --dir server db:push",
     "preview": "vite preview --host",
     "check": "tsc --noEmit",
