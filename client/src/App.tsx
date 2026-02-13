@@ -22,11 +22,14 @@ import { ConfirmProvider } from "./components/ConfirmProvider";
 import LoginPage from "./pages/LoginPage";
 import GuestDashboard from "./pages/GuestDashboard";
 import Gallery from "./pages/Gallery";
+import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
+import FullPageLoader from "./components/FullPageLoader";
 
 function GuestDashboardRoute() {
-  const { isClerkLoaded, isSignedIn } = useAuthReq();
-  if (!isClerkLoaded) return null;
-  if (!isSignedIn) return <Redirect to="/pamik-sign-in" />;
+  const { isLoaded, isSignedIn } = useAuthReq();
+  if (!isLoaded) return <FullPageLoader />;
+  if (!isSignedIn) return <Redirect to="/login" />;
   return (
     <Layout>
       <GuestDashboard />
@@ -87,6 +90,16 @@ function Router() {
           <Gallery />
         </Layout>
       </Route>
+      <Route path="/reset-password">
+        <Layout>
+          <ResetPassword />
+        </Layout>
+      </Route>
+      <Route path="/verify-email">
+        <Layout>
+          <VerifyEmail />
+        </Layout>
+      </Route>
       <Route path="/help/:slug">
         <Layout>
           <HelpPage />
@@ -97,7 +110,7 @@ function Router() {
           <HelpCenter />
         </Layout>
       </Route>
-      <Route path="/pamik-sign-in">
+      <Route path="/login">
         <Layout>
           <LoginPage />
         </Layout>
@@ -120,9 +133,9 @@ function Router() {
 }
 
 function App() {
-  const { isClerkLoaded, isSignedIn } = useAuthReq();
+  const { isLoaded } = useAuthReq();
   useUserSync();
-  if (!isClerkLoaded) return null;
+  if (!isLoaded) return <FullPageLoader />;
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">

@@ -2,6 +2,10 @@ import { db } from "./index";
 import { eq, and, sql, desc, lt, or, gte, lte } from "drizzle-orm";
 import {
   users,
+  authSessions,
+  passwordResetTokens,
+  emailVerificationTokens,
+  oauthAccounts,
   comments,
   products,
   blogPosts,
@@ -13,6 +17,10 @@ import {
   contactMessages,
   newsletterSubscriptions,
   type NewUser,
+  type NewAuthSession,
+  type NewPasswordResetToken,
+  type NewEmailVerificationToken,
+  type NewOauthAccount,
   type NewComment,
   type NewProduct,
   type NewBlogPost,
@@ -68,6 +76,114 @@ export const upsertUser = async (data: NewUser) => {
     })
     .returning();
   return user;
+};
+
+// AUTH QUERIES
+export const createSession = async (data: NewAuthSession) => {
+  const [session] = await db.insert(authSessions).values(data).returning();
+  return session;
+};
+
+export const findSessionByTokenHash = async (tokenHash: string) => {
+  return db.query.authSessions.findFirst({
+    where: and(eq(authSessions.tokenHash, tokenHash), eq(authSessions.revoked, false)),
+  });
+};
+
+export const revokeSessionById = async (id: string) => {
+  const [session] = await db
+    .update(authSessions)
+    .set({ revoked: true })
+    .where(eq(authSessions.id, id))
+    .returning();
+  return session;
+};
+
+export const revokeSessionsByUserId = async (userId: string) => {
+  await db
+    .update(authSessions)
+    .set({ revoked: true })
+    .where(eq(authSessions.userId, userId));
+};
+
+export const createPasswordResetToken = async (
+  data: NewPasswordResetToken
+) => {
+  const [token] = await db
+    .insert(passwordResetTokens)
+    .values(data)
+    .returning();
+  return token;
+};
+
+export const createEmailVerificationToken = async (
+  data: NewEmailVerificationToken
+) => {
+  const [token] = await db
+    .insert(emailVerificationTokens)
+    .values(data)
+    .returning();
+  return token;
+};
+
+export const findValidEmailVerificationToken = async (tokenHash: string) => {
+  return db.query.emailVerificationTokens.findFirst({
+    where: and(
+      eq(emailVerificationTokens.tokenHash, tokenHash),
+      eq(emailVerificationTokens.used, false)
+    ),
+  });
+};
+
+export const markEmailVerificationTokenUsed = async (id: string) => {
+  await db
+    .update(emailVerificationTokens)
+    .set({ used: true })
+    .where(eq(emailVerificationTokens.id, id));
+};
+
+export const findValidPasswordResetToken = async (
+  tokenHash: string
+) => {
+  return db.query.passwordResetTokens.findFirst({
+    where: and(
+      eq(passwordResetTokens.tokenHash, tokenHash),
+      eq(passwordResetTokens.used, false)
+    ),
+  });
+};
+
+export const markPasswordResetTokenUsed = async (id: string) => {
+  await db
+    .update(passwordResetTokens)
+    .set({ used: true })
+    .where(eq(passwordResetTokens.id, id));
+};
+
+export const upsertOauthAccount = async (data: NewOauthAccount) => {
+  const [record] = await db
+    .insert(oauthAccounts)
+    .values(data)
+    .onConflictDoUpdate({
+      target: [oauthAccounts.provider, oauthAccounts.providerUserId],
+      set: {
+        userId: data.userId,
+        accessToken: data.accessToken,
+        refreshToken: data.refreshToken,
+        expiresAt: data.expiresAt,
+      },
+    })
+    .returning();
+  return record;
+};
+
+export const findOauthAccount = async (provider: string, providerUserId: string) => {
+  return db.query.oauthAccounts.findFirst({
+    where: and(
+      eq(oauthAccounts.provider, provider),
+      eq(oauthAccounts.providerUserId, providerUserId)
+    ),
+  });
 };
 
 // PRODUCT QUERIES

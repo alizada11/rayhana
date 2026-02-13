@@ -14,16 +14,17 @@ import useAuthReq from "@/hooks/useAuthReq";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useEffect, useRef } from "react";
 import { toast } from "sonner";
+import FullPageLoader from "./FullPageLoader";
 
 export default function DashboardShell() {
-  const { isSignedIn, isClerkLoaded } = useAuthReq();
+  const { isSignedIn, isLoaded } = useAuthReq();
   const { data, isLoading } = useUserRole();
   const hasShownToast = useRef(false);
-  if (!isClerkLoaded) {
-    return null;
+  if (!isLoaded) {
+    return <FullPageLoader />;
   }
   if (!isSignedIn) {
-    return <Redirect to="/pamik-sign-in" />;
+    return <Redirect to="/login" />;
   }
   if (isLoading) {
     return null;
@@ -33,7 +34,7 @@ export default function DashboardShell() {
       hasShownToast.current = true;
       toast.error("Admin access required");
     }
-    return <Redirect to="/pamik-sign-in" />;
+    return <Redirect to="/login" />;
   }
 
   return (
