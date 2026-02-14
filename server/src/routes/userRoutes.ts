@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { getMe, syncUser } from "../controllers/userController";
-import { requireAuth } from "../lib/auth";
+import { requireAuth } from "@clerk/express";
 
 const router = Router();
 

@@ -1,5 +1,5 @@
 import type { Request, Response, NextFunction } from "express";
-import { getAuth } from "../lib/auth";
+import { getAuth } from "@clerk/express";
 import * as queries from "../db/queries";
 
 export async function requireGuest(

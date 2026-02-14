@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { requireAuth } from "../lib/auth";
+import { requireAuth } from "@clerk/express";
 import { requireAdmin } from "../middleware/requireAdmin";
 import { uploadMedia } from "../middleware/uploadMedia";
 import * as mediaController from "../controllers/mediaController";

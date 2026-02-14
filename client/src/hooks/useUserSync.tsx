@@ -1,4 +1,4 @@
-import { useAuth, useUser } from "@/lib/auth";
+import { useAuth, useUser } from "@clerk/clerk-react";
 import { useMutation } from "@tanstack/react-query";
 import { useEffect, useRef } from "react";
 import { syncUser } from "../lib/api";
@@ -66,8 +66,8 @@ function useUserSync() {
 
     attemptedRef.current = true;
     mutation.mutate({
-      email: user.email,
-      name: user.name,
+      email: user.primaryEmailAddress?.emailAddress,
+      name: user.fullName || user.firstName,
       imageUrl: user.imageUrl,
     });
     if (lsKey) {

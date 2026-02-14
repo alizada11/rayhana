@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { requireAuth } from "../lib/auth";
+import { requireAuth } from "@clerk/express";
 import { requireAdmin } from "../middleware/requireAdmin";
 import * as contentController from "../controllers/contentController";
 

@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { requireAuth } from "../lib/auth";
+import { requireAuth } from "@clerk/express";
 import { upload } from "../middleware/upload";
 import { requireAdmin } from "../middleware/requireAdmin";
 import { requireGuest } from "../middleware/requireGuest";

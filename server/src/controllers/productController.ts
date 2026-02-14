@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import * as queries from "../db/queries";
-import { getAuth } from "../lib/auth";
+import { getAuth } from "@clerk/express";
 import fs from "fs";
 import path from "path";
 

@@ -1,6 +1,6 @@
 import type { Request, Response } from "express";
 import * as queries from "../db/queries";
-import { getAuth } from "../lib/auth";
+import { getAuth } from "@clerk/express";
 import fs from "fs";
 import path from "path";
 
@@ -34,7 +34,7 @@ const isAdminUser = async (userId: string) => {
   return user?.role === "admin";
 };
 
-const uploadsBase = path.resolve(__dirname, "..", "..", "uploads");
+const uploadsBase = path.resolve(process.cwd(), "uploads");
 
 const safeUnlinkUpload = (url?: string) => {
   if (!url || !url.startsWith("/uploads/")) return;

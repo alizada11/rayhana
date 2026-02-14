@@ -1,10 +1,9 @@
-import "express-async-errors";
 import express from "express";
 import path from "path";
 import cors from "cors";
 import compression from "compression";
 import { ENV } from "./config/env";
-import { cookies, authMiddleware } from "./lib/auth";
+import { clerkMiddleware } from "@clerk/express";
 
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
@@ -16,11 +15,10 @@ import mediaRoutes from "./routes/mediaRoutes";
 import contactRoutes from "./routes/contactRoutes";
 import newsletterRoutes from "./routes/newsletterRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
-import authRoutes from "./routes/authRoutes";
 
 const app = express();
-const distPath = path.join(__dirname, "..", "dist", "public");
-const uploadsPath = path.resolve(process.cwd(), "server", "uploads");
+const distPath = path.join(process.cwd(), "dist", "public");
+const uploadsPath = path.join(process.cwd(), "server", "uploads");
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction && !ENV.FRONTEND_URL) {
   throw new Error(
@@ -31,7 +29,6 @@ const allowedOrigin = ENV.FRONTEND_URL || "http://localhost:5173";
 app.set("trust proxy", 1);
 app.use(compression());
 app.use(cors({ origin: allowedOrigin, credentials: true }));
-app.use(cookies);
 // Serve static assets early, with caching
 app.use(
   express.static(distPath, {
@@ -48,7 +45,7 @@ app.use(
     immutable: false,
   })
 );
-app.use(authMiddleware);
+app.use(clerkMiddleware());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
@@ -66,7 +63,6 @@ app.use("/api/media", mediaRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/dashboard", dashboardRoutes);
-app.use("/api/auth", authRoutes);
 
 // Serve built client assets in production
 if (ENV.NODE_ENV === "production") {

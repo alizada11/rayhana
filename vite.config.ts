@@ -33,6 +33,7 @@ export default defineConfig({
       output: {
         manualChunks: {
           react: ["react", "react-dom"],
+          clerk: ["@clerk/clerk-react"],
           editor: [
             "@tiptap/react",
             "@tiptap/starter-kit",

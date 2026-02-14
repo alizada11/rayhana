@@ -20,7 +20,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useUserRole } from "@/hooks/useUserRole";
-import { useAuth } from "@/lib/auth";
+import { useAuth } from "@clerk/clerk-react";
 import { toast } from "sonner";
 
 export default function Gallery() {
@@ -189,7 +189,7 @@ export default function Gallery() {
               }
               if (open && !canSubmit) {
                 if (!isSignedIn) {
-                  setLocation("/login");
+                  setLocation("/pamik-sign-in");
                 } else {
                   toast.error(
                     t("gallery.toast.guests_only", "Only guests can submit")

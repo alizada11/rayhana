@@ -1,5 +1,5 @@
 import { Router, type RequestHandler } from "express";
-import { requireAuth } from "../lib/auth";
+import { requireAuth } from "@clerk/express";
 import rateLimit from "express-rate-limit";
 import { upload } from "../middleware/upload";
 import { requireAdmin } from "../middleware/requireAdmin";

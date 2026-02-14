@@ -1,6 +1,7 @@
-import { SignedIn, SignOutButton, useUser } from "@/lib/auth";
+import { SignedIn, SignedOut, SignOutButton } from "@clerk/clerk-react";
 import { ReactNode } from "react";
 import { Link, useLocation } from "wouter";
+import { useUser } from "@clerk/clerk-react";
 import {
   LayoutDashboard,
   FileText,
@@ -101,14 +102,14 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
         <div className="p-4 border-t border-border">
           <div className="flex items-center gap-3 px-3 py-3 rounded-md bg-muted/60">
             <div className="w-8 h-8 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-sm">
-              {user?.name?.[0] || "U"}
+              {user?.firstName?.[0] || "U"}
             </div>
             <div className="flex-1 min-w-0">
               <p className="text-sm font-medium text-foreground truncate">
-                {user?.name}
+                {user?.firstName} {user?.lastName}
               </p>
               <p className="text-xs text-muted-foreground truncate">
-                {user?.email}
+                {user?.emailAddresses[0]?.emailAddress}
               </p>
             </div>
           </div>

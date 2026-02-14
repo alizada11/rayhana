@@ -7,6 +7,12 @@ import { Button } from "@/components/ui/button";
 import { useContent } from "@/hooks/useContent";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
+import {
+  SignedIn,
+  SignedOut,
+  SignInButton,
+  SignOutButton,
+} from "@clerk/clerk-react";
 
 interface LayoutProps {
   children: ReactNode;

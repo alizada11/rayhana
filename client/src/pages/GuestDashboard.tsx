@@ -57,22 +57,19 @@ export default function GuestDashboard() {
         return {
           icon: <CheckCircle className="w-4 h-4" />,
           label: t("my_submissions.status.approved", "Approved"),
-          className:
-            "bg-green-500/10 text-green-700 border-green-500/30 dark:bg-green-400/10 dark:text-green-200 dark:border-green-400/30",
+          className: "bg-green-50 text-green-700 border-green-200",
         };
       case "rejected":
         return {
           icon: <XCircle className="w-4 h-4" />,
           label: t("my_submissions.status.rejected", "Not Selected"),
-          className:
-            "bg-red-500/10 text-red-700 border-red-500/30 dark:bg-red-400/10 dark:text-red-200 dark:border-red-400/30",
+          className: "bg-red-50 text-red-700 border-red-200",
         };
       case "pending":
         return {
           icon: <Clock className="w-4 h-4" />,
           label: t("my_submissions.status.pending", "Under Review"),
-          className:
-            "bg-amber-500/10 text-amber-700 border-amber-500/30 dark:bg-amber-400/10 dark:text-amber-200 dark:border-amber-400/30",
+          className: "bg-yellow-50 text-yellow-700 border-yellow-200",
         };
       default:
         return {
@@ -123,7 +120,7 @@ export default function GuestDashboard() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-b from-background via-background to-muted/30 dark:to-muted/10">
+    <div className="min-h-screen bg-muted">
       <div className="container mx-auto px-4 py-12 max-w-7xl">
         {/* Header */}
         <div className="mb-12 text-center">
@@ -209,7 +206,7 @@ export default function GuestDashboard() {
               return (
                 <Card
                   key={item.id}
-                  className="group overflow-hidden hover:shadow-lg transition-shadow duration-300 bg-card/80 backdrop-blur"
+                  className="group overflow-hidden hover:shadow-lg transition-shadow duration-300"
                 >
                   {/* Image with Overlay */}
                   <div className="relative aspect-[4/3] bg-muted/80 overflow-hidden">
@@ -284,7 +281,7 @@ export default function GuestDashboard() {
                     <Button
                       variant="outline"
                       size="sm"
-                      className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200 dark:text-red-200 dark:hover:text-red-100 dark:hover:bg-red-500/10 dark:border-red-400/40"
+                      className="w-full text-red-600 hover:text-red-700 hover:bg-red-50 border-red-200"
                       onClick={async () => {
                         const ok = await confirm({
                           title: t("confirm.title", "Delete this submission?"),
