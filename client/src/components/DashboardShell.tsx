@@ -10,6 +10,7 @@ import DashboardMedia from "@/pages/DashboardMedia";
 import DashboardSettings from "@/pages/DashboardSettings";
 import DashboardContactMessages from "@/pages/DashboardContactMessages";
 import DashboardNewsletter from "@/pages/DashboardNewsletter";
+import DashboardUsers from "@/pages/DashboardUsers";
 import useAuthReq from "@/hooks/useAuthReq";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useEffect, useRef } from "react";
@@ -49,6 +50,7 @@ export default function DashboardShell() {
           path="/dashboard/contact-messages"
           component={DashboardContactMessages}
         />
+        <Route path="/dashboard/users" component={DashboardUsers} />
         <Route path="/dashboard/products" component={DashboardProducts} />
         <Route path="/dashboard/blogs" component={DashboardBlogs} />
         <Route path="/dashboard/comments" component={DashboardBlogComments} />

@@ -43,6 +43,10 @@ export const getUserById = async (id: string) => {
   return db.query.users.findFirst({ where: eq(users.id, id) });
 };
 
+export const getUserByEmail = async (email: string) => {
+  return db.query.users.findFirst({ where: eq(users.email, email) });
+};
+
 export const updateUser = async (id: string, data: Partial<NewUser>) => {
   const existingUser = await getUserById(id);
   if (!existingUser) {
@@ -76,6 +80,212 @@ export const upsertUser = async (data: NewUser) => {
     })
     .returning();
   return user;
+};
+
+export const countAdmins = async () => {
+  const [row] = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(users)
+    .where(eq(users.role, "admin"));
+  return Number(row?.count ?? 0);
+};
+
+const userStatsSelect = {
+  id: users.id,
+  email: users.email,
+  name: users.name,
+  imageUrl: users.imageUrl,
+  role: users.role,
+  createdAt: users.createdAt,
+  updatedAt: users.updatedAt,
+  gallerySubmissionsCount: sql<number>`(
+    select count(*) from ${gallerySubmissions}
+    where ${gallerySubmissions.userId} = ${users.id}
+  )`,
+  galleryLikesCount: sql<number>`(
+    select count(*) from ${galleryLikes}
+    where ${galleryLikes.userId} = ${users.id}
+  )`,
+  blogPostsCount: sql<number>`(
+    select count(*) from ${blogPosts}
+    where ${blogPosts.userId} = ${users.id}
+  )`,
+  blogCommentsCount: sql<number>`(
+    select count(*) from ${blogComments}
+    where ${blogComments.userId} = ${users.id}
+  )`,
+  productsCount: sql<number>`(
+    select count(*) from ${products}
+    where ${products.userId} = ${users.id}
+  )`,
+  mediaAssetsCount: sql<number>`(
+    select count(*) from ${mediaAssets}
+    where ${mediaAssets.userId} = ${users.id}
+  )`,
+};
+
+const mapUserStats = (row: any) => ({
+  id: row.id,
+  email: row.email,
+  name: row.name,
+  imageUrl: row.imageUrl,
+  role: row.role,
+  createdAt: row.createdAt,
+  updatedAt: row.updatedAt,
+  stats: {
+    gallerySubmissions: Number(row.gallerySubmissionsCount ?? 0),
+    galleryLikes: Number(row.galleryLikesCount ?? 0),
+    blogPosts: Number(row.blogPostsCount ?? 0),
+    blogComments: Number(row.blogCommentsCount ?? 0),
+    products: Number(row.productsCount ?? 0),
+    mediaAssets: Number(row.mediaAssetsCount ?? 0),
+  },
+});
+
+export const listUsersWithStats = async ({
+  search,
+  role,
+  limit,
+  cursorId,
+}: {
+  search?: string;
+  role?: "admin" | "guest";
+  limit: number;
+  cursorId?: string | null;
+}) => {
+  let cursor:
+    | {
+        id: string;
+        createdAt: Date | null;
+      }
+    | null
+    | undefined = null;
+
+  if (cursorId) {
+    cursor = await db.query.users.findFirst({
+      where: eq(users.id, cursorId),
+      columns: { id: true, createdAt: true },
+    });
+  }
+
+  const filters = [];
+  if (role) filters.push(eq(users.role, role));
+  if (search?.trim()) {
+    const term = `%${search.trim().toLowerCase()}%`;
+    filters.push(
+      sql`(LOWER(${users.email}) LIKE ${term} OR LOWER(${users.name}) LIKE ${term})`
+    );
+  }
+
+  const cursorClause = cursor
+    ? or(
+        lt(users.createdAt, cursor.createdAt ?? new Date(0)),
+        and(
+          eq(users.createdAt, cursor.createdAt ?? new Date(0)),
+          lt(users.id, cursor.id)
+        )
+      )
+    : undefined;
+
+  const whereClause =
+    filters.length || cursorClause ? and(...filters, cursorClause) : undefined;
+
+  try {
+    const items = await db
+      .select(userStatsSelect)
+      .from(users)
+      .where(whereClause)
+      .orderBy(desc(users.createdAt), desc(users.id))
+      .limit(limit);
+
+    const nextCursor =
+      items.length === limit ? items[items.length - 1].id : null;
+
+    return {
+      items: items.map(mapUserStats),
+      nextCursor,
+    };
+  } catch (error) {
+    console.error("listUsersWithStats failed, falling back to basic list", error);
+    const fallback = await db
+      .select({
+        id: users.id,
+        email: users.email,
+        name: users.name,
+        imageUrl: users.imageUrl,
+        role: users.role,
+        createdAt: users.createdAt,
+        updatedAt: users.updatedAt,
+      })
+      .from(users)
+      .where(whereClause)
+      .orderBy(desc(users.createdAt), desc(users.id))
+      .limit(limit);
+
+    const nextCursor =
+      fallback.length === limit ? fallback[fallback.length - 1].id : null;
+
+    return {
+      items: fallback.map(row => ({
+        ...row,
+        stats: {
+          gallerySubmissions: 0,
+          galleryLikes: 0,
+          blogPosts: 0,
+          blogComments: 0,
+          products: 0,
+          mediaAssets: 0,
+        },
+      })),
+      nextCursor,
+    };
+  }
+};
+
+export const getUserWithStats = async (id: string) => {
+  const row = await db
+    .select(userStatsSelect)
+    .from(users)
+    .where(eq(users.id, id));
+  const user = row[0];
+  if (!user) return null;
+  return mapUserStats(user);
+};
+
+export const deleteUserWithCleanup = async (id: string) => {
+  return db.transaction(async tx => {
+    const likesBySubmission = await tx
+      .select({
+        submissionId: galleryLikes.submissionId,
+        likeCount: sql<number>`count(*)`,
+      })
+      .from(galleryLikes)
+      .where(eq(galleryLikes.userId, id))
+      .groupBy(galleryLikes.submissionId);
+
+    for (const entry of likesBySubmission) {
+      await tx
+        .update(gallerySubmissions)
+        .set({
+          likesCount: sql`GREATEST(${gallerySubmissions.likesCount} - ${entry.likeCount}, 0)`,
+        })
+        .where(eq(gallerySubmissions.id, entry.submissionId));
+    }
+
+    await tx.delete(galleryLikes).where(eq(galleryLikes.userId, id));
+
+    const [user] = await tx
+      .delete(users)
+      .where(eq(users.id, id))
+      .returning({
+        id: users.id,
+        email: users.email,
+        role: users.role,
+      });
+
+    if (!user) throw new Error(`User with id ${id} not found`);
+    return user;
+  });
 };
 
 // AUTH QUERIES
