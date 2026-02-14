@@ -5,6 +5,7 @@ import {
   Images,
   LayoutDashboard,
   Mail,
+  Users,
 } from "lucide-react";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 
@@ -14,6 +15,7 @@ export default function Dashboard() {
     { href: "/dashboard/media", label: "Media", icon: Images },
     { href: "/dashboard/newsletter", label: "Newsletter", icon: Mail },
     { href: "/dashboard/gallery", label: "Gallery", icon: LayoutDashboard },
+    { href: "/dashboard/users", label: "Users", icon: Users },
   ];
 
   const { data: stats, isLoading } = useDashboardStats();

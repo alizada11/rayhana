@@ -5,6 +5,28 @@ export interface UserData {
   [key: string]: any;
 }
 
+export type UserRole = "admin" | "guest";
+
+export interface UserStats {
+  gallerySubmissions: number;
+  galleryLikes: number;
+  blogPosts: number;
+  blogComments: number;
+  products: number;
+  mediaAssets: number;
+}
+
+export interface AdminUser {
+  id: string;
+  email: string;
+  name?: string | null;
+  imageUrl?: string | null;
+  role: UserRole;
+  createdAt?: string | null;
+  updatedAt?: string | null;
+  stats: UserStats;
+}
+
 export type ProductData = FormData;
 
 export interface CommentData {
@@ -118,6 +140,47 @@ export const syncUser = async (userData: UserData) => {
 export const getMe = async () => {
   const { data } = await api.get("/users/me");
   return data;
+};
+
+export const getUsersAdmin = async ({
+  search,
+  role,
+  cursor,
+  limit,
+}: {
+  search?: string;
+  role?: UserRole | "all";
+  cursor?: string | null;
+  limit?: number;
+}) => {
+  const params = new URLSearchParams();
+  if (search) params.set("search", search);
+  if (role && role !== "all") params.set("role", role);
+  if (cursor) params.set("cursor", cursor);
+  if (limit) params.set("limit", String(limit));
+  const { data } = await api.get(`/users/admin${params.toString() ? `?${params}` : ""}`);
+  return data as { items: AdminUser[]; nextCursor: string | null };
+};
+
+export const getUserAdmin = async (id: string) => {
+  const { data } = await api.get(`/users/admin/${id}`);
+  return data as AdminUser;
+};
+
+export const updateUserAdmin = async ({
+  id,
+  payload,
+}: {
+  id: string;
+  payload: Partial<Pick<AdminUser, "name" | "email" | "role">>;
+}) => {
+  const { data } = await api.patch(`/users/admin/${id}`, payload);
+  return data as AdminUser;
+};
+
+export const deleteUserAdmin = async (id: string) => {
+  const { data } = await api.delete(`/users/admin/${id}`);
+  return data as { deletedId: string; impact?: AdminUser };
 };
 
 // ---------- GALLERY API ----------

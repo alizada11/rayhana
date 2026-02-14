@@ -14,6 +14,7 @@ import {
   LogOut,
   Menu,
   X,
+  Users,
 } from "lucide-react";
 import { useState } from "react";
 type DashboardLayoutProps = {
@@ -49,6 +50,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { path: "/dashboard/blogs", label: "Blogs", Icon: FilePenLine },
     { path: "/dashboard/comments", label: "Comments", Icon: MessageSquare },
     { path: "/dashboard/media", label: "Media", Icon: Images },
+    { path: "/dashboard/users", label: "Users", Icon: Users },
     { path: "/dashboard/settings", label: "Settings", Icon: Settings },
     { path: "/dashboard/products", label: "Products", Icon: Boxes },
     { path: "/dashboard/gallery", label: "Gallery", Icon: GalleryHorizontal },
