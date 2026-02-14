@@ -1,0 +1,188 @@
+import { useTranslation } from "react-i18next";
+import { motion } from "framer-motion";
+import { useContent } from "@/hooks/useContent";
+import DOMPurify from "dompurify";
+
+export default function About() {
+  const { t, i18n } = useTranslation();
+  const currentLang = i18n.language as "en" | "fa" | "ps";
+  const { data: aboutContent } = useContent("about");
+
+  const getLocalized = (obj: any, fallback: string) =>
+    obj?.[currentLang] || obj?.en || fallback;
+  const plain = (value: string) =>
+    DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
+
+  const heroTitle = plain(
+    getLocalized(aboutContent?.data?.hero?.title, t("about_page.title"))
+  );
+  const heroSubtitle = plain(
+    getLocalized(aboutContent?.data?.hero?.subtitle, t("about_page.subtitle"))
+  );
+  const storyTitle = plain(
+    getLocalized(aboutContent?.data?.story?.title, t("about_page.story_title"))
+  );
+  const storyBody = plain(
+    getLocalized(aboutContent?.data?.story?.body, t("about_page.story_content"))
+  );
+  const missionTitle = plain(
+    getLocalized(
+      aboutContent?.data?.mission?.title,
+      t("about_page.mission_title")
+    )
+  );
+  const missionBody = plain(
+    getLocalized(
+      aboutContent?.data?.mission?.body,
+      t("about_page.mission_content")
+    )
+  );
+  const founderTitle = plain(
+    getLocalized(
+      aboutContent?.data?.founder?.title,
+      t("about_page.founder_title")
+    )
+  );
+  const founderBody = plain(
+    getLocalized(
+      aboutContent?.data?.founder?.body,
+      t("about_page.founder_content")
+    )
+  );
+  const quoteText = plain(
+    getLocalized(
+      aboutContent?.data?.quote?.text,
+      t("about_page.quote", '"Rayhana is not just a product, it is a bridge connecting hearts to home."')
+    )
+  );
+  const storyImage =
+    aboutContent?.data?.images?.story || "/images/about-user.jpg";
+
+  return (
+    <div className="min-h-screen">
+      {/* Hero */}
+      <section className="relative py-24 bg-secondary/30">
+        <div className="container text-center space-y-6">
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="font-serif text-5xl md:text-7xl font-bold text-primary"
+          >
+            {heroTitle}
+          </motion.h1>
+          <motion.p 
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.2 }}
+            className="text-xl text-muted-foreground max-w-2xl mx-auto"
+          >
+            {heroSubtitle}
+          </motion.p>
+        </div>
+      </section>
+
+      {/* Story Content */}
+      <section className="py-20">
+        <div className="container">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl"
+            >
+              <img 
+                src={storyImage} 
+                alt="Rayhana Story" 
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+            
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-8"
+            >
+              <div>
+                <h2 className="font-serif text-3xl font-bold mb-4 text-primary">
+                  {storyTitle}
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {storyBody}
+                </p>
+              </div>
+              
+              <div>
+                <h2 className="font-serif text-3xl font-bold mb-4 text-primary">
+                  {missionTitle}
+                </h2>
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {missionBody}
+                </p>
+              </div>
+
+              {/* Values Grid */}
+              <div className="grid grid-cols-2 gap-6 pt-8">
+                {[
+                  t('about.authenticity'),
+                  t('about.innovation'),
+                  t('about.quality'),
+                  t('about.connection')
+                ].map((value, index) => (
+                  <div key={index} className="flex items-center gap-3">
+                    <div className="w-2 h-2 rounded-full bg-primary" />
+                    <span className="font-bold text-foreground">{value}</span>
+                  </div>
+                ))}
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+
+      {/* Founder Story Section */}
+      <section className="py-20 bg-secondary/20">
+        <div className="container">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
+            <motion.div 
+              initial={{ opacity: 0, x: 50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="space-y-6"
+            >
+              <h2 className="font-serif text-4xl font-bold text-primary">
+                {founderTitle}
+              </h2>
+              <p className="text-lg text-muted-foreground leading-relaxed">
+                {founderBody}
+              </p>
+              <div className="pt-4 border-l-4 border-primary pl-6">
+                <p className="text-sm text-muted-foreground italic">
+                  {quoteText}
+                </p>
+              </div>
+            </motion.div>
+
+            <motion.div 
+              initial={{ opacity: 0, x: -50 }}
+              whileInView={{ opacity: 1, x: 0 }}
+              viewport={{ once: true }}
+              className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center"
+            >
+              <div className="text-center space-y-4 p-8">
+                <div className="text-6xl">🏠</div>
+                <p className="text-xl font-serif font-bold text-primary">
+                  {heroTitle}
+                </p>
+                <p className="text-muted-foreground">
+                  {heroSubtitle}
+                </p>
+              </div>
+            </motion.div>
+          </div>
+        </div>
+      </section>
+    </div>
+  );
+}

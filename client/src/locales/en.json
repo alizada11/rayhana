@@ -1,0 +1,309 @@
+{
+  "nav": {
+    "home": "Home",
+    "products": "Products",
+    "about": "About Us",
+    "blog": "Blog & Recipes",
+    "contact": "Contact"
+  },
+  "hero": {
+    "title": "Roots in Modern Life",
+    "subtitle": "Experience the authentic taste of tradition with modern innovation.",
+    "cta": "Explore Products"
+  },
+  "products": {
+    "title": "Our Collection",
+    "ladle_bonus": "Free Ladle Included",
+    "view_details": "View Details"
+  },
+  "about": {
+    "title": "Our Story",
+    "values": "Our Values",
+    "authenticity": "Authenticity",
+    "innovation": "Innovation",
+    "quality": "Certified Quality (SGS)",
+    "connection": "Connection",
+    "simplicity": "Simplicity"
+  },
+  "common": {
+    "sending": "Sending...",
+    "loading": "Loading...",
+    "prev": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "of": "of",
+    "success": "Success",
+    "error": "Error",
+    "delete": "Delete",
+    "cancel": "Cancel",
+    "noComments": "No comments yet. Be the first to share your thoughts!"
+  },
+  "contact": {
+    "title": "Get in Touch",
+    "name": "Name",
+    "email": "Email",
+    "message": "Message",
+    "send": "Send Message",
+    "sending": "Sending..."
+  },
+  "confirm": {
+    "title": "Are you sure?",
+    "description": "This action cannot be undone.",
+    "confirm": "Confirm",
+    "cancel": "Cancel"
+  },
+  "login_page": {
+    "title": "Welcome Back",
+    "subtitle": "Sign in to access your account",
+    "sign_in": "Sign In",
+    "sign_up_prompt": "Don't have an account?",
+    "sign_up": "Create Account",
+    "welcome": "Welcome!",
+    "access_granted": "Full access granted",
+    "sign_out": "Sign Out",
+    "dashboard": "Dashboard",
+    "guest_dashboard": "My Photos",
+    "profile": "Profile",
+    "go_home": "Go to Home",
+    "help": "Help",
+    "privacy": "Privacy",
+    "terms": "Terms",
+    "adminRequired": "Admin access required.",
+    "signed_out": "You have been signed out",
+    "password": "Password",
+    "hide": "hide",
+    "show": "show",
+    "confirm_password": "Confirm Password",
+    "email": "Email",
+    "google": "Continue with Google",
+    "forgot_password": "Forgot your Password?",
+    "welcom": "Welcome back!",
+    "reset_sent": "Reset link has been sent to your email",
+    "forgot_title": "Reset Your Password",
+    "name_placeholder": "Enter your name",
+    "verify_first": "To continue, verify your email first",
+    "name": "Full Name",
+    "send_reset": "Send reset link",
+    "have_account": "Already have an account?",
+    "error": "Something went wrong",
+    "password_mismatch": "Password and confirm password do not match",
+    "save_password": "Save Password",
+    "reset_title": "Set a new password",
+    "reset_success": "Password updated. Please sign in."
+  },
+  "my_submissions": {
+    "title": "My Gallery Submissions",
+    "subtitle": "View all your submitted photos. Your photos are reviewed by our team before appearing in the public gallery.",
+    "total": "Total Submissions",
+    "filters": {
+      "all": "All",
+      "pending": "Reviewing",
+      "approved": "Approved",
+      "rejected": "Not Selected"
+    },
+    "status": {
+      "approved": "Approved",
+      "pending": "Under Review",
+      "rejected": "Not Selected"
+    },
+    "empty": {
+      "title": "No submissions found",
+      "body_all": "You haven't submitted any photos yet.",
+      "body_filtered": "No submissions found for this filter.",
+      "cta": "Submit your first photo"
+    },
+    "pagination": {
+      "prev": "Previous",
+      "next": "Next",
+      "page_of": "Page {{page}} of {{total}}"
+    },
+    "live": "Live in Gallery",
+    "remove": "Remove",
+    "deleting": "Deleting..."
+  },
+  "products_page": {
+    "title": "Our Premium Collection",
+    "subtitle": "Discover the perfect blend of tradition and modern engineering.",
+    "filter_all": "All",
+    "filter_cookware": "Cookware",
+    "filter_appliances": "Appliances",
+    "filter_accessories": "Accessories",
+    "pot_red": "Rayhana Heritage Pot (Red)",
+    "pot_grey": "Rayhana Heritage Pot (Grey)",
+    "pot_desc": "Designed for authentic Qabili Pulao and traditional Afghan dishes. Premium non-stick ceramic coating that preserves taste and aroma, perfect for steaming rice.",
+    "sizes": "Available Sizes: 7, 9, 12",
+    "colors": "Colors: Red, Grey",
+    "sgs_certified": "SGS, FDA & CA65 Certified | PFAS FREE",
+    "price_7": "$109.99",
+    "price_9": "$129.99",
+    "price_12": "$149.99",
+    "bonus_gifts": "Bonus Gifts Included",
+    "bonus_desc": "Includes Silicone Ladle with Wooden Handle, Fridge Magnet, and 2x Silicone Handle Covers.",
+    "buy_amazon": "Buy on Amazon US",
+    "amazon_reviews": "Amazon Customer Reviews",
+    "verified_purchase": "Verified Purchase",
+    "review_1": "Absolutely love this pot! The non-stick coating is amazing and it's so easy to clean.",
+    "review_2": "Great quality and beautiful design. The ladle is a nice bonus.",
+    "review_3": "Perfect size for my family. Highly recommended!",
+    "out_of_5": "out of 5 stars",
+    "coming_soon_markets": "Coming soon to Amazon Europe, UK, and Australia",
+    "brand_message_title": "The Beginning of a Journey",
+    "brand_message_p1": "In a world of endless choices, you chose culture. You chose quality. You chose to honor the generations who taught us that the best meals are crafted with patience and love.",
+    "brand_message_highlight": "Your support changes lives.",
+    "brand_message_p2": "This Qabili pilaf Pot is just the beginning. We started with this traditional vessel, and soon you will welcome more Rayhana products into your kitchen—each crafted with the same precision and excellence.",
+    "brand_signature": "With love and gratitude - The Rayhana Family - Roots and authenticity in modern life",
+    "price": "$",
+    "no_products": "No Products Found"
+  },
+  "referral": {
+    "card_title": "Rayhana Golden Invitation",
+    "card_subtitle": "Share the culture, gift the quality",
+    "name_placeholder": "Enter your name",
+    "generate_btn": "Create My Golden Card",
+    "enter_name_error": "Please enter your name first",
+    "code_generated": "Your golden card is ready!",
+    "code_copied": "Code copied to clipboard",
+    "your_code_label": "YOUR EXCLUSIVE CODE",
+    "copy": "Copy Code",
+    "share": "Share",
+    "share_message": "I invite you to experience authentic taste with Rayhana. Use my code {{code}} for a special welcome gift.",
+    "terms": "Valid for new customers only"
+  },
+  "gallery": {
+    "title": "Your Kitchen, Our Story",
+    "subtitle": "Join the Rayhana family by sharing your culinary creations",
+    "share_button": "Share Your Photo",
+    "upload_title": "Share Your Masterpiece",
+    "upload_placeholder": "Click to upload photo",
+    "upload_note": "Share your cooking moments with Rayhana pot",
+    "submit_photo": "Submit Photo",
+    "search": "Search by dish or name",
+    "view_all": "View All",
+    "sort_newest": "Newest",
+    "sort_popular": "Most liked",
+    "empty": "No photos found.",
+    "unlike": "Unlike",
+    "like": "Like",
+    "uploadSize": "JPG, PNG (MAX. 5MB)"
+  },
+  "newsletter": {
+    "title": "Join the Rayhana Family",
+    "subtitle": "Be the first to know about new products and exclusive offers",
+    "placeholder": "Enter your email address",
+    "disclaimer": "We respect your privacy. Unsubscribe at any time.",
+    "success_title": "Welcome to the Rayhana Family!",
+    "success_message": "You are now part of our story. Get ready to receive exclusive tastes and traditions in your inbox."
+  },
+  "toast": {
+    "comment_posted": "Comment Posted Successfully",
+    "comment_submit_failed": "Failed to submit your comment. Please try again.",
+    "comment_updated": "Your comment has been updated successfully.",
+    "comment_update_failed": "Unable to update the comment. Please try again.",
+    "comment_deleted": "The comment has been deleted successfully.",
+    "comment_delete_failed": "Failed to delete the comment. Please try again.",
+    "comment_delete_title": "Delete comment?",
+    "comment_delete_body": "This will permanently remove your comment.",
+    "contact_sent": "Message sent successfully"
+  },
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "subtitle": "Everything you need to know about Rayhana products",
+    "q1": "Is the ceramic coating safe?",
+    "a1": "Absolutely. Our Greblon C3+ ceramic coating is German-engineered, SGS certified, and 100% free from PFOA, PFAS, lead, and cadmium. It's designed for healthy cooking.",
+    "q2": "Can I use metal utensils?",
+    "a2": "While our coating is durable, we recommend using silicone or wooden utensils (like the free ladle included) to extend the life of your pot.",
+    "q3": "Is it dishwasher safe?",
+    "a3": "Yes, Rayhana pots are dishwasher safe. However, hand washing with a soft sponge is recommended to maintain the non-stick performance for years.",
+    "q4": "Does it work on induction cooktops?",
+    "a4": "Yes! Our pots feature a premium induction bottom that works perfectly on gas, electric, ceramic, and induction stoves."
+  },
+  "about_page": {
+    "title": "Our Journey",
+    "subtitle": "From a longing for home to a global brand.",
+    "story_title": "The Rayhana Story",
+    "story_content": "Rayhana is not just a kitchenware brand; it is a bridge between the past and the future. We were born from the deep longing of immigrants for the authentic tastes of home. In a world rapidly moving towards modernity, we are committed to keeping the aroma and flavor of traditional dishes alive in modern kitchens. Every Rayhana product is designed with love and precision to be not just a cooking tool, but a companion for creating sweet memories of family gatherings.",
+    "mission_title": "Our Mission",
+    "mission_content": "Our mission is to bring the warmth and intimacy of traditional tables back to modern homes. We want to enable every Afghan and Persian-speaking immigrant to experience the true taste of home, wherever they are in the world, by offering world-class quality products with authentic design. We are committed to passing on a part of our rich culture and identity to future generations with every Rayhana pot.",
+    "founder_title": "Founder's Story",
+    "founder_content": "I have lived in China for over fifteen years and witnessed a challenge that thousands of Afghan and Persian-speaking immigrants faced: the lack of quality kitchenware for cooking traditional dishes. After years of extensive research and market analysis, I gained a deep understanding of this need. That moment was a turning point: I decided not only to identify the problem but to create a comprehensive solution with world-class quality. Thus, Rayhana was born a brand that understands the longing of immigrants and transforms it into reality."
+  },
+  "blog_page": {
+    "title": "Culinary Tales & Recipes",
+    "subtitle": "Explore traditional recipes adapted for the modern kitchen.",
+    "read_more": "Read Recipe",
+    "recipe_1_title": "Classic Pot Roast: A Sunday Favorite",
+    "recipe_1_desc": "Tender, melt-in-your-mouth beef roast with vegetables, cooked to perfection in your Rayhana Pot.",
+    "recipe_2_title": "Hearty Beef & Vegetable Stew",
+    "recipe_2_desc": "A comforting, rich stew that brings the family together on cold evenings.",
+    "recipe_3_title": "Creamy Mushroom Risotto",
+    "recipe_3_desc": "Achieve restaurant-quality risotto with the even heat distribution of Rayhana cookware."
+  },
+  "blog": {
+    "featuredTitle": "Featured Stories",
+    "featuredSubtitle": "Our most loved recipes and cultural journeys.",
+    "featured": "Featured",
+    "viewAll": "View all",
+    "featuredStory": "Featured Story",
+    "readMore": "Read",
+    "title": "Rayhana Culinary Journal",
+    "subtitle": "Exploring the rich heritage of Silk Road cuisine, one story at a time.",
+    "next": "Next",
+    "prev": "Previous",
+    "cookWithUs": "Cook with us",
+    "loading": "Loading stories..."
+  },
+  "help": {
+    "notFound": "Help Article Not Found",
+    "description": "The help page you are looking for does not exist.",
+    "backToCenter": "Back to Help Center",
+    "center": "Help Center",
+    "centerTitle": "Help Center",
+    "stepByStep": "Step-by-step",
+    "tips": "Tips",
+    "needHelpEmail": "Still need help? Email",
+    "lastUpdated": "Last updated",
+    "needHelp": "Need help?"
+  },
+  "terms": {
+    "footer": {
+      "needHelp": "Need help? Visit the",
+      "helpCenter": "Help Center"
+    },
+    "effectiveDate": "Effective Date"
+  },
+  "privacy": {
+    "effectiveDate": "Effective Date",
+    "needHelp": "Need help? Visit the"
+  },
+  "contact_page": {
+    "title": "Contact Us",
+    "subtitle": "We'd love to hear from you. Send us a message or visit us.",
+    "info_title": "Contact Information",
+    "address": "Address",
+    "address_value": "Zhejiang Province, Jinhua City, Yiwu City, Financial Business District, No. 3 Financial Street, Liandu International Building, Section B, Room 1703",
+    "phone": "Phone",
+    "phone_value": "+86 18480366600",
+    "email": "Email",
+    "email_value": "info@rayhana.com",
+    "socials": "Follow Us",
+    "form_name": "Your Name",
+    "form_email": "Your Email",
+    "form_subject": "Subject",
+    "form_message": "Message",
+    "form_submit": "Send Message",
+    "whatsapp": "WhatsApp",
+    "working_hours": "Working Hours",
+    "working_hours_value": "Saturday to Friday, 9 AM to 6 PM (China Standard Time)"
+  },
+  "footer": {
+    "rights": "© 2026 Rayhana Kitchen Appliance. All rights reserved."
+  },
+  "comments": {
+    "message": "comments.message",
+    "signedIn": "comments.signedIn",
+    "title": "comments.title",
+    "submit": "comments.submit",
+    "signInToComment": "comments.signInToComment",
+    "success": "comments.success"
+  }
+}

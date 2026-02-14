@@ -1,0 +1,141 @@
+{
+  "nav": {
+    "home": "Malper",
+    "products": "Berhem",
+    "about": "Derbarê Me",
+    "blog": "Blog û Reçete",
+    "contact": "Pêwendî"
+  },
+  "hero": {
+    "title": "Rehên di Jiyana Nûjen de",
+    "subtitle": "Tamkirina resen a kevneşopiyê bi nûbûna nûjen re biceribînin.",
+    "cta": "Berheman Bibînin"
+  },
+  "products": {
+    "title": "Koleksiyona Me",
+    "ladle_bonus": "Kevçîyê Belaş Tê de ye",
+    "view_details": "Hûrguliyan Bibînin"
+  },
+  "about": {
+    "title": "Çîroka Me",
+    "values": "Nirxên Me",
+    "authenticity": "Resenî",
+    "innovation": "Nûbûn",
+    "quality": "Kalîteya Pejirandî (SGS)",
+    "connection": "Pêwendî",
+    "simplicity": "Sadebûn"
+  },
+  "contact": {
+    "title": "Bi Me re Têkilî Daynin",
+    "name": "Nav",
+    "email": "E-name",
+    "message": "Peyam",
+    "send": "Peyam Bişînin"
+  },
+  "confirm": {
+    "title": "Tu dilniya yî?",
+    "description": "Ev kirin nayê vegerandin.",
+    "confirm": "Piştrast bike",
+    "cancel": "Betal bike"
+  },
+  "products_page": {
+    "title": "Koleksiyona Me ya Premium",
+    "subtitle": "Têkeliya bêkêmasî ya kevneşopî û endezyariya nûjen kifş bikin.",
+    "filter_all": "Hemû",
+    "filter_cookware": "Amûrên Pêjgehê",
+    "filter_appliances": "Amûrên Malê",
+    "filter_accessories": "Aksesûar",
+    "pot_red": "Beroşa Dolma û Biryanî ya Rayhana (Sor)",
+    "pot_grey": "Beroşa Dolma û Biryanî ya Rayhana (Gewr)",
+    "pot_desc": "Beroşa taybet ji bo Dolma û Biryanî. Bi rûyê seramîk ê ne-zeliqok, xwarinên we bi tama resen û bê şewitandin amade dibin.",
+    "sizes": "Mezinahiyên Berdest: 7, 9, 12",
+    "colors": "Reng: Sor, Gewr",
+    "sgs_certified": "Pejirandî ji hêla SGS, FDA û CA65 | BÊ PFAS",
+    "price_7": "$109.99",
+    "price_9": "$129.99",
+    "price_12": "$149.99",
+    "bonus_gifts": "Diyariyên Zêde Tê de ne",
+    "bonus_desc": "Kevçîyê silîkon bi destikê darîn, magnetê sarincokê, û 2x qapaxên destikê silîkon tê de ne.",
+    "buy_amazon": "Li Amazon US bikirin",
+    "amazon_reviews": "Nirxandinên Xerîdarên Amazon",
+    "verified_purchase": "Kirîna Pejirandî",
+    "review_1": "Ez bi rastî ji vê beroşê hez dikim! Rûyê ne-zeliqok ecêb e û paqijkirina wê pir hêsan e.",
+    "review_2": "Kalîteya hêja û sêwirana xweşik. Kevçî bonusek xweş e.",
+    "review_3": "Ji bo malbata min mezinahiya bêkêmasî. Bi tundî tê pêşniyar kirin!",
+    "out_of_5": "ji 5 stêrkan",
+    "coming_soon_markets": "Di demek nêzîk de li Amazon Ewropa, Keyaniya Yekbûyî û Avusturalya",
+    "brand_message_title": "Destpêka Rêwîtiyekê",
+    "brand_message_p1": "Di cîhanek tijî bijartinên bêdawî de, we çand hilbijart. We kalîte hilbijart. We hilbijart ku hûn rêz li nifşên ku fêrî me kirin ku xwarinên herî baş bi sebir û evînê têne çêkirin, bigirin.",
+    "brand_message_highlight": "Piştgiriya we jiyanan diguherîne.",
+    "brand_message_p2": "Ev Beroşa Qabilî Pilav tenê destpêk e. Me bi vê amûra kevneşopî dest pê kir, û di demek nêzîk de hûn ê bêtir hilberên Rayhana li pêjgeha xwe pêşwazî bikin - her yek bi heman hûrgulî û bilindbûnê hatî çêkirin.",
+    "brand_signature": "Bi evîn û spasdariyê - Malbata Rayhana - Reh û resenî di jiyana nûjen de",
+    "price": "$"
+  },
+  "referral": {
+    "card_title": "Dawetiya Zêrîn a Rayhana",
+    "card_subtitle": "Çandê parve bikin, kalîteyê diyarî bikin",
+    "name_placeholder": "Navê xwe binivîsin",
+    "generate_btn": "Karta Min a Zêrîn Biafirînin",
+    "enter_name_error": "Ji kerema xwe pêşî navê xwe binivîsin",
+    "code_generated": "Karta weya zêrîn amade ye!",
+    "code_copied": "Kod li panoyê hate kopî kirin",
+    "your_code_label": "KODA WE YA TAYBET",
+    "copy": "Kodê Kopî Bikin",
+    "share": "Parve Bikin",
+    "share_message": "Ez we vedixwînim ku hûn bi Rayhana re tama resen biceribînin. Ji bo diyariyek taybet a bixêrhatinê koda min {{code}} bikar bînin.",
+    "terms": "Tenê ji bo xerîdarên nû derbasdar e"
+  },
+  "gallery": {
+    "title": "Pêjgeha We, Çîroka Me",
+    "subtitle": "Bi parvekirina afirandinên xwe yên xwarinê beşdarî malbata Rayhana bibin",
+    "share_button": "Wêneyê Parve Bikin",
+    "upload_title": "Şahesera Xwe Parve Bikin",
+    "upload_placeholder": "Ji bo barkirina wêneyê bikirtînin",
+    "upload_note": "Demên xwe yên xwarinçêkirinê bi beroşa Rayhana parve bikin",
+    "submit_photo": "Wêneyê Bişînin"
+  },
+  "newsletter": {
+    "title": "Beşdarî Malbata Rayhana Bibin",
+    "subtitle": "Yê yekem bin ku li ser hilberên nû û pêşniyarên taybet agahdar dibin",
+    "placeholder": "Navnîşana e-nameya xwe binivîsin",
+    "disclaimer": "Em rêz li nepeniya we digirin. Her dem dikarin abonetiyê betal bikin.",
+    "success_title": "Bi Xêr Hatin Malbata Rayhana!",
+    "success_message": "Hûn naha beşek ji çîroka me ne. Amade bin ku tam û kevneşopiyên taybet di qutiya xweya e-nameyê de werbigirin."
+  },
+  "about_page": {
+    "title": "Rêwîtiya Me",
+    "subtitle": "Ji hesreta malê heya marqeyek cîhanî.",
+    "story_title": "Çîroka Rayhana",
+    "story_content": "RAYHANA ji hesreta ku gelek koçber ji bo malê û tama resen a xwarinên xwe yên kevneşopî hîs dikin, çêbû. Fikir dema ku damezrînerên wê fêm kirin ku amadekirina xwarinên resen di pêjgehên nûjen de çiqas dijwar e, derket holê.",
+    "mission_title": "Mîsyona Me",
+    "mission_content": "Ji bo koçberên li çaraliyê cîhanê bibin pirek di navbera çand û nûjeniyê de, ezmûnek nû ya xwarinçêkirinê biafirînin ku paşerojê bi pêşerojê re bêkêmasî girêdide."
+  },
+  "blog_page": {
+    "title": "Çîrokên Xwarinê û Reçete",
+    "subtitle": "Reçeteyên kevneşopî yên ku ji bo pêjgeha nûjen hatine adaptekirin bigerin.",
+    "read_more": "Reçeteyê Bixwînin",
+    "recipe_1_title": "Dolmeyên Pelên Mêwê",
+    "recipe_1_desc": "Razên çêkirina dolmeyên nerm û tamxweş bi karanîna beroşa Rayhana.",
+    "recipe_2_title": "Biryanî ya Kurdî",
+    "recipe_2_desc": "Çawa biryaniyek bi bîhn û tama dawetên kurdî li malê amade bikin.",
+    "recipe_3_title": "Tirşik: Xwarina Demsalê",
+    "recipe_3_desc": "Reçeteya tirşika orîjînal bi hemû hûrguliyên wê ve ji bo sifreya we."
+  },
+  "contact_page": {
+    "title": "Bi Me re Têkilî Daynin",
+    "subtitle": "Em hez dikin ku ji we bibihîzin. Peyamek ji me re bişînin an serdana me bikin.",
+    "info_title": "Agahdariya Têkiliyê",
+    "address": "Navnîşan",
+    "phone": "Telefon",
+    "email": "E-name",
+    "socials": "Me Bişopînin",
+    "form_name": "Navê We",
+    "form_email": "E-nameya We",
+    "form_subject": "Mijar",
+    "form_message": "Peyam",
+    "form_submit": "Peyam Bişînin"
+  },
+  "footer": {
+    "rights": "© 2026 Amûrên Pêjgeha Rayhana. Hemû maf parastî ne."
+  }
+}
