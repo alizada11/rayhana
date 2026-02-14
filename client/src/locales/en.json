@@ -26,6 +26,7 @@
     "simplicity": "Simplicity"
   },
   "common": {
+    "sending": "Sending...",
     "loading": "Loading...",
     "prev": "Previous",
     "next": "Next",
@@ -67,7 +68,28 @@
     "help": "Help",
     "privacy": "Privacy",
     "terms": "Terms",
-    "adminRequired": "Admin access required."
+    "adminRequired": "Admin access required.",
+    "signed_out": "You have been signed out",
+    "password": "Password",
+    "hide": "hide",
+    "show": "show",
+    "confirm_password": "Confirm Passowrd",
+    "email": "Email",
+    "google": "Continue with Google",
+    "forgot_password": "Forgot your Password?",
+    "welcom": "Welcome back!",
+    "reset_sent": "Reset link has been sent to your email",
+    "forgot_title": "Reset Your Password",
+    "name_placeholder": "Enter your name",
+    "veriy_first": "To continue, verify your email first",
+    "name": "Full Name",
+    "send_reset": "Send reset link",
+    "have_account": "Already have an account?",
+    "error": "Something went wrong",
+    "password_mismatch": "Password and confirm password does not match",
+    "save_password": "Save Password",
+    "reset_title": "Set a new password",
+    "reset_success": "Password updated. Please sign in."
   },
   "my_submissions": {
     "title": "My Gallery Submissions",

@@ -7,7 +7,9 @@ import api from "@/lib/axios";
 import { toast } from "sonner";
 
 export default function ResetPassword() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const rtlLangs = ["fa", "ps", "ar", "ku"];
+  const isRTL = rtlLangs.includes(i18n.language) || i18n.dir?.() === "rtl";
   const [, setLocation] = useLocation();
   const params = new URLSearchParams(window.location.search);
   const token = params.get("token") || "";
@@ -54,49 +56,60 @@ export default function ResetPassword() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-screen flex items-center justify-center bg-background p-8">
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md space-y-4 bg-card p-6 rounded-xl border"
       >
-        <h1 className="text-2xl font-semibold">
+        <h1 className="font-serif text-2xl font-semibold">
           {t("login_page.reset_title", "Set a new password")}
         </h1>
-        <div className="space-y-2">
-          <Input
-            type={showPassword ? "text" : "password"}
-            required
-            placeholder={t("login_page.password", "Password")}
-            value={password}
-            onChange={e => setPassword(e.target.value)}
-          />
-          <button
-            type="button"
-            className="text-xs text-primary"
-            onClick={() => setShowPassword(s => !s)}
-          >
-            {showPassword
-              ? t("login_page.hide", "Hide password")
-              : t("login_page.show", "Show password")}
-          </button>
+        <div className="space-y-2 relative">
+          <label className="mb-1 text-sm font-medium text-muted-foreground">
+            {t("login_page.password", "Password")}
+          </label>
+          <div className=" relative">
+            <Input
+              type={showPassword ? "text" : "password"}
+              required
+              placeholder={t("login_page.password", "Password")}
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className={`absolute inset-y-0 ${isRTL ? "left-3" : "right-3"} text-xs text-muted-foreground`}
+              onClick={() => setShowPassword(s => !s)}
+            >
+              {showPassword
+                ? t("login_page.hide", "Hide password")
+                : t("login_page.show", "Show password")}
+            </button>
+          </div>
         </div>
-        <div className="space-y-2">
-          <Input
-            type={showConfirm ? "text" : "password"}
-            required
-            placeholder={t("login_page.confirm_password", "Confirm password")}
-            value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
-          />
-          <button
-            type="button"
-            className="text-xs text-primary"
-            onClick={() => setShowConfirm(s => !s)}
-          >
-            {showConfirm
-              ? t("login_page.hide", "Hide password")
-              : t("login_page.show", "Show password")}
-          </button>
+
+        <div className="space-y-2 relative">
+          <label className="text-sm font-medium text-muted-foreground">
+            {t("login_page.confirm_password", "Confirm password")}
+          </label>
+          <div className=" relative">
+            <Input
+              type={showConfirm ? "text" : "password"}
+              required
+              placeholder={t("login_page.confirm_password", "Confirm password")}
+              value={confirmPassword}
+              onChange={e => setConfirmPassword(e.target.value)}
+            />
+            <button
+              type="button"
+              className={`absolute inset-y-0 ${isRTL ? "left-3" : "right-3"} text-xs text-muted-foreground`}
+              onClick={() => setShowConfirm(s => !s)}
+            >
+              {showConfirm
+                ? t("login_page.hide", "Hide password")
+                : t("login_page.show", "Show password")}
+            </button>
+          </div>
         </div>
         <Button type="submit" className="w-full" disabled={pending || !token}>
           {pending

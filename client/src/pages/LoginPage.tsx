@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import api from "@/lib/axios";
 
 function LoginPage() {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const { isSignedIn, user, login, register, logout } = useAuth();
   const { data: me } = useUserRole();
   const [, setLocation] = useLocation();
@@ -22,7 +22,8 @@ function LoginPage() {
   const [showConfirm, setShowConfirm] = useState(false);
   const [name, setName] = useState("");
   const [pending, setPending] = useState(false);
-
+  const rtlLangs = ["fa", "ps", "ar", "ku"];
+  const isRTL = rtlLangs.includes(i18n.language) || i18n.dir?.() === "rtl";
   const title = useMemo(() => {
     if (mode === "signup") return t("login_page.sign_up", "Create account");
     if (mode === "forgot")
@@ -92,7 +93,7 @@ function LoginPage() {
   const renderForm = () => (
     <form onSubmit={handleSubmit} className="space-y-4">
       {mode === "signup" && (
-        <div className="space-y-2 text-left">
+        <div className="space-y-2 ">
           <label className="text-sm font-medium text-muted-foreground">
             {t("login_page.name", "Name")}
           </label>
@@ -104,7 +105,7 @@ function LoginPage() {
           />
         </div>
       )}
-      <div className="space-y-2 text-left">
+      <div className="space-y-2 ">
         <label className="text-sm font-medium text-muted-foreground">
           {t("login_page.email", "Email")}
         </label>
@@ -118,7 +119,7 @@ function LoginPage() {
       </div>
       {mode !== "forgot" && (
         <>
-          <div className="space-y-2 text-left">
+          <div className="space-y-2 ">
             <label className="text-sm font-medium text-muted-foreground">
               {t("login_page.password", "Password")}
             </label>
@@ -133,7 +134,7 @@ function LoginPage() {
               <button
                 type="button"
                 onClick={() => setShowPassword(s => !s)}
-                className="absolute inset-y-0 right-3 text-xs text-muted-foreground"
+                className={`absolute inset-y-0 ${isRTL ? "left-3" : "right-3"} text-xs text-muted-foreground`}
               >
                 {showPassword
                   ? t("login_page.hide", "Hide")
@@ -142,7 +143,7 @@ function LoginPage() {
             </div>
           </div>
           {mode === "signup" && (
-            <div className="space-y-2 text-left">
+            <div className="space-y-2 ">
               <label className="text-sm font-medium text-muted-foreground">
                 {t("login_page.confirm_password", "Confirm password")}
               </label>
@@ -157,7 +158,7 @@ function LoginPage() {
                 <button
                   type="button"
                   onClick={() => setShowConfirm(s => !s)}
-                  className="absolute inset-y-0 right-3 text-xs text-muted-foreground"
+                  className={`absolute inset-y-0 ${isRTL ? "left-3" : "right-3"} text-xs text-muted-foreground`}
                 >
                   {showConfirm
                     ? t("login_page.hide", "Hide")
@@ -170,7 +171,7 @@ function LoginPage() {
       )}
       <Button type="submit" className="w-full" disabled={pending}>
         {pending
-          ? t("common.loading", "Loading...")
+          ? t("common.sending", "Sending...")
           : mode === "signin"
             ? t("login_page.sign_in", "Sign In")
             : mode === "signup"
@@ -253,14 +254,19 @@ function LoginPage() {
                           {t("login_page.guest_dashboard", "My Photos")}
                         </Button>
                       )}
-                      <Button variant="outline" onClick={() => setLocation("/")}>
+                      <Button
+                        variant="outline"
+                        onClick={() => setLocation("/")}
+                      >
                         {t("login_page.go_home", "Go to Home")}
                       </Button>
                       <Button
                         variant="destructive"
                         onClick={async () => {
                           await logout();
-                          toast.success(t("login_page.signed_out", "Signed out"));
+                          toast.success(
+                            t("login_page.signed_out", "Signed out")
+                          );
                         }}
                       >
                         {t("login_page.sign_out", "Sign Out")}
@@ -273,7 +279,10 @@ function LoginPage() {
                   <div className="text-center text-sm text-muted-foreground">
                     {mode === "signin" ? (
                       <span>
-                        {t("login_page.sign_up_prompt", "Don't have an account?")}{" "}
+                        {t(
+                          "login_page.sign_up_prompt",
+                          "Don't have an account?"
+                        )}{" "}
                         <button
                           onClick={() => setMode("signup")}
                           className="text-primary font-semibold"
@@ -283,7 +292,10 @@ function LoginPage() {
                       </span>
                     ) : (
                       <span>
-                        {t("login_page.have_account", "Already have an account?")}{" "}
+                        {t(
+                          "login_page.have_account",
+                          "Already have an account?"
+                        )}{" "}
                         <button
                           onClick={() => setMode("signin")}
                           className="text-primary font-semibold"
