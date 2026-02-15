@@ -18,7 +18,12 @@ export const useUpdateProfile = () => {
     mutationFn: updateMyProfile,
     onSuccess: data => {
       qc.setQueryData(["profile"], data);
-      qc.setQueryData(["me"], { role: data.role });
+      qc.setQueryData(["me"], (prev: any) => ({
+        ...(prev ?? {}),
+        id: data.id ?? prev?.id,
+        email: data.email ?? prev?.email,
+        role: data.role,
+      }));
     },
   });
 };

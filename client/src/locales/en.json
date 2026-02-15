@@ -359,11 +359,11 @@
     "rights": "© 2026 Rayhana Kitchen Appliance. All rights reserved."
   },
   "comments": {
-    "message": "comments.message",
-    "signedIn": "comments.signedIn",
-    "title": "comments.title",
-    "submit": "comments.submit",
-    "signInToComment": "comments.signInToComment",
-    "success": "comments.success"
+    "message": "Comment",
+    "signedIn": "You are signed in",
+    "title": "Comments",
+    "submit": "Submit Comment",
+    "signInToComment": "You must sign in to leave a comment.",
+    "success": "Comment submitted successfully!"
   }
 }

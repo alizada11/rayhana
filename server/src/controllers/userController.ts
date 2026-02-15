@@ -24,8 +24,7 @@ export async function getMyProfile(req: Request, res: Response) {
       return sendError(res, 401, "auth.unauthorized", "Unauthorized");
 
     const user = await queries.getUserWithStats(userId);
-    if (!user)
-      return sendError(res, 404, "user.not_found", "User not found");
+    if (!user) return sendError(res, 404, "user.not_found", "User not found");
     if (user.role !== "guest") {
       return sendError(
         res,
@@ -74,17 +73,29 @@ export async function updateMyProfile(req: Request, res: Response) {
       const normalizedEmail = email.trim().toLowerCase();
       const owner = await queries.getUserByEmail(normalizedEmail);
       if (owner && owner.id !== userId) {
-        return sendError(res, 409, "profile.email_in_use", "Email already in use");
+        return sendError(
+          res,
+          409,
+          "profile.email_in_use",
+          "Email already in use"
+        );
       }
       payload.email = normalizedEmail;
     }
 
     const updated = await queries.updateUser(userId, payload);
     const withStats = await queries.getUserWithStats(userId);
-    return res.status(200).json(withStats ? toSafeUser(withStats) : toSafeUser(updated));
+    return res
+      .status(200)
+      .json(withStats ? toSafeUser(withStats) : toSafeUser(updated));
   } catch (error) {
     console.error("Error updating profile:", error);
-    return sendError(res, 500, "profile.failed_update", "Failed to update profile");
+    return sendError(
+      res,
+      500,
+      "profile.failed_update",
+      "Failed to update profile"
+    );
   }
 }
 
@@ -95,8 +106,7 @@ export async function changeMyPassword(req: Request, res: Response) {
       return sendError(res, 401, "auth.unauthorized", "Unauthorized");
 
     const user = await queries.getUserById(userId);
-    if (!user)
-      return sendError(res, 404, "user.not_found", "User not found");
+    if (!user) return sendError(res, 404, "user.not_found", "User not found");
     if (user.role !== "guest") {
       return sendError(
         res,
@@ -108,13 +118,23 @@ export async function changeMyPassword(req: Request, res: Response) {
 
     const { currentPassword, newPassword } = req.body || {};
     if (!newPassword) {
-      return sendError(res, 400, "profile.new_password_required", "newPassword is required");
+      return sendError(
+        res,
+        400,
+        "profile.new_password_required",
+        "newPassword is required"
+      );
     }
 
     // If password not set yet, allow creation without currentPassword
     if (user.passwordHash) {
       if (!currentPassword) {
-        return sendError(res, 400, "profile.current_password_required", "currentPassword is required");
+        return sendError(
+          res,
+          400,
+          "profile.current_password_required",
+          "currentPassword is required"
+        );
       }
       const ok = await verifyPassword(user.passwordHash, currentPassword);
       if (!ok)
@@ -141,7 +161,12 @@ export async function changeMyPassword(req: Request, res: Response) {
     return res.status(200).json({ success: true, message, messageKey });
   } catch (error) {
     console.error("Error changing password:", error);
-    return sendError(res, 500, "profile.failed_change_password", "Failed to change password");
+    return sendError(
+      res,
+      500,
+      "profile.failed_change_password",
+      "Failed to change password"
+    );
   }
 }
 
@@ -183,8 +208,7 @@ export async function getMe(req: Request, res: Response) {
       return sendError(res, 401, "auth.unauthorized", "Unauthorized");
 
     const user = await queries.getUserById(userId);
-    if (!user)
-      return sendError(res, 404, "user.not_found", "User not found");
+    if (!user) return sendError(res, 404, "user.not_found", "User not found");
 
     return res
       .status(200)
@@ -201,7 +225,9 @@ export async function listUsers(req: Request, res: Response) {
     const limitParam = Number(req.query.limit) || 20;
     const limit = Math.min(Math.max(limitParam, 1), 100);
     const roleFilter =
-      role === "admin" || role === "guest" ? (role as "admin" | "guest") : undefined;
+      role === "admin" || role === "guest"
+        ? (role as "admin" | "guest")
+        : undefined;
 
     const result = await queries.listUsersWithStats({
       search: typeof search === "string" ? search : undefined,
@@ -221,8 +247,7 @@ export async function getUser(req: Request, res: Response) {
   try {
     const { id } = req.params;
     const user = await queries.getUserWithStats(id);
-    if (!user)
-      return sendError(res, 404, "user.not_found", "User not found");
+    if (!user) return sendError(res, 404, "user.not_found", "User not found");
     return res.status(200).json(user);
   } catch (error) {
     console.error("Error getting user:", error);
@@ -257,7 +282,9 @@ export async function updateUserAdmin(req: Request, res: Response) {
       }
       payload.email = normalizedEmail;
     }
-
+    if (Object.keys(payload).length === 0) {
+      return sendError(res, 400, "profile.no_changes", "No changes provided");
+    }
     if (role) {
       if (existing.role === "admin" && role === "guest") {
         const adminCount = await queries.countAdmins();
@@ -299,8 +326,7 @@ export async function deleteUserAdmin(req: Request, res: Response) {
     }
 
     const user = await queries.getUserById(id);
-    if (!user)
-      return sendError(res, 404, "user.not_found", "User not found");
+    if (!user) return sendError(res, 404, "user.not_found", "User not found");
 
     if (user.role === "admin") {
       const adminCount = await queries.countAdmins();

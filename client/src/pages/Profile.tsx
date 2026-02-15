@@ -77,7 +77,10 @@ export default function Profile() {
     updateProfile.mutate(
       { name, email, imageUrl },
       {
-        onSuccess: () => toast.success(t("profile.updated", "Profile updated")),
+        onSuccess: () => {
+          toast.success(t("profile.updated", "Profile updated"));
+          setLastUploadId(null);
+        },
         onError: (err: any) => {
           const data = err?.response?.data;
           const msg =
@@ -105,9 +108,16 @@ export default function Profile() {
     const dims = await new Promise<{ w: number; h: number }>(
       (resolve, reject) => {
         const img = new Image();
-        img.onload = () => resolve({ w: img.width, h: img.height });
-        img.onerror = () => reject(new Error("Image load failed"));
-        img.src = URL.createObjectURL(file);
+        const objectUrl = URL.createObjectURL(file);
+        img.onload = () => {
+          URL.revokeObjectURL(objectUrl);
+          resolve({ w: img.width, h: img.height });
+        };
+        img.onerror = () => {
+          URL.revokeObjectURL(objectUrl);
+          reject(new Error("Image load failed"));
+        };
+        img.src = objectUrl;
       }
     ).catch(() => null);
 
@@ -166,19 +176,31 @@ export default function Profile() {
     changePassword.mutate(
       { currentPassword, newPassword },
       {
-        onSuccess: res => {
-          const messageKey = res && "messageKey" in res ? (res as any).messageKey : undefined;
-          const fallback = res?.message || t("profile.password_changed", "Password updated. Please sign in again.");
+        onSuccess: async res => {
+          const messageKey =
+            res && "messageKey" in res ? (res as any).messageKey : undefined;
+          const fallback =
+            res?.message ||
+            t(
+              "profile.password_changed",
+              "Password updated. Please sign in again."
+            );
           const msg = messageKey ? t(messageKey, fallback) : fallback;
           toast.success(msg);
           setCurrentPassword("");
           setNewPassword("");
           setConfirmPassword("");
+          await logout();
         },
         onError: (err: any) => {
           const data = err?.response?.data;
           const msg =
-            (data?.errorKey && t(data.errorKey, data?.error || t("profile.password_failed", "Failed to change password"))) ||
+            (data?.errorKey &&
+              t(
+                data.errorKey,
+                data?.error ||
+                  t("profile.password_failed", "Failed to change password")
+              )) ||
             data?.error ||
             t("profile.password_failed", "Failed to change password");
           toast.error(msg);
