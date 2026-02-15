@@ -75,6 +75,14 @@ router.post(
   blogCommentController.createBlogComment
 );
 
+// Approve comment (admin)
+router.patch(
+  "/:id/comments/:commentId/approve",
+  requireAuth(),
+  requireAdmin,
+  blogCommentController.approveBlogComment
+);
+
 // PUT /api/blogs/:id/comments/:commentId => Update blog comment (owner/admin)
 router.put(
   "/:id/comments/:commentId",

@@ -167,6 +167,7 @@ export const blogComments = pgTable("blog_comments", {
   blogId: uuid("blog_id")
     .notNull()
     .references(() => blogPosts.id, { onDelete: "cascade" }),
+  approved: boolean("approved").notNull().default(false),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" })
     .notNull()

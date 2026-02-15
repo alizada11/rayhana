@@ -3,8 +3,9 @@ import {
   useAllBlogComments,
   useUpdateBlogComment,
   useDeleteBlogComment,
+  useApproveBlogComment,
 } from "@/hooks/useBlogs";
-import { Edit, Trash2, Save, Loader2 } from "lucide-react";
+import { Edit, Trash2, Save, Loader2, CheckCircle } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/ConfirmProvider";
@@ -20,6 +21,7 @@ export default function DashboardBlogComments() {
   const comments = data?.pages.flatMap(page => page.items) ?? [];
   const updateMutation = useUpdateBlogComment();
   const deleteMutation = useDeleteBlogComment();
+  const approveMutation = useApproveBlogComment();
   const confirm = useConfirm();
 
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -72,6 +74,22 @@ export default function DashboardBlogComments() {
         },
         onError: () => {
           toast.error("Failed to delete comment.");
+        },
+      }
+    );
+  };
+
+  const handleApprove = (commentId: string) => {
+    const comment = comments.find(c => String(c.id) === commentId);
+    if (!comment) return;
+    approveMutation.mutate(
+      { blogId: comment.blogId, commentId },
+      {
+        onSuccess: () => {
+          toast.success("Comment approved.");
+        },
+        onError: () => {
+          toast.error("Failed to approve comment.");
         },
       }
     );
@@ -130,9 +148,26 @@ export default function DashboardBlogComments() {
                     >
                       {comment.blog?.title?.en || comment.blog?.slug || "Blog"}
                     </a>
+                    {!comment.approved && (
+                      <>
+                        <span className="text-muted-foreground/60">•</span>
+                        <span className="text-amber-600 font-medium text-xs">
+                          Pending
+                        </span>
+                      </>
+                    )}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">
+                  {!comment.approved && (
+                    <button
+                      onClick={() => handleApprove(String(comment.id))}
+                      className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
+                      title="Approve"
+                    >
+                      <CheckCircle className="w-4 h-4" />
+                    </button>
+                  )}
                   {editingId === String(comment.id) ? (
                     <button
                       onClick={() => handleSave(String(comment.id))}

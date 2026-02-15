@@ -24,7 +24,9 @@ export const getBlogComments = async (req: Request, res: Response) => {
       return res.status(404).json({ error: "Blog post not found" });
     }
 
-    const comments = await queries.getBlogCommentsByBlogId(blogId);
+    const comments = await queries.getBlogCommentsByBlogId(blogId, {
+      includeUnapproved: isAdmin,
+    });
     res.status(200).json(comments);
   } catch (error) {
     console.error("Error getting blog comments:", error);
@@ -62,6 +64,7 @@ export const createBlogComment = async (req: Request, res: Response) => {
       content,
       userId,
       blogId,
+      approved: false,
     });
 
     res.status(201).json(comment);
@@ -98,7 +101,10 @@ export const updateBlogComment = async (req: Request, res: Response) => {
         .json({ error: "You can only update your own comments" });
     }
 
-    const updated = await queries.updateBlogComment(commentId, { content });
+    const updated = await queries.updateBlogComment(commentId, {
+      content,
+      approved: isAdmin ? existing.approved : false,
+    });
     res.status(200).json(updated);
   } catch (error) {
     console.error("Error updating blog comment:", error);
@@ -134,6 +140,28 @@ export const deleteBlogComment = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error deleting blog comment:", error);
     res.status(500).json({ error: "Failed to delete blog comment" });
+  }
+};
+
+// -------------------------
+// APPROVE COMMENT (admin)
+// -------------------------
+export const approveBlogComment = async (req: Request, res: Response) => {
+  try {
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+    const isAdmin = await isAdminUser(userId);
+    if (!isAdmin) return res.status(403).json({ error: "Forbidden" });
+
+    const commentId = getId(req.params.commentId);
+    const existing = await queries.getBlogCommentById(commentId);
+    if (!existing) return res.status(404).json({ error: "Comment not found" });
+
+    const updated = await queries.approveBlogComment(commentId);
+    res.status(200).json(updated);
+  } catch (error) {
+    console.error("Error approving blog comment:", error);
+    res.status(500).json({ error: "Failed to approve comment" });
   }
 };
 

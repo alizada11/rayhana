@@ -57,7 +57,7 @@ export default function BlogIndex() {
 
         {!isLoading && posts.length === 0 && (
           <div className="text-center text-muted-foreground py-12">
-            {t("blog.empty", "No stories yet. Check back soon.")}
+            {t("blog.no_stories", "No stories yet. Check back soon.")}
           </div>
         )}
 

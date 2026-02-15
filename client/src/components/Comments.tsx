@@ -62,7 +62,9 @@ export default function Comments({ postId }: CommentsProps) {
           setTrap("");
           setShowSuccess(true);
           setTimeout(() => setShowSuccess(false), 2500);
-          toast.success(t("toast.comment_posted", "Comment posted."));
+          toast.success(
+            t("comments.pending_approval", "Submitted for review. Visible after approval.")
+          );
         },
         onError: () => {
           toast.error(

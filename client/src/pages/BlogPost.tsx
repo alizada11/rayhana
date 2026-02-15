@@ -1,11 +1,19 @@
 import { useTranslation } from "react-i18next";
 import { useRoute, Link } from "wouter";
 import { Button } from "@/components/ui/button";
-import { ArrowLeft, Calendar, User, Share2 } from "lucide-react";
+import {
+  ArrowLeft,
+  Calendar,
+  User,
+  Share2,
+  Link as LinkIcon,
+  Copy,
+} from "lucide-react";
 import Comments from "@/components/Comments";
 import { motion } from "framer-motion";
 import { useBlogBySlug } from "@/hooks/useBlogs";
 import DOMPurify from "dompurify";
+import { useState } from "react";
 
 export default function BlogPost() {
   const { t, i18n } = useTranslation();
@@ -13,6 +21,7 @@ export default function BlogPost() {
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const isRTL = currentLang === "fa" || currentLang === "ps";
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const [shareOpen, setShareOpen] = useState(false);
 
   const { data: post, isLoading } = useBlogBySlug(params?.slug);
 
@@ -35,9 +44,11 @@ export default function BlogPost() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">Post not found</h1>
+          <h1 className="text-2xl font-bold mb-4">
+            {t("blog.post.not_found", "Post not found")}
+          </h1>
           <Link href="/blog">
-            <Button>Back to Blog</Button>
+            <Button>{t("blog.post.back_to_blog", "Back to Blog")}</Button>
           </Link>
         </div>
       </div>
@@ -53,6 +64,54 @@ export default function BlogPost() {
   const title = post.title?.[currentLang] || post.title?.en || "";
   const content = post.content?.[currentLang] || post.content?.en || "";
   const sanitizedContent = DOMPurify.sanitize(content);
+  const shareUrl =
+    typeof window !== "undefined"
+      ? window.location.href
+      : `${apiBase}/blog/${post.slug}`;
+
+  const shareTargets = [
+    {
+      key: "share.copy",
+      label: t("share.copy_link", "Copy link"),
+      action: async () => {
+        await navigator.clipboard.writeText(shareUrl);
+        setShareOpen(false);
+      },
+      icon: Copy,
+    },
+    {
+      key: "share.whatsapp",
+      label: t("share.whatsapp", "Share on WhatsApp"),
+      url: `https://wa.me/?text=${encodeURIComponent(`${title} - ${shareUrl}`)}`,
+    },
+    {
+      key: "share.telegram",
+      label: t("share.telegram", "Share on Telegram"),
+      url: `https://t.me/share/url?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title)}`,
+    },
+    {
+      key: "share.twitter",
+      label: t("share.twitter", "Share on X"),
+      url: `https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(title)}`,
+    },
+    {
+      key: "share.facebook",
+      label: t("share.facebook", "Share on Facebook"),
+      url: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`,
+    },
+  ];
+
+  const handleNativeShare = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({ title, url: shareUrl });
+        return;
+      } catch {
+        /* fall back */
+      }
+    }
+    setShareOpen(s => !s);
+  };
 
   return (
     <article className="min-h-screen bg-background pb-16">
@@ -69,10 +128,7 @@ export default function BlogPost() {
         <div className="container mx-auto px-8">
           <div className="py-16 md:py-24 relative z-10">
             <Link href="/blog">
-              <Button
-                variant="ghost"
-                className="mb-6 hover:bg-muted/60 text-foreground"
-              >
+              <Button variant="default" className="mb-6 hover:bg-muted/70">
                 <ArrowLeft
                   className={`w-4 h-4 ${isRTL ? "ml-2 rotate-180" : "mr-2"}`}
                 />
@@ -101,10 +157,32 @@ export default function BlogPost() {
                 <User className="w-5 h-5" />
                 <span>{post.authorName || post.user?.name || "Rayhana"}</span>
               </div>
-              <Button variant="outline" size="sm" className="ml-auto">
-                <Share2 className="w-4 h-4 mr-2" />
-                {t("referral.share", "Share")}
-              </Button>
+              <div className={`${isRTL ? "mr-auto" : "ml-auto"} relative`}>
+                <Button variant="outline" size="sm" onClick={handleNativeShare}>
+                  <Share2 className="w-4 h-4 mr-2" />
+                  {t("referral.share", "Share")}
+                </Button>
+                {shareOpen && (
+                  <div className="absolute right-0 mt-2 w-64 rounded-lg border bg-card shadow-lg z-10">
+                    {shareTargets.map(target => {
+                      const Icon = target.icon || LinkIcon;
+                      const onClick = target.action
+                        ? target.action
+                        : () => window.open(target.url, "_blank", "noopener");
+                      return (
+                        <button
+                          key={target.key}
+                          className="flex w-full items-center gap-2 px-3 py-2 text-sm hover:bg-muted transition-colors text-left"
+                          onClick={onClick}
+                        >
+                          <Icon className="w-4 h-4" />
+                          <span>{target.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
             </div>
           </div>
         </div>

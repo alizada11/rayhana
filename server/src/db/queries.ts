@@ -678,12 +678,27 @@ export const getBlogCommentById = async (id: string) => {
   });
 };
 
-export const getBlogCommentsByBlogId = async (blogId: string) => {
+export const getBlogCommentsByBlogId = async (
+  blogId: string,
+  { includeUnapproved = false }: { includeUnapproved?: boolean } = {}
+) => {
   return db.query.blogComments.findMany({
-    where: eq(blogComments.blogId, blogId),
+    where: and(
+      eq(blogComments.blogId, blogId),
+      includeUnapproved ? undefined : eq(blogComments.approved, true)
+    ),
     with: { user: true },
     orderBy: (blogComments, { desc }) => [desc(blogComments.createdAt)],
   });
+};
+
+export const approveBlogComment = async (id: string) => {
+  const [row] = await db
+    .update(blogComments)
+    .set({ approved: true })
+    .where(eq(blogComments.id, id))
+    .returning();
+  return row;
 };
 
 // SITE CONTENT QUERIES
