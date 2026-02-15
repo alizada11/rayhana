@@ -117,12 +117,28 @@ export async function changeMyPassword(req: Request, res: Response) {
     }
 
     const { currentPassword, newPassword } = req.body || {};
-    if (!newPassword) {
+    if (typeof newPassword !== "string") {
       return sendError(
         res,
         400,
         "profile.new_password_required",
         "newPassword is required"
+      );
+    }
+    if (newPassword.length < 8) {
+      return sendError(
+        res,
+        400,
+        "profile.password_too_short",
+        "Password must be at least 8 characters"
+      );
+    }
+    if (newPassword.length > 128) {
+      return sendError(
+        res,
+        400,
+        "profile.password_too_long",
+        "Password must not exceed 128 characters"
       );
     }
 
@@ -282,9 +298,7 @@ export async function updateUserAdmin(req: Request, res: Response) {
       }
       payload.email = normalizedEmail;
     }
-    if (Object.keys(payload).length === 0) {
-      return sendError(res, 400, "profile.no_changes", "No changes provided");
-    }
+
     if (role) {
       if (existing.role === "admin" && role === "guest") {
         const adminCount = await queries.countAdmins();
@@ -299,7 +313,9 @@ export async function updateUserAdmin(req: Request, res: Response) {
       }
       payload.role = role;
     }
-
+    if (Object.keys(payload).length === 0) {
+      return sendError(res, 400, "profile.no_changes", "No changes provided");
+    }
     const updated = await queries.updateUser(id, payload);
     const withStats = await queries.getUserWithStats(id);
     return res.status(200).json(withStats ?? toSafeUser(updated));
