@@ -144,7 +144,7 @@ export async function changeMyPassword(req: Request, res: Response) {
 
     // If password not set yet, allow creation without currentPassword
     if (user.passwordHash) {
-      if (!currentPassword) {
+      if (typeof currentPassword !== "string" || !currentPassword) {
         return sendError(
           res,
           400,
@@ -314,7 +314,7 @@ export async function updateUserAdmin(req: Request, res: Response) {
       payload.role = role;
     }
     if (Object.keys(payload).length === 0) {
-      return sendError(res, 400, "profile.no_changes", "No changes provided");
+      return sendError(res, 400, "user.no_changes", "No changes provided");
     }
     const updated = await queries.updateUser(id, payload);
     const withStats = await queries.getUserWithStats(id);

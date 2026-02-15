@@ -151,6 +151,19 @@
     "password_failed": "Password change failed",
     "upload_image": "Upload image"
   },
+  "user": {
+    "not_found": "User not found",
+    "failed_list": "Failed to retrieve users list",
+    "failed_get": "Failed to retrieve user details",
+    "no_changes": "No changes were made",
+    "invalid_role": "Invalid user role",
+    "email_in_use": "Email is already in use",
+    "last_admin": "This is the last admin user",
+    "failed_update": "Failed to update user",
+    "cannot_delete_self_admin": "Admin cannot delete their own account",
+    "last_admin_delete": "Cannot delete the last admin user",
+    "failed_delete": "Failed to delete user"
+  },
   "my_submissions": {
     "title": "My Gallery Submissions",
     "subtitle": "View all your submitted photos. Your photos are reviewed by our team before appearing in the public gallery.",
