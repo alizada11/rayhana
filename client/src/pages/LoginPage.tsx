@@ -8,6 +8,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import api from "@/lib/axios";
+import {
+  HomeIcon,
+  ImageIcon,
+  ImagesIcon,
+  LayoutDashboardIcon,
+  LogOutIcon,
+  PowerCircleIcon,
+  User2Icon,
+} from "lucide-react";
 
 function LoginPage() {
   const { t, i18n } = useTranslation();
@@ -71,10 +80,16 @@ function LoginPage() {
         setMode("signin");
       }
     } catch (err: any) {
+      const data = err?.response?.data;
       const msg =
-        err?.response?.data?.error ||
+        (data?.errorKey &&
+          t(
+            data.errorKey,
+            data?.error || t("login_page.error", "Something went wrong")
+          )) ||
+        data?.error ||
         t("login_page.error", "Something went wrong");
-      if (err?.response?.data?.verificationRequired) {
+      if (data?.verificationRequired) {
         toast.error(
           t(
             "login_page.verify_first",
@@ -240,37 +255,59 @@ function LoginPage() {
                         {t("login_page.access_granted", "Full access granted")}
                       </p>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      {me?.role === "admin" && (
-                        <Button onClick={() => setLocation("/dashboard")}>
+                    <div className="space-y-3">
+                      {me?.role === "admin" ? (
+                        <Button
+                          className="w-full"
+                          onClick={() => setLocation("/dashboard")}
+                        >
+                          <LayoutDashboardIcon className="w-4 h-4" />
                           {t("login_page.dashboard", "Dashboard")}
                         </Button>
+                      ) : (
+                        <>
+                          <Button
+                            className="w-full"
+                            variant="default"
+                            onClick={() => setLocation("/profile")}
+                          >
+                            <User2Icon className="w-4 h-4" />
+                            {t("login_page.profile", "Profile")}
+                          </Button>
+                          <Button
+                            className="w-full"
+                            variant="outline"
+                            onClick={() => setLocation("/my-submissions")}
+                          >
+                            <ImagesIcon className="w-4 h-4" />
+                            {t("login_page.guest_dashboard", "My Photos")}
+                          </Button>
+                        </>
                       )}
-                      {me?.role === "guest" && (
+
+                      <div className="flex gap-3">
                         <Button
+                          className="flex-1"
                           variant="outline"
-                          onClick={() => setLocation("/my-submissions")}
+                          onClick={() => setLocation("/")}
                         >
-                          {t("login_page.guest_dashboard", "My Photos")}
+                          <HomeIcon className="h-4 w-4" />
+                          {t("login_page.go_home", "Home")}
                         </Button>
-                      )}
-                      <Button
-                        variant="outline"
-                        onClick={() => setLocation("/")}
-                      >
-                        {t("login_page.go_home", "Go to Home")}
-                      </Button>
-                      <Button
-                        variant="destructive"
-                        onClick={async () => {
-                          await logout();
-                          toast.success(
-                            t("login_page.signed_out", "Signed out")
-                          );
-                        }}
-                      >
-                        {t("login_page.sign_out", "Sign Out")}
-                      </Button>
+                        <Button
+                          className="flex-1"
+                          variant="destructive"
+                          onClick={async () => {
+                            await logout();
+                            toast.success(
+                              t("login_page.signed_out", "Signed out")
+                            );
+                          }}
+                        >
+                          <LogOutIcon className="w-4 h-4" />
+                          {t("login_page.sign_out", "Sign Out")}
+                        </Button>
+                      </div>
                     </div>
                   </div>
                 )}

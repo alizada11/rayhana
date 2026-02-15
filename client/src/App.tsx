@@ -25,6 +25,7 @@ import Gallery from "./pages/Gallery";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
 import FullPageLoader from "./components/FullPageLoader";
+import Profile from "./pages/Profile";
 
 function GuestDashboardRoute() {
   const { isLoaded, isSignedIn } = useAuthReq();
@@ -113,6 +114,11 @@ function Router() {
       <Route path="/login">
         <Layout>
           <LoginPage />
+        </Layout>
+      </Route>
+      <Route path="/profile">
+        <Layout>
+          <Profile />
         </Layout>
       </Route>
       <Route path="/my-submissions">

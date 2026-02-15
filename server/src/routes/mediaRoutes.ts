@@ -15,6 +15,21 @@ router.post(
   mediaController.uploadMedia
 );
 
+// Authenticated (guest/admin): upload avatar/media for own profile
+router.post(
+  "/avatar",
+  requireAuth(),
+  uploadMedia.single("file"),
+  mediaController.uploadMedia
+);
+
+// Authenticated delete own avatar upload
+router.delete(
+  "/avatar/:id",
+  requireAuth(),
+  mediaController.deleteOwnMedia
+);
+
 // Admin: list media
 router.get("/", requireAuth(), requireAdmin, mediaController.listMedia);
 

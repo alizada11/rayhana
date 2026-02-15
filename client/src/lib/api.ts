@@ -183,6 +183,34 @@ export const deleteUserAdmin = async (id: string) => {
   return data as { deletedId: string; impact?: AdminUser };
 };
 
+// Guest profile
+export interface GuestProfile extends AdminUser {
+  emailVerifiedAt?: string | null;
+  passwordSet?: boolean;
+}
+
+export const getMyProfile = async () => {
+  const { data } = await api.get("/users/profile");
+  return data as GuestProfile;
+};
+
+export const updateMyProfile = async (payload: {
+  name?: string;
+  email?: string;
+  imageUrl?: string;
+}) => {
+  const { data } = await api.patch("/users/profile", payload);
+  return data as GuestProfile;
+};
+
+export const changeMyPassword = async (payload: {
+  currentPassword?: string;
+  newPassword: string;
+}) => {
+  const { data } = await api.post("/users/profile/password", payload);
+  return data as { success: boolean; message?: string };
+};
+
 // ---------- GALLERY API ----------
 export const getApprovedGallery = async () => {
   const { data } = await api.get("/gallery");
@@ -419,9 +447,14 @@ export const getAllContent = async () => {
 export const uploadMedia = async ({ file }: MediaUploadPayload) => {
   const payload = new FormData();
   payload.append("file", file);
-  const { data } = await api.post("/media", payload, {
+  const { data } = await api.post("/media/avatar", payload, {
     headers: { "Content-Type": "multipart/form-data" },
   });
+  return data;
+};
+
+export const deleteAvatarMedia = async (id: string) => {
+  const { data } = await api.delete(`/media/avatar/${id}`);
   return data;
 };
 

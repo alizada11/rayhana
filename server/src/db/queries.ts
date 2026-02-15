@@ -98,29 +98,30 @@ const userStatsSelect = {
   role: users.role,
   createdAt: users.createdAt,
   updatedAt: users.updatedAt,
+  passwordSet: sql<boolean>`(${users.passwordHash} is not null)`,
   gallerySubmissionsCount: sql<number>`(
-    select count(*) from ${gallerySubmissions}
-    where ${gallerySubmissions.userId} = ${users.id}
+    select count(*) from gallery_submissions
+    where gallery_submissions.user_id = users.id
   )`,
   galleryLikesCount: sql<number>`(
-    select count(*) from ${galleryLikes}
-    where ${galleryLikes.userId} = ${users.id}
+    select count(*) from gallery_likes
+    where gallery_likes.user_id = users.id
   )`,
   blogPostsCount: sql<number>`(
-    select count(*) from ${blogPosts}
-    where ${blogPosts.userId} = ${users.id}
+    select count(*) from blog_posts
+    where blog_posts.user_id = users.id
   )`,
   blogCommentsCount: sql<number>`(
-    select count(*) from ${blogComments}
-    where ${blogComments.userId} = ${users.id}
+    select count(*) from blog_comments
+    where blog_comments.user_id = users.id
   )`,
   productsCount: sql<number>`(
-    select count(*) from ${products}
-    where ${products.userId} = ${users.id}
+    select count(*) from products
+    where products.user_id = users.id
   )`,
   mediaAssetsCount: sql<number>`(
-    select count(*) from ${mediaAssets}
-    where ${mediaAssets.userId} = ${users.id}
+    select count(*) from media_assets
+    where media_assets.user_id = users.id
   )`,
 };
 
@@ -132,6 +133,7 @@ const mapUserStats = (row: any) => ({
   role: row.role,
   createdAt: row.createdAt,
   updatedAt: row.updatedAt,
+  passwordSet: Boolean(row.passwordSet),
   stats: {
     gallerySubmissions: Number(row.gallerySubmissionsCount ?? 0),
     galleryLikes: Number(row.galleryLikesCount ?? 0),
@@ -711,6 +713,10 @@ export const getAllSiteContent = async () => {
 export const createMediaAsset = async (data: NewMediaAsset) => {
   const [asset] = await db.insert(mediaAssets).values(data).returning();
   return asset;
+};
+
+export const getMediaAssetById = async (id: string) => {
+  return db.query.mediaAssets.findFirst({ where: eq(mediaAssets.id, id) });
 };
 
 export const getMediaAssets = async () => {

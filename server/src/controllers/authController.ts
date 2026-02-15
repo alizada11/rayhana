@@ -77,12 +77,22 @@ export async function login(req: Request, res: Response) {
     where: eq(users.email, email.toLowerCase().trim()),
   });
   if (!user || !user.passwordHash) {
-    return res.status(401).json({ error: "Invalid credentials" });
+    return res
+      .status(401)
+      .json({
+        error: "Invalid credentials",
+        errorKey: "login_page.invalid_credentials",
+      });
   }
 
   const ok = await verifyPassword(user.passwordHash, password);
   if (!ok) {
-    return res.status(401).json({ error: "Invalid credentials" });
+    return res
+      .status(401)
+      .json({
+        error: "Invalid credentials",
+        errorKey: "login_page.invalid_credentials",
+      });
   }
 
   if (!user.emailVerifiedAt) {
