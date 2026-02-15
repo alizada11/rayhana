@@ -171,7 +171,7 @@ export const useApproveBlogComment = () => {
   const queryClient = useQueryClient();
   return useMutation({
     mutationFn: approveBlogComment,
-    onSuccess: (_, variables: { blogId: ID }) => {
+    onSuccess: (_, variables: { blogId: ID; commentId: ID }) => {
       queryClient.invalidateQueries({
         queryKey: ["blogComments", variables.blogId],
       });
