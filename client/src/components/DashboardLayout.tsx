@@ -78,7 +78,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               RH
             </div>
             <div>
-              <h1 className="text-base font-semibold text-foreground">Rayhana</h1>
+              <h1 className="text-base font-semibold text-foreground">
+                Rayhana
+              </h1>
               <p className="text-xs text-muted-foreground">Dashboard</p>
             </div>
           </div>
@@ -127,7 +129,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
               onClick={() => setSidebarOpen(prev => !prev)}
               aria-label="Toggle sidebar"
             >
-              {sidebarOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+              {sidebarOpen ? (
+                <X className="w-5 h-5" />
+              ) : (
+                <Menu className="w-5 h-5" />
+              )}
             </button>
             <h1 className="text-xl font-serif font-bold text-foreground">
               {sidebarLinks.find(link => link.path === location)?.label ||
@@ -178,7 +184,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
         {/* Page Content */}
         <main className="flex-1">
-          <div className="bg-card text-card-foreground rounded-xl border border-border p-8 min-h-[calc(100vh-240px)] shadow-sm">
+          <div className="bg-card text-card-foreground  border border-border p-8 min-h-[calc(100vh-240px)] shadow-sm">
             {children}
           </div>
         </main>

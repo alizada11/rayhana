@@ -262,8 +262,7 @@ function ProductCard({
                     }`
                   );
                   const href =
-                    productLink ||
-                    `https://www.amazon.com/s?k=${searchQuery}`;
+                    productLink || `https://www.amazon.com/s?k=${searchQuery}`;
                   window.open(href, "_blank", "noopener,noreferrer");
                 }}
               >
@@ -308,8 +307,7 @@ function ProductCard({
                     }`
                   );
                   const href =
-                    productLink ||
-                    `https://www.amazon.com/s?k=${searchQuery}`;
+                    productLink || `https://www.amazon.com/s?k=${searchQuery}`;
                   window.open(href, "_blank", "noopener,noreferrer");
                 }}
               >

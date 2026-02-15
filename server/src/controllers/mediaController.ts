@@ -3,6 +3,7 @@ import * as queries from "../db/queries";
 import { getAuth } from "../lib/auth";
 import fs from "fs";
 import path from "path";
+import { eq } from "drizzle-orm";
 
 const getParam = (value: string | string[]) =>
   Array.isArray(value) ? value[0] : value;
@@ -105,6 +106,33 @@ export const deleteMedia = async (req: Request, res: Response) => {
     res.status(200).json({ message: "Media deleted" });
   } catch (error) {
     console.error("Error deleting media:", error);
+    res.status(500).json({ error: "Failed to delete media" });
+  }
+};
+
+// DELETE /api/media/avatar/:id (auth, owner)
+export const deleteOwnMedia = async (req: Request, res: Response) => {
+  try {
+    const { userId } = getAuth(req);
+    if (!userId) return res.status(401).json({ error: "Unauthorized" });
+
+    const id = getParam(req.params.id);
+    const asset = await queries.getMediaAssetById(id);
+    if (!asset) return res.status(404).json({ error: "Not found" });
+    if (asset.userId !== userId) {
+      return res.status(403).json({ error: "Forbidden" });
+    }
+
+    const deleted = await queries.deleteMediaAsset(id);
+    if (deleted?.url?.startsWith("/uploads/")) {
+      const relativeUrl = deleted.url.replace(/^\/+/, "");
+      const imgPath = path.join(process.cwd(), relativeUrl);
+      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
+    }
+
+    res.status(200).json({ message: "Media deleted" });
+  } catch (error) {
+    console.error("Error deleting own media:", error);
     res.status(500).json({ error: "Failed to delete media" });
   }
 };
