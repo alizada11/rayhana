@@ -13,6 +13,7 @@ import Comments from "@/components/Comments";
 import { motion } from "framer-motion";
 import { useBlogBySlug } from "@/hooks/useBlogs";
 import DOMPurify from "dompurify";
+import SeoTags from "@/components/SeoTags";
 import { useState } from "react";
 
 export default function BlogPost() {
@@ -115,6 +116,18 @@ export default function BlogPost() {
 
   return (
     <article className="min-h-screen bg-background pb-16">
+      <SeoTags
+        pageKey="blog-post"
+        title={title || post.title?.en}
+        description={
+          post.excerpt?.[currentLang] || post.excerpt?.en || content.slice(0, 150)
+        }
+        image={resolveImageUrl(post.imageUrl)}
+        url={shareUrl}
+        type="article"
+        publishedTime={post.publishedAt || post.createdAt}
+        modifiedTime={post.updatedAt}
+      />
       {/* Hero + Metadata */}
       <div className="relative mb-12">
         <div
@@ -197,6 +210,7 @@ export default function BlogPost() {
             transition={{ delay: 0.2 }}
             className={`prose prose-lg dark:prose-invert max-w-none font-sans
               prose-headings:font-serif prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl
+              prose-h2:font-serif
               prose-headings:mt-8 prose-headings:mb-3
               prose-p:text-base prose-p:leading-8 prose-p:mt-3 prose-p:mb-5
               prose-li:leading-8 prose-li:mt-2 prose-li:mb-2

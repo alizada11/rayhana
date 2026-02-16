@@ -10,6 +10,7 @@ import {
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
 import DOMPurify from "dompurify";
+import SeoTags from "@/components/SeoTags";
 
 const ICONS: Record<string, ComponentType<{ className?: string }>> = {
   lifeBuoy: LifeBuoy,
@@ -40,6 +41,12 @@ export default function HelpCenter() {
 
   return (
     <div className="min-h-screen bg-background py-16">
+      <SeoTags
+        pageKey="help"
+        title={title}
+        description={subtitle}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/help`}
+      />
       <div className="container mx-auto px-4">
         <div className="max-w-3xl">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary">
@@ -49,11 +56,11 @@ export default function HelpCenter() {
         </div>
 
         <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-6">
-          {helpSections.map((section: any) => {
+          {helpSections.map((section: any, idx: number) => {
             const Icon = ICONS[section.icon] || LifeBuoy;
             return (
               <Link
-                key={section.slug}
+                key={`${section.slug || "section"}-${idx}`}
                 href={`/help/${section.slug || ""}`}
                 className="group border rounded-2xl p-6 bg-card hover:border-primary/60 transition-colors"
               >

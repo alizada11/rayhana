@@ -160,6 +160,16 @@ const fallbackContact = {
   },
 };
 
+const fallbackSeo = {
+  defaultTitle: { en: "", fa: "", ps: "" },
+  defaultDescription: { en: "", fa: "", ps: "" },
+  defaultImage: "",
+  twitterHandle: "",
+  siteName: "",
+  baseUrl: "",
+  pages: [],
+};
+
 const CONTENT_KEYS = [
   "home",
   "about",
@@ -168,6 +178,7 @@ const CONTENT_KEYS = [
   "privacy",
   "help",
   "contact",
+  "seo",
 ] as const;
 
 export default function DashboardContent() {
@@ -190,6 +201,7 @@ export default function DashboardContent() {
     if (key === "terms") return fallbackTerms;
     if (key === "privacy") return fallbackPrivacy;
     if (key === "contact") return fallbackContact;
+    if (key === "seo") return fallbackSeo;
     return fallbackHelp;
   }, [key]);
 
@@ -437,6 +449,181 @@ export default function DashboardContent() {
 
       {isLoading && (
         <div className="text-sm text-muted-foreground">Loading content...</div>
+      )}
+
+      {/* SEO Editor */}
+      {key === "seo" && (
+        <div className="space-y-6">
+          <div className="bg-card border rounded-xl p-4 space-y-4">
+            <h2 className="font-serif text-xl font-bold">Defaults</h2>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs text-muted-foreground">Default Title</label>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Default title"
+                  value={formData.defaultTitle?.[activeLang] || ""}
+                  onChange={e => updateLangField(["defaultTitle"], e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Default Description</label>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Default description"
+                  value={formData.defaultDescription?.[activeLang] || ""}
+                  onChange={e => updateLangField(["defaultDescription"], e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs text-muted-foreground">Site Name</label>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Site name"
+                  value={formData.siteName || ""}
+                  onChange={e => updateField(["siteName"], e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Base URL (https://example.com)</label>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="https://yourdomain.com"
+                  value={formData.baseUrl || ""}
+                  onChange={e => updateField(["baseUrl"], e.target.value)}
+                />
+              </div>
+            </div>
+            <div className="grid md:grid-cols-2 gap-4">
+              <div>
+                <label className="text-xs text-muted-foreground">Twitter / X handle (without @)</label>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="yourhandle"
+                  value={formData.twitterHandle || ""}
+                  onChange={e => updateField(["twitterHandle"], e.target.value)}
+                />
+              </div>
+              <div>
+                <label className="text-xs text-muted-foreground">Default OG Image URL</label>
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="https://... or /uploads/..."
+                  value={formData.defaultImage || ""}
+                  onChange={e => updateField(["defaultImage"], e.target.value)}
+                />
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-card border rounded-xl p-4 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-serif text-xl font-bold">Per-page overrides</h2>
+              <button
+                type="button"
+                className="text-sm text-primary hover:underline"
+                onClick={() => {
+                  const next = Array.isArray(formData.pages) ? [...formData.pages] : [];
+                  next.push({
+                    key: "",
+                    title: { en: "", fa: "", ps: "" },
+                    description: { en: "", fa: "", ps: "" },
+                    image: "",
+                  });
+                  updateField(["pages"], next);
+                }}
+              >
+                + Add page override
+              </button>
+            </div>
+
+            {(formData.pages || []).map((page: any, idx: number) => (
+              <div
+                key={`seo-page-${idx}-${page?.key || "new"}`}
+                className="border rounded-lg p-4 space-y-3"
+              >
+                <div className="flex items-center gap-3">
+                  <div className="flex-1">
+                    <label className="text-xs text-muted-foreground">Page key (e.g., login, reset-password)</label>
+                    <input
+                      className="border rounded-lg px-3 py-2 w-full"
+                      value={page?.key || ""}
+                      onChange={e => {
+                        const next = structuredClone(formData.pages || []);
+                        next[idx] = { ...next[idx], key: e.target.value };
+                        updateField(["pages"], next);
+                      }}
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    className="text-sm text-red-600 hover:underline"
+                    onClick={() => {
+                      const next = structuredClone(formData.pages || []);
+                      next.splice(idx, 1);
+                      updateField(["pages"], next);
+                    }}
+                  >
+                    Remove
+                  </button>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <label className="text-xs text-muted-foreground">Title ({activeLang.toUpperCase()})</label>
+                    <input
+                      className="border rounded-lg px-3 py-2 w-full"
+                      value={page?.title?.[activeLang] || ""}
+                      onChange={e => {
+                        const next = structuredClone(formData.pages || []);
+                        const title =
+                          next[idx].title && typeof next[idx].title === "object"
+                            ? next[idx].title
+                            : { en: "", fa: "", ps: "" };
+                        title[activeLang] = e.target.value;
+                        next[idx] = { ...next[idx], title };
+                        updateField(["pages"], next);
+                      }}
+                    />
+                  </div>
+                  <div>
+                    <label className="text-xs text-muted-foreground">Description ({activeLang.toUpperCase()})</label>
+                    <input
+                      className="border rounded-lg px-3 py-2 w-full"
+                      value={page?.description?.[activeLang] || ""}
+                      onChange={e => {
+                        const next = structuredClone(formData.pages || []);
+                        const description =
+                          next[idx].description && typeof next[idx].description === "object"
+                            ? next[idx].description
+                            : { en: "", fa: "", ps: "" };
+                        description[activeLang] = e.target.value;
+                        next[idx] = { ...next[idx], description };
+                        updateField(["pages"], next);
+                      }}
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-xs text-muted-foreground">OG Image URL</label>
+                  <input
+                    className="border rounded-lg px-3 py-2 w-full"
+                    placeholder="https://... or /uploads/..."
+                    value={page?.image || ""}
+                    onChange={e => {
+                      const next = structuredClone(formData.pages || []);
+                      next[idx] = { ...next[idx], image: e.target.value };
+                      updateField(["pages"], next);
+                    }}
+                  />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       )}
 
       {/* Home Editor */}

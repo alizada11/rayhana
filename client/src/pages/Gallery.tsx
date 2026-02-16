@@ -22,6 +22,7 @@ import {
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
+import SeoTags from "@/components/SeoTags";
 
 export default function Gallery() {
   const { t, i18n } = useTranslation();
@@ -168,6 +169,15 @@ export default function Gallery() {
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">
+      <SeoTags
+        pageKey="gallery"
+        title={t("gallery.title", "Customer Gallery")}
+        description={t(
+          "gallery.subtitle",
+          "See dishes from our community and share your own."
+        )}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/gallery`}
+      />
       <div className="container mx-auto px-4">
         <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-8">
           <div>

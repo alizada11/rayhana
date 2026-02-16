@@ -16,6 +16,7 @@ import {
 import { useContent } from "@/hooks/useContent";
 import { useSendContactMessage } from "@/hooks/useContactMessages";
 import { toast } from "sonner";
+import SeoTags from "@/components/SeoTags";
 
 export default function Contact() {
   const { t, i18n } = useTranslation();
@@ -141,6 +142,15 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen py-20">
+      <SeoTags
+        pageKey="contact"
+        title={content?.hero?.title?.[i18n.language] || t("contact_page.title", "Contact Rayhana")}
+        description={
+          content?.hero?.subtitle?.[i18n.language] ||
+          t("contact_page.subtitle", "Get in touch for support, partnerships, or questions.")
+        }
+        url={`${import.meta.env.VITE_BASE_URL || ""}/contact`}
+      />
       <div className="container">
         {/* Header */}
         <div className="text-center mb-20 space-y-4">

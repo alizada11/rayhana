@@ -5,6 +5,7 @@ import { Calendar, User, Star, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
 import { useBlogs } from "@/hooks/useBlogs";
 import { useEffect, useMemo, useState } from "react";
+import SeoTags from "@/components/SeoTags";
 
 export default function BlogIndex() {
   const { t, i18n } = useTranslation();
@@ -32,6 +33,15 @@ export default function BlogIndex() {
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">
+      <SeoTags
+        pageKey="blog-index"
+        title={t("blog.title", "Rayhana Blog")}
+        description={t(
+          "blog.subtitle",
+          "Stories, recipes, and tips from the Rayhana kitchen."
+        )}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/blog`}
+      />
       <div className="container mx-auto px-4">
         <motion.div
           initial={{ opacity: 0, y: 20 }}

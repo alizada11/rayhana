@@ -4,6 +4,7 @@ import { useLocation } from "wouter";
 import api from "@/lib/axios";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
+import SeoTags from "@/components/SeoTags";
 
 export default function VerifyEmail() {
   const { t } = useTranslation();
@@ -90,6 +91,15 @@ export default function VerifyEmail() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
+      <SeoTags
+        pageKey="verify-email"
+        title={t("verify_email.title", "Verify your email")}
+        description={t(
+          "verify_email.subtitle",
+          "Confirm your email address to access your account."
+        )}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/verify-email`}
+      />
       <div className="w-full max-w-md space-y-4 bg-card p-6 rounded-xl border text-center">
         <h1 className="text-2xl font-semibold">
           {t("verify_email.title", "Verify your email")}

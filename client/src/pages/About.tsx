@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useContent } from "@/hooks/useContent";
 import DOMPurify from "dompurify";
+import SeoTags from "@/components/SeoTags";
 
 export default function About() {
   const { t, i18n } = useTranslation();
@@ -60,6 +61,15 @@ export default function About() {
 
   return (
     <div className="min-h-screen">
+      <SeoTags
+        pageKey="about"
+        title={heroTitle || t("about_page.title", "About Rayhana")}
+        description={
+          heroSubtitle || t("about_page.subtitle", "Our story and values.")
+        }
+        image={aboutContent?.data?.images?.story}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/about`}
+      />
       {/* Hero */}
       <section className="relative py-24 bg-secondary/30">
         <div className="container text-center space-y-6">

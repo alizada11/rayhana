@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "sonner";
 import api from "@/lib/axios";
+import SeoTags from "@/components/SeoTags";
 import {
   HomeIcon,
   ImageIcon,
@@ -220,6 +221,12 @@ function LoginPage() {
 
   return (
     <div className="min-h-screen p-2 bg-gradient-to-br from-background via-background/95 to-muted/60 dark:from-background dark:via-background dark:to-muted/20 text-foreground transition-colors">
+      <SeoTags
+        pageKey="login"
+        title={title}
+        description={t("login_page.subtitle", "Access your account")}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/login`}
+      />
       <section className="py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-md mx-auto">
