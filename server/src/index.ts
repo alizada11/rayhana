@@ -19,8 +19,7 @@ import dashboardRoutes from "./routes/dashboardRoutes";
 import authRoutes from "./routes/authRoutes";
 import { db } from "./db";
 import { blogPosts, products } from "./db/schema";
-import { desc } from "drizzle-orm";
-
+import { desc, eq } from "drizzle-orm";
 const app = express();
 const distPath = path.join(__dirname, "..", "dist", "public");
 const uploadsPath = path.resolve(process.cwd(), "server", "uploads");
@@ -75,7 +74,10 @@ app.use("/api/auth", authRoutes);
 // robots.txt
 // --------------------
 app.get("/robots.txt", (_req, res) => {
-  const base = (ENV.FRONTEND_URL || "http://localhost:5173").replace(/\/+$/, "");
+  const base = (ENV.FRONTEND_URL || "http://localhost:5173").replace(
+    /\/+$/,
+    ""
+  );
   res.type("text/plain").send(`User-agent: *
 Allow: /
 Sitemap: ${base}/sitemap.xml
@@ -87,7 +89,10 @@ Sitemap: ${base}/sitemap.xml
 // --------------------
 app.get("/sitemap.xml", async (_req, res) => {
   try {
-    const base = (ENV.FRONTEND_URL || "http://localhost:5173").replace(/\/+$/, "");
+    const base = (ENV.FRONTEND_URL || "http://localhost:5173").replace(
+      /\/+$/,
+      ""
+    );
 
     const staticUrls = [
       "",
@@ -108,6 +113,7 @@ app.get("/sitemap.xml", async (_req, res) => {
         publishedAt: blogPosts.publishedAt,
       })
       .from(blogPosts)
+      .where(eq(blogPosts.status, "published"))
       .orderBy(desc(blogPosts.publishedAt));
 
     const productList = await db
@@ -134,7 +140,11 @@ app.get("/sitemap.xml", async (_req, res) => {
       })),
       ...blogList.map(post => ({
         loc: `${base}/blog/${post.slug}`,
-        lastmod: (post.updatedAt || post.publishedAt || new Date()).toISOString(),
+        lastmod: (
+          post.updatedAt ||
+          post.publishedAt ||
+          new Date()
+        ).toISOString(),
         changefreq: "weekly",
         priority: "0.7",
       })),
@@ -150,7 +160,8 @@ app.get("/sitemap.xml", async (_req, res) => {
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
 ${urls
   .map(
-    u => `<url><loc>${u.loc}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}<changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
+    u =>
+      `<url><loc>${u.loc}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}<changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
   )
   .join("")}
 </urlset>`;

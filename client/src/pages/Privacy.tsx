@@ -22,13 +22,13 @@ export default function Privacy() {
   const sections = Array.isArray(data?.data?.sections)
     ? data?.data?.sections
     : [];
-
+  const plainIntro = intro.replace(/<[^>]*>/g, "").trim();
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">
       <SeoTags
         pageKey="privacy"
         title={title}
-        description={intro}
+        description={plainIntro}
         url={`${import.meta.env.VITE_BASE_URL || ""}/privacy`}
       />
       <div className="container mx-auto px-4 max-w-4xl">

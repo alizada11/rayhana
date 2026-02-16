@@ -153,9 +153,13 @@ export const approveBlogComment = async (req: Request, res: Response) => {
     const isAdmin = await isAdminUser(userId);
     if (!isAdmin) return res.status(403).json({ error: "Forbidden" });
 
+    const blogId = getId(req.params.id);
     const commentId = getId(req.params.commentId);
     const existing = await queries.getBlogCommentById(commentId);
     if (!existing) return res.status(404).json({ error: "Comment not found" });
+    if (existing.blogId !== blogId) {
+      return res.status(404).json({ error: "Comment not found" });
+    }
 
     const updated = await queries.approveBlogComment(commentId);
     res.status(200).json(updated);

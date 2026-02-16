@@ -29,7 +29,10 @@ export default function Terms() {
       <SeoTags
         pageKey="terms"
         title={title}
-        description={intro}
+        description={DOMPurify.sanitize(intro, {
+          ALLOWED_TAGS: [],
+          ALLOWED_ATTR: [],
+        })}
         url={`${import.meta.env.VITE_BASE_URL || ""}/terms`}
       />
       <div className="container mx-auto px-4 max-w-4xl">
