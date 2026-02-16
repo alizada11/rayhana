@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import api from "@/lib/axios";
 import { toast } from "sonner";
+import SeoTags from "@/components/SeoTags";
 
 export default function ResetPassword() {
   const { t, i18n } = useTranslation();
@@ -57,6 +58,15 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background p-8">
+      <SeoTags
+        pageKey="reset-password"
+        title={t("login_page.reset_title", "Set a new password")}
+        description={t(
+          "login_page.reset_subtitle",
+          "Reset your Rayhana account password."
+        )}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/reset-password`}
+      />
       <form
         onSubmit={handleSubmit}
         className="w-full max-w-md space-y-4 bg-card p-6 rounded-xl border"

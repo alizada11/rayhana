@@ -322,8 +322,14 @@
     "subtitle": "Exploring the rich heritage of Silk Road cuisine, one story at a time.",
     "next": "Next",
     "prev": "Previous",
+    "back": "Back to Blog",
     "cookWithUs": "Cook with us",
-    "loading": "Loading stories..."
+    "loading": "Loading stories...",
+    "no_stories": "No stories yet. Check back soon.",
+    "post": {
+      "not_found": "Post not found",
+      "back_to_blog": "Back to Blog"
+    }
   },
   "help": {
     "notFound": "Help Article Not Found",
@@ -377,6 +383,8 @@
     "title": "Comments",
     "submit": "Submit Comment",
     "signInToComment": "You must sign in to leave a comment.",
-    "success": "Comment submitted successfully!"
+    "success": "Comment submitted successfully!",
+    "pending_approval": "Submitted for review. Visible after approval.",
+    "comment_submit_failed": "Failed to submit comment."
   }
 }

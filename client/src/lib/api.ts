@@ -427,6 +427,19 @@ export const deleteBlogComment = async ({
   return data;
 };
 
+export const approveBlogComment = async ({
+  blogId,
+  commentId,
+}: {
+  blogId: string | number;
+  commentId: string | number;
+}) => {
+  const { data } = await api.patch(
+    `/blogs/${blogId}/comments/${commentId}/approve`
+  );
+  return data;
+};
+
 // ---------- SITE CONTENT API ----------
 export const getContentByKey = async (key: string) => {
   const { data } = await api.get(`/content/${key}`);

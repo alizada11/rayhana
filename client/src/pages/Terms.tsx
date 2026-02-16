@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
 import DOMPurify from "dompurify";
+import SeoTags from "@/components/SeoTags";
 
 export default function Terms() {
   const { data } = useContent("terms");
@@ -25,6 +26,15 @@ export default function Terms() {
 
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">
+      <SeoTags
+        pageKey="terms"
+        title={title}
+        description={DOMPurify.sanitize(intro, {
+          ALLOWED_TAGS: [],
+          ALLOWED_ATTR: [],
+        })}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/terms`}
+      />
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-10">
           <h1
@@ -46,7 +56,7 @@ export default function Terms() {
         <div className="mt-8 space-y-6">
           {sections.map((section: any, index: number) => (
             <section
-              key={section?.id ? String(section.id) : `section-${index}`}
+              key={`section-${section?.id ?? index}-${index}`}
               className="bg-card border rounded-xl p-6"
             >
               <h2

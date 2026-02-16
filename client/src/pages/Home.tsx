@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import DOMPurify from "dompurify";
+import SeoTags from "@/components/SeoTags";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -97,7 +98,21 @@ export default function Home() {
   };
 
   return (
-    <div className="flex flex-col gap-20 pb-20">
+    <>
+      <SeoTags
+        pageKey="home"
+        title={heroTitle || "Rayhana Afghan Cooking"}
+        description={
+          heroSubtitle ||
+          t(
+            "seo.home.description",
+            "Discover authentic Afghan recipes, cookware, and stories."
+          )
+        }
+        image={featuredImage}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/`}
+      />
+      <div className="flex flex-col gap-20 pb-20">
       {/* Hero Section */}
       <section className="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
         {/* Background Video with Overlay */}
@@ -351,7 +366,8 @@ export default function Home() {
 
       {/* Newsletter */}
       <Newsletter />
-    </div>
+      </div>
+    </>
   );
 }
 

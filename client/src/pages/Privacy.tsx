@@ -2,6 +2,7 @@ import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
 import DOMPurify from "dompurify";
+import SeoTags from "@/components/SeoTags";
 
 export default function Privacy() {
   const { data } = useContent("privacy");
@@ -21,9 +22,15 @@ export default function Privacy() {
   const sections = Array.isArray(data?.data?.sections)
     ? data?.data?.sections
     : [];
-
+  const plainIntro = intro.replace(/<[^>]*>/g, "").trim();
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">
+      <SeoTags
+        pageKey="privacy"
+        title={title}
+        description={plainIntro}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/privacy`}
+      />
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-10">
           <h1 className="text-4xl md:text-5xl font-serif font-bold text-primary">

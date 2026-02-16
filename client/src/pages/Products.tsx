@@ -19,6 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useProducts, type Product } from "@/hooks/useProducts";
+import SeoTags from "@/components/SeoTags";
 
 export default function Products() {
   const { t, i18n } = useTranslation();
@@ -40,6 +41,15 @@ export default function Products() {
 
   return (
     <div className="min-h-screen py-20">
+      <SeoTags
+        pageKey="products"
+        title={t("products_page.title", "Shop Rayhana Products")}
+        description={t(
+          "products_page.subtitle",
+          "Cookware and tools crafted for authentic Afghan cooking."
+        )}
+        url={`${import.meta.env.VITE_BASE_URL || ""}/products`}
+      />
       <div className="container">
         {/* Header */}
         <div className="text-center mb-16 space-y-4">

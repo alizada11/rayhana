@@ -17,7 +17,9 @@ import contactRoutes from "./routes/contactRoutes";
 import newsletterRoutes from "./routes/newsletterRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 import authRoutes from "./routes/authRoutes";
-
+import { db } from "./db";
+import { blogPosts, products } from "./db/schema";
+import { desc, eq } from "drizzle-orm";
 const app = express();
 const distPath = path.join(__dirname, "..", "dist", "public");
 const uploadsPath = path.resolve(process.cwd(), "server", "uploads");
@@ -67,6 +69,117 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
+
+// --------------------
+// robots.txt
+// --------------------
+app.get("/robots.txt", (_req, res) => {
+  const base = (ENV.FRONTEND_URL || "http://localhost:5173").replace(
+    /\/+$/,
+    ""
+  );
+  res.type("text/plain").send(`User-agent: *
+Allow: /
+Sitemap: ${base}/sitemap.xml
+`);
+});
+
+// --------------------
+// sitemap.xml (simple)
+// --------------------
+app.get("/sitemap.xml", async (_req, res) => {
+  try {
+    const base = (ENV.FRONTEND_URL || "http://localhost:5173").replace(
+      /\/+$/,
+      ""
+    );
+
+    const staticUrls = [
+      "",
+      "/blog",
+      "/products",
+      "/about",
+      "/contact",
+      "/gallery",
+      "/privacy",
+      "/terms",
+      "/help",
+    ];
+
+    const blogList = await db
+      .select({
+        slug: blogPosts.slug,
+        updatedAt: blogPosts.updatedAt,
+        publishedAt: blogPosts.publishedAt,
+      })
+      .from(blogPosts)
+      .where(eq(blogPosts.status, "published"))
+      .orderBy(desc(blogPosts.publishedAt));
+
+    const productList = await db
+      .select({
+        id: products.id,
+        updatedAt: products.updatedAt,
+        createdAt: products.createdAt,
+      })
+      .from(products)
+      .orderBy(desc(products.createdAt));
+
+    type UrlEntry = {
+      loc: string;
+      changefreq: string;
+      priority: string;
+      lastmod?: string;
+    };
+
+    const urls: UrlEntry[] = [
+      ...staticUrls.map(path => ({
+        loc: `${base}${path}`,
+        changefreq: "weekly",
+        priority: path === "" ? "1.0" : "0.6",
+      })),
+      ...blogList.map(post => ({
+        loc: `${base}/blog/${post.slug}`,
+        lastmod: (
+          post.updatedAt ||
+          post.publishedAt ||
+          new Date()
+        ).toISOString(),
+        changefreq: "weekly",
+        priority: "0.7",
+      })),
+      ...productList.map(p => ({
+        loc: `${base}/products/${p.id}`,
+        lastmod: (p.updatedAt || p.createdAt || new Date()).toISOString(),
+        changefreq: "monthly",
+        priority: "0.6",
+      })),
+    ];
+
+    const escapeXml = (str: string) =>
+      str
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&apos;");
+
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls
+  .map(
+    u =>
+      `<url><loc>${escapeXml(u.loc)}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}<changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
+  )
+  .join("")}
+</urlset>`;
+
+    res.type("application/xml").send(xml);
+  } catch (err) {
+    console.error("sitemap generation failed", err);
+    res.status(500).send("<!-- sitemap error -->");
+  }
+});
 
 // Serve built client assets in production
 if (ENV.NODE_ENV === "production") {

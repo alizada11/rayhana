@@ -2,6 +2,7 @@ import { Link, useRoute } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
 import DOMPurify from "dompurify";
+import SeoTags from "@/components/SeoTags";
 
 export default function HelpPage() {
   const [match, params] = useRoute("/help/:slug");
@@ -46,6 +47,17 @@ export default function HelpPage() {
 
   return (
     <div className="min-h-screen bg-background py-16">
+      <SeoTags
+        pageKey="help-article"
+        title={getLocalized(article.title, "Help Article")}
+        description={
+          getLocalized(
+            article.description,
+            getLocalized(article.intro, "Help article")
+          )
+        }
+        url={`${import.meta.env.VITE_BASE_URL || ""}/help/${article.slug}`}
+      />
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-sm text-muted-foreground">
           <Link href="/help" className="hover:underline">

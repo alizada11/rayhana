@@ -15,6 +15,7 @@ import {
   createBlogComment,
   updateBlogComment,
   deleteBlogComment,
+  approveBlogComment,
   type BlogListParams,
 } from "@/lib/api";
 
@@ -161,6 +162,20 @@ export const useDeleteBlogComment = () => {
       queryClient.invalidateQueries({
         queryKey: ["blogComments", variables.blogId],
       });
+      queryClient.invalidateQueries({ queryKey: ["blogComments", "admin"] });
+    },
+  });
+};
+
+export const useApproveBlogComment = () => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: approveBlogComment,
+    onSuccess: (_, variables: { blogId: ID; commentId: ID }) => {
+      queryClient.invalidateQueries({
+        queryKey: ["blogComments", variables.blogId],
+      });
+      queryClient.invalidateQueries({ queryKey: ["blogComments", "admin"] });
     },
   });
 };
