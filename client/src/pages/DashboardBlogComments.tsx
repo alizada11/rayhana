@@ -9,8 +9,11 @@ import { Edit, Trash2, Save, Loader2, CheckCircle } from "lucide-react";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/ConfirmProvider";
+import { useTranslation } from "react-i18next";
+import { Spinner } from "@/components/ui/spinner";
 
 export default function DashboardBlogComments() {
+  const { t } = useTranslation();
   const {
     data,
     isLoading,
@@ -44,12 +47,14 @@ export default function DashboardBlogComments() {
       },
       {
         onSuccess: () => {
-          toast.success("Comment updated.");
+          toast.success(t("dashboard.comments.updated", "Comment updated."));
           setEditingId(null);
           setEditingContent("");
         },
         onError: () => {
-          toast.error("Failed to update comment.");
+          toast.error(
+            t("dashboard.comments.update_failed", "Failed to update comment.")
+          );
         },
       }
     );
@@ -59,10 +64,13 @@ export default function DashboardBlogComments() {
     const comment = comments.find(c => String(c.id) === commentId);
     if (!comment) return;
     const ok = await confirm({
-      title: "Delete this comment?",
-      description: "This will permanently remove the comment from the blog.",
-      confirmText: "Delete comment",
-      cancelText: "Cancel",
+      title: t("dashboard.comments.delete_title", "Delete this comment?"),
+      description: t(
+        "dashboard.comments.delete_body",
+        "This will permanently remove the comment from the blog."
+      ),
+      confirmText: t("common.delete", "Delete"),
+      cancelText: t("common.cancel", "Cancel"),
       tone: "danger",
     });
     if (!ok) return;
@@ -70,10 +78,12 @@ export default function DashboardBlogComments() {
       { blogId: comment.blogId, commentId },
       {
         onSuccess: () => {
-          toast.success("Comment deleted.");
+          toast.success(t("dashboard.comments.deleted", "Comment deleted."));
         },
         onError: () => {
-          toast.error("Failed to delete comment.");
+          toast.error(
+            t("dashboard.comments.delete_failed", "Failed to delete comment.")
+          );
         },
       }
     );
@@ -86,10 +96,12 @@ export default function DashboardBlogComments() {
       { blogId: comment.blogId, commentId },
       {
         onSuccess: () => {
-          toast.success("Comment approved.");
+          toast.success(t("dashboard.comments.approved", "Comment approved."));
         },
         onError: () => {
-          toast.error("Failed to approve comment.");
+          toast.error(
+            t("dashboard.comments.approve_failed", "Failed to approve comment.")
+          );
         },
       }
     );
@@ -101,25 +113,30 @@ export default function DashboardBlogComments() {
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
           <h1 className="text-2xl font-serif font-bold text-foreground">
-            Comment Moderation
+            {t("dashboard.comments.title", "Comment Moderation")}
           </h1>
           <p className="text-sm text-muted-foreground">
-            Review and manage blog comments
+            {t("dashboard.comments.subtitle", "Review and manage blog comments")}
           </p>
         </div>
         <div className="text-sm text-muted-foreground">
-          {comments.length} comment{comments.length === 1 ? "" : "s"}
+          {t("dashboard.comments.count", "{{count}} comment(s)", {
+            count: comments.length,
+          })}
         </div>
       </div>
 
       {/* List */}
       <div className="bg-card border border-border rounded-xl p-4">
         {isLoading && (
-          <div className="text-center text-muted-foreground py-8">Loading...</div>
+          <div className="flex flex-col items-center gap-3 text-muted-foreground py-8">
+            <Spinner className="h-6 w-6 text-primary" />
+            <span>{t("common.loading", "Loading...")}</span>
+          </div>
         )}
         {!isLoading && comments.length === 0 && (
           <div className="text-center text-muted-foreground py-8">
-            No comments yet.
+            {t("dashboard.comments.empty", "No comments yet.")}
           </div>
         )}
         <div className="space-y-4">
@@ -146,13 +163,15 @@ export default function DashboardBlogComments() {
                       target="_blank"
                       rel="noopener noreferrer"
                     >
-                      {comment.blog?.title?.en || comment.blog?.slug || "Blog"}
+                      {comment.blog?.title?.en ||
+                        comment.blog?.slug ||
+                        t("dashboard.comments.blog", "Blog")}
                     </a>
                     {!comment.approved && (
                       <>
                         <span className="text-muted-foreground/60">•</span>
                         <span className="text-amber-600 font-medium text-xs">
-                          Pending
+                          {t("dashboard.comments.pending", "Pending")}
                         </span>
                       </>
                     )}
@@ -162,8 +181,8 @@ export default function DashboardBlogComments() {
                   {!comment.approved && (
                     <button
                       onClick={() => handleApprove(String(comment.id))}
-                      className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
-                      title="Approve"
+                      className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                      title={t("dashboard.comments.approve", "Approve")}
                     >
                       <CheckCircle className="w-4 h-4" />
                     </button>
@@ -171,24 +190,24 @@ export default function DashboardBlogComments() {
                   {editingId === String(comment.id) ? (
                     <button
                       onClick={() => handleSave(String(comment.id))}
-                      className="p-2 text-green-600 hover:bg-green-50 rounded-lg"
-                      title="Save"
+                      className="p-2 text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 rounded-lg transition-colors"
+                      title={t("common.save", "Save")}
                     >
                       <Save className="w-4 h-4" />
                     </button>
                   ) : (
                     <button
                       onClick={() => startEdit(comment)}
-                      className="p-2 text-yellow-600 hover:bg-yellow-50 rounded-lg"
-                      title="Edit"
+                      className="p-2 text-yellow-600 hover:bg-yellow-50 dark:hover:bg-yellow-900/30 rounded-lg transition-colors"
+                      title={t("common.edit", "Edit")}
                     >
                       <Edit className="w-4 h-4" />
                     </button>
                   )}
                   <button
                     onClick={() => handleDelete(String(comment.id))}
-                    className="p-2 text-red-600 hover:bg-red-50 rounded-lg"
-                    title="Delete"
+                    className="p-2 text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
+                    title={t("common.delete", "Delete")}
                   >
                     <Trash2 className="w-4 h-4" />
                   </button>
@@ -215,12 +234,12 @@ export default function DashboardBlogComments() {
             <button
               onClick={() => fetchNextPage()}
               disabled={isFetchingNextPage}
-              className="inline-flex items-center gap-2 border px-4 py-2 rounded-lg text-sm"
+              className="inline-flex items-center gap-2 border px-4 py-2 rounded-lg text-sm bg-muted/40 hover:bg-muted transition-colors dark:hover:bg-muted/60"
             >
               {isFetchingNextPage ? (
                 <Loader2 className="w-4 h-4 animate-spin" />
               ) : (
-                "Load more"
+                t("common.load_more", "Load more")
               )}
             </button>
           </div>

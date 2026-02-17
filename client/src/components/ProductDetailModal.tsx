@@ -20,16 +20,16 @@ export default function ProductDetailModal({
     return `${apiBase}${url}`;
   };
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-card text-foreground border border-border rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl shadow-black/10 dark:shadow-black/40">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-serif font-bold text-gray-900">
+        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
+          <h2 className="text-xl font-serif font-bold text-foreground">
             Product Details
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-muted/60 dark:hover:bg-muted/30 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -39,7 +39,7 @@ export default function ProductDetailModal({
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Left Column - Image */}
             <div>
-              <div className="bg-gray-100 rounded-xl p-8 flex items-center justify-center">
+              <div className="bg-muted rounded-xl p-8 flex items-center justify-center">
                 <img
                   src={resolveImageUrl(product.imageUrl)}
                   alt={product.title?.en}
@@ -78,16 +78,16 @@ export default function ProductDetailModal({
             <div className="space-y-6">
               {/* Titles */}
               <div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">
+                <h3 className="text-2xl font-bold text-foreground mb-2">
                   {product.title?.en}
                 </h3>
                 <div className="space-y-2">
-                  <p className="text-gray-600">
-                    <span className="font-medium text-gray-700">Persian:</span>{" "}
+                  <p className="text-muted-foreground">
+                    <span className="font-medium text-foreground">Persian:</span>{" "}
                     {product.title?.fa}
                   </p>
-                  <p className="text-gray-600">
-                    <span className="font-medium text-gray-700">Pashto:</span>{" "}
+                  <p className="text-muted-foreground">
+                    <span className="font-medium text-foreground">Pashto:</span>{" "}
                     {product.title?.ps}
                   </p>
                 </div>
@@ -96,19 +96,19 @@ export default function ProductDetailModal({
               {/* Descriptions */}
               <div className="space-y-4">
                 <div>
-                  <h4 className="font-medium text-gray-700 mb-1">
+                  <h4 className="font-medium text-foreground mb-1">
                     English Description
                   </h4>
-                  <p className="text-gray-600 bg-gray-50 p-4 rounded-lg">
+                  <p className="text-muted-foreground bg-muted/60 p-4 rounded-lg">
                     {product.description?.en}
                   </p>
                 </div>
                 <div>
-                  <h4 className="font-medium text-gray-700 mb-1">
+                  <h4 className="font-medium text-foreground mb-1">
                     Persian Description
                   </h4>
                   <p
-                    className="text-gray-600 bg-gray-50 p-4 rounded-lg"
+                    className="text-muted-foreground bg-muted/60 p-4 rounded-lg"
                     dir="rtl"
                   >
                     {product.description?.fa}
@@ -118,14 +118,14 @@ export default function ProductDetailModal({
 
               {/* Colors */}
               <div>
-                <h4 className="font-medium text-gray-700 mb-3">
+                <h4 className="font-medium text-foreground mb-3">
                   Available Colors
                 </h4>
                 <div className="flex flex-wrap gap-2">
                   {colors.map((color: string, index: number) => (
                     <div
                       key={index}
-                      className="flex items-center gap-2 px-3 py-2 bg-white border border-gray-200 rounded-lg"
+                      className="flex items-center gap-2 px-3 py-2 bg-card border border-border rounded-lg"
                     >
                       <div
                         className="w-4 h-4 rounded-full"
@@ -139,26 +139,26 @@ export default function ProductDetailModal({
 
               {/* Sizes & Prices Table */}
               <div>
-                <h4 className="font-medium text-gray-700 mb-3">
+                <h4 className="font-medium text-foreground mb-3">
                   Sizes & Prices
                 </h4>
-                <div className="border border-gray-200 rounded-lg overflow-hidden">
+                <div className="border border-border rounded-lg overflow-hidden bg-card">
                   <table className="w-full">
-                    <thead className="bg-gray-50">
+                    <thead className="bg-muted/60">
                       <tr>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                        <th className="px-4 py-3 text-left text-sm font-medium text-foreground">
                           Size
                         </th>
-                        <th className="px-4 py-3 text-left text-sm font-medium text-gray-700">
+                        <th className="px-4 py-3 text-left text-sm font-medium text-foreground">
                           Price
                         </th>
                       </tr>
                     </thead>
-                    <tbody className="divide-y divide-gray-200">
+                    <tbody className="divide-y divide-border">
                       {prices.map(([size, price]) => (
                         <tr key={size}>
                           <td className="px-4 py-3">
-                            <span className="px-3 py-1 bg-gray-100 text-gray-700 rounded text-sm">
+                            <span className="px-3 py-1 bg-muted text-foreground rounded text-sm">
                               {size}
                             </span>
                           </td>
@@ -174,15 +174,15 @@ export default function ProductDetailModal({
 
               {/* Product Link */}
               {product.productUrl && (
-                <div className="bg-blue-50 rounded-xl p-4 border border-blue-100">
-                  <p className="text-sm text-blue-700 font-medium mb-2">
+                <div className="bg-primary/10 rounded-xl p-4 border border-primary/30">
+                  <p className="text-sm text-primary font-medium mb-2">
                     Purchase Link
                   </p>
                   <a
                     href={product.productUrl}
                     target="_blank"
                     rel="noreferrer noopener"
-                    className="text-blue-800 underline break-all"
+                    className="text-primary underline break-all"
                   >
                     {product.productUrl}
                   </a>
@@ -190,17 +190,17 @@ export default function ProductDetailModal({
               )}
 
               {/* Summary */}
-              <div className="bg-primary/5 rounded-xl p-4">
+              <div className="bg-primary/5 rounded-xl p-4 border border-primary/20">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <p className="text-sm text-gray-500">Total Sizes</p>
-                    <p className="text-xl font-bold text-gray-900">
+                    <p className="text-sm text-muted-foreground">Total Sizes</p>
+                    <p className="text-xl font-bold text-foreground">
                       {sizes.length}
                     </p>
                   </div>
                   <div>
-                    <p className="text-sm text-gray-500">Available Colors</p>
-                    <p className="text-xl font-bold text-gray-900">
+                    <p className="text-sm text-muted-foreground">Available Colors</p>
+                    <p className="text-xl font-bold text-foreground">
                       {colors.length}
                     </p>
                   </div>
@@ -211,10 +211,10 @@ export default function ProductDetailModal({
         </div>
 
         {/* Footer */}
-        <div className="border-t px-6 py-4">
+        <div className="border-t border-border px-6 py-4">
           <button
             onClick={onClose}
-            className="w-full px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+            className="w-full px-6 py-3 border border-border text-foreground rounded-lg hover:bg-muted/60 dark:hover:bg-muted/30 transition-colors font-medium"
           >
             Close
           </button>

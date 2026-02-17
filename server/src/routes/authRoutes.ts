@@ -17,12 +17,19 @@ import rateLimit from "express-rate-limit";
 
 const router = Router();
 
-router.post("/register", register);
-router.post("/login", login);
+const authLimiter = rateLimit({
+  windowMs: 10 * 60 * 1000,
+  max: 20,
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+
+router.post("/register", authLimiter, register);
+router.post("/login", authLimiter, login);
 router.post("/logout", requireAuth(), logout);
 router.get("/me", requireAuth(), me);
 
-router.post("/password/forgot", requestPasswordReset);
+router.post("/password/forgot", authLimiter, requestPasswordReset);
 router.post("/password/reset", resetPassword);
 router.post("/email/verify/request", requireAuth(), requestEmailVerification);
 const resendLimiter = rateLimit({

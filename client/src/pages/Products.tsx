@@ -174,29 +174,38 @@ function ProductCard({
     return null;
   })();
 
-  const reviews = [
-    {
-      id: 1,
-      author: "Sarah M.",
-      rating: 5,
-      text: t("products_page.review_1"),
-      verified: true,
-    },
-    {
-      id: 2,
-      author: "David K.",
-      rating: 5,
-      text: t("products_page.review_2"),
-      verified: true,
-    },
-    {
-      id: 3,
-      author: "Emily R.",
-      rating: 5,
-      text: t("products_page.review_3"),
-      verified: true,
-    },
-  ];
+  const reviews =
+    product.reviews?.length
+      ? product.reviews.map((rev: any) => ({
+          id: rev.id,
+          author: rev.author,
+          rating: rev.rating ?? 5,
+          text: localize(rev.text) || "",
+          verified: rev.verified ?? true,
+        }))
+      : [
+          {
+            id: 1,
+            author: "Sarah M.",
+            rating: 5,
+            text: t("products_page.review_1"),
+            verified: true,
+          },
+          {
+            id: 2,
+            author: "David K.",
+            rating: 5,
+            text: t("products_page.review_2"),
+            verified: true,
+          },
+          {
+            id: 3,
+            author: "Emily R.",
+            rating: 5,
+            text: t("products_page.review_3"),
+            verified: true,
+          },
+        ];
 
   return (
     <Dialog>

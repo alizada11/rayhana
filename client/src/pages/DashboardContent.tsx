@@ -419,7 +419,7 @@ export default function DashboardContent() {
             onChange={e =>
               setKey(e.target.value as (typeof CONTENT_KEYS)[number])
             }
-            className="px-3 py-2 border border-border rounded-lg"
+            className="px-3 py-2 border border-border bg-background text-foreground rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
           >
             {CONTENT_KEYS.map(contentKey => (
               <option key={contentKey} value={contentKey}>
@@ -843,7 +843,7 @@ export default function DashboardContent() {
                   </div>
 
                   <select
-                    className="border rounded-lg px-3 py-2 w-full"
+                    className="border border-border bg-background text-foreground rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                     value={item.icon || "star"}
                     onChange={e => {
                       const next = structuredClone(formData.values);
@@ -1391,7 +1391,7 @@ export default function DashboardContent() {
                   }}
                 />
                 <select
-                  className="border rounded-lg px-3 py-2 w-full"
+                  className="border border-border bg-background text-foreground rounded-lg px-3 py-2 w-full focus:ring-2 focus:ring-primary/20 focus:border-primary transition-colors"
                   value={section.icon || "lifeBuoy"}
                   onChange={e => {
                     const next = structuredClone(formData.center.sections);

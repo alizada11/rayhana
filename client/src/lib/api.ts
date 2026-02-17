@@ -333,6 +333,57 @@ export const deleteProduct = async (id: string | number) => {
   return data;
 };
 
+// Product reviews (admin)
+export const createProductReview = async ({
+  productId,
+  review,
+}: {
+  productId: string | number;
+  review: {
+    author: string;
+    text: Record<string, string>;
+    rating: number;
+    verified?: boolean;
+  };
+}) => {
+  const { data } = await api.post(`/products/${productId}/reviews`, review);
+  return data;
+};
+
+export const updateProductReview = async ({
+  productId,
+  reviewId,
+  review,
+}: {
+  productId: string | number;
+  reviewId: string | number;
+  review: Partial<{
+    author: string;
+    text: Record<string, string>;
+    rating: number;
+    verified: boolean;
+  }>;
+}) => {
+  const { data } = await api.put(
+    `/products/${productId}/reviews/${reviewId}`,
+    review
+  );
+  return data;
+};
+
+export const deleteProductReview = async ({
+  productId,
+  reviewId,
+}: {
+  productId: string | number;
+  reviewId: string | number;
+}) => {
+  const { data } = await api.delete(
+    `/products/${productId}/reviews/${reviewId}`
+  );
+  return data;
+};
+
 // ---------- BLOG API ----------
 export const getBlogPosts = async (params: BlogListParams = {}) => {
   const searchParams = new URLSearchParams();

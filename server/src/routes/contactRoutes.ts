@@ -8,7 +8,7 @@ const router = Router();
 
 const contactLimiter = rateLimit({
   windowMs: 10 * 60 * 1000, // 10 minutes
-  max: 20,
+  max: 5,
   standardHeaders: true,
   legacyHeaders: false,
 }) as unknown as RequestHandler;

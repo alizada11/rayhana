@@ -95,15 +95,19 @@ export const updateBlogComment = async (req: Request, res: Response) => {
     }
 
     const isAdmin = await isAdminUser(userId);
-    if (!isAdmin && existing.userId !== userId) {
+    const isOwner = existing.userId === userId;
+    if (!isAdmin && !isOwner) {
       return res
         .status(403)
         .json({ error: "You can only update your own comments" });
     }
 
+    // Any user edit should require re-approval so the comment behaves like new.
+    const shouldResetApproval = !isAdmin || isOwner;
+
     const updated = await queries.updateBlogComment(commentId, {
       content,
-      approved: isAdmin ? existing.approved : false,
+      approved: shouldResetApproval ? false : existing.approved,
     });
     res.status(200).json(updated);
   } catch (error) {

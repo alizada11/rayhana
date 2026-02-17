@@ -11,9 +11,11 @@ import {
   Edit,
   Trash2,
   Plus,
+  Star,
 } from "lucide-react";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/ConfirmProvider";
+import ProductReviewDialog from "@/components/ProductReviewDialog";
 
 export default function DashboardProducts() {
   const { data: products = [], isLoading } = useMyProducts();
@@ -30,6 +32,7 @@ export default function DashboardProducts() {
   const [editingProduct, setEditingProduct] = useState<any | null>(null);
   const [viewingProduct, setViewingProduct] = useState<any | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [reviewProduct, setReviewProduct] = useState<any | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
@@ -153,7 +156,7 @@ export default function DashboardProducts() {
             <select
               value={selectedCategory}
               onChange={e => setSelectedCategory(e.target.value)}
-              className="px-4 py-2 border border-border rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+              className="px-4 py-2 border border-border bg-background text-foreground rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
             >
               {categories.map(cat => (
                 <option key={cat} value={cat}>
@@ -287,19 +290,26 @@ export default function DashboardProducts() {
                           >
                             <Eye className="w-4 h-4" />
                           </button>
-                          <button
-                            onClick={() => handleEdit(product)}
-                            className="p-2 text-muted-foreground hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
-                            title="Edit"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(String(product.id))}
-                            className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                            title="Delete"
-                          >
-                            <Trash2 className="w-4 h-4" />
+                      <button
+                        onClick={() => handleEdit(product)}
+                        className="p-2 text-muted-foreground hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                        title="Edit"
+                      >
+                        <Edit className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => setReviewProduct(product)}
+                        className="p-2 text-muted-foreground hover:text-amber-600 hover:bg-amber-50 rounded-lg transition-colors"
+                        title="Manage Reviews"
+                      >
+                        <Star className="w-4 h-4" />
+                      </button>
+                      <button
+                        onClick={() => handleDelete(String(product.id))}
+                        className="p-2 text-muted-foreground hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                        title="Delete"
+                      >
+                        <Trash2 className="w-4 h-4" />
                           </button>
                         </div>
                       </td>
@@ -413,6 +423,13 @@ export default function DashboardProducts() {
         <ProductDetailModal
           product={viewingProduct}
           onClose={() => setViewingProduct(null)}
+        />
+      )}
+      {reviewProduct && (
+        <ProductReviewDialog
+          product={reviewProduct}
+          open={Boolean(reviewProduct)}
+          onOpenChange={open => !open && setReviewProduct(null)}
         />
       )}
     </div>

@@ -123,6 +123,22 @@ export const products = pgTable("products", {
     .$onUpdate(() => new Date()),
 });
 
+export const productReviews = pgTable("product_reviews", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  productId: uuid("product_id")
+    .notNull()
+    .references(() => products.id, { onDelete: "cascade" }),
+  author: text("author").notNull(),
+  text: jsonb("text").$type<Record<string, string>>().notNull(),
+  rating: integer("rating").notNull().default(5),
+  verified: boolean("verified").notNull().default(false),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
 export const comments = pgTable("comments", {
   id: uuid("id").defaultRandom().primaryKey(),
   content: text("content").notNull(),
@@ -266,6 +282,7 @@ export const usersRelations = relations(users, ({ many }) => ({
 
 export const productsRelations = relations(products, ({ one, many }) => ({
   comments: many(comments),
+  reviews: many(productReviews),
   // `fields` = the foreign key column in THIS table (products.userId)
   // `references` = the primary key column in the RELATED table (users.id)
   user: one(users, { fields: [products.userId], references: [users.id] }), // one product → one user
@@ -281,6 +298,16 @@ export const commentsRelations = relations(comments, ({ one }) => ({
     references: [products.id],
   }), // One comment → one product
 }));
+
+export const productReviewsRelations = relations(
+  productReviews,
+  ({ one }) => ({
+    product: one(products, {
+      fields: [productReviews.productId],
+      references: [products.id],
+    }),
+  })
+);
 
 export const blogPostsRelations = relations(blogPosts, ({ one, many }) => ({
   user: one(users, { fields: [blogPosts.userId], references: [users.id] }),
@@ -327,6 +354,8 @@ export type NewUser = typeof users.$inferInsert;
 
 export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
+export type ProductReview = typeof productReviews.$inferSelect;
+export type NewProductReview = typeof productReviews.$inferInsert;
 
 export type Comment = typeof comments.$inferSelect;
 export type NewComment = typeof comments.$inferInsert;

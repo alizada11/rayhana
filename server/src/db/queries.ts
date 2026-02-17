@@ -8,6 +8,7 @@ import {
   oauthAccounts,
   comments,
   products,
+  productReviews,
   blogPosts,
   blogComments,
   siteContent,
@@ -322,6 +323,12 @@ export const revokeSessionsByUserId = async (userId: string) => {
     .where(eq(authSessions.userId, userId));
 };
 
+export const deleteExpiredSessions = async () => {
+  await db
+    .delete(authSessions)
+    .where(lt(authSessions.expiresAt, new Date()));
+};
+
 export const createPasswordResetToken = async (data: NewPasswordResetToken) => {
   const [token] = await db.insert(passwordResetTokens).values(data).returning();
   return token;
@@ -406,9 +413,21 @@ export const createProduct = async (data: NewProduct) => {
   return product;
 };
 
+export const createProductReview = async (
+  data: typeof productReviews.$inferInsert
+) => {
+  const [review] = await db.insert(productReviews).values(data).returning();
+  return review;
+};
+
 export const getAllProducts = async () => {
   return db.query.products.findMany({
-    with: { user: true },
+    with: {
+      user: true,
+      reviews: {
+        orderBy: (productReviews, { desc }) => [desc(productReviews.createdAt)],
+      },
+    },
     orderBy: (products, { desc }) => [desc(products.createdAt)], // desc means: you will see the latest products first
     // the square brackets are required because Drizzle ORM's orderBy expects an array, even for a single column.
   });
@@ -423,14 +442,54 @@ export const getProductById = async (id: string) => {
         with: { user: true },
         orderBy: (comments, { desc }) => [desc(comments.createdAt)],
       },
+      reviews: {
+        orderBy: (productReviews, { desc }) => [
+          desc(productReviews.createdAt),
+        ],
+      },
     },
   });
+};
+
+export const getProductReviews = async (productId: string) => {
+  return db.query.productReviews.findMany({
+    where: eq(productReviews.productId, productId),
+    orderBy: (productReviews, { desc }) => [desc(productReviews.createdAt)],
+  });
+};
+
+export const updateProductReview = async (
+  id: string,
+  productId: string,
+  data: Partial<typeof productReviews.$inferInsert>
+) => {
+  const [review] = await db
+    .update(productReviews)
+    .set(data)
+    .where(and(eq(productReviews.id, id), eq(productReviews.productId, productId)))
+    .returning();
+  return review;
+};
+
+export const deleteProductReview = async (id: string, productId: string) => {
+  const [deleted] = await db
+    .delete(productReviews)
+    .where(and(eq(productReviews.id, id), eq(productReviews.productId, productId)))
+    .returning();
+  return deleted;
 };
 
 export const getProductsByUserId = async (userId: string) => {
   return db.query.products.findMany({
     where: eq(products.userId, userId),
-    with: { user: true },
+    with: {
+      user: true,
+      reviews: {
+        orderBy: (productReviews, { desc }) => [
+          desc(productReviews.createdAt),
+        ],
+      },
+    },
     orderBy: (products, { desc }) => [desc(products.createdAt)],
   });
 };

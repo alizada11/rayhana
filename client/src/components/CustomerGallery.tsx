@@ -42,6 +42,7 @@ export function CustomerGallery() {
   const createMutation = useCreateGallerySubmission();
   const toggleLikeMutation = useToggleGalleryLike();
   const [, setLocation] = useLocation();
+  const loginRequiredMessage = t("login_page.loginRequired");
 
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
   const resolveImageUrl = (url: string) => {
@@ -64,9 +65,7 @@ export function CustomerGallery() {
     const maxBytes = 5 * 1024 * 1024; // 5MB client cap
     if (file.size > maxBytes) {
       toast.error(
-        isRTL
-          ? "حجم تصویر باید کمتر از ۵ مگابایت باشد"
-          : "Please choose an image under 5MB"
+        t("gallery.toast.under5mb", "Please choose an image under 5MB")
       );
       e.target.value = "";
       return;
@@ -189,6 +188,7 @@ export function CustomerGallery() {
                       e.preventDefault();
                       e.stopPropagation();
                       if (!isSignedIn) {
+                        toast.error(loginRequiredMessage);
                         setLocation("/login");
                         return;
                       }
@@ -215,6 +215,7 @@ export function CustomerGallery() {
             onOpenChange={open => {
               if (open && !canSubmit) {
                 if (!isSignedIn) {
+                  toast.error(loginRequiredMessage);
                   setLocation("/login");
                 } else {
                   toast.error(
@@ -297,9 +298,7 @@ export function CustomerGallery() {
                   {(createMutation.isPending || uploadProgress !== null) && (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-xs text-stone-500">
-                        <span>
-                          {isRTL ? "در حال آپلود..." : "Uploading..."}
-                        </span>
+                        <span>{t("profile.uploading", "uploading...")}</span>
                         <span>{uploadProgress ?? 0}%</span>
                       </div>
                       <Progress value={uploadProgress ?? 0} />
@@ -310,13 +309,14 @@ export function CustomerGallery() {
                       htmlFor="dish-name"
                       className="text-stone-600 dark:text-stone-300"
                     >
-                      {isRTL ? "نام غذا" : "Dish Name"}
+                      {t("gallery.dishName", "Dish Name")}
                     </Label>
                     <Input
                       id="dish-name"
-                      placeholder={
-                        isRTL ? "مثلاً: قابلی پلو" : "e.g. Qabili Palau"
-                      }
+                      placeholder={t(
+                        "gallery.dishPlaceholder",
+                        "e.g. Qabili Palau"
+                      )}
                       required
                       value={dishName}
                       onChange={e => setDishName(e.target.value)}
@@ -329,7 +329,7 @@ export function CustomerGallery() {
                       htmlFor="description"
                       className="text-stone-600 dark:text-stone-300"
                     >
-                      {isRTL ? "توضیحات (اختیاری)" : "Description (Optional)"}
+                      {t("gallery.dishDescription", "Description (Optional)")}
                     </Label>
                     <Textarea
                       id="description"

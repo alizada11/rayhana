@@ -15,8 +15,12 @@ import {
   Menu,
   X,
   Users,
+  Sun,
+  Moon,
 } from "lucide-react";
 import { useState } from "react";
+import { useTheme } from "@/contexts/ThemeContext";
+import { Button } from "./ui/button";
 type DashboardLayoutProps = {
   children: ReactNode;
 };
@@ -25,6 +29,9 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const { user } = useUser();
   const [location] = useLocation();
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const { theme, setTheme } = useTheme();
+
+  const toggleTheme = () => setTheme(theme === "dark" ? "light" : "dark");
 
   const linkClass = (path: string) => `
     flex items-center gap-3 px-3 py-2 rounded-md transition-colors duration-150
@@ -147,15 +154,32 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
           <div className="flex items-center gap-4">
             {/* Quick Actions */}
             <SignedIn>
-              <SignOutButton>
-                <Link
-                  to="#"
-                  className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+              <div className="flex items-center gap-3">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={toggleTheme}
+                  title="Toggle Theme"
+                  className="h-10 w-10 rounded-lg"
                 >
-                  <LogOut className="w-5 h-5" />
-                  Sign out
-                </Link>
-              </SignOutButton>
+                  {theme === "dark" ? (
+                    <Sun className="h-5 w-5" />
+                  ) : (
+                    <Moon className="h-5 w-5" />
+                  )}
+                  <span className="sr-only">Toggle Theme</span>
+                </Button>
+
+                <SignOutButton>
+                  <Link
+                    to="#"
+                    className="flex items-center gap-2 text-sm font-medium text-muted-foreground hover:text-foreground"
+                  >
+                    <LogOut className="w-5 h-5" />
+                    Sign out
+                  </Link>
+                </SignOutButton>
+              </div>
             </SignedIn>
           </div>
         </header>

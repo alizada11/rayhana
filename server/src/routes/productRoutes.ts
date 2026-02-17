@@ -36,4 +36,24 @@ router.put(
 // DELETE /api/products/:id - Delete product (protected - owner only)
 router.delete("/:id", requireAuth(), requireAdmin, productController.deleteProduct);
 
+// Reviews (admin)
+router.post(
+  "/:id/reviews",
+  requireAuth(),
+  requireAdmin,
+  productController.createProductReview
+);
+router.put(
+  "/:id/reviews/:reviewId",
+  requireAuth(),
+  requireAdmin,
+  productController.updateProductReview
+);
+router.delete(
+  "/:id/reviews/:reviewId",
+  requireAuth(),
+  requireAdmin,
+  productController.deleteProductReview
+);
+
 export default router;

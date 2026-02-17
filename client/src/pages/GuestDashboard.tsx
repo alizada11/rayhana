@@ -83,12 +83,22 @@ export default function GuestDashboard() {
     }
   };
 
+  const normalized = useMemo(
+    () =>
+      submissions.map(s => ({
+        ...s,
+        // Safety: backend should always send a status, but default to pending if missing
+        status: (s.status as typeof statusFilter | undefined) ?? "pending",
+      })),
+    [submissions]
+  );
+
   const filtered = useMemo(
     () =>
-      submissions.filter(s =>
+      normalized.filter(s =>
         statusFilter === "all" ? true : s.status === statusFilter
       ),
-    [submissions, statusFilter]
+    [normalized, statusFilter]
   );
 
   const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize));
