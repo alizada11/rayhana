@@ -41,6 +41,8 @@ export default function Comments({ postId }: CommentsProps) {
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingMessage, setEditingMessage] = useState("");
   const [showSuccess, setShowSuccess] = useState(false);
+  const [replyingTo, setReplyingTo] = useState<string | null>(null);
+  const [replyText, setReplyText] = useState("");
 
   const canManage = (comment: any) =>
     me?.role === "admin" || (userId && comment.userId === userId);
@@ -73,6 +75,33 @@ export default function Comments({ postId }: CommentsProps) {
           toast.error(
             t("toast.comment_submit_failed", "Failed to submit comment")
           );
+        },
+      }
+    );
+  };
+
+  const handleReplySubmit = (parentId: string) => {
+    if (!replyText.trim()) return;
+    if (!isSignedIn) {
+      setLocation("/login");
+      return;
+    }
+
+    createMutation.mutate(
+      { blogId: postId, content: replyText.trim(), website: trap, parentId },
+      {
+        onSuccess: () => {
+          setReplyText("");
+          setReplyingTo(null);
+          toast.success(
+            t(
+              "comments.pending_approval",
+              "Submitted for review. Visible after approval."
+            )
+          );
+        },
+        onError: () => {
+          toast.error(t("toast.comment_submit_failed", "Failed to submit comment"));
         },
       }
     );
@@ -239,90 +268,178 @@ export default function Comments({ postId }: CommentsProps) {
                 )}
               </p>
             ) : (
-              comments.map(comment => (
-                <motion.div
-                  key={comment.id}
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  className="flex gap-4 p-4 rounded-lg bg-muted/30"
-                >
-                  <Avatar className="w-10 h-10 border-2 border-background">
-                    <AvatarImage src={comment.user?.imageUrl} />
-                    <AvatarFallback>
-                      <User className="w-5 h-5" />
-                    </AvatarFallback>
-                  </Avatar>
-                  <div className="flex-1">
-                    <div className="flex items-center justify-between mb-1">
-                      <h4 className="font-bold text-sm">
-                        {comment.user?.name || comment.user?.username || "User"}
-                      </h4>
-                      <span className="text-xs text-muted-foreground">
-                        {comment.createdAt
-                          ? new Date(comment.createdAt).toLocaleDateString()
-                          : ""}
-                      </span>
-                    </div>
+              comments
+                .filter((c: any) => !c.parentId)
+                .map(comment => {
+                  const replies = comments
+                    .filter((child: any) => child.parentId === comment.id)
+                    .sort((a: any, b: any) => {
+                      const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+                      const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                      return aTime - bTime; // oldest first, newest last
+                    });
 
-                    {editingId === String(comment.id) ? (
-                      <div className="space-y-2">
-                        <Textarea
-                          value={editingMessage}
-                          onChange={e => setEditingMessage(e.target.value)}
-                          className="min-h-[80px] bg-background"
-                        />
-                        <div className="flex gap-2">
-                          <Button
-                            type="button"
-                            size="sm"
-                            onClick={() => handleUpdate(String(comment.id))}
-                            disabled={updateMutation.isPending}
-                          >
-                            {t("comments.save", "Save")}
-                          </Button>
-                          <Button
-                            type="button"
-                            size="sm"
-                            variant="outline"
-                            onClick={() => {
-                              setEditingId(null);
-                              setEditingMessage("");
-                            }}
-                          >
-                            {t("comments.cancel", "Cancel")}
-                          </Button>
+                  return (
+                    <motion.div
+                      key={comment.id}
+                      initial={{ opacity: 0, y: 20 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      className="flex gap-4 p-4 rounded-lg bg-muted/30"
+                    >
+                      <Avatar className="w-10 h-10 border-2 border-background">
+                        <AvatarImage src={comment.user?.imageUrl} />
+                        <AvatarFallback>
+                          <User className="w-5 h-5" />
+                        </AvatarFallback>
+                      </Avatar>
+
+                      <div className="flex-1 space-y-3">
+                        <div className="flex items-center justify-between">
+                          <h4 className="font-bold text-sm">
+                            {comment.user?.name ||
+                              comment.user?.username ||
+                              "User"}
+                          </h4>
+                          <span className="text-xs text-muted-foreground">
+                            {comment.createdAt
+                              ? new Date(comment.createdAt).toLocaleDateString()
+                              : ""}
+                          </span>
+                        </div>
+
+                        {editingId === String(comment.id) ? (
+                          <div className="space-y-2">
+                            <Textarea
+                              value={editingMessage}
+                              onChange={e => setEditingMessage(e.target.value)}
+                              className="min-h-[80px] bg-background"
+                            />
+                            <div className="flex gap-2">
+                              <Button
+                                type="button"
+                                size="sm"
+                                onClick={() => handleUpdate(String(comment.id))}
+                                disabled={updateMutation.isPending}
+                              >
+                                {t("comments.save", "Save")}
+                              </Button>
+                              <Button
+                                type="button"
+                                size="sm"
+                                variant="outline"
+                                onClick={() => {
+                                  setEditingId(null);
+                                  setEditingMessage("");
+                                }}
+                              >
+                                {t("comments.cancel", "Cancel")}
+                              </Button>
+                            </div>
+                          </div>
+                        ) : (
+                          <p className="text-sm text-muted-foreground leading-relaxed">
+                            {comment.content}
+                          </p>
+                        )}
+
+                        <div className="flex flex-col gap-2">
+                          {canManage(comment) && editingId !== String(comment.id) && (
+                            <div className="flex items-start gap-2">
+                              <button
+                                type="button"
+                                aria-label="Edit"
+                                onClick={() => handleEdit(comment)}
+                                className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                                title={t("comments.edit", "Edit")}
+                              >
+                                <Pencil className="w-4 h-4" />
+                              </button>
+                              <button
+                                type="button"
+                                aria-label="Delete"
+                                onClick={() => handleDelete(String(comment.id))}
+                                className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                title={t("comments.delete", "Delete")}
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </div>
+                          )}
+
+                          {editingId !== String(comment.id) && (
+                            <div className="flex items-center gap-4 text-xs text-muted-foreground">
+                              <button
+                                type="button"
+                                className="hover:text-primary"
+                                onClick={() => {
+                                  setReplyingTo(String(comment.id));
+                                  setReplyText("");
+                                }}
+                              >
+                                {t("comments.reply", "Reply")}
+                              </button>
+                            </div>
+                          )}
+
+                          {replyingTo === String(comment.id) && (
+                            <div className="mt-2 space-y-2 w-full">
+                              <Textarea
+                                value={replyText}
+                                onChange={e => setReplyText(e.target.value)}
+                                placeholder={t("comments.message", "Comment")}
+                                className="bg-background"
+                              />
+                              <div className="flex gap-2">
+                                <Button
+                                  size="sm"
+                                  onClick={() =>
+                                    handleReplySubmit(String(comment.id))
+                                  }
+                                  disabled={createMutation.isPending}
+                                >
+                                  {t("comments.reply", "Reply")}
+                                </Button>
+                                <Button
+                                  size="sm"
+                                  variant="ghost"
+                                  onClick={() => {
+                                    setReplyingTo(null);
+                                    setReplyText("");
+                                  }}
+                                >
+                                  {t("comments.cancel", "Cancel")}
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+
+                          {replies.map(child => (
+                            <div
+                              key={child.id}
+                              className="mt-3 ml-6 pl-4 border-l border-muted/60 space-y-1"
+                            >
+                              <div className="flex items-center justify-between">
+                                <div className="text-sm font-semibold">
+                                  {child.user?.name ||
+                                    child.user?.username ||
+                                    "User"}
+                                </div>
+                                <div className="text-xs text-muted-foreground">
+                                  {child.createdAt
+                                    ? new Date(child.createdAt).toLocaleDateString()
+                                    : ""}
+                                </div>
+                              </div>
+                              <p className="text-sm text-foreground/90 leading-6">
+                                {child.content}
+                              </p>
+                            </div>
+                          ))}
                         </div>
                       </div>
-                    ) : (
-                      <p className="text-sm text-muted-foreground leading-relaxed">
-                        {comment.content}
-                      </p>
-                    )}
-                  </div>
-                  {canManage(comment) && editingId !== String(comment.id) && (
-                    <div className="flex items-start gap-2">
-                      <button
-                        type="button"
-                        aria-label="Edit"
-                        onClick={() => handleEdit(comment)}
-                        className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
-                        title="Edit"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                      <button
-                        type="button"
-                        aria-label="Delete"
-                        onClick={() => handleDelete(String(comment.id))}
-                        className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                        title="Delete"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-                </motion.div>
-              ))
+                    </motion.div>
+                  );
+                })
             )}
           </div>
         </CardContent>

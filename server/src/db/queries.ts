@@ -661,7 +661,8 @@ export const deleteBlogPost = async (id: string) => {
 };
 
 export const createBlogComment = async (data: NewBlogComment) => {
-  const [comment] = await db.insert(blogComments).values(data).returning();
+  const result = await db.insert(blogComments).values(data).returning();
+  const comment = Array.isArray(result) ? result[0] : undefined;
   return comment;
 };
 
@@ -674,11 +675,12 @@ export const updateBlogComment = async (
     throw new Error(`Blog comment with id ${id} not found`);
   }
 
-  const [comment] = await db
+  const updated = await db
     .update(blogComments)
     .set(data)
     .where(eq(blogComments.id, id))
     .returning();
+  const comment = Array.isArray(updated) ? updated[0] : undefined;
   return comment;
 };
 
@@ -688,10 +690,11 @@ export const deleteBlogComment = async (id: string) => {
     throw new Error(`Blog comment with id ${id} not found`);
   }
 
-  const [comment] = await db
+  const deleted = await db
     .delete(blogComments)
     .where(eq(blogComments.id, id))
     .returning();
+  const comment = Array.isArray(deleted) ? deleted[0] : undefined;
   return comment;
 };
 

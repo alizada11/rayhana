@@ -183,6 +183,7 @@ export const blogComments = pgTable("blog_comments", {
   blogId: uuid("blog_id")
     .notNull()
     .references(() => blogPosts.id, { onDelete: "cascade" }),
+  parentId: uuid("parent_id"),
   approved: boolean("approved").notNull().default(false),
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
   updatedAt: timestamp("updated_at", { mode: "date" })
@@ -314,12 +315,18 @@ export const blogPostsRelations = relations(blogPosts, ({ one, many }) => ({
   comments: many(blogComments),
 }));
 
-export const blogCommentsRelations = relations(blogComments, ({ one }) => ({
+export const blogCommentsRelations = relations(blogComments, ({ one, many }) => ({
   user: one(users, { fields: [blogComments.userId], references: [users.id] }),
   blog: one(blogPosts, {
     fields: [blogComments.blogId],
     references: [blogPosts.id],
   }),
+  parent: one(blogComments, {
+    fields: [blogComments.parentId],
+    references: [blogComments.id],
+    relationName: "commentChildren",
+  }),
+  replies: many(blogComments, { relationName: "commentChildren" }),
 }));
 
 export const mediaAssetsRelations = relations(mediaAssets, ({ one }) => ({

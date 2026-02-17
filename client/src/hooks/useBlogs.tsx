@@ -49,6 +49,7 @@ export interface BlogCommentInput {
   blogId: ID;
   content: string;
   website?: string;
+  parentId?: ID;
 }
 
 export interface UpdateBlogCommentVariables {

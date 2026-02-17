@@ -43,7 +43,7 @@ export const createBlogComment = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const blogId = getId(req.params.id);
-    const { content, website } = req.body;
+    const { content, website, parentId } = req.body;
 
     // Honeypot: reject silently if filled
     if (typeof website === "string" && website.trim().length > 0) {
@@ -60,10 +60,25 @@ export const createBlogComment = async (req: Request, res: Response) => {
       return res.status(403).json({ error: "Comments are disabled" });
     }
 
+    let parentCommentId: string | undefined;
+    if (parentId) {
+      const parent = await queries.getBlogCommentById(getId(parentId));
+      if (!parent || parent.blogId !== blogId) {
+        return res.status(404).json({ error: "Parent comment not found" });
+      }
+      if (parent.parentId) {
+        return res
+          .status(400)
+          .json({ error: "Replies are limited to one level" });
+      }
+      parentCommentId = parent.id;
+    }
+
     const comment = await queries.createBlogComment({
       content,
       userId,
       blogId,
+      parentId: parentCommentId,
       approved: false,
     });
 
