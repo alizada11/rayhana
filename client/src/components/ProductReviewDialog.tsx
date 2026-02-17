@@ -194,7 +194,7 @@ export default function ProductReviewDialog({
                     Review ({lang.toUpperCase()})
                   </label>
                   <textarea
-                    id="id={`review-${lang}`}"
+                    id={`review-${lang}`}
                     className="w-full px-3 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
                     rows={2}
                     value={form.text[lang] || ""}

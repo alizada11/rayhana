@@ -6,6 +6,13 @@
     "blog": "Blog & Recipes",
     "contact": "Contact"
   },
+  "not_found": {
+    "meta_title": "404 | Page Not Found",
+    "meta_desc": "This page could not be found.",
+    "title": "Page Not Found",
+    "body": "Sorry, the page you are looking for doesn't exist. It may have been moved or deleted.",
+    "go_home": "Go Home"
+  },
   "hero": {
     "title": "Roots in Modern Life",
     "subtitle": "Experience the authentic taste of tradition with modern innovation.",
@@ -394,8 +401,8 @@
   "dashboard": {
     "comments": {
       "title": "Comment Moderation",
-      "subtitle": "Review and manage blog comments",
-      "count": "{{count}} comment(s)",
+    "subtitle": "Review and manage blog comments",
+      "count": "Comments: {{count}}",
       "updated": "Comment updated.",
       "update_failed": "Failed to update comment.",
       "deleted": "Comment deleted.",
