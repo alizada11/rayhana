@@ -5,6 +5,7 @@ import cors from "cors";
 import compression from "compression";
 import { ENV } from "./config/env";
 import { cookies, authMiddleware } from "./lib/auth";
+import { csrfMiddleware } from "./middleware/csrf";
 
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
@@ -20,6 +21,18 @@ import authRoutes from "./routes/authRoutes";
 import { db } from "./db";
 import { blogPosts, products } from "./db/schema";
 import { desc, eq } from "drizzle-orm";
+import * as queries from "./db/queries";
+
+// Periodic cleanup of expired sessions (once per hour)
+setInterval(
+  () => {
+    queries
+      .deleteExpiredSessions()
+      .catch(err => console.error("cleanup expired sessions failed", err));
+  },
+  60 * 60 * 1000
+);
+
 const app = express();
 const distPath = path.join(__dirname, "..", "dist", "public");
 const uploadsPath = path.resolve(process.cwd(), "server", "uploads");
@@ -34,6 +47,7 @@ app.set("trust proxy", 1);
 app.use(compression());
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(cookies);
+app.use(csrfMiddleware);
 // Serve static assets early, with caching
 app.use(
   express.static(distPath, {
@@ -69,6 +83,19 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
+
+// Periodic cleanup of expired sessions/tokens (once per hour best-effort)
+let lastCleanup = 0;
+app.use((_req, _res, next) => {
+  const now = Date.now();
+  if (now - lastCleanup > 60 * 60 * 1000) {
+    lastCleanup = now;
+    queries
+      .deleteExpiredSessions()
+      .catch(err => console.error("cleanup expired sessions failed", err));
+  }
+  next();
+});
 
 // --------------------
 // robots.txt

@@ -47,7 +47,6 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
 
   const createMutation = useCreateProduct();
   const updateMutation = useUpdateProduct();
-
   const handleChange = (field: string, value: any) => {
     setFormData(prev => ({ ...prev, [field]: value }));
   };
@@ -205,16 +204,16 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
   const sizeOptions = [7, 8, 9, 10, 11, 12, 13, 14, 15];
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-card text-foreground border border-border rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-2xl shadow-black/10 dark:shadow-black/40">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-serif font-bold text-gray-900">
+        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
+          <h2 className="text-xl font-serif font-bold text-foreground">
             {isEdit ? "Edit Product" : "Add New Product"}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-muted/60 dark:hover:bg-muted/30 rounded-lg transition-colors"
           >
             <X className="w-5 h-5" />
           </button>
@@ -223,13 +222,13 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Title Section */}
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-3">
+            <h3 className="text-sm font-medium text-foreground mb-3">
               Product Title
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-muted-foreground mb-1">
                     {lang.toUpperCase()}
                   </label>
                   <input
@@ -239,7 +238,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                     onChange={e =>
                       handleJSONFieldChange("title", lang, e.target.value)
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
                     required
                   />
                 </div>
@@ -249,13 +248,13 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
 
           {/* Description Section */}
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-3">
+            <h3 className="text-sm font-medium text-foreground mb-3">
               Description
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-muted-foreground mb-1">
                     {lang.toUpperCase()}
                   </label>
                   <textarea
@@ -265,7 +264,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                       handleJSONFieldChange("description", lang, e.target.value)
                     }
                     rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none text-foreground placeholder:text-muted-foreground"
                     required
                   />
                 </div>
@@ -276,7 +275,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
           {/* Category & Image Section */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Category
               </label>
               <input
@@ -284,13 +283,13 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                 placeholder="e.g., Shoes, Clothing, Accessories"
                 value={formData.category}
                 onChange={e => handleChange("category", e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
                 required
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Product URL (optional)
               </label>
               <input
@@ -298,7 +297,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                 placeholder="https://example.com/product"
                 value={formData.productUrl}
                 onChange={e => handleChange("productUrl", e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
               />
               <p className="text-xs text-gray-500 mt-1">
                 This link will be used for the “Buy” button on the products page.
@@ -408,9 +407,9 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
           </div>
 
           {/* Sizes & Prices Section */}
-          <div className="bg-gray-50 rounded-xl p-4">
+          <div className="bg-muted/50 rounded-xl p-4 border border-border">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-sm font-medium text-gray-700">
+              <h3 className="text-sm font-medium text-foreground">
                 Sizes & Prices
               </h3>
               <button
@@ -424,7 +423,9 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
 
             {/* Quick Size Toggle */}
             <div className="mb-4">
-              <p className="text-xs text-gray-500 mb-2">Quick select sizes:</p>
+              <p className="text-xs text-muted-foreground mb-2">
+                Quick select sizes:
+              </p>
               <div className="flex flex-wrap gap-2">
                 {sizeOptions.map(size => (
                   <button
@@ -434,7 +435,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                     className={`px-3 py-1 rounded-lg border transition-all ${
                       formData.sizes.includes(size)
                         ? "bg-primary text-white border-primary"
-                        : "border-gray-300 hover:border-primary"
+                        : "border-border hover:border-primary"
                     }`}
                   >
                     {size}
@@ -448,7 +449,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
               {formData.sizes.map((size: number, index: number) => (
                 <div
                   key={index}
-                  className="flex items-center gap-3 bg-white p-3 rounded-lg border"
+                  className="flex items-center gap-3 bg-card p-3 rounded-lg border border-border"
                 >
                   <div className="flex-1 flex items-center gap-3">
                     <input
@@ -458,11 +459,11 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                       onChange={e =>
                         handleSizeChange(index, Number(e.target.value))
                       }
-                      className="w-20 px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                      className="w-20 px-3 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground"
                     />
-                    <span className="text-gray-400">→</span>
+                    <span className="text-muted-foreground">→</span>
                     <div className="relative">
-                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400">
+                      <span className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground">
                         $
                       </span>
                       <input
@@ -472,14 +473,14 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                         onChange={e =>
                           handlePriceChange(size, Number(e.target.value))
                         }
-                        className="w-32 pl-8 pr-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
+                        className="w-32 pl-8 pr-3 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary text-foreground"
                       />
                     </div>
                   </div>
                   <button
                     type="button"
                     onClick={() => removeSize(size)}
-                    className="p-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                    className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/30 rounded-lg transition-colors"
                   >
                     Delete
                   </button>
@@ -489,7 +490,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
           </div>
 
           {/* Submit Buttons */}
-          <div className="flex gap-3 pt-4 border-t">
+          <div className="flex gap-3 pt-4 border-t border-border">
             <button
               type="submit"
               className="flex-1 bg-primary text-white px-6 py-3 rounded-lg hover:bg-primary/90 transition-colors font-medium"
@@ -509,7 +510,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
             <button
               type="button"
               onClick={onClose}
-              className="px-6 py-3 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors font-medium"
+              className="px-6 py-3 border border-border text-foreground rounded-lg hover:bg-muted/60 dark:hover:bg-muted/30 transition-colors font-medium"
             >
               Cancel
             </button>

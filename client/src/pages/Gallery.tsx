@@ -279,9 +279,7 @@ export default function Gallery() {
                   {(createMutation.isPending || uploadProgress !== null) && (
                     <div className="space-y-2">
                       <div className="flex items-center justify-between text-xs text-muted-foreground">
-                        <span>
-                          {isRTL ? "در حال آپلود..." : "Uploading..."}
-                        </span>
+                        <span>{t("profile.uploading", "uploading...")}</span>
                         <span>{uploadProgress ?? 0}%</span>
                       </div>
                       <Progress value={uploadProgress ?? 0} />
@@ -289,11 +287,14 @@ export default function Gallery() {
                   )}
                   <div className="space-y-2">
                     <Label htmlFor="dish-name">
-                      {isRTL ? "نام غذا" : "Dish Name"}
+                      {t("gallery.dishName", "Dish Name")}
                     </Label>
                     <Input
                       id="dish-name"
-                      placeholder={isRTL ? "مثلاً: قابلی پلو" : "e.g. Qabili Palau"}
+                      placeholder={t(
+                        "gallery.dishPlaceholder",
+                        "e.g. Qabili Palau"
+                      )}
                       required
                       value={dishName}
                       onChange={e => setDishName(e.target.value)}
@@ -302,7 +303,7 @@ export default function Gallery() {
 
                   <div className="space-y-2">
                     <Label htmlFor="description">
-                      {isRTL ? "توضیحات (اختیاری)" : "Description (Optional)"}
+                      {t("gallery.dishDescription", "Description (Optional)")}
                     </Label>
                     <Textarea
                       id="description"

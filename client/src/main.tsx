@@ -12,9 +12,9 @@ import { AuthProvider } from "./lib/auth";
 const queryClient = new QueryClient();
 
 createRoot(document.getElementById("root")!).render(
-  <AuthProvider>
-    <QueryClientProvider client={queryClient}>
+  <QueryClientProvider client={queryClient}>
+    <AuthProvider>
       <App />
-    </QueryClientProvider>
-  </AuthProvider>
+    </AuthProvider>
+  </QueryClientProvider>
 );

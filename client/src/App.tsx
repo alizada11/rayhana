@@ -133,7 +133,11 @@ function Router() {
         <DashboardShell />
       </Route>
 
-      <Route component={NotFound} />
+      <Route>
+        <Layout>
+          <NotFound />
+        </Layout>
+      </Route>
     </Switch>
   );
 }

@@ -129,16 +129,17 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
   }, [imageFile, imageUrl, post?.imageUrl]);
 
   return (
-    <div className="fixed inset-0 bg-black/50 flex items-center justify-center p-4 z-50">
-      <div className="bg-white rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+    <div className="fixed inset-0 bg-black/40 dark:bg-black/60 backdrop-blur-sm flex items-center justify-center p-4 z-50">
+      <div className="bg-card text-foreground border border-border rounded-2xl w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl shadow-black/10 dark:shadow-black/40">
         {/* Header */}
-        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
-          <h2 className="text-xl font-serif font-bold text-gray-900">
+        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
+          <h2 className="text-xl font-serif font-bold text-foreground">
             {isEdit ? "Edit Blog Post" : "Add New Blog Post"}
           </h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 hover:bg-muted/60 dark:hover:bg-muted/30 rounded-lg transition-colors"
+            aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
           </button>
@@ -147,11 +148,11 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
         <form onSubmit={handleSubmit} className="p-6 space-y-6">
           {/* Title */}
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-3">Title</h3>
+            <h3 className="text-sm font-medium text-foreground mb-3">Title</h3>
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-muted-foreground mb-1">
                     {lang.toUpperCase()}
                   </label>
                   <input
@@ -161,7 +162,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
                     onChange={e =>
                       handleJSONFieldChange("title", lang, e.target.value)
                     }
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
                     required
                   />
                 </div>
@@ -171,11 +172,13 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
 
           {/* Excerpt */}
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-3">Excerpt</h3>
+            <h3 className="text-sm font-medium text-foreground mb-3">
+              Excerpt
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-muted-foreground mb-1">
                     {lang.toUpperCase()}
                   </label>
                   <textarea
@@ -185,7 +188,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
                       handleJSONFieldChange("excerpt", lang, e.target.value)
                     }
                     rows={3}
-                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none"
+                    className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all resize-none text-foreground placeholder:text-muted-foreground"
                     required
                   />
                 </div>
@@ -195,11 +198,13 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
 
           {/* Content */}
           <div>
-            <h3 className="text-sm font-medium text-gray-700 mb-3">Content</h3>
+            <h3 className="text-sm font-medium text-foreground mb-3">
+              Content
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
-                  <label className="block text-xs text-gray-500 mb-1">
+                  <label className="block text-xs text-muted-foreground mb-1">
                     {lang.toUpperCase()}
                   </label>
                   <BlogRichTextEditor
@@ -217,7 +222,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
           {/* Slug / Author */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Slug
               </label>
               <input
@@ -225,11 +230,11 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
                 placeholder="e.g., world-of-qabili-pulao"
                 value={formData.slug}
                 onChange={e => handleChange("slug", e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
               />
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Author Name
               </label>
               <input
@@ -237,7 +242,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
                 placeholder="Rayhana Kitchen"
                 value={formData.authorName}
                 onChange={e => handleChange("authorName", e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
               />
             </div>
           </div>
@@ -245,13 +250,13 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
           {/* Status / Featured */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label className="block text-sm font-medium text-foreground mb-2">
                 Status
               </label>
               <select
                 value={formData.status}
                 onChange={e => handleChange("status", e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
+                className="w-full px-4 py-2 border border-border bg-background text-foreground rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all"
               >
                 <option value="published">Published</option>
                 <option value="draft">Draft</option>
@@ -370,9 +375,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
               Cancel
             </button>
           </div>
-          {submitError && (
-            <p className="text-sm text-red-600">{submitError}</p>
-          )}
+          {submitError && <p className="text-sm text-red-600">{submitError}</p>}
         </form>
       </div>
       <MediaPicker

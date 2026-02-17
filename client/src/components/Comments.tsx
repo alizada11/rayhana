@@ -63,7 +63,10 @@ export default function Comments({ postId }: CommentsProps) {
           setShowSuccess(true);
           setTimeout(() => setShowSuccess(false), 2500);
           toast.success(
-            t("comments.pending_approval", "Submitted for review. Visible after approval.")
+            t(
+              "comments.pending_approval",
+              "Submitted for review. Visible after approval."
+            )
           );
         },
         onError: () => {
@@ -88,7 +91,12 @@ export default function Comments({ postId }: CommentsProps) {
         onSuccess: () => {
           setEditingId(null);
           setEditingMessage("");
-          toast.success(t("toast.comment_updated", "Comment updated."));
+          toast.success(
+            t(
+              "comments.pending_approval",
+              "Submitted for review. Visible after approval."
+            )
+          );
         },
         onError: () => {
           toast.error(t("toast.comment_update_failed", "Update failed"));
@@ -270,7 +278,7 @@ export default function Comments({ postId }: CommentsProps) {
                             onClick={() => handleUpdate(String(comment.id))}
                             disabled={updateMutation.isPending}
                           >
-                            Save
+                            {t("comments.save", "Save")}
                           </Button>
                           <Button
                             type="button"
@@ -281,7 +289,7 @@ export default function Comments({ postId }: CommentsProps) {
                               setEditingMessage("");
                             }}
                           >
-                            Cancel
+                            {t("comments.cancel", "Cancel")}
                           </Button>
                         </div>
                       </div>

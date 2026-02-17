@@ -64,7 +64,7 @@ export default function BlogRichTextEditor({
     editorProps: {
       attributes: {
         class:
-          "min-h-[180px] max-h-[420px] overflow-y-auto rounded-lg border border-gray-200 bg-white px-4 py-3 text-sm leading-relaxed focus:outline-none",
+          "min-h-[180px] max-h-[420px] overflow-y-auto rounded-lg border border-border bg-card px-4 py-3 text-sm leading-relaxed text-foreground focus:outline-none",
       },
     },
     onUpdate: ({ editor }) => {
@@ -229,12 +229,14 @@ export default function BlogRichTextEditor({
 
   return (
     <div className="space-y-2">
-      <div className="flex flex-wrap gap-1 rounded-lg border border-gray-200 bg-gray-50 px-2 py-2">
+      <div className="flex flex-wrap gap-1 rounded-lg border border-border bg-muted/60 px-2 py-2 dark:bg-muted/30">
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBold().run()}
-          className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("bold") ? "bg-white text-primary" : "text-gray-600"
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("bold")
+              ? "bg-card text-primary"
+              : "text-muted-foreground"
           }`}
           title="Bold"
         >
@@ -243,10 +245,10 @@ export default function BlogRichTextEditor({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleItalic().run()}
-          className={`p-2 rounded-md hover:bg-white ${
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
             editor.isActive("italic")
-              ? "bg-white text-primary"
-              : "text-gray-600"
+              ? "bg-card text-primary"
+              : "text-muted-foreground"
           }`}
           title="Italic"
         >
@@ -255,25 +257,25 @@ export default function BlogRichTextEditor({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleStrike().run()}
-          className={`p-2 rounded-md hover:bg-white ${
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
             editor.isActive("strike")
-              ? "bg-white text-primary"
-              : "text-gray-600"
+              ? "bg-card text-primary"
+              : "text-muted-foreground"
           }`}
           title="Strike"
         >
           <Strikethrough className="w-4 h-4" />
         </button>
-        <div className="w-px bg-gray-200 mx-1" />
+        <div className="w-px bg-border mx-1" />
         <button
           type="button"
           onClick={() =>
             editor.chain().focus().toggleHeading({ level: 2 }).run()
           }
-          className={`p-2 rounded-md hover:bg-white ${
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
             editor.isActive("heading", { level: 2 })
-              ? "bg-white text-primary"
-              : "text-gray-600"
+              ? "bg-card text-primary"
+              : "text-muted-foreground"
           }`}
           title="Heading"
         >
@@ -282,10 +284,10 @@ export default function BlogRichTextEditor({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleBulletList().run()}
-          className={`p-2 rounded-md hover:bg-white ${
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
             editor.isActive("bulletList")
-              ? "bg-white text-primary"
-              : "text-gray-600"
+              ? "bg-card text-primary"
+              : "text-muted-foreground"
           }`}
           title="Bullet List"
         >
@@ -294,44 +296,48 @@ export default function BlogRichTextEditor({
         <button
           type="button"
           onClick={() => editor.chain().focus().toggleOrderedList().run()}
-          className={`p-2 rounded-md hover:bg-white ${
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
             editor.isActive("orderedList")
-              ? "bg-white text-primary"
-              : "text-gray-600"
+              ? "bg-card text-primary"
+              : "text-muted-foreground"
           }`}
           title="Ordered List"
         >
           <ListOrdered className="w-4 h-4" />
         </button>
-        <div className="w-px bg-gray-200 mx-1" />
+        <div className="w-px bg-border mx-1" />
         <button
           type="button"
           onClick={setLink}
-          className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("link") ? "bg-white text-primary" : "text-gray-600"
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("link")
+              ? "bg-card text-primary"
+              : "text-muted-foreground"
           }`}
           title="Link"
         >
           <LinkIcon className="w-4 h-4" />
         </button>
-        <div className="w-px bg-gray-200 mx-1" />
+        <div className="w-px bg-border mx-1" />
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className={`p-2 rounded-md hover:bg-white ${
-            isUploading ? "text-gray-400" : "text-gray-600"
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            isUploading ? "text-muted-foreground/60" : "text-muted-foreground"
           }`}
           title="Insert Image"
           disabled={isUploading}
         >
           <ImageIcon className="w-4 h-4" />
         </button>
-        <div className="w-px bg-gray-200 mx-1" />
+        <div className="w-px bg-border mx-1" />
         <button
           type="button"
           onClick={() => setAlign("left")}
-          className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("image") ? "text-gray-600" : "text-gray-300"
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("image")
+              ? "text-muted-foreground"
+              : "text-muted-foreground/40"
           }`}
           title="Align Left"
           disabled={!editor.isActive("image")}
@@ -341,8 +347,10 @@ export default function BlogRichTextEditor({
         <button
           type="button"
           onClick={() => setAlign("center")}
-          className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("image") ? "text-gray-600" : "text-gray-300"
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("image")
+              ? "text-muted-foreground"
+              : "text-muted-foreground/40"
           }`}
           title="Align Center"
           disabled={!editor.isActive("image")}
@@ -352,20 +360,24 @@ export default function BlogRichTextEditor({
         <button
           type="button"
           onClick={() => setAlign("right")}
-          className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("image") ? "text-gray-600" : "text-gray-300"
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("image")
+              ? "text-muted-foreground"
+              : "text-muted-foreground/40"
           }`}
           title="Align Right"
           disabled={!editor.isActive("image")}
         >
           <AlignRight className="w-4 h-4" />
         </button>
-        <div className="w-px bg-gray-200 mx-1" />
+        <div className="w-px bg-border mx-1" />
         <button
           type="button"
           onClick={() => setWidth("small")}
-          className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("image") ? "text-gray-600" : "text-gray-300"
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("image")
+              ? "text-muted-foreground"
+              : "text-muted-foreground/40"
           }`}
           title="Small"
           disabled={!editor.isActive("image")}
@@ -375,8 +387,10 @@ export default function BlogRichTextEditor({
         <button
           type="button"
           onClick={() => setWidth("medium")}
-          className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("image") ? "text-gray-600" : "text-gray-300"
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("image")
+              ? "text-muted-foreground"
+              : "text-muted-foreground/40"
           }`}
           title="Medium"
           disabled={!editor.isActive("image")}
@@ -386,8 +400,10 @@ export default function BlogRichTextEditor({
         <button
           type="button"
           onClick={() => setWidth("full")}
-          className={`p-2 rounded-md hover:bg-white ${
-            editor.isActive("image") ? "text-gray-600" : "text-gray-300"
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("image")
+              ? "text-muted-foreground"
+              : "text-muted-foreground/40"
           }`}
           title="Full"
           disabled={!editor.isActive("image")}
@@ -402,7 +418,9 @@ export default function BlogRichTextEditor({
           className="hidden"
         />
         {isUploading && (
-          <span className="text-xs text-gray-500 ml-2">Uploading...</span>
+          <span className="text-xs text-muted-foreground ml-2">
+            Uploading...
+          </span>
         )}
       </div>
       <EditorContent editor={editor} />

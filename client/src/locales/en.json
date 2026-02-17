@@ -6,6 +6,13 @@
     "blog": "Blog & Recipes",
     "contact": "Contact"
   },
+  "not_found": {
+    "meta_title": "404 | Page Not Found",
+    "meta_desc": "This page could not be found.",
+    "title": "Page Not Found",
+    "body": "Sorry, the page you are looking for doesn't exist. It may have been moved or deleted.",
+    "go_home": "Go Home"
+  },
   "hero": {
     "title": "Roots in Modern Life",
     "subtitle": "Experience the authentic taste of tradition with modern innovation.",
@@ -36,7 +43,8 @@
     "error": "Error",
     "delete": "Delete",
     "cancel": "Cancel",
-    "noComments": "No comments yet. Be the first to share your thoughts!"
+    "noComments": "No comments yet. Be the first to share your thoughts!",
+    "fullStory": "Read Our Full Story"
   },
   "contact": {
     "title": "Get in Touch",
@@ -70,6 +78,7 @@
     "privacy": "Privacy",
     "terms": "Terms",
     "adminRequired": "Admin access required.",
+    "loginRequired": "You need to log in to access this feature.",
     "signed_out": "You have been signed out",
     "password": "Password",
     "hide": "hide",
@@ -257,7 +266,19 @@
     "empty": "No photos found.",
     "unlike": "Unlike",
     "like": "Like",
-    "uploadSize": "JPG, PNG (MAX. 5MB)"
+    "dishName": "Dish Name",
+    "dishPlaceholder": "e.g. Qabili Palau",
+    "dishDescription": "Description (Optional)",
+    "uploadSize": "JPG, PNG (MAX. 5MB)",
+    "toast": {
+      "under5mb": "Please choose an image under 5MB",
+      "no_image": "Please choose an image.",
+      "no_name": "Dish name is required",
+      "submitted": "Photo submitted. It will appear after approval.",
+      "guests_only": "This section is available to guest users only",
+      "submission_deleted": "Submission deleted.",
+      "submission_delete_failed": "Failed to delete submission."
+    }
   },
   "newsletter": {
     "title": "Join the Rayhana Family",
@@ -377,7 +398,28 @@
   "footer": {
     "rights": "© 2026 Rayhana Kitchen Appliance. All rights reserved."
   },
+  "dashboard": {
+    "comments": {
+      "title": "Comment Moderation",
+    "subtitle": "Review and manage blog comments",
+      "count": "Comments: {{count}}",
+      "updated": "Comment updated.",
+      "update_failed": "Failed to update comment.",
+      "deleted": "Comment deleted.",
+      "delete_failed": "Failed to delete comment.",
+      "approve_failed": "Failed to approve comment.",
+      "approved": "Comment approved.",
+      "delete_title": "Delete this comment?",
+      "delete_body": "This will permanently remove the comment from the blog.",
+      "empty": "No comments yet.",
+      "pending": "Pending",
+      "blog": "Blog",
+      "approve": "Approve"
+    }
+  },
   "comments": {
+    "cancel": "Cancel",
+    "save": "Save Changes",
     "message": "Comment",
     "signedIn": "You are signed in",
     "title": "Comments",

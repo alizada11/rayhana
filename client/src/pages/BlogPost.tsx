@@ -45,7 +45,7 @@ export default function BlogPost() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-2xl font-bold mb-4">
+          <h1 className="font-serif text-2xl font-bold mb-4">
             {t("blog.post.not_found", "Post not found")}
           </h1>
           <Link href="/blog">
@@ -120,7 +120,9 @@ export default function BlogPost() {
         pageKey="blog-post"
         title={title || post.title?.en}
         description={
-          post.excerpt?.[currentLang] || post.excerpt?.en || content.slice(0, 150)
+          post.excerpt?.[currentLang] ||
+          post.excerpt?.en ||
+          content.slice(0, 150)
         }
         image={resolveImageUrl(post.imageUrl)}
         url={shareUrl}
