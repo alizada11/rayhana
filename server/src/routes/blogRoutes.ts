@@ -74,6 +74,13 @@ router.post(
   requireAuth(),
   blogCommentController.createBlogComment
 );
+// POST /api/blogs/:id/comments/:parentId/replies => reply (auth)
+router.post(
+  "/:id/comments/:parentId/replies",
+  commentLimiter,
+  requireAuth(),
+  blogCommentController.createBlogComment
+);
 
 // Approve comment (admin)
 router.patch(

@@ -84,11 +84,14 @@ export const getAllBlogPosts = async (_req: Request, res: Response) => {
 // -------------------------
 export const getBlogPostBySlug = async (req: Request, res: Response) => {
   try {
-    const slug = getId(req.params.slug);
+    const slug = decodeURIComponent(getId(req.params.slug)).replace(/\/+$/, "");
     const { userId } = getAuth(req);
     const isAdmin = userId ? await isAdminUser(userId) : false;
 
-    const post = await queries.getBlogPostBySlug(slug);
+    const post =
+      (await queries.getBlogPostBySlug(slug)) ||
+      // Fallback: allow direct UUID access in case links still use id
+      (await queries.getBlogPostById(slug));
     if (!post) return res.status(404).json({ error: "Blog post not found" });
     if (!isAdmin && post.status !== "published") {
       return res.status(404).json({ error: "Blog post not found" });

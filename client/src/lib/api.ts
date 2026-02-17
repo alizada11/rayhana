@@ -52,6 +52,7 @@ export interface BlogCommentData {
   blogId: string | number;
   content: string;
   website?: string; // honeypot
+  parentId?: string | number;
 }
 
 export interface UpdateBlogCommentParams {
@@ -451,10 +452,12 @@ export const createBlogComment = async ({
   blogId,
   content,
   website,
+  parentId,
 }: BlogCommentData) => {
   const { data } = await api.post(`/blogs/${blogId}/comments`, {
     content,
     website,
+    parentId,
   });
   return data;
 };
