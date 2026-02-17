@@ -102,7 +102,7 @@ export const updateBlogComment = async (req: Request, res: Response) => {
         .json({ error: "You can only update your own comments" });
     }
 
-    // Any user edit should require re-approval so the comment behaves like new.
+    // Any user edit should require re-approval so the comment behaves like new, but admin can edit without approval.
     const shouldResetApproval = !isAdmin || isOwner;
 
     const updated = await queries.updateBlogComment(commentId, {

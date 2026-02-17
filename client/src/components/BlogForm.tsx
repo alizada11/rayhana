@@ -139,6 +139,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
           <button
             onClick={onClose}
             className="p-2 hover:bg-muted/60 dark:hover:bg-muted/30 rounded-lg transition-colors"
+            aria-label="Close dialog"
           >
             <X className="w-5 h-5" />
           </button>
@@ -171,7 +172,9 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
 
           {/* Excerpt */}
           <div>
-            <h3 className="text-sm font-medium text-foreground mb-3">Excerpt</h3>
+            <h3 className="text-sm font-medium text-foreground mb-3">
+              Excerpt
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
@@ -195,7 +198,9 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
 
           {/* Content */}
           <div>
-            <h3 className="text-sm font-medium text-foreground mb-3">Content</h3>
+            <h3 className="text-sm font-medium text-foreground mb-3">
+              Content
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
@@ -370,9 +375,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
               Cancel
             </button>
           </div>
-          {submitError && (
-            <p className="text-sm text-red-600">{submitError}</p>
-          )}
+          {submitError && <p className="text-sm text-red-600">{submitError}</p>}
         </form>
       </div>
       <MediaPicker

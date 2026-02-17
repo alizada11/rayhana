@@ -22,6 +22,17 @@ import { db } from "./db";
 import { blogPosts, products } from "./db/schema";
 import { desc, eq } from "drizzle-orm";
 import * as queries from "./db/queries";
+
+// Periodic cleanup of expired sessions (once per hour)
+setInterval(
+  () => {
+    queries
+      .deleteExpiredSessions()
+      .catch(err => console.error("cleanup expired sessions failed", err));
+  },
+  60 * 60 * 1000
+);
+
 const app = express();
 const distPath = path.join(__dirname, "..", "dist", "public");
 const uploadsPath = path.resolve(process.cwd(), "server", "uploads");

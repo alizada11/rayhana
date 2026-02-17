@@ -160,6 +160,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
                   size="icon"
                   onClick={toggleTheme}
                   title="Toggle Theme"
+                  aria-label={
+                    theme === "dark"
+                      ? "Switch to light theme"
+                      : "Switch to dark theme"
+                  }
                   className="h-10 w-10 rounded-lg"
                 >
                   {theme === "dark" ? (

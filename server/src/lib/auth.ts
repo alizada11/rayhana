@@ -58,7 +58,7 @@ export async function createSession(opts: {
 
   opts.res.cookie(SESSION_COOKIE, token, {
     httpOnly: true,
-    sameSite: "strict",
+    sameSite: "lax",
     secure: ENV.NODE_ENV === "production",
     expires: expiresAt,
   });

@@ -8,6 +8,7 @@ import {
   useRef,
 } from "react";
 import { useLocation } from "wouter";
+import { useQueryClient } from "@tanstack/react-query";
 import api from "./axios";
 
 type User = {
@@ -43,6 +44,7 @@ type AuthContextValue = AuthState & {
 const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+  const queryClient = useQueryClient();
   const [state, setState] = useState<AuthState>({
     user: null,
     isLoaded: false,
@@ -100,6 +102,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = async () => {
     await api.post("/auth/logout", {}, { withCredentials: true });
+    queryClient.removeQueries({ queryKey: ["me"] });
     setState({
       user: null,
       isLoaded: true,

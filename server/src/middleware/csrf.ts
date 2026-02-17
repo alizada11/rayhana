@@ -6,7 +6,11 @@ const CSRF_HEADER = "x-csrf-token";
 const unsafeMethods = new Set(["POST", "PUT", "PATCH", "DELETE"]);
 
 // Double-submit cookie approach: issue a non-httpOnly cookie and require the matching header.
-export function csrfMiddleware(req: Request, res: Response, next: NextFunction) {
+export function csrfMiddleware(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
   const existing = req.cookies?.[CSRF_COOKIE] as string | undefined;
   const token = existing || crypto.randomBytes(24).toString("hex");
 
@@ -23,7 +27,7 @@ export function csrfMiddleware(req: Request, res: Response, next: NextFunction) 
 
   const header = req.headers[CSRF_HEADER] as string | undefined;
   // Enforce match only when a token existed and a header is present.
-  if (existing && header && header !== existing) {
+  if (!existing || !header || header !== existing) {
     return res.status(403).json({ error: "CSRF token mismatch" });
   }
 

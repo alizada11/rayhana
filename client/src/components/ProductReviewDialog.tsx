@@ -6,7 +6,12 @@ import {
   Product,
   useProduct,
 } from "@/hooks/useProducts";
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 
@@ -16,7 +21,11 @@ type Props = {
   onOpenChange: (open: boolean) => void;
 };
 
-export default function ProductReviewDialog({ product, open, onOpenChange }: Props) {
+export default function ProductReviewDialog({
+  product,
+  open,
+  onOpenChange,
+}: Props) {
   const createReview = useCreateProductReview();
   const updateReview = useUpdateProductReview();
   const deleteReview = useDeleteProductReview();
@@ -99,6 +108,7 @@ export default function ProductReviewDialog({ product, open, onOpenChange }: Pro
       {
         onSuccess: () => {
           toast.success("Review deleted");
+          if (form.id === id) resetForm();
           refetch();
         },
         onError: () => toast.error("Failed to delete review"),
@@ -121,12 +131,16 @@ export default function ProductReviewDialog({ product, open, onOpenChange }: Pro
                 <input
                   className="w-full px-3 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   value={form.author}
-                  onChange={e => setForm(prev => ({ ...prev, author: e.target.value }))}
+                  onChange={e =>
+                    setForm(prev => ({ ...prev, author: e.target.value }))
+                  }
                   required
                 />
               </div>
               <div>
-                <label className="text-xs text-muted-foreground">Rating (1-5)</label>
+                <label className="text-xs text-muted-foreground">
+                  Rating (1-5)
+                </label>
                 <input
                   type="number"
                   min={1}
@@ -134,7 +148,10 @@ export default function ProductReviewDialog({ product, open, onOpenChange }: Pro
                   className="w-full px-3 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   value={form.rating}
                   onChange={e =>
-                    setForm(prev => ({ ...prev, rating: Number(e.target.value) }))
+                    setForm(prev => ({
+                      ...prev,
+                      rating: Number(e.target.value),
+                    }))
                   }
                   required
                 />
@@ -188,7 +205,9 @@ export default function ProductReviewDialog({ product, open, onOpenChange }: Pro
 
           <div className="space-y-3">
             {isFetching && (
-              <p className="text-sm text-muted-foreground">Refreshing reviews...</p>
+              <p className="text-sm text-muted-foreground">
+                Refreshing reviews...
+              </p>
             )}
             {reviews.length === 0 && !isFetching && (
               <p className="text-sm text-muted-foreground">No reviews yet.</p>
@@ -211,7 +230,9 @@ export default function ProductReviewDialog({ product, open, onOpenChange }: Pro
                     )}
                   </div>
                   <p className="text-sm text-muted-foreground mt-1">
-                    {(rev.text && (rev.text["en"] || Object.values(rev.text)[0])) || ""}
+                    {(rev.text &&
+                      (rev.text["en"] || Object.values(rev.text)[0])) ||
+                      ""}
                   </p>
                 </div>
                 <div className="flex items-center gap-2">

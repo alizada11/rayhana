@@ -52,7 +52,7 @@ export default function Home() {
   );
   const storyCta = getLocalized(
     homeContent?.data?.story?.cta,
-    t("common.fullStory", "Read out Full tory")
+    t("common.fullStory", "Read our Full tory")
   );
   const values = Array.isArray(homeContent?.data?.values)
     ? homeContent.data.values
@@ -210,7 +210,7 @@ export default function Home() {
                   <h3 className="font-serif text-xl font-bold mb-2">
                     {valueTitle}
                   </h3>
-                  {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
+                  {/* biome-ignore: lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
                   <div
                     className="text-muted-foreground text-sm mb-4 prose prose-sm max-w-none"
                     dangerouslySetInnerHTML={{
@@ -259,6 +259,7 @@ export default function Home() {
                     : "دیگ کامل برای هر وعده غذایی"
                 )}
               </h2>
+              {/* biome-ignore: lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
               <div
                 className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{
@@ -323,6 +324,7 @@ export default function Home() {
                 <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
                   {storyTitle}
                 </h2>
+                {/* biome-ignore: lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
                 <div
                   className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{
