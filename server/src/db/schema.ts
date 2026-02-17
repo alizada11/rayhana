@@ -9,6 +9,7 @@ import {
   text,
   timestamp,
   uuid,
+  foreignKey,
 } from "drizzle-orm/pg-core";
 import { relations } from "drizzle-orm";
 
@@ -82,23 +83,27 @@ export const emailVerificationTokens = pgTable("email_verification_tokens", {
   createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
 });
 
-export const oauthAccounts = pgTable("oauth_accounts", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  provider: text("provider").notNull(), // e.g., google, facebook
-  providerUserId: text("provider_user_id").notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  accessToken: text("access_token"),
-  refreshToken: text("refresh_token"),
-  expiresAt: timestamp("expires_at", { mode: "date" }),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-}, table => ({
-  providerUserUnique: uniqueIndex("oauth_provider_user_unique").on(
-    table.provider,
-    table.providerUserId
-  ),
-}));
+export const oauthAccounts = pgTable(
+  "oauth_accounts",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    provider: text("provider").notNull(), // e.g., google, facebook
+    providerUserId: text("provider_user_id").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    accessToken: text("access_token"),
+    refreshToken: text("refresh_token"),
+    expiresAt: timestamp("expires_at", { mode: "date" }),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  },
+  table => ({
+    providerUserUnique: uniqueIndex("oauth_provider_user_unique").on(
+      table.provider,
+      table.providerUserId
+    ),
+  })
+);
 
 export const products = pgTable("products", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -174,23 +179,32 @@ export const blogPosts = pgTable("blog_posts", {
     .defaultNow(),
 });
 
-export const blogComments = pgTable("blog_comments", {
-  id: uuid("id").defaultRandom().primaryKey(),
-  content: text("content").notNull(),
-  userId: text("user_id")
-    .notNull()
-    .references(() => users.id, { onDelete: "cascade" }),
-  blogId: uuid("blog_id")
-    .notNull()
-    .references(() => blogPosts.id, { onDelete: "cascade" }),
-  parentId: uuid("parent_id"),
-  approved: boolean("approved").notNull().default(false),
-  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
-  updatedAt: timestamp("updated_at", { mode: "date" })
-    .notNull()
-    .defaultNow()
-    .$onUpdate(() => new Date()),
-});
+export const blogComments = pgTable(
+  "blog_comments",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    content: text("content").notNull(),
+    userId: text("user_id")
+      .notNull()
+      .references(() => users.id, { onDelete: "cascade" }),
+    blogId: uuid("blog_id")
+      .notNull()
+      .references(() => blogPosts.id, { onDelete: "cascade" }),
+    parentId: uuid("parent_id"),
+    approved: boolean("approved").notNull().default(false),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  table => ({
+    parentFk: foreignKey({
+      columns: [table.parentId],
+      foreignColumns: [table.id],
+    }).onDelete("cascade"),
+  })
+);
 
 export const siteContent = pgTable("site_content", {
   key: text("key").primaryKey(),
@@ -300,34 +314,34 @@ export const commentsRelations = relations(comments, ({ one }) => ({
   }), // One comment → one product
 }));
 
-export const productReviewsRelations = relations(
-  productReviews,
-  ({ one }) => ({
-    product: one(products, {
-      fields: [productReviews.productId],
-      references: [products.id],
-    }),
-  })
-);
+export const productReviewsRelations = relations(productReviews, ({ one }) => ({
+  product: one(products, {
+    fields: [productReviews.productId],
+    references: [products.id],
+  }),
+}));
 
 export const blogPostsRelations = relations(blogPosts, ({ one, many }) => ({
   user: one(users, { fields: [blogPosts.userId], references: [users.id] }),
   comments: many(blogComments),
 }));
 
-export const blogCommentsRelations = relations(blogComments, ({ one, many }) => ({
-  user: one(users, { fields: [blogComments.userId], references: [users.id] }),
-  blog: one(blogPosts, {
-    fields: [blogComments.blogId],
-    references: [blogPosts.id],
-  }),
-  parent: one(blogComments, {
-    fields: [blogComments.parentId],
-    references: [blogComments.id],
-    relationName: "commentChildren",
-  }),
-  replies: many(blogComments, { relationName: "commentChildren" }),
-}));
+export const blogCommentsRelations = relations(
+  blogComments,
+  ({ one, many }) => ({
+    user: one(users, { fields: [blogComments.userId], references: [users.id] }),
+    blog: one(blogPosts, {
+      fields: [blogComments.blogId],
+      references: [blogPosts.id],
+    }),
+    parent: one(blogComments, {
+      fields: [blogComments.parentId],
+      references: [blogComments.id],
+      relationName: "commentChildren",
+    }),
+    replies: many(blogComments, { relationName: "commentChildren" }),
+  })
+);
 
 export const mediaAssetsRelations = relations(mediaAssets, ({ one }) => ({
   user: one(users, { fields: [mediaAssets.userId], references: [users.id] }),

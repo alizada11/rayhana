@@ -43,7 +43,9 @@ export const createBlogComment = async (req: Request, res: Response) => {
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
 
     const blogId = getId(req.params.id);
-    const { content, website, parentId } = req.body;
+    const { content, website, parentId: bodyParentId } = req.body;
+    // Support parentId from route param (reply route) or body
+    const parentId = req.params.parentId || bodyParentId;
 
     // Honeypot: reject silently if filled
     if (typeof website === "string" && website.trim().length > 0) {

@@ -101,7 +101,9 @@ export default function Comments({ postId }: CommentsProps) {
           );
         },
         onError: () => {
-          toast.error(t("toast.comment_submit_failed", "Failed to submit comment"));
+          toast.error(
+            t("toast.comment_submit_failed", "Failed to submit comment")
+          );
         },
       }
     );
@@ -274,8 +276,12 @@ export default function Comments({ postId }: CommentsProps) {
                   const replies = comments
                     .filter((child: any) => child.parentId === comment.id)
                     .sort((a: any, b: any) => {
-                      const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
-                      const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+                      const aTime = a.createdAt
+                        ? new Date(a.createdAt).getTime()
+                        : 0;
+                      const bTime = b.createdAt
+                        ? new Date(b.createdAt).getTime()
+                        : 0;
                       return aTime - bTime; // oldest first, newest last
                     });
 
@@ -343,34 +349,38 @@ export default function Comments({ postId }: CommentsProps) {
                         )}
 
                         <div className="flex flex-col gap-2">
-                          {canManage(comment) && editingId !== String(comment.id) && (
-                            <div className="flex items-start gap-2">
-                              <button
-                                type="button"
-                                aria-label="Edit"
-                                onClick={() => handleEdit(comment)}
-                                className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
-                                title={t("comments.edit", "Edit")}
-                              >
-                                <Pencil className="w-4 h-4" />
-                              </button>
-                              <button
-                                type="button"
-                                aria-label="Delete"
-                                onClick={() => handleDelete(String(comment.id))}
-                                className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-                                title={t("comments.delete", "Delete")}
-                              >
-                                <Trash2 className="w-4 h-4" />
-                              </button>
-                            </div>
-                          )}
+                          {canManage(comment) &&
+                            editingId !== String(comment.id) && (
+                              <div className="flex items-start gap-2">
+                                <button
+                                  type="button"
+                                  aria-label="Edit"
+                                  onClick={() => handleEdit(comment)}
+                                  className="p-2 text-gray-600 hover:text-yellow-600 hover:bg-yellow-50 rounded-lg transition-colors"
+                                  title={t("comments.edit", "Edit")}
+                                >
+                                  <Pencil className="w-4 h-4" />
+                                </button>
+                                <button
+                                  type="button"
+                                  aria-label="Delete"
+                                  onClick={() =>
+                                    handleDelete(String(comment.id))
+                                  }
+                                  className="p-2 text-gray-600 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                                  title={t("comments.delete", "Delete")}
+                                >
+                                  <Trash2 className="w-4 h-4" />
+                                </button>
+                              </div>
+                            )}
 
                           {editingId !== String(comment.id) && (
                             <div className="flex items-center gap-4 text-xs text-muted-foreground">
                               <button
                                 type="button"
                                 className="hover:text-primary"
+                                aria-label="Reply"
                                 onClick={() => {
                                   setReplyingTo(String(comment.id));
                                   setReplyText("");
@@ -426,7 +436,9 @@ export default function Comments({ postId }: CommentsProps) {
                                 </div>
                                 <div className="text-xs text-muted-foreground">
                                   {child.createdAt
-                                    ? new Date(child.createdAt).toLocaleDateString()
+                                    ? new Date(
+                                        child.createdAt
+                                      ).toLocaleDateString()
                                     : ""}
                                 </div>
                               </div>
