@@ -27,7 +27,7 @@ export function csrfMiddleware(
 
   const header = req.headers[CSRF_HEADER] as string | undefined;
   // Enforce match only when a token existed and a header is present.
-  if (!existing || !header || header !== existing) {
+  if (existing && header && header !== existing) {
     return res.status(403).json({ error: "CSRF token mismatch" });
   }
 

@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useCallback } from "react";
 import {
   useCreateProductReview,
   useUpdateProductReview,
@@ -44,14 +44,21 @@ export default function ProductReviewDialog({
     text: { en: "", fa: "", ps: "" } as Record<string, string>,
   });
 
-  const resetForm = () =>
-    setForm({
-      id: null,
-      author: "",
-      rating: 5,
-      verified: true,
-      text: { en: "", fa: "", ps: "" },
-    });
+  const resetForm = useCallback(
+    () =>
+      setForm({
+        id: null,
+        author: "",
+        rating: 5,
+        verified: true,
+        text: { en: "", fa: "", ps: "" },
+      }),
+    []
+  );
+
+  useEffect(() => {
+    resetForm();
+  }, [open, product.id, resetForm]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -127,8 +134,14 @@ export default function ProductReviewDialog({
           <form onSubmit={handleSubmit} className="space-y-3">
             <div className="grid md:grid-cols-3 gap-3">
               <div>
-                <label className="text-xs text-muted-foreground">Author</label>
+                <label
+                  className="text-xs text-muted-foreground"
+                  htmlFor="review-author"
+                >
+                  Author
+                </label>
                 <input
+                  id="review-author"
                   className="w-full px-3 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary"
                   value={form.author}
                   onChange={e =>
@@ -138,10 +151,14 @@ export default function ProductReviewDialog({
                 />
               </div>
               <div>
-                <label className="text-xs text-muted-foreground">
+                <label
+                  className="text-xs text-muted-foreground"
+                  htmlFor="review-rating"
+                >
                   Rating (1-5)
                 </label>
                 <input
+                  id="review-rating"
                   type="number"
                   min={1}
                   max={5}
@@ -170,10 +187,14 @@ export default function ProductReviewDialog({
             <div className="grid md:grid-cols-3 gap-3">
               {["en", "fa", "ps"].map(lang => (
                 <div key={lang}>
-                  <label className="block text-xs text-muted-foreground mb-1">
+                  <label
+                    className="block text-xs text-muted-foreground mb-1"
+                    htmlFor={`review-${lang}`}
+                  >
                     Review ({lang.toUpperCase()})
                   </label>
                   <textarea
+                    id="id={`review-${lang}`}"
                     className="w-full px-3 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary resize-none"
                     rows={2}
                     value={form.text[lang] || ""}
