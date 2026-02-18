@@ -16,6 +16,14 @@ export default function HelpPage() {
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
 
+  const decodeHtml = (value: string) => {
+    const doc = new DOMParser().parseFromString(value || "", "text/html");
+    // decode entities but keep markup intact
+    return doc.body?.innerHTML || "";
+  };
+
+  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+
   const articles = Array.isArray(data?.data?.articles)
     ? data?.data?.articles
     : [];
@@ -79,7 +87,7 @@ export default function HelpPage() {
           <div
             className="text-foreground prose prose-sm max-w-none"
             dangerouslySetInnerHTML={{
-              __html: DOMPurify.sanitize(getLocalized(article.intro, "")),
+              __html: cleanHtml(getLocalized(article.intro, "")),
             }}
           />
         </div>
@@ -95,7 +103,7 @@ export default function HelpPage() {
              prose-ul:list-disc prose-ul:pl-6
              prose-li:my-1"
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(getLocalized(article.steps, "")),
+                __html: cleanHtml(getLocalized(article.steps, "")),
               }}
             />
           </section>
@@ -108,7 +116,7 @@ export default function HelpPage() {
             <div
               className="mt-3 text-muted-foreground prose prose-sm max-w-none"
               dangerouslySetInnerHTML={{
-                __html: DOMPurify.sanitize(getLocalized(article.tips, "")),
+                __html: cleanHtml(getLocalized(article.tips, "")),
               }}
             />
           </section>

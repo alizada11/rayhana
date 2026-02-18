@@ -26,6 +26,21 @@ export default function BlogPost() {
 
   const { data: post, isLoading } = useBlogBySlug(params?.slug);
 
+  const decodeHtml = (value: string) => {
+    const doc = new DOMParser().parseFromString(value || "", "text/html");
+    return doc.body?.innerHTML || "";
+  };
+
+  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+
+  const addHeadingFont = (html: string) => {
+    const doc = new DOMParser().parseFromString(html || "", "text/html");
+    doc.body?.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(el => {
+      el.classList.add("font-serif");
+    });
+    return doc.body?.innerHTML || "";
+  };
+
   if (!match || !params) return null;
 
   if (isLoading) {
@@ -64,7 +79,32 @@ export default function BlogPost() {
 
   const title = post.title?.[currentLang] || post.title?.en || "";
   const content = post.content?.[currentLang] || post.content?.en || "";
-  const sanitizedContent = DOMPurify.sanitize(content);
+  const sanitizedContent = addHeadingFont(
+    DOMPurify.sanitize(cleanHtml(content), {
+      ALLOWED_TAGS: [
+      "h1",
+      "h2",
+      "h3",
+      "h4",
+      "h5",
+      "h6",
+      "p",
+      "br",
+      "strong",
+      "em",
+      "u",
+      "ul",
+      "ol",
+      "li",
+      "blockquote",
+      "a",
+      "img",
+      "span",
+      "div",
+    ],
+      ALLOWED_ATTR: ["href", "target", "rel", "class", "src", "alt", "title", "style"],
+    })
+  );
   const shareUrl =
     typeof window !== "undefined"
       ? window.location.href
@@ -221,7 +261,7 @@ export default function BlogPost() {
               prose-ul:list-disc prose-ol:list-decimal prose-ul:pl-6 prose-ol:pl-6 prose-ul:my-4 prose-ol:my-4
               prose-table:shadow-sm prose-table:border prose-td:border prose-th:border prose-table:my-6
               prose-a:text-primary hover:prose-a:text-primary/80
-              ${isRTL ? "rtl prose-headings:font-[inherit]" : ""}`}
+              ${isRTL ? "rtl prose-headings:font-serif" : ""}`}
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
           <div className="mt-16 pt-8 border-t border-border">

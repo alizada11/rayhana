@@ -13,13 +13,23 @@ export default function Terms() {
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
 
+  const headingFontClass = isRTL ? "prose-headings:font-serif" : "";
+
+  const addHeadingFont = (html: string) => {
+    const doc = new DOMParser().parseFromString(html || "", "text/html");
+    doc.body?.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(el => {
+      el.classList.add("font-serif");
+    });
+    return doc.body?.innerHTML || "";
+  };
+
   const effectiveDate = data?.data?.effectiveDate || "February 7, 2026";
   const title = getLocalized(data?.data?.title, "Terms of Service");
   const intro = getLocalized(
     data?.data?.intro,
     "Welcome to Rayhana. These Terms of Service govern your use of our website, products, and services."
   );
-  const sanitizedIntro = DOMPurify.sanitize(intro);
+  const sanitizedIntro = addHeadingFont(DOMPurify.sanitize(intro));
   const sections = Array.isArray(data?.data?.sections)
     ? data?.data?.sections
     : [];
@@ -50,7 +60,7 @@ export default function Terms() {
         </div>
         {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
         <div
-          className="prose prose-lg dark:prose-invert max-w-none"
+          className={`prose prose-lg dark:prose-invert max-w-none ${headingFontClass}`}
           dangerouslySetInnerHTML={{ __html: sanitizedIntro }}
         />
         <div className="mt-8 space-y-6">
@@ -68,9 +78,11 @@ export default function Terms() {
               </h2>
               {/* biome-ignore lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
               <div
-                className="text-muted-foreground mt-2 prose prose-sm max-w-none"
+                className={`text-muted-foreground mt-2 prose prose-sm max-w-none ${headingFontClass}`}
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(getLocalized(section.body, "")),
+                  __html: addHeadingFont(
+                    DOMPurify.sanitize(getLocalized(section.body, ""))
+                  ),
                 }}
               />
             </section>
