@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import { useContent, useUpsertContent } from "@/hooks/useContent";
-import { Save, Plus, Trash2 } from "lucide-react";
+import { Save, Plus, Trash2, Image as ImageIcon } from "lucide-react";
+import MediaPicker from "@/components/MediaPicker";
 import { toast } from "sonner";
 
 export default function DashboardSettings() {
   const { data } = useContent("settings");
   const upsert = useUpsertContent("settings");
+  const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const resolveUrl = (url?: string) => {
+    if (!url) return "";
+    if (url.startsWith("http")) return url;
+    return `${apiBase}${url}`;
+  };
+
   const emptyLabel = { en: "", fa: "", ps: "" };
   const normalizeLabel = (label: any) => {
     if (label && typeof label === "object") {
@@ -17,7 +25,11 @@ export default function DashboardSettings() {
     }
     return { ...emptyLabel, en: label || "" };
   };
+  const [pickerTarget, setPickerTarget] = useState<"header" | "footer" | null>(null);
+
   const [formData, setFormData] = useState<any>({
+    headerLogo: "",
+    footerLogo: "",
     nav: [{ label: { en: "Home", fa: "", ps: "" }, href: "/" }],
     footerLinks: [{ label: { en: "Privacy Policy", fa: "", ps: "" }, href: "/privacy" }],
     social: [{ label: { en: "Instagram", fa: "", ps: "" }, href: "https://instagram.com" }],
@@ -26,6 +38,8 @@ export default function DashboardSettings() {
   useEffect(() => {
     if (data?.data) {
       setFormData({
+        headerLogo: data.data.headerLogo || "",
+        footerLogo: data.data.footerLogo || "",
         nav: (data.data.nav || []).map((item: any) => ({
           ...item,
           label: normalizeLabel(item.label),
@@ -161,9 +175,68 @@ export default function DashboardSettings() {
         </button>
       </div>
 
+      <div className="bg-card border rounded-xl p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-serif text-lg font-bold">Branding</h2>
+          <p className="text-sm text-muted-foreground">Header & footer logos</p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {["header", "footer"].map(slot => {
+            const key = slot === "header" ? "headerLogo" : "footerLogo";
+            const label = slot === "header" ? "Header logo" : "Footer logo";
+            const url = formData[key];
+            return (
+              <div key={slot} className="border rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">{label}</span>
+                  <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="w-full h-20 rounded-lg border bg-muted/40 flex items-center justify-center overflow-hidden">
+                  {url ? (
+                    <img
+                      src={resolveUrl(url)}
+                      alt={`${label} preview`}
+                      className="max-h-20 w-auto object-contain"
+                    />
+                  ) : (
+                    <span className="text-xs text-muted-foreground">No logo set</span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPickerTarget(slot as "header" | "footer")}
+                    className="inline-flex items-center gap-2 border px-3 py-2 rounded-lg text-sm"
+                  >
+                    Choose from library
+                  </button>
+                  <input
+                    className="flex-1 border rounded-lg px-3 py-2 text-sm"
+                    placeholder="/uploads/logo.svg or https://..."
+                    value={url || ""}
+                    onChange={e =>
+                      setFormData((prev: any) => ({ ...prev, [key]: e.target.value }))
+                    }
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
       {renderList("nav", "Navigation")}
       {renderList("footerLinks", "Footer Links")}
       {renderList("social", "Social Links")}
+      <MediaPicker
+        open={pickerTarget !== null}
+        accept="image"
+        onClose={() => setPickerTarget(null)}
+        onSelect={url => {
+          if (!pickerTarget) return;
+          setFormData((prev: any) => ({ ...prev, [pickerTarget + "Logo"]: url }));
+          setPickerTarget(null);
+        }}
+      />
     </div>
   );
 }

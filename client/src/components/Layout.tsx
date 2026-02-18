@@ -26,6 +26,16 @@ export default function Layout({ children }: LayoutProps) {
   const LANG_KEY = "rayhana_lang";
   const LANG_TTL_MS = 24 * 60 * 60 * 1000;
 
+  const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const resolveAsset = (url?: string) => {
+    if (!url) return "";
+    if (url.startsWith("http")) return url;
+    return `${apiBase}${url}`;
+  };
+
+  const headerLogoUrl = resolveAsset(settingsContent?.data?.headerLogo);
+  const footerLogoUrl = resolveAsset(settingsContent?.data?.footerLogo);
+
   const saveLang = (code: string) => {
     const payload = { code, expiresAt: Date.now() + LANG_TTL_MS };
     sessionStorage.setItem(LANG_KEY, JSON.stringify(payload));
@@ -150,7 +160,15 @@ export default function Layout({ children }: LayoutProps) {
             href="/"
             className="flex items-center gap-2 font-serif text-2xl font-bold text-primary"
           >
-            <span className="hidden sm:inline">RAYHANA</span>
+            {headerLogoUrl ? (
+              <img
+                src={headerLogoUrl}
+                alt="Rayhana logo"
+                className="h-9 w-auto object-contain"
+              />
+            ) : (
+              <span className="hidden sm:inline">RAYHANA</span>
+            )}
           </Link>
 
           {/* Desktop Navigation */}
@@ -273,7 +291,15 @@ export default function Layout({ children }: LayoutProps) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <h3 className="font-serif text-xl font-bold text-primary mb-4">
-                RAYHANA
+                {footerLogoUrl ? (
+                  <img
+                    src={footerLogoUrl}
+                    alt="Rayhana logo"
+                    className="h-10 w-auto object-contain"
+                  />
+                ) : (
+                  <span>RAYHANA</span>
+                )}
               </h3>
               <p className="text-muted-foreground max-w-xs">
                 {t("hero.subtitle")}
