@@ -27,7 +27,7 @@ export default function Layout({ children }: LayoutProps) {
   const LANG_KEY = "rayhana_lang";
   const LANG_TTL_MS = 24 * 60 * 60 * 1000;
 
-  const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const apiBase = import.meta.env.VITE_API_URL?.replace(/\/api$/, "") || "";
   const resolveAsset = (url?: string) => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
