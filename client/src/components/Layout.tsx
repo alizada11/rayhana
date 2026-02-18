@@ -18,6 +18,7 @@ type NavItem = { href: string; label: LocalizedLabel };
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
   const { data: settingsContent } = useContent("settings");
+  const [footerLogoBroken, setFooterLogoBroken] = useState(false);
   const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
@@ -25,6 +26,65 @@ export default function Layout({ children }: LayoutProps) {
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const LANG_KEY = "rayhana_lang";
   const LANG_TTL_MS = 24 * 60 * 60 * 1000;
+
+  const apiBase = import.meta.env.VITE_API_URL?.replace(/\/api$/, "") || "";
+  const resolveAsset = (url?: string) => {
+    if (!url) return "";
+    if (url.startsWith("http")) return url;
+    return `${apiBase}${url}`;
+  };
+
+  const headerLogoUrl = resolveAsset(settingsContent?.data?.headerLogo);
+  const footerLogoUrl = resolveAsset(settingsContent?.data?.footerLogo);
+
+  const gscVerification = settingsContent?.data?.gscVerification?.trim();
+  const gaMeasurementId = settingsContent?.data?.gaMeasurementId?.trim();
+
+  useEffect(() => {
+    setFooterLogoBroken(false);
+  }, [footerLogoUrl]);
+
+  // Inject Google Search Console verification meta
+  useEffect(() => {
+    if (!gscVerification) return;
+    let meta = document.querySelector('meta[name="google-site-verification"]');
+    let created = false;
+    if (!meta) {
+      meta = document.createElement('meta');
+      meta.setAttribute('name', 'google-site-verification');
+      created = true;
+    }
+    meta.setAttribute('content', gscVerification);
+    if (created || !meta.parentNode) {
+      document.head.appendChild(meta);
+    }
+    return () => {
+      if (created && meta?.parentNode) meta.parentNode.removeChild(meta);
+    };
+  }, [gscVerification]);
+
+  // Inject Google Analytics if Measurement ID provided
+  useEffect(() => {
+    const gaRegex = /^G-[A-Z0-9]{6,12}$/;
+    if (!gaMeasurementId || !gaRegex.test(gaMeasurementId)) return;
+    const existing = document.querySelector(`script[data-ga-id="${gaMeasurementId}"]`);
+    if (existing) return;
+    const script = document.createElement('script');
+    script.async = true;
+    script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
+    script.dataset.gaId = gaMeasurementId;
+    const inline = document.createElement('script');
+    inline.textContent = `window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());
+gtag('config', '${gaMeasurementId}');`;
+    document.head.appendChild(script);
+    document.head.appendChild(inline);
+    return () => {
+      script.parentNode?.removeChild(script);
+      inline.parentNode?.removeChild(inline);
+    };
+  }, [gaMeasurementId]);
 
   const saveLang = (code: string) => {
     const payload = { code, expiresAt: Date.now() + LANG_TTL_MS };
@@ -150,7 +210,20 @@ export default function Layout({ children }: LayoutProps) {
             href="/"
             className="flex items-center gap-2 font-serif text-2xl font-bold text-primary"
           >
-            <span className="hidden sm:inline">RAYHANA</span>
+            {headerLogoUrl ? (
+              <img
+                src={headerLogoUrl}
+                alt="Rayhana logo"
+                className="h-9 w-auto object-contain"
+                onError={e => {
+                  e.currentTarget.style.display = "none";
+                  e.currentTarget.nextElementSibling?.classList.remove(
+                    "hidden"
+                  );
+                }}
+              />
+            ) : null}
+            <span className={headerLogoUrl ? "hidden" : ""}>RAYHANA</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -273,7 +346,17 @@ export default function Layout({ children }: LayoutProps) {
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
               <h3 className="font-serif text-xl font-bold text-primary mb-4">
-                RAYHANA
+                {footerLogoUrl && !footerLogoBroken ? (
+                  <img
+                    src={footerLogoUrl}
+                    alt="Rayhana logo"
+                    className="h-10 w-auto object-contain"
+                    onError={() => setFooterLogoBroken(true)}
+                    loading="lazy"
+                  />
+                ) : (
+                  <span>RAYHANA</span>
+                )}
               </h3>
               <p className="text-muted-foreground max-w-xs">
                 {t("hero.subtitle")}

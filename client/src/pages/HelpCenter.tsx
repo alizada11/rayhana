@@ -25,6 +25,14 @@ export default function HelpCenter() {
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
+
+  const decodeHtml = (value: string) => {
+    const doc = new DOMParser().parseFromString(value || "", "text/html");
+    // decode entities but keep markup intact
+    return doc.body?.innerHTML || "";
+  };
+
+  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const title = getLocalized(data?.data?.center?.title, "Help Center");
   const subtitle = getLocalized(
@@ -106,7 +114,7 @@ export default function HelpCenter() {
                 <div
                   className="text-muted-foreground mt-2 prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(getLocalized(item.answer, "")),
+                    __html: cleanHtml(getLocalized(item.answer, "")),
                   }}
                 />
               </div>

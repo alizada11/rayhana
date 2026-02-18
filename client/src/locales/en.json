@@ -352,6 +352,13 @@
       "back_to_blog": "Back to Blog"
     }
   },
+  "share": {
+    "copy_link": "Copy link",
+    "whatsapp": "Share on WhatsApp",
+    "telegram": "Share on Telegram",
+    "twitter": "Share on Twitter (X)",
+    "facebook": "Share on Facebook"
+  },
   "help": {
     "notFound": "Help Article Not Found",
     "description": "The help page you are looking for does not exist.",

@@ -1,11 +1,19 @@
 import { useEffect, useState } from "react";
 import { useContent, useUpsertContent } from "@/hooks/useContent";
-import { Save, Plus, Trash2 } from "lucide-react";
+import { Save, Plus, Trash2, Image as ImageIcon } from "lucide-react";
+import MediaPicker from "@/components/MediaPicker";
 import { toast } from "sonner";
 
 export default function DashboardSettings() {
   const { data } = useContent("settings");
   const upsert = useUpsertContent("settings");
+  const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const resolveUrl = (url?: string) => {
+    if (!url) return "";
+    if (url.startsWith("http")) return url;
+    return `${apiBase}${url}`;
+  };
+
   const emptyLabel = { en: "", fa: "", ps: "" };
   const normalizeLabel = (label: any) => {
     if (label && typeof label === "object") {
@@ -17,7 +25,15 @@ export default function DashboardSettings() {
     }
     return { ...emptyLabel, en: label || "" };
   };
+  const [pickerTarget, setPickerTarget] = useState<"header" | "footer" | null>(null);
+  const gaRegex = /^G-[A-Z0-9]{6,12}$/;
+  const [gaError, setGaError] = useState<string>("");
+
   const [formData, setFormData] = useState<any>({
+    headerLogo: "",
+    footerLogo: "",
+    gscVerification: "",
+    gaMeasurementId: "",
     nav: [{ label: { en: "Home", fa: "", ps: "" }, href: "/" }],
     footerLinks: [{ label: { en: "Privacy Policy", fa: "", ps: "" }, href: "/privacy" }],
     social: [{ label: { en: "Instagram", fa: "", ps: "" }, href: "https://instagram.com" }],
@@ -26,6 +42,10 @@ export default function DashboardSettings() {
   useEffect(() => {
     if (data?.data) {
       setFormData({
+        headerLogo: data.data.headerLogo || "",
+        footerLogo: data.data.footerLogo || "",
+        gscVerification: data.data.gscVerification || "",
+        gaMeasurementId: data.data.gaMeasurementId || "",
         nav: (data.data.nav || []).map((item: any) => ({
           ...item,
           label: normalizeLabel(item.label),
@@ -47,6 +67,12 @@ export default function DashboardSettings() {
   };
 
   const handleSave = () => {
+    if (formData.gaMeasurementId && !gaRegex.test(formData.gaMeasurementId)) {
+      setGaError("Must match GA4 ID e.g. G-XXXXXXX");
+      toast.error("Invalid Google Analytics ID");
+      return;
+    }
+
     upsert.mutate(formData, {
       onSuccess: () => {
         toast.success("Settings saved.");
@@ -161,9 +187,102 @@ export default function DashboardSettings() {
         </button>
       </div>
 
+      <div className="bg-card border rounded-xl p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-serif text-lg font-bold">Branding</h2>
+          <p className="text-sm text-muted-foreground">Header & footer logos</p>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          {["header", "footer"].map(slot => {
+            const key = slot === "header" ? "headerLogo" : "footerLogo";
+            const label = slot === "header" ? "Header logo" : "Footer logo";
+            const url = formData[key];
+            return (
+              <div key={slot} className="border rounded-lg p-4 space-y-3">
+                <div className="flex items-center justify-between">
+                  <span className="font-medium">{label}</span>
+                  <ImageIcon className="w-4 h-4 text-muted-foreground" />
+                </div>
+                <div className="w-full h-20 rounded-lg border bg-muted/40 flex items-center justify-center overflow-hidden">
+                  {url ? (
+                    <img
+                      src={resolveUrl(url)}
+                      alt={`${label} preview`}
+                      className="max-h-20 w-auto object-contain"
+                    />
+                  ) : (
+                    <span className="text-xs text-muted-foreground">No logo set</span>
+                  )}
+                </div>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setPickerTarget(slot as "header" | "footer")}
+                    className="inline-flex items-center gap-2 border px-3 py-2 rounded-lg text-sm"
+                  >
+                    Choose from library
+                  </button>
+                  <input
+                    className="flex-1 border rounded-lg px-3 py-2 text-sm"
+                    placeholder="/uploads/logo.svg or https://..."
+                    value={url || ""}
+                    onChange={e =>
+                      setFormData((prev: any) => ({ ...prev, [key]: e.target.value }))
+                    }
+                  />
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+      <div className="bg-card border rounded-xl p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-serif text-lg font-bold">SEO & Analytics</h2>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Google Search Console token</label>
+            <input
+              className="border rounded-lg px-3 py-2 w-full"
+              placeholder="paste verification token"
+              value={formData.gscVerification || ""}
+              onChange={e => setFormData((prev: any) => ({ ...prev, gscVerification: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">If empty, the verification meta tag will not be rendered.</p>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Google Analytics Measurement ID</label>
+            <input
+              className={`border rounded-lg px-3 py-2 w-full ${gaError ? "border-red-500 focus:ring-red-500" : ""}`}
+              placeholder="G-XXXXXXXXXX"
+              pattern="^G-[A-Z0-9]{6,12}$"
+              value={formData.gaMeasurementId || ""}
+              onChange={e => {
+                const val = e.target.value;
+                setFormData((prev: any) => ({ ...prev, gaMeasurementId: val }));
+                setGaError(val && !gaRegex.test(val) ? "Must match GA4 ID e.g. G-XXXXXXX" : "");
+              }}
+            />
+            <p className={`text-xs ${gaError ? "text-red-600" : "text-muted-foreground"}`}>
+              {gaError || "If empty, GA script will not be injected."}
+            </p>
+          </div>
+        </div>
+      </div>
       {renderList("nav", "Navigation")}
       {renderList("footerLinks", "Footer Links")}
       {renderList("social", "Social Links")}
+      <MediaPicker
+        open={pickerTarget !== null}
+        accept="image"
+        onClose={() => setPickerTarget(null)}
+        onSelect={url => {
+          if (!pickerTarget) return;
+          setFormData((prev: any) => ({ ...prev, [pickerTarget + "Logo"]: url }));
+          setPickerTarget(null);
+        }}
+      />
     </div>
   );
 }

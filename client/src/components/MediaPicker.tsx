@@ -48,13 +48,13 @@ export default function MediaPicker({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-      <div className="bg-white rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
-        <div className="sticky top-0 bg-white border-b px-6 py-4 flex items-center justify-between">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+      <div className="bg-card text-foreground border border-border rounded-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto shadow-xl">
+        <div className="sticky top-0 bg-card border-b border-border px-6 py-4 flex items-center justify-between">
           <h2 className="text-lg font-serif font-bold">Media Library</h2>
           <button
             onClick={onClose}
-            className="p-2 hover:bg-gray-100 rounded-lg"
+            className="p-2 hover:bg-muted rounded-lg"
           >
             <X className="w-5 h-5" />
           </button>
@@ -79,7 +79,7 @@ export default function MediaPicker({
           </div>
 
           {isLoading && (
-            <div className="text-center text-gray-500 py-6">Loading...</div>
+            <div className="text-center text-muted-foreground py-6">Loading...</div>
           )}
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
@@ -94,10 +94,10 @@ export default function MediaPicker({
                 key={item.id}
                 type="button"
                 onClick={() => onSelect(resolveUrl(item.url))}
-                className="group border rounded-xl overflow-hidden text-left hover:ring-2 hover:ring-primary transition-all"
+                className="group border border-border rounded-xl overflow-hidden text-left hover:ring-2 hover:ring-primary transition-all bg-card"
                 title="Select"
               >
-                <div className="aspect-square bg-gray-50 relative">
+                <div className="aspect-square bg-muted/40 relative">
                   {item.mimeType?.startsWith("video/") ? (
                     <video
                       src={resolveUrl(item.url)}
@@ -112,12 +112,12 @@ export default function MediaPicker({
                     />
                   )}
                   <div className="absolute inset-0 bg-black/0 group-hover:bg-black/30 transition-colors flex items-center justify-center">
-                    <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-white text-primary rounded-full p-2">
+                    <div className="opacity-0 group-hover:opacity-100 transition-opacity bg-card text-primary rounded-full p-2 border border-border">
                       <Check className="w-5 h-5" />
                     </div>
                   </div>
                 </div>
-                <div className="p-2 text-xs text-gray-500 line-clamp-1">
+                <div className="p-2 text-xs text-muted-foreground line-clamp-1">
                   {item.fileName}
                 </div>
               </button>
