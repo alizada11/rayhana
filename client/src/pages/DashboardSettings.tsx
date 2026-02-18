@@ -30,6 +30,8 @@ export default function DashboardSettings() {
   const [formData, setFormData] = useState<any>({
     headerLogo: "",
     footerLogo: "",
+    gscVerification: "",
+    gaMeasurementId: "",
     nav: [{ label: { en: "Home", fa: "", ps: "" }, href: "/" }],
     footerLinks: [{ label: { en: "Privacy Policy", fa: "", ps: "" }, href: "/privacy" }],
     social: [{ label: { en: "Instagram", fa: "", ps: "" }, href: "https://instagram.com" }],
@@ -40,6 +42,8 @@ export default function DashboardSettings() {
       setFormData({
         headerLogo: data.data.headerLogo || "",
         footerLogo: data.data.footerLogo || "",
+        gscVerification: data.data.gscVerification || "",
+        gaMeasurementId: data.data.gaMeasurementId || "",
         nav: (data.data.nav || []).map((item: any) => ({
           ...item,
           label: normalizeLabel(item.label),
@@ -222,6 +226,33 @@ export default function DashboardSettings() {
               </div>
             );
           })}
+        </div>
+      </div>
+      <div className="bg-card border rounded-xl p-4 space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="font-serif text-lg font-bold">SEO & Analytics</h2>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Google Search Console token</label>
+            <input
+              className="border rounded-lg px-3 py-2 w-full"
+              placeholder="paste verification token"
+              value={formData.gscVerification || ""}
+              onChange={e => setFormData((prev: any) => ({ ...prev, gscVerification: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">If empty, the verification meta tag will not be rendered.</p>
+          </div>
+          <div className="space-y-2">
+            <label className="text-sm font-medium text-foreground">Google Analytics Measurement ID</label>
+            <input
+              className="border rounded-lg px-3 py-2 w-full"
+              placeholder="G-XXXXXXXXXX"
+              value={formData.gaMeasurementId || ""}
+              onChange={e => setFormData((prev: any) => ({ ...prev, gaMeasurementId: e.target.value }))}
+            />
+            <p className="text-xs text-muted-foreground">If empty, GA script will not be injected.</p>
+          </div>
         </div>
       </div>
       {renderList("nav", "Navigation")}
