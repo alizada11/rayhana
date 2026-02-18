@@ -26,6 +26,8 @@ export default function DashboardSettings() {
     return { ...emptyLabel, en: label || "" };
   };
   const [pickerTarget, setPickerTarget] = useState<"header" | "footer" | null>(null);
+  const gaRegex = /^G-[A-Z0-9]{6,12}$/;
+  const [gaError, setGaError] = useState<string>("");
 
   const [formData, setFormData] = useState<any>({
     headerLogo: "",
@@ -65,6 +67,12 @@ export default function DashboardSettings() {
   };
 
   const handleSave = () => {
+    if (formData.gaMeasurementId && !gaRegex.test(formData.gaMeasurementId)) {
+      setGaError("Must match GA4 ID e.g. G-XXXXXXX");
+      toast.error("Invalid Google Analytics ID");
+      return;
+    }
+
     upsert.mutate(formData, {
       onSuccess: () => {
         toast.success("Settings saved.");
@@ -246,12 +254,19 @@ export default function DashboardSettings() {
           <div className="space-y-2">
             <label className="text-sm font-medium text-foreground">Google Analytics Measurement ID</label>
             <input
-              className="border rounded-lg px-3 py-2 w-full"
+              className={`border rounded-lg px-3 py-2 w-full ${gaError ? "border-red-500 focus:ring-red-500" : ""}`}
               placeholder="G-XXXXXXXXXX"
+              pattern="^G-[A-Z0-9]{6,12}$"
               value={formData.gaMeasurementId || ""}
-              onChange={e => setFormData((prev: any) => ({ ...prev, gaMeasurementId: e.target.value }))}
+              onChange={e => {
+                const val = e.target.value;
+                setFormData((prev: any) => ({ ...prev, gaMeasurementId: val }));
+                setGaError(val && !gaRegex.test(val) ? "Must match GA4 ID e.g. G-XXXXXXX" : "");
+              }}
             />
-            <p className="text-xs text-muted-foreground">If empty, GA script will not be injected.</p>
+            <p className={`text-xs ${gaError ? "text-red-600" : "text-muted-foreground"}`}>
+              {gaError || "If empty, GA script will not be injected."}
+            </p>
           </div>
         </div>
       </div>

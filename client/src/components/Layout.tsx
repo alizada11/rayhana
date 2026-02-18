@@ -55,7 +55,9 @@ export default function Layout({ children }: LayoutProps) {
       created = true;
     }
     meta.setAttribute('content', gscVerification);
-    document.head.appendChild(meta);
+    if (created || !meta.parentNode) {
+      document.head.appendChild(meta);
+    }
     return () => {
       if (created && meta?.parentNode) meta.parentNode.removeChild(meta);
     };
@@ -63,7 +65,8 @@ export default function Layout({ children }: LayoutProps) {
 
   // Inject Google Analytics if Measurement ID provided
   useEffect(() => {
-    if (!gaMeasurementId) return;
+    const gaRegex = /^G-[A-Z0-9]{6,12}$/;
+    if (!gaMeasurementId || !gaRegex.test(gaMeasurementId)) return;
     const existing = document.querySelector(`script[data-ga-id="${gaMeasurementId}"]`);
     if (existing) return;
     const script = document.createElement('script');
@@ -71,7 +74,7 @@ export default function Layout({ children }: LayoutProps) {
     script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
     script.dataset.gaId = gaMeasurementId;
     const inline = document.createElement('script');
-    inline.innerHTML = `window.dataLayer = window.dataLayer || [];
+    inline.textContent = `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
 gtag('config', '${gaMeasurementId}');`;

@@ -43,6 +43,16 @@ export const upsertContent = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Content payload is required" });
     }
 
+    // Validate GA measurement ID when saving settings content
+    if (key === "settings" && data.gaMeasurementId) {
+      const gaId = String(data.gaMeasurementId).trim();
+      const gaRegex = /^G-[A-Z0-9]{6,12}$/;
+      if (gaId && !gaRegex.test(gaId)) {
+        return res.status(400).json({ error: "Invalid Google Analytics Measurement ID" });
+      }
+      data.gaMeasurementId = gaId;
+    }
+
     const saved = await queries.upsertSiteContent({ key, data });
     res.status(200).json(saved);
   } catch (error) {
