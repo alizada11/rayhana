@@ -9,7 +9,7 @@ if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
@@ -27,11 +27,8 @@ const storage = multer.diskStorage({
 
 export const upload = multer({
   storage,
-  limits: {
-    fileSize: MAX_IMAGE_SIZE_BYTES,
-  },
+  limits: { fileSize: MAX_IMAGE_SIZE_BYTES },
   fileFilter: (_req, file, cb) => {
-    // Only allow images. Size validation is enforced by limits above.
     if (!file.mimetype.startsWith("image/")) {
       cb(new Error("Only image uploads are allowed"));
       return;
