@@ -15,6 +15,7 @@ import {
   ImagesIcon,
   LayoutDashboardIcon,
   LogOutIcon,
+  LockIcon,
   PowerCircleIcon,
   User2Icon,
 } from "lucide-react";
@@ -238,7 +239,7 @@ function LoginPage() {
             >
               <div className="bg-primary/10 dark:bg-primary/20 p-8 text-center transition-colors">
                 <div className="w-16 h-16 mx-auto mb-4 rounded-full bg-primary/20 dark:bg-primary/30 flex items-center justify-center text-2xl">
-                  <span className="text-2xl">🔐</span>
+                  <LockIcon className="w-8 h-8 text-primary" />
                 </div>
                 <h1 className="font-serif text-3xl font-bold text-primary">
                   {title}

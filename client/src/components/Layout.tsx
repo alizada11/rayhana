@@ -37,6 +37,9 @@ export default function Layout({ children }: LayoutProps) {
   const headerLogoUrl = resolveAsset(settingsContent?.data?.headerLogo);
   const footerLogoUrl = resolveAsset(settingsContent?.data?.footerLogo);
 
+  const defaultImgFallback = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+  const customFallback = resolveAsset(settingsContent?.data?.fallbackImage);
+
   const gscVerification = settingsContent?.data?.gscVerification?.trim();
   const gaMeasurementId = settingsContent?.data?.gaMeasurementId?.trim();
 
@@ -111,6 +114,28 @@ gtag('config', '${gaMeasurementId}');`;
     document.dir = isRTL ? "rtl" : "ltr";
     document.documentElement.lang = i18n.language;
   }, [i18n.language, isRTL]);
+
+  useEffect(() => {
+    const handler = (event: Event) => {
+      const target = event.target as HTMLImageElement | null;
+      if (!target || target.tagName !== 'IMG') return;
+      if (target.dataset.reactHasOnError === '1') return;
+      if (target.dataset.skipGlobalFallback === '1') return;
+      if (target.dataset.fallbackApplied === '1') return;
+      target.dataset.fallbackApplied = '1';
+      const fallbackSrc = customFallback || defaultImgFallback;
+      target.src = fallbackSrc;
+      target.addEventListener(
+        'load',
+        () => {
+          target.dataset.fallbackApplied = '';
+        },
+        { once: true }
+      );
+    };
+    window.addEventListener('error', handler, true);
+    return () => window.removeEventListener('error', handler, true);
+  }, [customFallback, defaultImgFallback]);
 
   const languages = [
     { code: "en", name: "English", dir: "ltr" },
@@ -215,6 +240,7 @@ gtag('config', '${gaMeasurementId}');`;
                 src={headerLogoUrl}
                 alt="Rayhana logo"
                 className="h-9 w-auto object-contain"
+                data-skip-global-fallback="1"
                 onError={e => {
                   e.currentTarget.style.display = "none";
                   e.currentTarget.nextElementSibling?.classList.remove(
@@ -351,6 +377,7 @@ gtag('config', '${gaMeasurementId}');`;
                     src={footerLogoUrl}
                     alt="Rayhana logo"
                     className="h-10 w-auto object-contain"
+                    data-skip-global-fallback="1"
                     onError={() => setFooterLogoBroken(true)}
                     loading="lazy"
                   />
