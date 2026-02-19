@@ -42,6 +42,7 @@ const fallbackAbout = {
   },
   images: {
     story: "",
+    founder: "",
   },
   story: {
     title: { en: "", fa: "", ps: "" },
@@ -976,6 +977,23 @@ export default function DashboardContent() {
                   }
                   placeholder="Founder body"
                 />
+              </div>
+              <div className="flex items-center gap-2">
+                <input
+                  className="border rounded-lg px-3 py-2 w-full"
+                  placeholder="Founder image URL"
+                  value={formData.images?.founder || ""}
+                  onChange={e =>
+                    updateField(["images", "founder"], e.target.value)
+                  }
+                />
+                <button
+                  type="button"
+                  className="p-2 border rounded-lg"
+                  onClick={() => openImagePicker(["images", "founder"])}
+                >
+                  <ImageIcon className="w-4 h-4" />
+                </button>
               </div>
             </div>
           </div>

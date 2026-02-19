@@ -43,15 +43,28 @@ export const upsertContent = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Content payload is required" });
     }
 
-    // Validate GA measurement ID when saving settings content
+    // Validate GA measurement ID when saving settings content.
+    // Allow it to be omitted or left empty so setup can be deferred.
     if (key === "settings") {
       const gaRegex = /^G-[A-Z0-9]{6,12}$/;
+
       if (data.gaMeasurementId !== undefined) {
-        const gaId = String(data.gaMeasurementId).trim();
-        if (!gaRegex.test(gaId)) {
-          return res.status(400).json({ error: "Invalid Google Analytics Measurement ID" });
+        const gaId = String(data.gaMeasurementId ?? "").trim();
+
+        // Only validate when a value is supplied; empty strings mean "not configured".
+        if (gaId && !gaRegex.test(gaId)) {
+          return res
+            .status(400)
+            .json({ error: "Invalid Google Analytics Measurement ID" });
         }
-        data.gaMeasurementId = gaId;
+
+        // Persist empty as null to keep payload clean.
+        data.gaMeasurementId = gaId || null;
+      }
+
+      if (data.gscVerification !== undefined) {
+        data.gscVerification =
+          String(data.gscVerification ?? "").trim() || null;
       }
     }
 

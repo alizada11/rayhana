@@ -58,6 +58,8 @@ export default function About() {
   );
   const storyImage =
     aboutContent?.data?.images?.story || "/images/about-user.jpg";
+  const founderImage =
+    aboutContent?.data?.images?.founder || "/images/about-founder.jpg";
 
   return (
     <div className="min-h-screen">
@@ -174,21 +176,17 @@ export default function About() {
               </div>
             </motion.div>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, x: -50 }}
               whileInView={{ opacity: 1, x: 0 }}
               viewport={{ once: true }}
-              className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl bg-gradient-to-br from-primary/20 to-primary/5 flex items-center justify-center"
+              className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
             >
-              <div className="text-center space-y-4 p-8">
-                <div className="text-6xl">🏠</div>
-                <p className="text-xl font-serif font-bold text-primary">
-                  {heroTitle}
-                </p>
-                <p className="text-muted-foreground">
-                  {heroSubtitle}
-                </p>
-              </div>
+              <img
+                src={founderImage}
+                alt="Founder portrait"
+                className="w-full h-full object-cover"
+              />
             </motion.div>
           </div>
         </div>

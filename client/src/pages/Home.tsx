@@ -304,9 +304,11 @@ export default function Home() {
                   );
                 })}
               </ul>
-              <Button size="lg" variant="outline" className="mt-4">
-                {t("products.view_details")}
-              </Button>
+              <Link href="/products">
+                <Button size="lg" variant="outline" className="mt-4">
+                  {t("products.view_details")}
+                </Button>
+              </Link>
             </motion.div>
           </div>
         </section>
