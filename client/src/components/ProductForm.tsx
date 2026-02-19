@@ -74,6 +74,8 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
       return;
     }
     setImageFile(file);
+    // Clear any previously chosen media library URL so the payload is unambiguous.
+    setFormData(prev => ({ ...prev, imageUrl: "" }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -138,12 +140,12 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
       ...prev,
       [field]:
         field === "sizes"
-          ? (prev.sizes.includes(value as number)
+          ? ((prev.sizes.includes(value as number)
               ? prev.sizes.filter((v: number) => v !== value)
-              : [...prev.sizes, value as number]) as any
-          : (prev.colors.includes(value as string)
+              : [...prev.sizes, value as number]) as any)
+          : ((prev.colors.includes(value as string)
               ? prev.colors.filter((v: string) => v !== value)
-              : [...prev.colors, value as string]) as any,
+              : [...prev.colors, value as string]) as any),
     }));
   };
 
@@ -314,7 +316,8 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                 className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
               />
               <p className="text-xs text-gray-500 mt-1">
-                This link will be used for the “Buy” button on the products page.
+                This link will be used for the “Buy” button on the products
+                page.
               </p>
             </div>
 
@@ -537,17 +540,17 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
             </button>
           </div>
         </form>
-      <MediaPicker
-        open={pickerOpen}
-        accept="image"
-        onClose={() => setPickerOpen(false)}
-        onSelect={url => {
-          setPickerOpen(false);
-          setImageFile(null);
-          setFormData(prev => ({ ...prev, imageUrl: url }));
-          setImagePreview(resolveImageUrl(url));
-        }}
-      />
+        <MediaPicker
+          open={pickerOpen}
+          accept="image"
+          onClose={() => setPickerOpen(false)}
+          onSelect={url => {
+            setPickerOpen(false);
+            setImageFile(null);
+            setFormData(prev => ({ ...prev, imageUrl: url }));
+            setImagePreview(resolveImageUrl(url));
+          }}
+        />
       </div>
     </div>
   );

@@ -1,9 +1,9 @@
-import fs from "fs";
-import path from "path";
-import multer from "multer";
+import fs from  fs;
+import path from path;
+import multer from multer;
 
 // Keep uploads aligned with static serving in server/src/index.ts
-const uploadsDir = path.resolve(process.cwd(), "server", "uploads");
+const uploadsDir = path.resolve(__dirname, .., .., uploads);
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
@@ -19,9 +19,9 @@ const storage = multer.diskStorage({
     const ext = path.extname(file.originalname);
     const base = path
       .basename(file.originalname, ext)
-      .replace(/[^a-zA-Z0-9-_]/g, "");
-    const unique = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    cb(null, `${base}-${unique}${ext}`);
+      .replace(/[^a-zA-Z0-9-_]/g, ");
+    const unique = ${Date.now()}-;
+    cb(null, ${base}-);
   },
 });
 
@@ -32,8 +32,8 @@ export const upload = multer({
   },
   fileFilter: (_req, file, cb) => {
     // Only allow images. Size validation is enforced by limits above.
-    if (!file.mimetype.startsWith("image/")) {
-      cb(new Error("Only image uploads are allowed"));
+    if (!file.mimetype.startsWith(image/)) {
+      cb(new Error(Only image uploads are allowed));
       return;
     }
     cb(null, true);
