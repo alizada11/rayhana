@@ -72,6 +72,7 @@ export interface SiteContentPayload {
 
 export interface MediaUploadPayload {
   file: File;
+  onProgress?: (percent: number) => void;
 }
 
 export interface UpdateProductParams {
@@ -511,11 +512,20 @@ export const getAllContent = async () => {
 };
 
 // ---------- MEDIA API ----------
-export const uploadMedia = async ({ file }: MediaUploadPayload) => {
+export const uploadMedia = async ({ file, onProgress }: MediaUploadPayload) => {
   const payload = new FormData();
   payload.append("file", file);
   const { data } = await api.post("/media/avatar", payload, {
     headers: { "Content-Type": "multipart/form-data" },
+    onUploadProgress: event => {
+      if (!onProgress) return;
+      const ratio =
+        event.progress ??
+        (event.total ? event.loaded / event.total : undefined);
+      if (ratio === undefined) return;
+      const percent = Math.round(ratio * 100);
+      onProgress(Math.min(100, Math.max(0, percent)));
+    },
   });
   return data;
 };

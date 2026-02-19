@@ -18,6 +18,7 @@ export default function DashboardMedia() {
   const deleteMutation = useDeleteMedia();
   const confirm = useConfirm();
   const [file, setFile] = useState<File | null>(null);
+  const [uploadProgress, setUploadProgress] = useState<number | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
 
@@ -30,9 +31,10 @@ export default function DashboardMedia() {
   const handleUpload = () => {
     if (!file) return;
     uploadMutation.mutate(
-      { file },
+      { file, onProgress: setUploadProgress },
       {
         onSuccess: () => {
+          setUploadProgress(null);
           setFile(null);
           if (fileInputRef.current) {
             fileInputRef.current.value = "";
@@ -40,7 +42,11 @@ export default function DashboardMedia() {
           toast.success("Media uploaded successfully.");
         },
         onError: () => {
+          setUploadProgress(null);
           toast.error("Failed to upload media.");
+        },
+        onSettled: () => {
+          setUploadProgress(null);
         },
       }
     );
@@ -122,6 +128,17 @@ export default function DashboardMedia() {
             Upload
           </button>
         </div>
+        {uploadProgress !== null && (
+          <div className="mt-4 space-y-1">
+            <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
+              <div
+                className="h-full bg-primary transition-[width]"
+                style={{ width: `${uploadProgress}%` }}
+              />
+            </div>
+            <p className="text-xs text-muted-foreground">Uploading... {uploadProgress}%</p>
+          </div>
+        )}
       </div>
 
       {isLoading && (
