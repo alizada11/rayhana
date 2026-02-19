@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useCreateProduct, useUpdateProduct } from "../hooks/useProducts";
 import { X } from "lucide-react";
 import { toast } from "sonner";
+import MediaPicker from "@/components/MediaPicker";
 
 type ProductFormProps = {
   product?: any;
@@ -11,6 +12,7 @@ type ProductFormProps = {
 export default function ProductForm({ product, onClose }: ProductFormProps) {
   const isEdit = Boolean(product);
   const [imageFile, setImageFile] = useState<File | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
   const resolveImageUrl = (url?: string) => {
     if (!url) return null;
@@ -60,6 +62,18 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
       ...prev,
       [field]: { ...prev[field], [lang]: value },
     }));
+  };
+
+  const handleFileSelect = (file: File | null) => {
+    if (!file) {
+      setImageFile(null);
+      return;
+    }
+    if (file.size > 10 * 1024 * 1024) {
+      toast.error("File too large. Max 10MB.");
+      return;
+    }
+    setImageFile(file);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -337,7 +351,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                     type="file"
                     accept="image/*"
                     onChange={e => {
-                      setImageFile(e.target.files?.[0] || null);
+                      handleFileSelect(e.target.files?.[0] || null);
                     }}
                     className="hidden"
                     id="image-upload"
@@ -352,8 +366,15 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                     <p className="text-sm text-gray-600 mb-1">
                       Click to upload product image
                     </p>
-                    <p className="text-xs text-gray-500">PNG, JPG up to 5MB</p>
+                    <p className="text-xs text-gray-500">PNG, JPG up to 10MB</p>
                   </label>
+                  <button
+                    type="button"
+                    className="inline-flex items-center gap-2 text-sm text-primary underline"
+                    onClick={() => setPickerOpen(true)}
+                  >
+                    Choose from Media Library
+                  </button>
                 </div>
               </div>
 
@@ -516,6 +537,17 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
             </button>
           </div>
         </form>
+      <MediaPicker
+        open={pickerOpen}
+        accept="image"
+        onClose={() => setPickerOpen(false)}
+        onSelect={url => {
+          setPickerOpen(false);
+          setImageFile(null);
+          setFormData(prev => ({ ...prev, imageUrl: url }));
+          setImagePreview(resolveImageUrl(url));
+        }}
+      />
       </div>
     </div>
   );

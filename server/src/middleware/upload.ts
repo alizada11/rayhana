@@ -3,13 +3,13 @@ import path from "path";
 import multer from "multer";
 
 // Keep uploads aligned with static serving in server/src/index.ts
-const uploadsDir = path.resolve(__dirname, "..", "..", "uploads");
+const uploadsDir = path.resolve(process.cwd(), "server", "uploads");
 
 if (!fs.existsSync(uploadsDir)) {
   fs.mkdirSync(uploadsDir, { recursive: true });
 }
 
-const MAX_IMAGE_SIZE_BYTES = 5 * 1024 * 1024;
+const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 
 const storage = multer.diskStorage({
   destination: (_req, _file, cb) => {
