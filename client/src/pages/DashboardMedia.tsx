@@ -133,6 +133,10 @@ export default function DashboardMedia() {
             <div className="w-full h-2 bg-muted rounded-full overflow-hidden">
               <div
                 className="h-full bg-primary transition-[width]"
+                role="progressbar"
+                aria-valuemin={0}
+                aria-valuemax={100}
+                aria-valuenow={uploadProgress}
                 style={{ width: `${uploadProgress}%` }}
               />
             </div>
