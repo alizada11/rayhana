@@ -578,8 +578,14 @@ export const getBlogPostsPaginated = async (filters: BlogListFilters = {}) => {
     searchTerm
       ? sql`(
           lower(${blogPosts.slug}) like ${"%" + searchTerm + "%"} or
-          lower(${blogPosts.title}::text) like ${"%" + searchTerm + "%"} or
-          lower(${blogPosts.excerpt}::text) like ${"%" + searchTerm + "%"}
+          exists (
+            select 1 from jsonb_each_text(${blogPosts.title}) as t(k, v)
+            where lower(v) like ${"%" + searchTerm + "%"}
+          ) or
+          exists (
+            select 1 from jsonb_each_text(${blogPosts.excerpt}) as t2(k, v)
+            where lower(v) like ${"%" + searchTerm + "%"}
+          )
         )`
       : undefined,
   ].filter(Boolean);

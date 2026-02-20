@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useBlogs, useDeleteBlog } from "@/hooks/useBlogs";
 import BlogForm from "@/components/BlogForm";
 import {
@@ -31,18 +31,27 @@ function DashboardBlogs() {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const confirm = useConfirm();
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [statusFilter, featuredFilter]);
+  }, [statusFilter, featuredFilter, searchTerm]);
+
+  useEffect(() => {
+    const id = setTimeout(
+      () => setDebouncedSearchTerm(searchTerm.trim()),
+      300
+    );
+    return () => clearTimeout(id);
+  }, [searchTerm]);
 
   const { data, isLoading } = useBlogs({
     page: currentPage,
     limit: itemsPerPage,
     status: statusFilter === "all" ? undefined : statusFilter,
     featured: featuredFilter === "featured" ? true : undefined,
-    search: searchTerm.trim() || undefined,
+    search: debouncedSearchTerm || undefined,
   });
   const deleteMutation = useDeleteBlog();
 
@@ -52,17 +61,10 @@ function DashboardBlogs() {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
-  const getTitle = (post: any) =>
-    post.title?.en ||
-    post.title?.fa ||
-    post.title?.ps ||
-    post.slug ||
-    "Blog post";
-
   const posts = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  const filteredPosts = useMemo(() => posts, [posts]);
+  const filteredPosts = posts;
 
   const handleEdit = (post: any) => {
     setEditingPost(post);
