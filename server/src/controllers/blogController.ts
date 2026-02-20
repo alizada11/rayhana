@@ -4,6 +4,12 @@ import { getAuth } from "../lib/auth";
 import fs from "fs";
 import path from "path";
 
+const asQueryString = (value: unknown): string | undefined => {
+  if (typeof value === "string") return value;
+  if (Array.isArray(value) && typeof value[0] === "string") return value[0];
+  return undefined;
+};
+
 const getId = (rawId: string | string[]) =>
   Array.isArray(rawId) ? rawId[0] : rawId;
 
@@ -59,6 +65,7 @@ export const getAllBlogPosts = async (_req: Request, res: Response) => {
       _req.query.status === "draft" || _req.query.status === "published"
         ? (_req.query.status as "draft" | "published")
         : undefined;
+    const search = asQueryString(_req.query.search);
     const featured =
       _req.query.featured === undefined
         ? undefined
@@ -70,6 +77,7 @@ export const getAllBlogPosts = async (_req: Request, res: Response) => {
       featured,
       page,
       limit,
+      search,
     });
 
     res.status(200).json(result);

@@ -41,6 +41,7 @@ export interface BlogListParams {
   limit?: number;
   featured?: boolean;
   status?: "draft" | "published";
+  search?: string;
 }
 
 export interface UpdateBlogPostParams {
@@ -395,6 +396,7 @@ export const getBlogPosts = async (params: BlogListParams = {}) => {
     searchParams.set("featured", params.featured ? "1" : "0");
   }
   if (params.status) searchParams.set("status", params.status);
+  if (params.search) searchParams.set("search", params.search.trim());
 
   const query = searchParams.toString();
   const { data } = await api.get(`/blogs${query ? `?${query}` : ""}`);

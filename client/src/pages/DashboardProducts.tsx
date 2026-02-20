@@ -232,7 +232,7 @@ export default function DashboardProducts() {
                     >
                       <td className="px-6 py-4">
                         <div className="flex items-center gap-3">
-                          <img
+                          <img loading="lazy"
                             src={resolveImageUrl(product.imageUrl)}
                             alt={product.title?.en}
                             className="w-12 h-12 object-cover rounded-lg"

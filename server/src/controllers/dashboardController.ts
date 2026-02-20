@@ -10,3 +10,25 @@ export const getStats = async (_req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to fetch stats" });
   }
 };
+
+// Clears browser caches for the origin by sending the Clear-Site-Data header.
+// Note: This does not purge CDN caches; use CDN dashboard for that.
+export const clearCache = async (req: Request, res: Response) => {
+  const isLocalhost =
+    req.hostname === "localhost" ||
+    req.hostname === "127.0.0.1" ||
+    req.ip === "::1" ||
+    req.ip === "::ffff:127.0.0.1";
+  const isSecure = req.secure || isLocalhost;
+
+  if (isSecure) {
+    res.setHeader("Clear-Site-Data", '"cache"');
+  }
+
+  res.status(isSecure ? 200 : 403).json({
+    cleared: Boolean(isSecure),
+    at: new Date().toISOString(),
+    note:
+      "Clears cache only for the browser that made this request (admin) on this API origin; does not affect other users or CDN/edge caches.",
+  });
+};

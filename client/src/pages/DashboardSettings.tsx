@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { useContent, useUpsertContent } from "@/hooks/useContent";
-import { Save, Plus, Trash2, Image as ImageIcon } from "lucide-react";
+import { Save, Plus, Trash2, Image as ImageIcon, Eraser } from "lucide-react";
 import MediaPicker from "@/components/MediaPicker";
 import { toast } from "sonner";
+import api from "@/lib/axios";
 
 export default function DashboardSettings() {
   const { data } = useContent("settings");
@@ -28,6 +29,7 @@ export default function DashboardSettings() {
   const [pickerTarget, setPickerTarget] = useState<"header" | "footer" | null>(null);
   const gaRegex = /^G-[A-Z0-9]{6,12}$/;
   const [gaError, setGaError] = useState<string>("");
+  const [clearingCache, setClearingCache] = useState(false);
 
   const [formData, setFormData] = useState<any>({
     headerLogo: "",
@@ -81,6 +83,19 @@ export default function DashboardSettings() {
         toast.error("Failed to save settings.");
       },
     });
+  };
+
+  const handleClearCache = async () => {
+    setClearingCache(true);
+    try {
+      await api.post("/dashboard/cache/clear");
+      toast.success("Your browser's cached assets will be cleared for this origin.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to clear cache.");
+    } finally {
+      setClearingCache(false);
+    }
   };
 
   const renderList = (key: "nav" | "footerLinks" | "social", title: string) => (
@@ -206,6 +221,7 @@ export default function DashboardSettings() {
                 <div className="w-full h-20 rounded-lg border bg-muted/40 flex items-center justify-center overflow-hidden">
                   {url ? (
                     <img
+                      loading="eager"
                       src={resolveUrl(url)}
                       alt={`${label} preview`}
                       className="max-h-20 w-auto object-contain"
@@ -268,6 +284,24 @@ export default function DashboardSettings() {
               {gaError || "If empty, GA script will not be injected."}
             </p>
           </div>
+        </div>
+      </div>
+      <div className="bg-card border rounded-xl p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-serif text-lg font-bold">Cache</h2>
+            <p className="text-sm text-muted-foreground">
+              Sends Clear-Site-Data: cache. It only clears the browser cache of the admin making this request and only for the API origin. If your API origin differs from the frontend (VITE_API_URL ≠ &quot;/api&quot;), only that origin is cleared; same-origin setups behave as expected. CDN/edge caches are not purged.
+            </p>
+          </div>
+          <button
+            onClick={handleClearCache}
+            disabled={clearingCache}
+            className="inline-flex items-center gap-2 border px-4 py-2 rounded-lg text-sm"
+          >
+            <Eraser className="w-4 h-4" />
+            {clearingCache ? "Clearing..." : "Clear cache"}
+          </button>
         </div>
       </div>
       {renderList("nav", "Navigation")}

@@ -103,7 +103,7 @@ export default function About() {
               viewport={{ once: true }}
               className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl"
             >
-              <img 
+              <img loading="lazy" 
                 src={storyImage} 
                 alt="Rayhana Story" 
                 className="w-full h-full object-cover"
@@ -182,7 +182,7 @@ export default function About() {
               viewport={{ once: true }}
               className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
             >
-              <img
+              <img loading="lazy"
                 src={founderImage}
                 alt="Founder portrait"
                 className="w-full h-full object-cover"

@@ -223,7 +223,7 @@ export default function GuestDashboard() {
                 >
                   {/* Image with Overlay */}
                   <div className="relative aspect-[4/3] bg-muted/80 overflow-hidden">
-                    <img
+                    <img loading="lazy"
                       src={imageUrl}
                       alt={item.dishName}
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
@@ -376,7 +376,7 @@ export default function GuestDashboard() {
         >
           <DialogContent className="max-w-4xl p-0 border-0">
             {previewImage && (
-              <img
+              <img loading="lazy"
                 src={previewImage}
                 alt="Preview"
                 className="w-full h-auto max-h-[80vh] object-contain"

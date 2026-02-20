@@ -237,6 +237,7 @@ gtag('config', '${gaMeasurementId}');`;
           >
             {headerLogoUrl ? (
               <img
+                loading="eager"
                 src={headerLogoUrl}
                 alt="Rayhana logo"
                 className="h-9 w-auto object-contain"
@@ -374,12 +375,12 @@ gtag('config', '${gaMeasurementId}');`;
               <h3 className="font-serif text-xl font-bold text-primary mb-4">
                 {footerLogoUrl && !footerLogoBroken ? (
                   <img
+                    loading="lazy"
                     src={footerLogoUrl}
                     alt="Rayhana logo"
                     className="h-10 w-auto object-contain"
                     data-skip-global-fallback="1"
                     onError={() => setFooterLogoBroken(true)}
-                    loading="lazy"
                   />
                 ) : (
                   <span>RAYHANA</span>

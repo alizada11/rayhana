@@ -41,6 +41,7 @@ export default function ProductDetailModal({
             <div>
               <div className="bg-muted rounded-xl p-8 flex items-center justify-center">
                 <img
+                  loading="eager"
                   src={resolveImageUrl(product.imageUrl)}
                   alt={product.title?.en}
                   className="w-full max-w-md object-contain rounded-lg"

@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useBlogs, useDeleteBlog } from "@/hooks/useBlogs";
 import BlogForm from "@/components/BlogForm";
 import {
@@ -16,6 +16,9 @@ import { Link } from "wouter";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/ConfirmProvider";
 
+const getTitle = (post: any) =>
+  post.title?.en || post.title?.fa || post.title?.ps || post.slug || "Blog post";
+
 function DashboardBlogs() {
   const [editingPost, setEditingPost] = useState<any | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -28,17 +31,27 @@ function DashboardBlogs() {
   );
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage] = useState(10);
+  const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
   const confirm = useConfirm();
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [statusFilter, featuredFilter]);
+  }, [statusFilter, featuredFilter, debouncedSearchTerm]);
+
+  useEffect(() => {
+    const id = setTimeout(
+      () => setDebouncedSearchTerm(searchTerm.trim()),
+      300
+    );
+    return () => clearTimeout(id);
+  }, [searchTerm]);
 
   const { data, isLoading } = useBlogs({
     page: currentPage,
     limit: itemsPerPage,
     status: statusFilter === "all" ? undefined : statusFilter,
     featured: featuredFilter === "featured" ? true : undefined,
+    search: debouncedSearchTerm || undefined,
   });
   const deleteMutation = useDeleteBlog();
 
@@ -48,19 +61,8 @@ function DashboardBlogs() {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
-
   const posts = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
-
-  const filteredPosts = useMemo(() => {
-    return posts.filter(post => {
-      const title = post.title?.en || "";
-      const matchesSearch =
-        title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.slug?.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesSearch;
-    });
-  }, [posts, searchTerm]);
 
   const handleEdit = (post: any) => {
     setEditingPost(post);
@@ -177,7 +179,7 @@ function DashboardBlogs() {
         <div className="bg-card border border-border rounded-xl p-4">
           <p className="text-sm text-muted-foreground">Showing</p>
           <p className="text-2xl font-bold text-foreground">
-            {filteredPosts.length}
+            {posts.length}
           </p>
         </div>
         <div className="bg-card border border-border rounded-xl p-4">
@@ -190,19 +192,20 @@ function DashboardBlogs() {
 
       {/* Mobile cards */}
       <div className="grid grid-cols-1 gap-3 md:hidden">
-        {filteredPosts.map(post => (
+        {posts.map(post => (
           <div
             key={post.id}
             className="border rounded-xl p-4 bg-card shadow-sm w-full box-border"
           >
             <div className="flex items-center gap-3">
               <img
+                loading="lazy"
                 src={resolveImageUrl(post.imageUrl)}
-                alt={post.title?.en}
+                alt={getTitle(post)}
                 className="w-16 h-16 object-cover rounded-lg"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-foreground">{post.title?.en}</p>
+                <p className="font-medium text-foreground">{getTitle(post)}</p>
                 <p className="text-xs text-muted-foreground">{post.slug}</p>
               </div>
             </div>
@@ -271,8 +274,8 @@ function DashboardBlogs() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filteredPosts.length > 0 ? (
-                filteredPosts.map(post => (
+              {posts.length > 0 ? (
+                posts.map(post => (
                   <tr
                     key={post.id}
                     className="hover:bg-muted transition-colors"
@@ -280,13 +283,14 @@ function DashboardBlogs() {
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <img
+                          loading="lazy"
                           src={resolveImageUrl(post.imageUrl)}
-                          alt={post.title?.en}
+                          alt={getTitle(post)}
                           className="w-12 h-12 object-cover rounded-lg"
                         />
                         <div>
                           <p className="font-medium text-foreground">
-                            {post.title?.en}
+                            {getTitle(post)}
                           </p>
                           <p className="text-sm text-muted-foreground line-clamp-1 max-w-xs">
                             {post.slug}
