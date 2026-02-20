@@ -58,13 +58,22 @@ function DashboardBlogs() {
   const posts = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
 
+  const getTitle = (post: any) =>
+    post.title?.en ||
+    post.title?.fa ||
+    post.title?.ps ||
+    post.slug ||
+    "Blog post";
+
   const filteredPosts = useMemo(() => {
+    const term = searchTerm.toLowerCase();
     return posts.filter(post => {
-      const title = post.title?.en || "";
-      const matchesSearch =
-        title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        post.slug?.toLowerCase().includes(searchTerm.toLowerCase());
-      return matchesSearch;
+      const title = getTitle(post).toLowerCase();
+      const slug = post.slug?.toLowerCase() || "";
+      return (
+        title.includes(term) ||
+        slug.includes(term)
+      );
     });
   }, [posts, searchTerm]);
 

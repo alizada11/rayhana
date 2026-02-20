@@ -172,7 +172,7 @@ export function CustomerGallery() {
               onClick={() => setActiveImage(img)}
             >
               <img
-                loading="lazy"
+                loading={index < 4 ? "eager" : "lazy"}
                 src={resolveImageUrl(img.imageUrl)}
                 alt={`Gallery by ${img.user?.name || "Guest"}`}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"

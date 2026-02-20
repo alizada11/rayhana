@@ -89,8 +89,8 @@ export default function DashboardSettings() {
   const handleClearCache = async () => {
     setClearingCache(true);
     try {
-      await api.post(`${apiPrefix}/dashboard/cache/clear`);
-      toast.success("Cache clear instruction sent. Browsers will clear cached assets.");
+      await api.post("/dashboard/cache/clear");
+      toast.success("Your browser's cached assets will be cleared for this origin.");
     } catch (err) {
       console.error(err);
       toast.error("Failed to clear cache.");
