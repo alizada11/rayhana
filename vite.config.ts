@@ -11,7 +11,8 @@ const plugins = [
   react(),
   tailwindcss(),
   !isProd && jsxLocPlugin(),
-  vitePluginManusRuntime(),
+  // Manus runtime is useful in preview/builder, but adds weight in production bundles.
+  !isProd && vitePluginManusRuntime(),
 ].filter(Boolean);
 
 export default defineConfig({

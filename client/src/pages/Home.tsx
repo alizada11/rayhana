@@ -2,10 +2,17 @@ import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { ArrowRight, Check, Star, ShieldCheck } from "lucide-react";
 
-import { CustomerGallery } from "@/components/CustomerGallery";
-import FeaturedBlogSection from "@/components/FeaturedBlogSection";
-import { Newsletter } from "@/components/Newsletter";
-import FAQ from "@/components/FAQ";
+import { lazy, Suspense } from "react";
+const CustomerGallery = lazy(() =>
+  import("@/components/CustomerGallery").then(mod => ({
+    default: mod.CustomerGallery,
+  }))
+);
+const FeaturedBlogSection = lazy(() => import("@/components/FeaturedBlogSection"));
+const Newsletter = lazy(() =>
+  import("@/components/Newsletter").then(mod => ({ default: mod.Newsletter }))
+);
+const FAQ = lazy(() => import("@/components/FAQ"));
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
@@ -132,6 +139,7 @@ export default function Home() {
                 loop
                 muted
                 playsInline
+                preload="metadata"
                 className="w-full h-full object-cover"
               >
                 <source src={heroMedia} />
@@ -413,16 +421,24 @@ export default function Home() {
         </section>
 
         {/* Customer Gallery */}
-        <CustomerGallery />
+        <Suspense fallback={null}>
+          <CustomerGallery />
+        </Suspense>
 
         {/* Featured Blog */}
-        <FeaturedBlogSection />
+        <Suspense fallback={null}>
+          <FeaturedBlogSection />
+        </Suspense>
 
         {/* FAQ Section */}
-        <FAQ />
+        <Suspense fallback={null}>
+          <FAQ />
+        </Suspense>
 
         {/* Newsletter */}
-        <Newsletter />
+        <Suspense fallback={null}>
+          <Newsletter />
+        </Suspense>
       </div>
     </>
   );
