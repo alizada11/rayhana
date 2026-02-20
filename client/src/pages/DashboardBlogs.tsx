@@ -36,7 +36,7 @@ function DashboardBlogs() {
 
   useEffect(() => {
     setCurrentPage(1);
-  }, [statusFilter, featuredFilter, searchTerm]);
+  }, [statusFilter, featuredFilter, debouncedSearchTerm]);
 
   useEffect(() => {
     const id = setTimeout(
@@ -63,8 +63,6 @@ function DashboardBlogs() {
   };
   const posts = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
-
-  const filteredPosts = posts;
 
   const handleEdit = (post: any) => {
     setEditingPost(post);
@@ -181,7 +179,7 @@ function DashboardBlogs() {
         <div className="bg-card border border-border rounded-xl p-4">
           <p className="text-sm text-muted-foreground">Showing</p>
           <p className="text-2xl font-bold text-foreground">
-            {filteredPosts.length}
+            {posts.length}
           </p>
         </div>
         <div className="bg-card border border-border rounded-xl p-4">
@@ -194,7 +192,7 @@ function DashboardBlogs() {
 
       {/* Mobile cards */}
       <div className="grid grid-cols-1 gap-3 md:hidden">
-        {filteredPosts.map(post => (
+        {posts.map(post => (
           <div
             key={post.id}
             className="border rounded-xl p-4 bg-card shadow-sm w-full box-border"
@@ -276,8 +274,8 @@ function DashboardBlogs() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border">
-              {filteredPosts.length > 0 ? (
-                filteredPosts.map(post => (
+              {posts.length > 0 ? (
+                posts.map(post => (
                   <tr
                     key={post.id}
                     className="hover:bg-muted transition-colors"
