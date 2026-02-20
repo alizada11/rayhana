@@ -383,7 +383,8 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
 
               {imagePreview && (
                 <div className="relative">
-                  <img loading="lazy"
+                  <img
+                    loading="eager"
                     src={imagePreview}
                     alt="Preview"
                     className="w-32 h-32 object-cover rounded-lg border"

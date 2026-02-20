@@ -56,7 +56,8 @@ export default function FeaturedBlogSection() {
             >
               <Link href={`/blog/${post.slug}`}>
                 <div className="relative h-52 overflow-hidden">
-                  <img loading="lazy"
+                  <img
+                    loading={index === 0 ? "eager" : "lazy"}
                     src={resolveImageUrl(post.imageUrl)}
                     alt={title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"

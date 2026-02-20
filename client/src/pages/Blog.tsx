@@ -72,8 +72,9 @@ export default function Blog() {
             >
               {/* Image */}
               <div className="relative aspect-video overflow-hidden">
-                <img loading="lazy" 
-                  src={post.image} 
+                <img
+                  loading={index === 0 ? "eager" : "lazy"}
+                  src={post.image}
                   alt={post.title}
                   className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />

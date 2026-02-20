@@ -236,7 +236,8 @@ gtag('config', '${gaMeasurementId}');`;
             className="flex items-center gap-2 font-serif text-2xl font-bold text-primary"
           >
             {headerLogoUrl ? (
-              <img loading="lazy"
+              <img
+                loading="eager"
                 src={headerLogoUrl}
                 alt="Rayhana logo"
                 className="h-9 w-auto object-contain"
@@ -373,13 +374,13 @@ gtag('config', '${gaMeasurementId}');`;
             <div className="md:col-span-2">
               <h3 className="font-serif text-xl font-bold text-primary mb-4">
                 {footerLogoUrl && !footerLogoBroken ? (
-                  <img loading="lazy"
+                  <img
+                    loading="lazy"
                     src={footerLogoUrl}
                     alt="Rayhana logo"
                     className="h-10 w-auto object-contain"
                     data-skip-global-fallback="1"
                     onError={() => setFooterLogoBroken(true)}
-                    loading="lazy"
                   />
                 ) : (
                   <span>RAYHANA</span>

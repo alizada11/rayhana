@@ -237,7 +237,7 @@ export default function Gallery() {
                   >
                     {selectedImage ? (
                       <div className="relative w-full h-full group-hover:opacity-90 transition-opacity">
-                        <img loading="lazy"
+                        <img
                           src={selectedImage}
                           alt="Preview"
                           className="w-full h-full object-cover rounded-xl"

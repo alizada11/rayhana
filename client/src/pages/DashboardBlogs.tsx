@@ -48,6 +48,12 @@ function DashboardBlogs() {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
+  const getTitle = (post: any) =>
+    post.title?.en ||
+    post.title?.fa ||
+    post.title?.ps ||
+    post.slug ||
+    "Blog post";
 
   const posts = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
@@ -196,13 +202,14 @@ function DashboardBlogs() {
             className="border rounded-xl p-4 bg-card shadow-sm w-full box-border"
           >
             <div className="flex items-center gap-3">
-              <img loading="lazy"
+              <img
+                loading="lazy"
                 src={resolveImageUrl(post.imageUrl)}
-                alt={post.title?.en}
+                alt={getTitle(post)}
                 className="w-16 h-16 object-cover rounded-lg"
               />
               <div className="flex-1 min-w-0">
-                <p className="font-medium text-foreground">{post.title?.en}</p>
+                <p className="font-medium text-foreground">{getTitle(post)}</p>
                 <p className="text-xs text-muted-foreground">{post.slug}</p>
               </div>
             </div>
@@ -279,14 +286,15 @@ function DashboardBlogs() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img loading="lazy"
+                        <img
+                          loading="lazy"
                           src={resolveImageUrl(post.imageUrl)}
-                          alt={post.title?.en}
+                          alt={getTitle(post)}
                           className="w-12 h-12 object-cover rounded-lg"
                         />
                         <div>
                           <p className="font-medium text-foreground">
-                            {post.title?.en}
+                            {getTitle(post)}
                           </p>
                           <p className="text-sm text-muted-foreground line-clamp-1 max-w-xs">
                             {post.slug}

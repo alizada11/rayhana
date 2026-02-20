@@ -135,7 +135,7 @@ export function CustomerGallery() {
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl font-bold text-amber-900 dark:text-amber-500"
+            className="font-serif text-3xl md:text-4xl font-bold text-primary dark:text-amber-500"
           >
             {t("gallery.title")}
           </motion.h2>
@@ -171,7 +171,8 @@ export function CustomerGallery() {
               className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
               onClick={() => setActiveImage(img)}
             >
-              <img loading="lazy"
+              <img
+                loading="lazy"
                 src={resolveImageUrl(img.imageUrl)}
                 alt={`Gallery by ${img.user?.name || "Guest"}`}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
@@ -236,7 +237,7 @@ export function CustomerGallery() {
             <DialogTrigger asChild>
               <Button
                 size="lg"
-                className="rounded-full bg-amber-700 hover:bg-amber-800 text-white px-8 shadow-lg hover:shadow-xl transition-all gap-2"
+                className="rounded-full bg-primary hover:bg-primary/90 text-white border-none text-lg px-6 py-2 h-auto shadow-lg hover:shadow-xl transition-all gap-2"
               >
                 <Camera className="w-5 h-5" />
                 {t("gallery.share_button")}
@@ -257,7 +258,7 @@ export function CustomerGallery() {
                   >
                     {selectedImage ? (
                       <div className="relative w-full h-full group-hover:opacity-90 transition-opacity">
-                        <img loading="lazy"
+                        <img
                           src={selectedImage}
                           alt="Preview"
                           className="w-full h-full object-cover rounded-xl"
@@ -372,7 +373,7 @@ export function CustomerGallery() {
           {activeImage && (
             <div className="grid md:grid-cols-2 gap-6">
               <div className="rounded-xl overflow-hidden bg-black">
-                <img loading="lazy"
+                <img
                   src={resolveImageUrl(activeImage.imageUrl)}
                   alt={activeImage.dishName}
                   className="w-full h-full object-contain"

@@ -129,7 +129,7 @@ export default function Home() {
               </video>
             ) : (
               <img
-                loading="lazy"
+                fetchpriority="high"
                 src={heroMedia}
                 alt="Hero"
                 className="w-full h-full object-cover"

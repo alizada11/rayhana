@@ -3,6 +3,7 @@ import { useContent, useUpsertContent } from "@/hooks/useContent";
 import { Save, Plus, Trash2, Image as ImageIcon, Eraser } from "lucide-react";
 import MediaPicker from "@/components/MediaPicker";
 import { toast } from "sonner";
+import api from "@/lib/axios";
 
 export default function DashboardSettings() {
   const { data } = useContent("settings");
@@ -88,11 +89,7 @@ export default function DashboardSettings() {
   const handleClearCache = async () => {
     setClearingCache(true);
     try {
-      const res = await fetch(`${apiPrefix}/dashboard/cache/clear`, {
-        method: "POST",
-        credentials: "include",
-      });
-      if (!res.ok) throw new Error("request failed");
+      await api.post(`${apiPrefix}/dashboard/cache/clear`);
       toast.success("Cache clear instruction sent. Browsers will clear cached assets.");
     } catch (err) {
       console.error(err);
@@ -294,7 +291,7 @@ export default function DashboardSettings() {
           <div>
             <h2 className="font-serif text-lg font-bold">Cache</h2>
             <p className="text-sm text-muted-foreground">
-              Sends a Clear-Site-Data header to clear browsers&apos; cache for this origin.
+              Sends Clear-Site-Data: cache. It only clears the browser cache of the admin making this request and only for the API origin. If your API origin differs from the frontend (VITE_API_URL ≠ &quot;/api&quot;), only that origin is cleared; same-origin setups behave as expected. CDN/edge caches are not purged.
             </p>
           </div>
           <button

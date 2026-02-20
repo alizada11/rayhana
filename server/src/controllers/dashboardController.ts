@@ -18,6 +18,7 @@ export const clearCache = async (_req: Request, res: Response) => {
   res.status(200).json({
     cleared: true,
     at: new Date().toISOString(),
-    note: "Browser cache cleared via Clear-Site-Data header. CDN caches not affected.",
+    note:
+      "Clears cache only for the browser that made this request (admin) on this API origin; does not affect other users or CDN/edge caches.",
   });
 };
