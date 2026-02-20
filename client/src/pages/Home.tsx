@@ -1,16 +1,25 @@
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
 import { ArrowRight, Check, Star, ShieldCheck } from "lucide-react";
 
-import { CustomerGallery } from "@/components/CustomerGallery";
-import FeaturedBlogSection from "@/components/FeaturedBlogSection";
-import { Newsletter } from "@/components/Newsletter";
-import FAQ from "@/components/FAQ";
+import { lazy, Suspense } from "react";
+const CustomerGallery = lazy(() =>
+  import("@/components/CustomerGallery").then(mod => ({
+    default: mod.CustomerGallery,
+  }))
+);
+const FeaturedBlogSection = lazy(
+  () => import("@/components/FeaturedBlogSection")
+);
+const Newsletter = lazy(() =>
+  import("@/components/Newsletter").then(mod => ({ default: mod.Newsletter }))
+);
+const FAQ = lazy(() => import("@/components/FAQ"));
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -52,7 +61,7 @@ export default function Home() {
   );
   const storyCta = getLocalized(
     homeContent?.data?.story?.cta,
-    t("common.fullStory", "Read our Full tory")
+    t("common.fullStory", "Read our Full Story")
   );
   const values = Array.isArray(homeContent?.data?.values)
     ? homeContent.data.values
@@ -83,20 +92,6 @@ export default function Home() {
         },
       ];
 
-  const fadeIn = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 },
-  };
-
-  const stagger = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
-
   return (
     <>
       <SeoTags
@@ -123,13 +118,14 @@ export default function Home() {
                 loop
                 muted
                 playsInline
+                preload="metadata"
                 className="w-full h-full object-cover"
               >
                 <source src={heroMedia} />
               </video>
             ) : (
               <img
-                fetchpriority="high"
+                fetchPriority="high"
                 src={heroMedia}
                 alt="Hero"
                 className="w-full h-full object-cover"
@@ -140,25 +136,14 @@ export default function Home() {
 
           {/* Content */}
           <div className="container relative z-10 text-center text-white">
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={stagger}
-              className="max-w-3xl mx-auto space-y-6"
-            >
-              <motion.h1
-                variants={fadeIn}
-                className="font-serif text-5xl md:text-7xl font-bold leading-tight"
-              >
+            <div className="max-w-3xl mx-auto space-y-6">
+              <h1 className="font-serif text-5xl md:text-7xl font-bold leading-tight">
                 {heroTitle}
-              </motion.h1>
-              <motion.p
-                variants={fadeIn}
-                className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light"
-              >
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light">
                 {heroSubtitle}
-              </motion.p>
-              <motion.div variants={fadeIn} className="pt-4">
+              </p>
+              <div className="pt-4">
                 <Link href="/products">
                   <Button
                     size="lg"
@@ -172,19 +157,14 @@ export default function Home() {
                     )}
                   </Button>
                 </Link>
-              </motion.div>
-            </motion.div>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Values Section */}
         <section className="container">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             {values.map((value: any, index: number) => {
               const Icon =
                 value.icon === "shield"
@@ -222,19 +202,13 @@ export default function Home() {
                 </div>
               );
             })}
-          </motion.div>
+          </div>
         </section>
 
         {/* Featured Product */}
         <section className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: isRTL ? 50 : -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
-            >
+            <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
               {featuredImage ? (
                 <img
                   loading="lazy"
@@ -251,15 +225,9 @@ export default function Home() {
               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg">
                 {t("products.ladle_bonus")}
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: isRTL ? -50 : 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
-              className="space-y-6"
-            >
+            <div className="space-y-6">
               <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
                 {getLocalized(
                   homeContent?.data?.featuredProduct?.title,
@@ -318,7 +286,7 @@ export default function Home() {
                   {t("products.view_details")}
                 </Button>
               </Link>
-            </motion.div>
+            </div>
           </div>
         </section>
 
@@ -326,12 +294,7 @@ export default function Home() {
         <section className="bg-secondary/30 py-20">
           <div className="container">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
-                className="order-2 md:order-1 space-y-6"
-              >
+              <div className="order-2 md:order-1 space-y-6">
                 <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
                   {storyTitle}
                 </h2>
@@ -355,13 +318,8 @@ export default function Home() {
                     )}
                   </Button>
                 </Link>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
-                className="order-1 md:order-2 relative aspect-video rounded-3xl overflow-hidden shadow-xl"
-              >
+              </div>
+              <div className="order-1 md:order-2 relative aspect-video rounded-3xl overflow-hidden shadow-xl">
                 {storyImage ? (
                   <img
                     loading="lazy"
@@ -375,22 +333,54 @@ export default function Home() {
                     aria-hidden="true"
                   />
                 )}
-              </motion.div>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Customer Gallery */}
-        <CustomerGallery />
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
+            }
+          >
+            <CustomerGallery />
+          </Suspense>
+        </ErrorBoundary>
 
         {/* Featured Blog */}
-        <FeaturedBlogSection />
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
+            }
+          >
+            <FeaturedBlogSection />
+          </Suspense>
+        </ErrorBoundary>
 
         {/* FAQ Section */}
-        <FAQ />
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="min-h-48 w-full animate-pulse bg-muted/30 rounded-2xl" />
+            }
+          >
+            <FAQ />
+          </Suspense>
+        </ErrorBoundary>
 
         {/* Newsletter */}
-        <Newsletter />
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="min-h-40 w-full animate-pulse bg-muted/20 rounded-2xl" />
+            }
+          >
+            <Newsletter />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </>
   );

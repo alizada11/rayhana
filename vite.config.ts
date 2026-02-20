@@ -11,7 +11,8 @@ const plugins = [
   react(),
   tailwindcss(),
   !isProd && jsxLocPlugin(),
-  vitePluginManusRuntime(),
+  // Manus runtime is useful in preview/builder, but adds weight in production bundles.
+  !isProd && vitePluginManusRuntime(),
 ].filter(Boolean);
 
 export default defineConfig({
@@ -64,6 +65,11 @@ export default defineConfig({
       deny: ["**/.*"],
     },
     proxy: {
+      "/api": {
+        target: "http://localhost:3001",
+        changeOrigin: true,
+        secure: false,
+      },
       "/robots.txt": {
         target: "http://localhost:3001",
         changeOrigin: true,
