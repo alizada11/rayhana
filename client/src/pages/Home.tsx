@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
 import { ArrowRight, Check, Star, ShieldCheck } from "lucide-react";
 
 import { lazy, Suspense } from "react";
@@ -8,7 +7,9 @@ const CustomerGallery = lazy(() =>
     default: mod.CustomerGallery,
   }))
 );
-const FeaturedBlogSection = lazy(() => import("@/components/FeaturedBlogSection"));
+const FeaturedBlogSection = lazy(
+  () => import("@/components/FeaturedBlogSection")
+);
 const Newsletter = lazy(() =>
   import("@/components/Newsletter").then(mod => ({ default: mod.Newsletter }))
 );
@@ -18,6 +19,7 @@ import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -27,11 +29,6 @@ export default function Home() {
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
-
-  const disableMotion = true;
-  const MDiv: any = disableMotion ? "div" : motion.div;
-  const MH1: any = disableMotion ? "h1" : motion.h1;
-  const MP: any = disableMotion ? "p" : motion.p;
 
   const heroTitle = getLocalized(
     homeContent?.data?.hero?.title,
@@ -64,7 +61,7 @@ export default function Home() {
   );
   const storyCta = getLocalized(
     homeContent?.data?.story?.cta,
-    t("common.fullStory", "Read our Full tory")
+    t("common.fullStory", "Read our Full Story")
   );
   const values = Array.isArray(homeContent?.data?.values)
     ? homeContent.data.values
@@ -94,24 +91,6 @@ export default function Home() {
           icon: "globe",
         },
       ];
-
-  const fadeIn = disableMotion
-    ? undefined
-    : {
-        initial: { opacity: 0, y: 20 },
-        animate: { opacity: 1, y: 0 },
-        transition: { duration: 0.6 },
-      };
-
-  const stagger = disableMotion
-    ? undefined
-    : {
-        animate: {
-          transition: {
-            staggerChildren: 0.1,
-          },
-        },
-      };
 
   return (
     <>
@@ -157,28 +136,14 @@ export default function Home() {
 
           {/* Content */}
           <div className="container relative z-10 text-center text-white">
-            <MDiv
-              {...(!disableMotion
-                ? { initial: "initial", animate: "animate", variants: stagger }
-                : {})}
-              className="max-w-3xl mx-auto space-y-6"
-            >
-              <MH1
-                variants={!disableMotion ? fadeIn : undefined}
-                className="font-serif text-5xl md:text-7xl font-bold leading-tight"
-              >
+            <div className="max-w-3xl mx-auto space-y-6">
+              <h1 className="font-serif text-5xl md:text-7xl font-bold leading-tight">
                 {heroTitle}
-              </MH1>
-              <MP
-                variants={!disableMotion ? fadeIn : undefined}
-                className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light"
-              >
+              </h1>
+              <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light">
                 {heroSubtitle}
-              </MP>
-              <MDiv
-                variants={!disableMotion ? fadeIn : undefined}
-                className="pt-4"
-              >
+              </p>
+              <div className="pt-4">
                 <Link href="/products">
                   <Button
                     size="lg"
@@ -192,23 +157,14 @@ export default function Home() {
                     )}
                   </Button>
                 </Link>
-              </MDiv>
-            </MDiv>
+              </div>
+            </div>
           </div>
         </section>
 
         {/* Values Section */}
         <section className="container">
-          <MDiv
-            {...(!disableMotion
-              ? {
-                  initial: { opacity: 0 },
-                  whileInView: { opacity: 1 },
-                  viewport: { once: true },
-                }
-              : {})}
-            className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
-          >
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
             {values.map((value: any, index: number) => {
               const Icon =
                 value.icon === "shield"
@@ -246,23 +202,13 @@ export default function Home() {
                 </div>
               );
             })}
-          </MDiv>
+          </div>
         </section>
 
         {/* Featured Product */}
         <section className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <MDiv
-              {...(!disableMotion
-                ? {
-                    initial: { opacity: 0, x: isRTL ? 50 : -50 },
-                    whileInView: { opacity: 1, x: 0 },
-                    viewport: { once: true },
-                    transition: { duration: 0.8 },
-                  }
-                : {})}
-              className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
-            >
+            <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
               {featuredImage ? (
                 <img
                   loading="lazy"
@@ -279,19 +225,9 @@ export default function Home() {
               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg">
                 {t("products.ladle_bonus")}
               </div>
-            </MDiv>
+            </div>
 
-            <MDiv
-              {...(!disableMotion
-                ? {
-                    initial: { opacity: 0, x: isRTL ? -50 : 50 },
-                    whileInView: { opacity: 1, x: 0 },
-                    viewport: { once: true },
-                    transition: { duration: 0.8 },
-                  }
-                : {})}
-              className="space-y-6"
-            >
+            <div className="space-y-6">
               <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
                 {getLocalized(
                   homeContent?.data?.featuredProduct?.title,
@@ -350,7 +286,7 @@ export default function Home() {
                   {t("products.view_details")}
                 </Button>
               </Link>
-            </MDiv>
+            </div>
           </div>
         </section>
 
@@ -358,16 +294,7 @@ export default function Home() {
         <section className="bg-secondary/30 py-20">
           <div className="container">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <MDiv
-                {...(!disableMotion
-                  ? {
-                      initial: { opacity: 0, y: 30 },
-                      whileInView: { opacity: 1, y: 0 },
-                      viewport: { once: true },
-                    }
-                  : {})}
-                className="order-2 md:order-1 space-y-6"
-              >
+              <div className="order-2 md:order-1 space-y-6">
                 <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
                   {storyTitle}
                 </h2>
@@ -391,17 +318,8 @@ export default function Home() {
                     )}
                   </Button>
                 </Link>
-              </MDiv>
-              <MDiv
-                {...(!disableMotion
-                  ? {
-                      initial: { opacity: 0, scale: 0.95 },
-                      whileInView: { opacity: 1, scale: 1 },
-                      viewport: { once: true },
-                    }
-                  : {})}
-                className="order-1 md:order-2 relative aspect-video rounded-3xl overflow-hidden shadow-xl"
-              >
+              </div>
+              <div className="order-1 md:order-2 relative aspect-video rounded-3xl overflow-hidden shadow-xl">
                 {storyImage ? (
                   <img
                     loading="lazy"
@@ -415,30 +333,54 @@ export default function Home() {
                     aria-hidden="true"
                   />
                 )}
-              </MDiv>
+              </div>
             </div>
           </div>
         </section>
 
         {/* Customer Gallery */}
-        <Suspense fallback={null}>
-          <CustomerGallery />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
+            }
+          >
+            <CustomerGallery />
+          </Suspense>
+        </ErrorBoundary>
 
         {/* Featured Blog */}
-        <Suspense fallback={null}>
-          <FeaturedBlogSection />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
+            }
+          >
+            <FeaturedBlogSection />
+          </Suspense>
+        </ErrorBoundary>
 
         {/* FAQ Section */}
-        <Suspense fallback={null}>
-          <FAQ />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="min-h-48 w-full animate-pulse bg-muted/30 rounded-2xl" />
+            }
+          >
+            <FAQ />
+          </Suspense>
+        </ErrorBoundary>
 
         {/* Newsletter */}
-        <Suspense fallback={null}>
-          <Newsletter />
-        </Suspense>
+        <ErrorBoundary>
+          <Suspense
+            fallback={
+              <div className="min-h-40 w-full animate-pulse bg-muted/20 rounded-2xl" />
+            }
+          >
+            <Newsletter />
+          </Suspense>
+        </ErrorBoundary>
       </div>
     </>
   );
