@@ -34,8 +34,8 @@ export default function Layout({ children }: LayoutProps) {
     return `${apiBase}${url}`;
   };
 
-  const headerLogoUrl = resolveAsset(settingsContent?.data?.headerLogo);
-  const footerLogoUrl = resolveAsset(settingsContent?.data?.footerLogo);
+  const headerLogoUrl = "/images/logo.png";
+  const footerLogoUrl = "/images/logo.png";
 
   const defaultImgFallback = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
   const customFallback = resolveAsset(settingsContent?.data?.fallbackImage);

@@ -7,12 +7,21 @@ export default function Blog() {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === 'fa';
 
-  const posts = [
+  type Post = {
+    id: number;
+    title: string;
+    excerpt: string;
+    author: string;
+    time: string;
+    category: string;
+    image?: string;
+  };
+
+  const posts: Post[] = [
     {
       id: 1,
       title: t('blog_page.recipe_1_title'),
       excerpt: t('blog_page.recipe_1_desc'),
-      image: '/images/blog-user.jpg',
       author: 'Rayhana Chef',
       time: '45 min',
       category: 'Recipes'
@@ -21,7 +30,6 @@ export default function Blog() {
       id: 2,
       title: t('blog_page.recipe_2_title'),
       excerpt: t('blog_page.recipe_2_desc'),
-      image: '/images/product-pot-user.jpg', // Reusing for demo
       author: 'Food Expert',
       time: '10 min read',
       category: 'Tips'
@@ -30,7 +38,6 @@ export default function Blog() {
       id: 3,
       title: t('blog_page.recipe_3_title'),
       excerpt: t('blog_page.recipe_3_desc'),
-      image: '/images/hero-user.jpg', // Reusing for demo
       author: 'Design Team',
       time: '5 min read',
       category: 'Lifestyle'
@@ -72,12 +79,19 @@ export default function Blog() {
             >
               {/* Image */}
               <div className="relative aspect-video overflow-hidden">
-                <img
-                  loading={index === 0 ? "eager" : "lazy"}
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
+                {post.image ? (
+                  <img
+                    loading={index === 0 ? "eager" : "lazy"}
+                    src={post.image}
+                    alt={post.title}
+                    className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  />
+                ) : (
+                  <div
+                    className="w-full h-full bg-gradient-to-br from-primary/10 via-secondary/30 to-background"
+                    aria-hidden="true"
+                  />
+                )}
                 <div className="absolute top-4 left-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full text-xs font-bold text-primary uppercase tracking-wider">
                   {post.category}
                 </div>

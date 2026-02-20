@@ -6,7 +6,8 @@
 dist/
 build/
 *.dist
-server/server/uploads
+server/server/uploads/
+server/uploads/
 
 # Environment variables
 .env
