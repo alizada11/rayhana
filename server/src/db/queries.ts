@@ -559,6 +559,7 @@ type BlogListFilters = {
   status?: "draft" | "published";
   page?: number;
   limit?: number;
+  search?: string;
 };
 
 export const getBlogPostsPaginated = async (filters: BlogListFilters = {}) => {
@@ -568,11 +569,19 @@ export const getBlogPostsPaginated = async (filters: BlogListFilters = {}) => {
   const page = Math.max(1, Number(filters.page || 1));
   const limit = Math.max(1, Math.min(50, Number(filters.limit || 9)));
   const offset = (page - 1) * limit;
+  const searchTerm = filters.search?.trim().toLowerCase();
 
   const whereClauses = [
     !includeDrafts ? eq(blogPosts.status, "published") : undefined,
     status ? eq(blogPosts.status, status) : undefined,
     featured !== undefined ? eq(blogPosts.featured, featured) : undefined,
+    searchTerm
+      ? sql`(
+          lower(${blogPosts.slug}) like ${"%" + searchTerm + "%"} or
+          lower(${blogPosts.title}::text) like ${"%" + searchTerm + "%"} or
+          lower(${blogPosts.excerpt}::text) like ${"%" + searchTerm + "%"}
+        )`
+      : undefined,
   ].filter(Boolean);
 
   const where =

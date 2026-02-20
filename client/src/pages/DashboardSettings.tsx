@@ -9,7 +9,6 @@ export default function DashboardSettings() {
   const { data } = useContent("settings");
   const upsert = useUpsertContent("settings");
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
-  const apiPrefix = import.meta.env.VITE_API_URL || "/api";
   const resolveUrl = (url?: string) => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
@@ -221,7 +220,8 @@ export default function DashboardSettings() {
                 </div>
                 <div className="w-full h-20 rounded-lg border bg-muted/40 flex items-center justify-center overflow-hidden">
                   {url ? (
-                    <img loading="lazy"
+                    <img
+                      loading="eager"
                       src={resolveUrl(url)}
                       alt={`${label} preview`}
                       className="max-h-20 w-auto object-contain"

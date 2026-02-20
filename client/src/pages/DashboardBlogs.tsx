@@ -16,6 +16,9 @@ import { Link } from "wouter";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/ConfirmProvider";
 
+const getTitle = (post: any) =>
+  post.title?.en || post.title?.fa || post.title?.ps || post.slug || "Blog post";
+
 function DashboardBlogs() {
   const [editingPost, setEditingPost] = useState<any | null>(null);
   const [showForm, setShowForm] = useState(false);
@@ -39,6 +42,7 @@ function DashboardBlogs() {
     limit: itemsPerPage,
     status: statusFilter === "all" ? undefined : statusFilter,
     featured: featuredFilter === "featured" ? true : undefined,
+    search: searchTerm.trim() || undefined,
   });
   const deleteMutation = useDeleteBlog();
 
@@ -58,24 +62,7 @@ function DashboardBlogs() {
   const posts = data?.items ?? [];
   const totalPages = data?.totalPages ?? 1;
 
-  const getTitle = (post: any) =>
-    post.title?.en ||
-    post.title?.fa ||
-    post.title?.ps ||
-    post.slug ||
-    "Blog post";
-
-  const filteredPosts = useMemo(() => {
-    const term = searchTerm.toLowerCase();
-    return posts.filter(post => {
-      const title = getTitle(post).toLowerCase();
-      const slug = post.slug?.toLowerCase() || "";
-      return (
-        title.includes(term) ||
-        slug.includes(term)
-      );
-    });
-  }, [posts, searchTerm]);
+  const filteredPosts = useMemo(() => posts, [posts]);
 
   const handleEdit = (post: any) => {
     setEditingPost(post);

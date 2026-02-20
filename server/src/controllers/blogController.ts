@@ -59,6 +59,12 @@ export const getAllBlogPosts = async (_req: Request, res: Response) => {
       _req.query.status === "draft" || _req.query.status === "published"
         ? (_req.query.status as "draft" | "published")
         : undefined;
+    const search =
+      typeof _req.query.search === "string"
+        ? _req.query.search
+        : Array.isArray(_req.query.search)
+          ? _req.query.search[0]
+          : undefined;
     const featured =
       _req.query.featured === undefined
         ? undefined
@@ -70,6 +76,7 @@ export const getAllBlogPosts = async (_req: Request, res: Response) => {
       featured,
       page,
       limit,
+      search,
     });
 
     res.status(200).json(result);
