@@ -57,9 +57,13 @@ export default function About() {
     )
   );
   const storyImage =
-    aboutContent?.data?.images?.story || "/images/about-user.jpg";
+    typeof aboutContent?.data?.images?.story === "string"
+      ? aboutContent.data.images.story
+      : "";
   const founderImage =
-    aboutContent?.data?.images?.founder || "/images/about-founder.jpg";
+    typeof aboutContent?.data?.images?.founder === "string"
+      ? aboutContent.data.images.founder
+      : "";
 
   return (
     <div className="min-h-screen">
@@ -103,11 +107,18 @@ export default function About() {
               viewport={{ once: true }}
               className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl"
             >
-              <img loading="lazy" 
-                src={storyImage} 
-                alt="Rayhana Story" 
-                className="w-full h-full object-cover"
-              />
+              {storyImage ? (
+                <img loading="lazy" 
+                  src={storyImage} 
+                  alt="Rayhana Story" 
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div
+                  className="w-full h-full bg-gradient-to-br from-primary/10 via-secondary/30 to-background"
+                  aria-hidden="true"
+                />
+              )}
             </motion.div>
             
             <motion.div 
@@ -182,11 +193,18 @@ export default function About() {
               viewport={{ once: true }}
               className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
             >
-              <img loading="lazy"
-                src={founderImage}
-                alt="Founder portrait"
-                className="w-full h-full object-cover"
-              />
+              {founderImage ? (
+                <img loading="lazy"
+                  src={founderImage}
+                  alt="Founder portrait"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div
+                  className="w-full h-full bg-gradient-to-br from-primary/10 via-secondary/30 to-background"
+                  aria-hidden="true"
+                />
+              )}
             </motion.div>
           </div>
         </div>

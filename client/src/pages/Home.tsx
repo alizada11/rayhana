@@ -30,16 +30,16 @@ export default function Home() {
     t("hero.subtitle")
   );
   const heroCta = getLocalized(homeContent?.data?.hero?.cta, t("hero.cta"));
-  const heroMedia =
-    typeof homeContent?.data?.images?.heroVideo === "string"
-      ? homeContent.data.images.heroVideo
-      : "/images/hero-video.mp4";
-  const isHeroVideo = /\.(mp4|webm|ogg)$/i.test(heroMedia);
+  const heroMedia = "/images/hero-video.mp4";
+  const isHeroVideo = true;
   const featuredImage =
-    homeContent?.data?.images?.featuredProduct || "/images/home-hero-pot.jpg";
+    typeof homeContent?.data?.images?.featuredProduct === "string"
+      ? homeContent.data.images.featuredProduct
+      : "";
   const storyImage =
-    homeContent?.data?.images?.storyImage ||
-    "/images/home-cooking-experience.jpg";
+    typeof homeContent?.data?.images?.storyImage === "string"
+      ? homeContent.data.images.storyImage
+      : "";
   const storyTitle = getLocalized(
     homeContent?.data?.story?.title,
     t("about.title")
@@ -235,12 +235,19 @@ export default function Home() {
               transition={{ duration: 0.8 }}
               className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
             >
-              <img
-                loading="lazy"
-                src={featuredImage}
-                alt="Rayhana Red Pot"
-                className="w-full h-full object-cover"
-              />
+              {featuredImage ? (
+                <img
+                  loading="lazy"
+                  src={featuredImage}
+                  alt="Rayhana Red Pot"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div
+                  className="w-full h-full bg-gradient-to-br from-primary/10 via-secondary/30 to-background"
+                  aria-hidden="true"
+                />
+              )}
               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg">
                 {t("products.ladle_bonus")}
               </div>
@@ -355,12 +362,19 @@ export default function Home() {
                 viewport={{ once: true }}
                 className="order-1 md:order-2 relative aspect-video rounded-3xl overflow-hidden shadow-xl"
               >
-                <img
-                  loading="lazy"
-                  src={storyImage}
-                  alt="Rayhana Story"
-                  className="w-full h-full object-cover"
-                />
+                {storyImage ? (
+                  <img
+                    loading="lazy"
+                    src={storyImage}
+                    alt="Rayhana Story"
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div
+                    className="w-full h-full bg-gradient-to-br from-primary/10 via-secondary/30 to-background"
+                    aria-hidden="true"
+                  />
+                )}
               </motion.div>
             </div>
           </div>
