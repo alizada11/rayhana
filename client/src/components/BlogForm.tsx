@@ -328,7 +328,7 @@ export default function BlogForm({ post, onClose }: BlogFormProps) {
 
               {imagePreview && (
                 <div className="relative">
-                  <img
+                  <img loading="lazy"
                     src={imagePreview}
                     alt="Preview"
                     className="w-32 h-32 object-cover rounded-lg border"

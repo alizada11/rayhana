@@ -290,7 +290,7 @@ This cannot be undone.`;
                 <div className="col-span-4 flex items-center gap-3 min-w-0">
                   <div className="h-10 w-10 rounded-full bg-primary/10 flex items-center justify-center text-primary">
                     {user.imageUrl ? (
-                      <img
+                      <img loading="lazy"
                         src={user.imageUrl}
                         alt={user.name ?? user.email}
                         className="h-10 w-10 rounded-full object-cover"

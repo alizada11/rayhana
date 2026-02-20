@@ -6,5 +6,11 @@ import * as dashboardController from "../controllers/dashboardController";
 const router = Router();
 
 router.get("/stats", requireAuth(), requireAdmin, dashboardController.getStats);
+router.post(
+  "/cache/clear",
+  requireAuth(),
+  requireAdmin,
+  dashboardController.clearCache
+);
 
 export default router;

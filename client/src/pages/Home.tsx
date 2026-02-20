@@ -129,6 +129,7 @@ export default function Home() {
               </video>
             ) : (
               <img
+                loading="lazy"
                 src={heroMedia}
                 alt="Hero"
                 className="w-full h-full object-cover"
@@ -235,6 +236,7 @@ export default function Home() {
               className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
             >
               <img
+                loading="lazy"
                 src={featuredImage}
                 alt="Rayhana Red Pot"
                 className="w-full h-full object-cover"
@@ -354,6 +356,7 @@ export default function Home() {
                 className="order-1 md:order-2 relative aspect-video rounded-3xl overflow-hidden shadow-xl"
               >
                 <img
+                  loading="lazy"
                   src={storyImage}
                   alt="Rayhana Story"
                   className="w-full h-full object-cover"

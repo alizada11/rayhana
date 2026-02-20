@@ -105,7 +105,7 @@ export default function MediaPicker({
                       muted
                     />
                   ) : (
-                    <img
+                    <img loading="lazy"
                       src={resolveUrl(item.url)}
                       alt={item.altText || item.fileName}
                       className="w-full h-full object-cover"

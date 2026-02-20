@@ -237,7 +237,7 @@ export default function Gallery() {
                   >
                     {selectedImage ? (
                       <div className="relative w-full h-full group-hover:opacity-90 transition-opacity">
-                        <img
+                        <img loading="lazy"
                           src={selectedImage}
                           alt="Preview"
                           className="w-full h-full object-cover rounded-xl"
@@ -388,7 +388,7 @@ export default function Gallery() {
                 }
               }}
             >
-              <img
+              <img loading="lazy"
                 src={resolveImageUrl(item.imageUrl)}
                 alt={item.dishName}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
@@ -452,7 +452,7 @@ export default function Gallery() {
           {activeImage && (
             <div className="grid md:grid-cols-2 gap-6">
               <div className="rounded-xl overflow-hidden bg-black">
-                <img
+                <img loading="lazy"
                   src={resolveImageUrl(activeImage.imageUrl)}
                   alt={activeImage.dishName}
                   className="w-full h-full object-contain"

@@ -196,7 +196,7 @@ function DashboardBlogs() {
             className="border rounded-xl p-4 bg-card shadow-sm w-full box-border"
           >
             <div className="flex items-center gap-3">
-              <img
+              <img loading="lazy"
                 src={resolveImageUrl(post.imageUrl)}
                 alt={post.title?.en}
                 className="w-16 h-16 object-cover rounded-lg"
@@ -279,7 +279,7 @@ function DashboardBlogs() {
                   >
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <img
+                        <img loading="lazy"
                           src={resolveImageUrl(post.imageUrl)}
                           alt={post.title?.en}
                           className="w-12 h-12 object-cover rounded-lg"

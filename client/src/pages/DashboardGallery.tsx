@@ -151,7 +151,7 @@ export default function DashboardGallery() {
                   onClick={() => setPreview(item)}
                   className="absolute inset-0 w-full h-full group"
                 >
-                  <img
+                  <img loading="lazy"
                     src={resolveImageUrl(item.imageUrl)}
                     alt={item.dishName}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-200"
@@ -357,7 +357,7 @@ export default function DashboardGallery() {
           {preview && (
             <div className="bg-card rounded-xl overflow-hidden">
               <div className="relative">
-                <img
+                <img loading="lazy"
                   src={resolveImageUrl(preview.imageUrl)}
                   alt={preview.dishName}
                   className="w-full max-h-[50vh] object-contain"

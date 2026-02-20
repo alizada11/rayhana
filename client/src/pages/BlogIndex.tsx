@@ -87,7 +87,7 @@ export default function BlogIndex() {
                   <Link href={`/blog/${post.slug}`}>
                     <Card className="h-full hover:shadow-lg transition-shadow cursor-pointer overflow-hidden group border-none bg-card/50 backdrop-blur-sm">
                       <div className="relative h-64 overflow-hidden">
-                        <img
+                        <img loading="lazy"
                           src={resolveImageUrl(post.imageUrl)}
                           alt={title}
                           className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"

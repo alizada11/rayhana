@@ -219,7 +219,7 @@ function ProductCard({
         >
           {/* Image */}
           <div className="relative aspect-square overflow-hidden bg-secondary/20">
-            <img
+            <img loading="lazy"
               src={resolveImageUrl(product.imageUrl)}
               alt={localize(product.title)}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -304,7 +304,7 @@ function ProductCard({
         <div className="grid md:grid-cols-2 gap-8 py-4">
           <div className="space-y-6">
             <div className="aspect-square rounded-xl overflow-hidden bg-secondary/20">
-              <img
+              <img loading="lazy"
                 src={resolveImageUrl(product.imageUrl)}
                 alt={localize(product.title)}
                 className="w-full h-full object-cover"

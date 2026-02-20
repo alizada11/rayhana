@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { useContent, useUpsertContent } from "@/hooks/useContent";
-import { Save, Plus, Trash2, Image as ImageIcon } from "lucide-react";
+import { Save, Plus, Trash2, Image as ImageIcon, Eraser } from "lucide-react";
 import MediaPicker from "@/components/MediaPicker";
 import { toast } from "sonner";
 
@@ -8,6 +8,7 @@ export default function DashboardSettings() {
   const { data } = useContent("settings");
   const upsert = useUpsertContent("settings");
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const apiPrefix = import.meta.env.VITE_API_URL || "/api";
   const resolveUrl = (url?: string) => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
@@ -28,6 +29,7 @@ export default function DashboardSettings() {
   const [pickerTarget, setPickerTarget] = useState<"header" | "footer" | null>(null);
   const gaRegex = /^G-[A-Z0-9]{6,12}$/;
   const [gaError, setGaError] = useState<string>("");
+  const [clearingCache, setClearingCache] = useState(false);
 
   const [formData, setFormData] = useState<any>({
     headerLogo: "",
@@ -81,6 +83,23 @@ export default function DashboardSettings() {
         toast.error("Failed to save settings.");
       },
     });
+  };
+
+  const handleClearCache = async () => {
+    setClearingCache(true);
+    try {
+      const res = await fetch(`${apiPrefix}/dashboard/cache/clear`, {
+        method: "POST",
+        credentials: "include",
+      });
+      if (!res.ok) throw new Error("request failed");
+      toast.success("Cache clear instruction sent. Browsers will clear cached assets.");
+    } catch (err) {
+      console.error(err);
+      toast.error("Failed to clear cache.");
+    } finally {
+      setClearingCache(false);
+    }
   };
 
   const renderList = (key: "nav" | "footerLinks" | "social", title: string) => (
@@ -205,7 +224,7 @@ export default function DashboardSettings() {
                 </div>
                 <div className="w-full h-20 rounded-lg border bg-muted/40 flex items-center justify-center overflow-hidden">
                   {url ? (
-                    <img
+                    <img loading="lazy"
                       src={resolveUrl(url)}
                       alt={`${label} preview`}
                       className="max-h-20 w-auto object-contain"
@@ -268,6 +287,24 @@ export default function DashboardSettings() {
               {gaError || "If empty, GA script will not be injected."}
             </p>
           </div>
+        </div>
+      </div>
+      <div className="bg-card border rounded-xl p-4 space-y-3">
+        <div className="flex items-center justify-between">
+          <div>
+            <h2 className="font-serif text-lg font-bold">Cache</h2>
+            <p className="text-sm text-muted-foreground">
+              Sends a Clear-Site-Data header to clear browsers&apos; cache for this origin.
+            </p>
+          </div>
+          <button
+            onClick={handleClearCache}
+            disabled={clearingCache}
+            className="inline-flex items-center gap-2 border px-4 py-2 rounded-lg text-sm"
+          >
+            <Eraser className="w-4 h-4" />
+            {clearingCache ? "Clearing..." : "Clear cache"}
+          </button>
         </div>
       </div>
       {renderList("nav", "Navigation")}

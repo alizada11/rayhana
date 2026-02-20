@@ -200,7 +200,7 @@ function LoginPage() {
           href={`${import.meta.env.VITE_API_URL}/auth/oauth/google`}
           className="flex items-center justify-center gap-2 border border-border rounded-md py-2 text-sm hover:bg-muted transition"
         >
-          <img
+          <img loading="lazy"
             src="https://www.gstatic.com/firebasejs/ui/2.0.0/images/auth/google.svg"
             alt="Google"
             className="w-4 h-4"
