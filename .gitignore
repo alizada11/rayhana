@@ -8,7 +8,6 @@ build/
 *.dist
 server/server/uploads/
 server/uploads/
-uploads/
 
 # Environment variables
 .env
