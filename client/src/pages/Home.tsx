@@ -21,6 +21,11 @@ export default function Home() {
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
 
+  const disableMotion = true;
+  const MDiv: any = disableMotion ? "div" : motion.div;
+  const MH1: any = disableMotion ? "h1" : motion.h1;
+  const MP: any = disableMotion ? "p" : motion.p;
+
   const heroTitle = getLocalized(
     homeContent?.data?.hero?.title,
     t("hero.title")
@@ -83,19 +88,23 @@ export default function Home() {
         },
       ];
 
-  const fadeIn = {
-    initial: { opacity: 0, y: 20 },
-    animate: { opacity: 1, y: 0 },
-    transition: { duration: 0.6 },
-  };
+  const fadeIn = disableMotion
+    ? undefined
+    : {
+        initial: { opacity: 0, y: 20 },
+        animate: { opacity: 1, y: 0 },
+        transition: { duration: 0.6 },
+      };
 
-  const stagger = {
-    animate: {
-      transition: {
-        staggerChildren: 0.1,
-      },
-    },
-  };
+  const stagger = disableMotion
+    ? undefined
+    : {
+        animate: {
+          transition: {
+            staggerChildren: 0.1,
+          },
+        },
+      };
 
   return (
     <>
@@ -129,7 +138,7 @@ export default function Home() {
               </video>
             ) : (
               <img
-                fetchpriority="high"
+                fetchPriority="high"
                 src={heroMedia}
                 alt="Hero"
                 className="w-full h-full object-cover"
@@ -140,25 +149,28 @@ export default function Home() {
 
           {/* Content */}
           <div className="container relative z-10 text-center text-white">
-            <motion.div
-              initial="initial"
-              animate="animate"
-              variants={stagger}
+            <MDiv
+              {...(!disableMotion
+                ? { initial: "initial", animate: "animate", variants: stagger }
+                : {})}
               className="max-w-3xl mx-auto space-y-6"
             >
-              <motion.h1
-                variants={fadeIn}
+              <MH1
+                variants={!disableMotion ? fadeIn : undefined}
                 className="font-serif text-5xl md:text-7xl font-bold leading-tight"
               >
                 {heroTitle}
-              </motion.h1>
-              <motion.p
-                variants={fadeIn}
+              </MH1>
+              <MP
+                variants={!disableMotion ? fadeIn : undefined}
                 className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light"
               >
                 {heroSubtitle}
-              </motion.p>
-              <motion.div variants={fadeIn} className="pt-4">
+              </MP>
+              <MDiv
+                variants={!disableMotion ? fadeIn : undefined}
+                className="pt-4"
+              >
                 <Link href="/products">
                   <Button
                     size="lg"
@@ -172,17 +184,21 @@ export default function Home() {
                     )}
                   </Button>
                 </Link>
-              </motion.div>
-            </motion.div>
+              </MDiv>
+            </MDiv>
           </div>
         </section>
 
         {/* Values Section */}
         <section className="container">
-          <motion.div
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
+          <MDiv
+            {...(!disableMotion
+              ? {
+                  initial: { opacity: 0 },
+                  whileInView: { opacity: 1 },
+                  viewport: { once: true },
+                }
+              : {})}
             className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center"
           >
             {values.map((value: any, index: number) => {
@@ -222,17 +238,21 @@ export default function Home() {
                 </div>
               );
             })}
-          </motion.div>
+          </MDiv>
         </section>
 
         {/* Featured Product */}
         <section className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-            <motion.div
-              initial={{ opacity: 0, x: isRTL ? 50 : -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+            <MDiv
+              {...(!disableMotion
+                ? {
+                    initial: { opacity: 0, x: isRTL ? 50 : -50 },
+                    whileInView: { opacity: 1, x: 0 },
+                    viewport: { once: true },
+                    transition: { duration: 0.8 },
+                  }
+                : {})}
               className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
             >
               {featuredImage ? (
@@ -251,13 +271,17 @@ export default function Home() {
               <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg">
                 {t("products.ladle_bonus")}
               </div>
-            </motion.div>
+            </MDiv>
 
-            <motion.div
-              initial={{ opacity: 0, x: isRTL ? -50 : 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.8 }}
+            <MDiv
+              {...(!disableMotion
+                ? {
+                    initial: { opacity: 0, x: isRTL ? -50 : 50 },
+                    whileInView: { opacity: 1, x: 0 },
+                    viewport: { once: true },
+                    transition: { duration: 0.8 },
+                  }
+                : {})}
               className="space-y-6"
             >
               <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
@@ -318,7 +342,7 @@ export default function Home() {
                   {t("products.view_details")}
                 </Button>
               </Link>
-            </motion.div>
+            </MDiv>
           </div>
         </section>
 
@@ -326,10 +350,14 @@ export default function Home() {
         <section className="bg-secondary/30 py-20">
           <div className="container">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
-              <motion.div
-                initial={{ opacity: 0, y: 30 }}
-                whileInView={{ opacity: 1, y: 0 }}
-                viewport={{ once: true }}
+              <MDiv
+                {...(!disableMotion
+                  ? {
+                      initial: { opacity: 0, y: 30 },
+                      whileInView: { opacity: 1, y: 0 },
+                      viewport: { once: true },
+                    }
+                  : {})}
                 className="order-2 md:order-1 space-y-6"
               >
                 <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
@@ -355,11 +383,15 @@ export default function Home() {
                     )}
                   </Button>
                 </Link>
-              </motion.div>
-              <motion.div
-                initial={{ opacity: 0, scale: 0.95 }}
-                whileInView={{ opacity: 1, scale: 1 }}
-                viewport={{ once: true }}
+              </MDiv>
+              <MDiv
+                {...(!disableMotion
+                  ? {
+                      initial: { opacity: 0, scale: 0.95 },
+                      whileInView: { opacity: 1, scale: 1 },
+                      viewport: { once: true },
+                    }
+                  : {})}
                 className="order-1 md:order-2 relative aspect-video rounded-3xl overflow-hidden shadow-xl"
               >
                 {storyImage ? (
@@ -375,7 +407,7 @@ export default function Home() {
                     aria-hidden="true"
                   />
                 )}
-              </motion.div>
+              </MDiv>
             </div>
           </div>
         </section>
