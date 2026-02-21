@@ -47,6 +47,11 @@ export default function Layout({ children }: LayoutProps) {
     setFooterLogoBroken(false);
   }, [footerLogoUrl]);
 
+  // Reset scroll to top on route changes to avoid landing mid-page
+  useEffect(() => {
+    window.scrollTo({ top: 0, left: 0, behavior: "auto" });
+  }, [location]);
+
   // Inject Google Search Console verification meta
   useEffect(() => {
     if (!gscVerification) return;
