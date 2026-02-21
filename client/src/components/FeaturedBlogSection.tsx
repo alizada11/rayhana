@@ -92,7 +92,7 @@ export default function FeaturedBlogSection() {
                   </div>
                 </div>
               </Link>
-            </motion.div>
+            </div>
           );
         })}
       </div>
