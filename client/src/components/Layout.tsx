@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useContent } from "@/hooks/useContent";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
+import i18nInstance from "@/lib/i18n";
 
 interface LayoutProps {
   children: ReactNode;
@@ -133,7 +134,11 @@ gtag('config', '${gaMeasurementId}');`;
   const [showLangMenu, setShowLangMenu] = useState(false);
 
   const changeLanguage = (langCode: string) => {
-    i18n.changeLanguage(langCode);
+    const inst =
+      i18n && typeof i18n.changeLanguage === "function"
+        ? i18n
+        : i18nInstance;
+    inst.changeLanguage(langCode);
     try {
       window.localStorage.setItem("i18nextLng", langCode);
     } catch {
