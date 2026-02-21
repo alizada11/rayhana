@@ -4,11 +4,7 @@ import LanguageDetector from 'i18next-browser-languagedetector';
 
 import en from '../locales/en.json';
 import fa from '../locales/fa.json';
-import tr from '../locales/tr.json';
-import ar from '../locales/ar.json';
-import ru from '../locales/ru.json';
 import ps from '../locales/ps.json';
-import ku from '../locales/ku.json';
 
 i18n
   .use(LanguageDetector)
@@ -17,19 +13,20 @@ i18n
     resources: {
       en: { translation: en },
       fa: { translation: fa },
-      tr: { translation: tr },
-      ar: { translation: ar },
-      ru: { translation: ru },
       ps: { translation: ps },
-      ku: { translation: ku },
     },
-    fallbackLng: 'en',
     interpolation: {
       escapeValue: false,
     },
+    load: 'languageOnly',
+    supportedLngs: ['en', 'fa', 'ps'],
+    nonExplicitSupportedLngs: true,
+    fallbackLng: 'en',
     detection: {
       order: ['localStorage', 'sessionStorage', 'navigator'],
-      caches: ['localStorage', 'sessionStorage'],
+      caches: ['localStorage'],
+      lookupLocalStorage: 'i18nextLng',
+      lookupSessionStorage: 'i18nextLng',
     },
   });
 

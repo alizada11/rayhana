@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { useContent } from "@/hooks/useContent";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
+import i18nInstance from "@/lib/i18n";
 
 interface LayoutProps {
   children: ReactNode;
@@ -24,7 +25,7 @@ export default function Layout({ children }: LayoutProps) {
   const { theme, setTheme } = useTheme();
   const langCode =
     (i18n.language || i18n.resolvedLanguage || "en").split("-")[0];
-  const isRTL = ["fa", "ar", "ps", "ku"].includes(langCode);
+  const isRTL = ["fa", "ps"].includes(langCode);
   const currentLang = langCode as "en" | "fa" | "ps";
 
   const apiBase = import.meta.env.VITE_API_URL?.replace(/\/api$/, "") || "";
@@ -132,8 +133,17 @@ gtag('config', '${gaMeasurementId}');`;
 
   const [showLangMenu, setShowLangMenu] = useState(false);
 
-  const changeLanguage = (langCode: string) => {
-    i18n.changeLanguage(langCode);
+  const changeLanguage = (newLang: string) => {
+    const inst =
+      i18n && typeof i18n.changeLanguage === "function"
+        ? i18n
+        : i18nInstance;
+    inst.changeLanguage(newLang);
+    try {
+      window.localStorage.setItem("i18nextLng", newLang);
+    } catch {
+      /* ignore storage errors */
+    }
     setShowLangMenu(false);
   };
 
