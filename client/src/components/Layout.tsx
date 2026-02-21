@@ -24,7 +24,7 @@ export default function Layout({ children }: LayoutProps) {
   const { theme, setTheme } = useTheme();
   const langCode =
     (i18n.language || i18n.resolvedLanguage || "en").split("-")[0];
-  const isRTL = ["fa", "ar", "ps", "ku"].includes(langCode);
+  const isRTL = ["fa", "ps"].includes(langCode);
   const currentLang = langCode as "en" | "fa" | "ps";
 
   const apiBase = import.meta.env.VITE_API_URL?.replace(/\/api$/, "") || "";
@@ -134,6 +134,11 @@ gtag('config', '${gaMeasurementId}');`;
 
   const changeLanguage = (langCode: string) => {
     i18n.changeLanguage(langCode);
+    try {
+      window.localStorage.setItem("i18nextLng", langCode);
+    } catch {
+      /* ignore storage errors */
+    }
     setShowLangMenu(false);
   };
 
