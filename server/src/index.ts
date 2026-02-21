@@ -46,10 +46,42 @@ if (isProduction && !ENV.FRONTEND_URL) {
     "FRONTEND_URL environment variable is required in production"
   );
 }
-const allowedOrigin = ENV.FRONTEND_URL || "http://localhost:5173";
+const allowedOrigins = (ENV.FRONTEND_URL || "")
+  .split(",")
+  .map(o => o.trim())
+  .filter(Boolean);
+if (!allowedOrigins.length) {
+  allowedOrigins.push("http://localhost:5173", "http://localhost:3000");
+}
+// Always allow both apex and www versions if one is provided
+const expandedOrigins = new Set<string>();
+for (const origin of allowedOrigins) {
+  expandedOrigins.add(origin);
+  try {
+    const url = new URL(origin);
+    const host = url.host;
+    if (host.startsWith("www.")) {
+      expandedOrigins.add(`${url.protocol}//${host.replace(/^www\\./, "")}`);
+    } else {
+      expandedOrigins.add(`${url.protocol}//www.${host}`);
+    }
+  } catch {
+    // ignore invalid URLs in env
+  }
+}
+
 app.set("trust proxy", 1);
 app.use(compression());
-app.use(cors({ origin: allowedOrigin, credentials: true }));
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true); // allow non-browser clients
+      if (expandedOrigins.has(origin)) return callback(null, true);
+      return callback(new Error(`CORS blocked for origin ${origin}`));
+    },
+    credentials: true,
+  })
+);
 app.use(cookies);
 app.use(csrfMiddleware);
 // Serve static assets early, with caching (only if build exists)
