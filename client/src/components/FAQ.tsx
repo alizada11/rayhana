@@ -5,14 +5,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { motion } from "framer-motion";
 import { useContent } from "@/hooks/useContent";
 import DOMPurify from "dompurify";
 
 export default function FAQ() {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
-  const { data: faqContent } = useContent("faq");
+  const { data: faqContent, isError } = useContent("faq");
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
@@ -41,27 +40,21 @@ export default function FAQ() {
   return (
     <section className="py-20 bg-muted/30">
       <div className="container max-w-3xl mx-auto px-4">
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6 }}
-          className="text-center mb-12"
-        >
+        <div className="text-center mb-12">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary mb-4">
             {getLocalized(faqContent?.data?.title, t("faq.title"))}
           </h2>
           <p className="text-muted-foreground text-lg">
             {getLocalized(faqContent?.data?.subtitle, t("faq.subtitle"))}
           </p>
-        </motion.div>
+          {isError && (
+            <p className="text-sm text-destructive mt-3">
+              {t("common.error", "Content failed to load, showing defaults.")}
+            </p>
+          )}
+        </div>
 
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          transition={{ duration: 0.6, delay: 0.2 }}
-        >
+        <div>
           <Accordion type="single" collapsible className="w-full space-y-4">
             {questions.map((item: Question, index: number) => (
               <AccordionItem
@@ -78,7 +71,7 @@ export default function FAQ() {
               </AccordionItem>
             ))}
           </Accordion>
-        </motion.div>
+        </div>
       </div>
     </section>
   );
