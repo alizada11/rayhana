@@ -37,7 +37,8 @@ export default function Layout({ children }: LayoutProps) {
   const headerLogoUrl = "/images/logo.png";
   const footerLogoUrl = "/images/logo.png";
 
-  const defaultImgFallback = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
+  const defaultImgFallback =
+    "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
   const customFallback = resolveAsset(settingsContent?.data?.fallbackImage);
 
   const gscVerification = settingsContent?.data?.gscVerification?.trim();
@@ -58,11 +59,11 @@ export default function Layout({ children }: LayoutProps) {
     let meta = document.querySelector('meta[name="google-site-verification"]');
     let created = false;
     if (!meta) {
-      meta = document.createElement('meta');
-      meta.setAttribute('name', 'google-site-verification');
+      meta = document.createElement("meta");
+      meta.setAttribute("name", "google-site-verification");
       created = true;
     }
-    meta.setAttribute('content', gscVerification);
+    meta.setAttribute("content", gscVerification);
     if (created || !meta.parentNode) {
       document.head.appendChild(meta);
     }
@@ -75,13 +76,15 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     const gaRegex = /^G-[A-Z0-9]{6,12}$/;
     if (!gaMeasurementId || !gaRegex.test(gaMeasurementId)) return;
-    const existing = document.querySelector(`script[data-ga-id="${gaMeasurementId}"]`);
+    const existing = document.querySelector(
+      `script[data-ga-id="${gaMeasurementId}"]`
+    );
     if (existing) return;
-    const script = document.createElement('script');
+    const script = document.createElement("script");
     script.async = true;
     script.src = `https://www.googletagmanager.com/gtag/js?id=${gaMeasurementId}`;
     script.dataset.gaId = gaMeasurementId;
-    const inline = document.createElement('script');
+    const inline = document.createElement("script");
     inline.textContent = `window.dataLayer = window.dataLayer || [];
 function gtag(){dataLayer.push(arguments);}
 gtag('js', new Date());
@@ -123,23 +126,23 @@ gtag('config', '${gaMeasurementId}');`;
   useEffect(() => {
     const handler = (event: Event) => {
       const target = event.target as HTMLImageElement | null;
-      if (!target || target.tagName !== 'IMG') return;
-      if (target.dataset.reactHasOnError === '1') return;
-      if (target.dataset.skipGlobalFallback === '1') return;
-      if (target.dataset.fallbackApplied === '1') return;
-      target.dataset.fallbackApplied = '1';
+      if (!target || target.tagName !== "IMG") return;
+      if (target.dataset.reactHasOnError === "1") return;
+      if (target.dataset.skipGlobalFallback === "1") return;
+      if (target.dataset.fallbackApplied === "1") return;
+      target.dataset.fallbackApplied = "1";
       const fallbackSrc = customFallback || defaultImgFallback;
       target.src = fallbackSrc;
       target.addEventListener(
-        'load',
+        "load",
         () => {
-          target.dataset.fallbackApplied = '';
+          target.dataset.fallbackApplied = "";
         },
         { once: true }
       );
     };
-    window.addEventListener('error', handler, true);
-    return () => window.removeEventListener('error', handler, true);
+    window.addEventListener("error", handler, true);
+    return () => window.removeEventListener("error", handler, true);
   }, [customFallback, defaultImgFallback]);
 
   const languages = [
@@ -396,7 +399,9 @@ gtag('config', '${gaMeasurementId}');`;
               </p>
             </div>
             <div>
-              <h4 className="font-serif font-bold mb-4">{t("nav.products")}</h4>
+              <h4 className="font-serif font-bold mb-4">
+                {t("nav.quickLinks")}
+              </h4>
               <ul className="space-y-2 text-sm text-muted-foreground">
                 {footerLinks.map((item: any, idx: number) => (
                   <li key={`${item.href}-${idx}`}>

@@ -1,6 +1,5 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
-import { motion } from "framer-motion";
 import { ArrowRight, Star } from "lucide-react";
 import { useBlogs } from "@/hooks/useBlogs";
 
@@ -46,12 +45,8 @@ export default function FeaturedBlogSection() {
           const title = post.title?.[currentLang] || post.title?.en || "";
           const excerpt = post.excerpt?.[currentLang] || post.excerpt?.en || "";
           return (
-            <motion.div
+            <div
               key={post.id}
-              initial={{ opacity: 0, y: 20 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
               className="group rounded-2xl overflow-hidden border border-border bg-card shadow-sm hover:shadow-lg transition-shadow"
             >
               <Link href={`/blog/${post.slug}`}>

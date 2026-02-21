@@ -4,7 +4,8 @@
     "products": "Products",
     "about": "About Us",
     "blog": "Blog & Recipes",
-    "contact": "Contact"
+    "contact": "Contact",
+    "quickLinks": "Quick Links"
   },
   "not_found": {
     "meta_title": "404 | Page Not Found",
@@ -278,7 +279,8 @@
       "guests_only": "This section is available to guest users only",
       "submission_deleted": "Submission deleted.",
       "submission_delete_failed": "Failed to delete submission."
-    }
+    },
+    "noPhotosYet": "No photos yet"
   },
   "newsletter": {
     "title": "Join the Rayhana Family",

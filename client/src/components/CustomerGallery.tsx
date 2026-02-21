@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import { useTranslation } from "react-i18next";
 import { Camera, Heart, Upload, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -131,23 +130,12 @@ export function CustomerGallery() {
     <section className="py-20 bg-stone-50 dark:bg-stone-900/50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 space-y-4">
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className="font-serif text-3xl md:text-4xl font-bold text-primary dark:text-amber-500"
-          >
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary dark:text-amber-500">
             {t("gallery.title")}
-          </motion.h2>
-          <motion.p
-            initial={{ opacity: 0 }}
-            whileInView={{ opacity: 1 }}
-            viewport={{ once: true }}
-            transition={{ delay: 0.2 }}
-            className="text-stone-600 dark:text-stone-400 text-lg max-w-2xl mx-auto"
-          >
+          </h2>
+          <p className="text-stone-600 dark:text-stone-400 text-lg max-w-2xl mx-auto">
             {t("gallery.subtitle")}
-          </motion.p>
+          </p>
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-12">
@@ -158,16 +146,12 @@ export function CustomerGallery() {
           )}
           {!isLoading && galleryImages.length === 0 && (
             <div className="text-stone-500 col-span-full text-center">
-              {isRTL ? "هنوز عکسی ارسال نشده" : "No photos yet"}
+              {t("gallery.noPhotosYet", "No photos yet")}
             </div>
           )}
           {galleryImages.slice(0, 8).map((img, index) => (
-            <motion.div
+            <div
               key={img.id}
-              initial={{ opacity: 0, scale: 0.9 }}
-              whileInView={{ opacity: 1, scale: 1 }}
-              viewport={{ once: true }}
-              transition={{ delay: index * 0.1 }}
               className="group relative aspect-square rounded-2xl overflow-hidden cursor-pointer shadow-md hover:shadow-xl transition-all duration-300"
               onClick={() => setActiveImage(img)}
             >
@@ -206,7 +190,7 @@ export function CustomerGallery() {
                   </button>
                 </div>
               </div>
-            </motion.div>
+            </div>
           ))}
         </div>
 
