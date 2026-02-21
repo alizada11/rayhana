@@ -22,8 +22,9 @@ export default function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const isRTL = ["fa", "ar", "ps", "ku"].includes(i18n.language);
-  const currentLang = i18n.language as "en" | "fa" | "ps";
+  const langCode = i18n.language || i18n.resolvedLanguage || "en";
+  const isRTL = ["fa", "ar", "ps", "ku"].includes(langCode);
+  const currentLang = langCode as "en" | "fa" | "ps";
   const LANG_KEY = "rayhana_lang";
   const LANG_TTL_MS = 24 * 60 * 60 * 1000;
 
@@ -120,8 +121,8 @@ gtag('config', '${gaMeasurementId}');`;
 
   useEffect(() => {
     document.dir = isRTL ? "rtl" : "ltr";
-    document.documentElement.lang = i18n.language;
-  }, [i18n.language, isRTL]);
+    document.documentElement.lang = langCode;
+  }, [langCode, isRTL]);
 
   useEffect(() => {
     const handler = (event: Event) => {
@@ -164,7 +165,7 @@ gtag('config', '${gaMeasurementId}');`;
   };
   useEffect(() => {
     const stored = loadLang();
-    if (stored && stored !== i18n.language) {
+    if (stored && stored !== langCode) {
       i18n.changeLanguage(stored);
     }
   }, []);
@@ -291,7 +292,7 @@ gtag('config', '${gaMeasurementId}');`;
               >
                 <Globe className="h-5 w-5" />
                 <span className="absolute -bottom-1 -right-1 text-[10px] font-bold bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center">
-                  {i18n.language.toUpperCase()}
+                  {langCode.toUpperCase()}
                 </span>
               </Button>
 
@@ -305,12 +306,12 @@ gtag('config', '${gaMeasurementId}');`;
                       onClick={() => changeLanguage(lang.code)}
                       className={cn(
                         "w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors flex items-center justify-between",
-                        i18n.language === lang.code &&
+                        langCode === lang.code &&
                           "text-primary font-bold bg-primary/5"
                       )}
                     >
                       <span>{lang.name}</span>
-                      {i18n.language === lang.code && (
+                      {langCode === lang.code && (
                         <div className="w-1.5 h-1.5 rounded-full bg-primary" />
                       )}
                     </button>
