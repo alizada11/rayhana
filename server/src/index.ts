@@ -34,7 +34,8 @@ setInterval(
 );
 
 const app = express();
-const distPath = path.join(__dirname, "..", "dist", "public");
+// Frontend build output (Vite outDir is dist/public relative to repo root)
+const distPath = path.resolve(process.cwd(), "dist", "public");
 const uploadsPath = path.resolve(process.cwd(), "server", "uploads");
 const isProduction = process.env.NODE_ENV === "production";
 if (isProduction && !ENV.FRONTEND_URL) {
