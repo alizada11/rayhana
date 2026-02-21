@@ -133,14 +133,14 @@ gtag('config', '${gaMeasurementId}');`;
 
   const [showLangMenu, setShowLangMenu] = useState(false);
 
-  const changeLanguage = (langCode: string) => {
+  const changeLanguage = (newLang: string) => {
     const inst =
       i18n && typeof i18n.changeLanguage === "function"
         ? i18n
         : i18nInstance;
-    inst.changeLanguage(langCode);
+    inst.changeLanguage(newLang);
     try {
-      window.localStorage.setItem("i18nextLng", langCode);
+      window.localStorage.setItem("i18nextLng", newLang);
     } catch {
       /* ignore storage errors */
     }
