@@ -24,8 +24,8 @@ import GuestDashboard from "./pages/GuestDashboard";
 import Gallery from "./pages/Gallery";
 import ResetPassword from "./pages/ResetPassword";
 import VerifyEmail from "./pages/VerifyEmail";
-import FullPageLoader from "./components/FullPageLoader";
 import Profile from "./pages/Profile";
+import FullPageLoader from "./components/FullPageLoader";
 
 function GuestDashboardRoute() {
   const { isLoaded, isSignedIn } = useAuthReq();
@@ -143,9 +143,7 @@ function Router() {
 }
 
 function App() {
-  const { isLoaded } = useAuthReq();
   useUserSync();
-  if (!isLoaded) return <FullPageLoader />;
   return (
     <ErrorBoundary>
       <ThemeProvider defaultTheme="light">
