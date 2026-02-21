@@ -1,6 +1,5 @@
-import { useState, useEffect } from "react";
+import { Suspense, lazy, useState, useEffect } from "react";
 import { useBlogs, useDeleteBlog } from "@/hooks/useBlogs";
-import BlogForm from "@/components/BlogForm";
 import {
   Search,
   Filter,
@@ -15,6 +14,8 @@ import {
 import { Link } from "wouter";
 import { toast } from "sonner";
 import { useConfirm } from "@/components/ConfirmProvider";
+
+const BlogForm = lazy(() => import("@/components/BlogForm"));
 
 const getTitle = (post: any) =>
   post.title?.en || post.title?.fa || post.title?.ps || post.slug || "Blog post";
@@ -442,7 +443,15 @@ function DashboardBlogs() {
 
       {/* Modals */}
       {showForm && (
-        <BlogForm post={editingPost} onClose={() => setShowForm(false)} />
+        <Suspense
+          fallback={
+            <div className="rounded-lg border border-dashed border-border/60 bg-muted/40 p-6 text-sm text-muted-foreground">
+              Loading editor...
+            </div>
+          }
+        >
+          <BlogForm post={editingPost} onClose={() => setShowForm(false)} />
+        </Suspense>
       )}
     </div>
   );

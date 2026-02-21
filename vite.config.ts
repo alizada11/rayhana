@@ -29,20 +29,33 @@ export default defineConfig({
   build: {
     outDir: path.resolve(import.meta.dirname, "dist/public"),
     emptyOutDir: true,
+    sourcemap: !isProd, // keep maps in dev, strip them from production bundles
     chunkSizeWarningLimit: 1200,
+    minify: "terser",
     rollupOptions: {
+      treeshake: {
+        preset: "recommended",
+        moduleSideEffects: false,
+      },
       output: {
-        manualChunks: {
-          react: ["react", "react-dom"],
-          editor: [
-            "@tiptap/react",
-            "@tiptap/starter-kit",
-            "@tiptap/extension-link",
-            "@tiptap/extension-placeholder",
-            "@tiptap/extension-image",
-          ],
-          charts: ["recharts"],
-          motion: ["framer-motion"],
+        manualChunks(id) {
+          if (id.includes("node_modules")) {
+            const inPkg = (pkg: string) =>
+              id.includes(`/node_modules/${pkg}/`) ||
+              id.includes(`\\node_modules\\${pkg}\\`);
+
+            if (inPkg("react-dom")) return "react-dom";
+            if (inPkg("react")) return "react";
+            if (inPkg("framer-motion")) return "framer-motion";
+            if (
+              id.includes("@tiptap") ||
+              id.includes("prosemirror") ||
+              id.includes("monaco-editor")
+            ) {
+              return "editor";
+            }
+            return "vendor";
+          }
         },
       },
     },

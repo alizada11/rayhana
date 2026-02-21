@@ -1,9 +1,27 @@
-import { useEffect, useMemo, useState } from "react";
+import {
+  Suspense,
+  lazy,
+  useEffect,
+  useMemo,
+  useState,
+  type ComponentProps,
+} from "react";
 import { useContent, useUpsertContent } from "@/hooks/useContent";
 import MediaPicker from "@/components/MediaPicker";
 import { Image as ImageIcon, Save } from "lucide-react";
-import BlogRichTextEditor from "@/components/BlogRichTextEditor";
 import { toast } from "sonner";
+
+const BlogRichTextEditor = lazy(() => import("@/components/BlogRichTextEditor"));
+const EditorFallback = () => (
+  <div className="min-h-[180px] rounded-lg border border-dashed border-border/60 bg-muted/40 p-4 text-sm text-muted-foreground">
+    Loading editor...
+  </div>
+);
+const LazyEditor = (props: ComponentProps<typeof BlogRichTextEditor>) => (
+  <Suspense fallback={<EditorFallback />}>
+    <BlogRichTextEditor {...props} />
+  </Suspense>
+);
 
 type Lang = "en" | "fa" | "ps";
 
@@ -694,7 +712,7 @@ export default function DashboardContent() {
               </div>
               <div>
                 <label className="text-xs text-muted-foreground">Description</label>
-                <BlogRichTextEditor
+                <LazyEditor
                   value={
                     formData.featuredProduct?.description?.[activeLang] || ""
                   }
@@ -765,7 +783,7 @@ export default function DashboardContent() {
               </div>
               <div>
                 <label className="text-xs text-muted-foreground">Body</label>
-                <BlogRichTextEditor
+                <LazyEditor
                   value={formData.story?.body?.[activeLang] || ""}
                   onChange={value => updateLangField(["story", "body"], value)}
                   placeholder="Story body"
@@ -824,7 +842,7 @@ export default function DashboardContent() {
                   />
                   <div>
                     <label className="text-xs text-muted-foreground">Body</label>
-                    <BlogRichTextEditor
+                    <LazyEditor
                       value={item?.body?.[activeLang] || ""}
                       onChange={value => {
                         const next = structuredClone(formData.values);
@@ -903,7 +921,7 @@ export default function DashboardContent() {
               </div>
               <div>
                 <label className="text-xs text-muted-foreground">Body</label>
-                <BlogRichTextEditor
+                <LazyEditor
                   value={formData.story?.body?.[activeLang] || ""}
                   onChange={value => updateLangField(["story", "body"], value)}
                   placeholder="Story body"
@@ -944,7 +962,7 @@ export default function DashboardContent() {
               </div>
               <div>
                 <label className="text-xs text-muted-foreground">Body</label>
-                <BlogRichTextEditor
+                <LazyEditor
                   value={formData.mission?.body?.[activeLang] || ""}
                   onChange={value =>
                     updateLangField(["mission", "body"], value)
@@ -970,7 +988,7 @@ export default function DashboardContent() {
               </div>
               <div>
                 <label className="text-xs text-muted-foreground">Body</label>
-                <BlogRichTextEditor
+                <LazyEditor
                   value={formData.founder?.body?.[activeLang] || ""}
                   onChange={value =>
                     updateLangField(["founder", "body"], value)
@@ -1058,7 +1076,7 @@ export default function DashboardContent() {
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Answer</label>
-                  <BlogRichTextEditor
+                  <LazyEditor
                     value={item.answer?.[activeLang] || ""}
                     onChange={value => {
                       const next = structuredClone(formData.items);
@@ -1114,7 +1132,7 @@ export default function DashboardContent() {
               />
               <div className="md:col-span-2">
                 <label className="text-xs text-muted-foreground">Intro</label>
-                <BlogRichTextEditor
+                <LazyEditor
                   value={formData.intro?.[activeLang] || ""}
                   onChange={value => updateLangField(["intro"], value)}
                   placeholder="Intro"
@@ -1164,7 +1182,7 @@ export default function DashboardContent() {
                 />
                 <div>
                   <label className="text-xs text-muted-foreground">Body</label>
-                  <BlogRichTextEditor
+                  <LazyEditor
                     value={section.body?.[activeLang] || ""}
                     onChange={value => {
                       const next = structuredClone(formData.sections);
@@ -1219,7 +1237,7 @@ export default function DashboardContent() {
               />
               <div className="md:col-span-2">
                 <label className="text-xs text-muted-foreground">Intro</label>
-                <BlogRichTextEditor
+                <LazyEditor
                   value={formData.intro?.[activeLang] || ""}
                   onChange={value => updateLangField(["intro"], value)}
                   placeholder="Intro"
@@ -1269,7 +1287,7 @@ export default function DashboardContent() {
                 />
                 <div>
                   <label className="text-xs text-muted-foreground">Body</label>
-                  <BlogRichTextEditor
+                  <LazyEditor
                     value={section.body?.[activeLang] || ""}
                     onChange={value => {
                       const next = structuredClone(formData.sections);
@@ -1483,7 +1501,7 @@ export default function DashboardContent() {
                 />
                 <div>
                   <label className="text-xs text-muted-foreground">Answer</label>
-                  <BlogRichTextEditor
+                  <LazyEditor
                     value={faq.answer?.[activeLang] || ""}
                     onChange={value => {
                       const next = structuredClone(formData.center.faqs);
@@ -1577,7 +1595,7 @@ export default function DashboardContent() {
                 />
                 <div>
                   <label className="text-xs text-muted-foreground">Intro</label>
-                  <BlogRichTextEditor
+                  <LazyEditor
                     value={article.intro?.[activeLang] || ""}
                     onChange={value => {
                       const next = structuredClone(formData.articles);
@@ -1592,7 +1610,7 @@ export default function DashboardContent() {
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Steps (HTML)</label>
-                  <BlogRichTextEditor
+                  <LazyEditor
                     value={article.steps?.[activeLang] || ""}
                     onChange={value => {
                       const next = structuredClone(formData.articles);
@@ -1607,7 +1625,7 @@ export default function DashboardContent() {
                 </div>
                 <div>
                   <label className="text-xs text-muted-foreground">Tips (HTML)</label>
-                  <BlogRichTextEditor
+                  <LazyEditor
                     value={article.tips?.[activeLang] || ""}
                     onChange={value => {
                       const next = structuredClone(formData.articles);
