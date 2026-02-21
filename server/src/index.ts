@@ -1,6 +1,7 @@
 import "express-async-errors";
 import express from "express";
 import path from "path";
+import fs from "fs";
 import cors from "cors";
 import compression from "compression";
 import { ENV } from "./config/env";
@@ -37,7 +38,9 @@ const app = express();
 // Frontend build output (Vite outDir is dist/public relative to repo root)
 const distPath = path.resolve(process.cwd(), "dist", "public");
 const uploadsPath = path.resolve(process.cwd(), "server", "uploads");
+const hasBuiltFrontend = fs.existsSync(path.join(distPath, "index.html"));
 const isProduction = process.env.NODE_ENV === "production";
+const isTsRuntime = path.extname(__filename) === ".ts"; // running via ts-node in dev
 if (isProduction && !ENV.FRONTEND_URL) {
   throw new Error(
     "FRONTEND_URL environment variable is required in production"
@@ -49,14 +52,25 @@ app.use(compression());
 app.use(cors({ origin: allowedOrigin, credentials: true }));
 app.use(cookies);
 app.use(csrfMiddleware);
-// Serve static assets early, with caching
-app.use(
-  express.static(distPath, {
-    maxAge: "1y",
-    immutable: true,
-    index: false,
-  })
-);
+// Serve static assets early, with caching (only if build exists)
+if (hasBuiltFrontend) {
+  app.use(
+    express.static(distPath, {
+      maxAge: "1y",
+      immutable: true,
+      index: false,
+    })
+  );
+} else if (isProduction && !isTsRuntime) {
+  // In production we expect a built frontend; fail fast for clearer diagnosis
+  throw new Error(
+    `Frontend build not found at ${distPath}. Did you run "pnpm build"?`
+  );
+} else {
+  console.warn(
+    `[dev] Frontend build not found at ${distPath}. Static middleware disabled; use Vite dev server for the client.`
+  );
+}
 // serve uploaded assets (Render uses ephemeral FS; consider S3 if you need persistence)
 app.use(
   "/uploads",
@@ -209,9 +223,9 @@ ${urls
   }
 });
 
-// Serve built client assets in production
-if (ENV.NODE_ENV === "production") {
-  app.get(/.*/, (req, res) => res.sendFile(path.join(distPath, "index.html")));
+// Serve built client assets in production (only if build exists)
+if (ENV.NODE_ENV === "production" && hasBuiltFrontend) {
+  app.get(/.*/, (_req, res) => res.sendFile(path.join(distPath, "index.html")));
 }
 if (ENV.NODE_ENV === "development") {
   console.log("Hey donkey, you are developing I mean in development mode!");

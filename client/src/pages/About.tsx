@@ -1,5 +1,4 @@
 import { useTranslation } from "react-i18next";
-import { motion } from "framer-motion";
 import { useContent } from "@/hooks/useContent";
 import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
@@ -79,21 +78,12 @@ export default function About() {
       {/* Hero */}
       <section className="relative py-24 bg-secondary/30">
         <div className="container text-center space-y-6">
-          <motion.h1 
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="font-serif text-5xl md:text-7xl font-bold text-primary"
-          >
+          <h1 className="font-serif text-5xl md:text-7xl font-bold text-primary">
             {heroTitle}
-          </motion.h1>
-          <motion.p 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.2 }}
-            className="text-xl text-muted-foreground max-w-2xl mx-auto"
-          >
+          </h1>
+          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
             {heroSubtitle}
-          </motion.p>
+          </p>
         </div>
       </section>
 
@@ -101,12 +91,7 @@ export default function About() {
       <section className="py-20">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <motion.div 
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl"
-            >
+            <div className="relative aspect-[4/5] rounded-3xl overflow-hidden shadow-2xl">
               {storyImage ? (
                 <img loading="lazy" 
                   src={storyImage} 
@@ -119,14 +104,9 @@ export default function About() {
                   aria-hidden="true"
                 />
               )}
-            </motion.div>
+            </div>
             
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="space-y-8"
-            >
+            <div className="space-y-8">
               <div>
                 <h2 className="font-serif text-3xl font-bold mb-4 text-primary">
                   {storyTitle}
@@ -159,7 +139,7 @@ export default function About() {
                   </div>
                 ))}
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </section>
@@ -168,12 +148,7 @@ export default function About() {
       <section className="py-20 bg-secondary/20">
         <div className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-16 items-center">
-            <motion.div 
-              initial={{ opacity: 0, x: 50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="space-y-6"
-            >
+            <div className="space-y-6">
               <h2 className="font-serif text-4xl font-bold text-primary">
                 {founderTitle}
               </h2>
@@ -185,27 +160,22 @@ export default function About() {
                   {quoteText}
                 </p>
               </div>
-            </motion.div>
+            </div>
 
-            <motion.div
-              initial={{ opacity: 0, x: -50 }}
-              whileInView={{ opacity: 1, x: 0 }}
-              viewport={{ once: true }}
-              className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl"
-            >
+            <div className="relative aspect-square rounded-3xl overflow-hidden shadow-2xl">
               {founderImage ? (
                 <img loading="lazy"
                   src={founderImage}
                   alt="Founder portrait"
                   className="w-full h-full object-cover"
                 />
-              ) : (
-                <div
-                  className="w-full h-full bg-gradient-to-br from-primary/10 via-secondary/30 to-background"
-                  aria-hidden="true"
-                />
-              )}
-            </motion.div>
+                ) : (
+                  <div
+                    className="w-full h-full bg-gradient-to-br from-primary/10 via-secondary/30 to-background"
+                    aria-hidden="true"
+                  />
+                )}
+            </div>
           </div>
         </div>
       </section>
