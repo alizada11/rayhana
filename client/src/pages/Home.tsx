@@ -293,20 +293,35 @@ export default function Home() {
                     : "دیگ کامل برای هر وعده غذایی"
                 )}
               </h2>
-              {/* biome-ignore: lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
-              <div
-                className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
-                dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(
+              {sanitize(
+                getLocalized(
+                  homeContent?.data?.featuredProduct?.description,
+                  i18n.language === "en"
+                    ? "Designed for the modern kitchen but rooted in tradition. Our non-stick granite coating ensures healthy cooking with less oil, while the premium aluminum body distributes heat evenly for that perfect taste of home."
+                    : "طراحی شده برای آشپزخانه مدرن اما ریشه در سنت دارد. پوشش گرانیتی نچسب ما پخت سالم با روغن کمتر را تضمین می‌کند، در حالی که بدنه آلومینیومی ممتاز گرما را به طور یکنواخت توزیع می‌کند تا طعم کامل خانه را تجربه کنید."
+                )
+              ) ? (
+                <div
+                  className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
+                  dangerouslySetInnerHTML={sanitize(
                     getLocalized(
                       homeContent?.data?.featuredProduct?.description,
                       i18n.language === "en"
                         ? "Designed for the modern kitchen but rooted in tradition. Our non-stick granite coating ensures healthy cooking with less oil, while the premium aluminum body distributes heat evenly for that perfect taste of home."
                         : "طراحی شده برای آشپزخانه مدرن اما ریشه در سنت دارد. پوشش گرانیتی نچسب ما پخت سالم با روغن کمتر را تضمین می‌کند، در حالی که بدنه آلومینیومی ممتاز گرما را به طور یکنواخت توزیع می‌کند تا طعم کامل خانه را تجربه کنید."
                     )
-                  ),
-                }}
-              />
+                  )}
+                />
+              ) : (
+                <p className="text-lg text-muted-foreground leading-relaxed">
+                  {getLocalized(
+                    homeContent?.data?.featuredProduct?.description,
+                    i18n.language === "en"
+                      ? "Designed for the modern kitchen but rooted in tradition. Our non-stick granite coating ensures healthy cooking with less oil, while the premium aluminum body distributes heat evenly for that perfect taste of home."
+                      : "طراحی شده برای آشپزخانه مدرن اما ریشه در سنت دارد. پوشش گرانیتی نچسب ما پخت سالم با روغن کمتر را تضمین می‌کند، در حالی که بدنه آلومینیومی ممتاز گرما را به طور یکنواخت توزیع می‌کند تا طعم کامل خانه را تجربه کنید."
+                  )}
+                </p>
+              )}
               <ul className="space-y-3">
                 {(Array.isArray(homeContent?.data?.featuredProduct?.bullets)
                   ? homeContent.data.featuredProduct.bullets
@@ -355,13 +370,16 @@ export default function Home() {
                 <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
                   {storyTitle}
                 </h2>
-                {/* biome-ignore: lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
-                <div
-                  className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
-                  dangerouslySetInnerHTML={{
-                    __html: DOMPurify.sanitize(storyBody),
-                  }}
-                />
+                {sanitize(storyBody) ? (
+                  <div
+                    className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
+                    dangerouslySetInnerHTML={sanitize(storyBody)}
+                  />
+                ) : (
+                  <p className="text-lg text-muted-foreground leading-relaxed">
+                    {storyBody}
+                  </p>
+                )}
                 <Link href="/about">
                   <Button
                     variant="link"
