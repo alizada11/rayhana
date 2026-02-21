@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { ArrowRight, Check, Star, ShieldCheck } from "lucide-react";
 
-import { lazy, Suspense } from "react";
+import { lazy, Suspense, useEffect, useRef, useState } from "react";
 const CustomerGallery = lazy(() =>
   import("@/components/CustomerGallery").then(mod => ({
     default: mod.CustomerGallery,
@@ -17,7 +17,6 @@ const FAQ = lazy(() => import("@/components/FAQ"));
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
 import ErrorBoundary from "@/components/ErrorBoundary";
 
@@ -40,7 +39,45 @@ export default function Home() {
   );
   const heroCta = getLocalized(homeContent?.data?.hero?.cta, t("hero.cta"));
   const heroMedia = "/images/hero-video.mp4";
-  const isHeroVideo = true;
+  const heroPoster = "/images/hero-poster.jpg";
+  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
+  const heroRef = useRef<HTMLDivElement | null>(null);
+
+  useEffect(() => {
+    const mql =
+      typeof window !== "undefined"
+        ? window.matchMedia("(max-width: 768px)")
+        : null;
+    const skipVideo = mql?.matches;
+
+    if (skipVideo) {
+      setShouldPlayVideo(false);
+      return;
+    }
+
+    const observer =
+      typeof IntersectionObserver !== "undefined"
+        ? new IntersectionObserver(
+            entries => {
+              const entry = entries[0];
+              if (entry?.isIntersecting) {
+                setShouldPlayVideo(true);
+                observer.disconnect();
+              }
+            },
+            { threshold: 0.2 }
+          )
+        : null;
+
+    if (heroRef.current && observer) {
+      observer.observe(heroRef.current);
+    } else {
+      // Fallback: load after idle if IntersectionObserver not available
+      requestIdleCallback?.(() => setShouldPlayVideo(true));
+    }
+
+    return () => observer?.disconnect();
+  }, []);
   const featuredImage =
     typeof homeContent?.data?.images?.featuredProduct === "string"
       ? homeContent.data.images.featuredProduct
@@ -92,6 +129,17 @@ export default function Home() {
         },
       ];
 
+  const [purify, setPurify] = useState<typeof import("dompurify").default>();
+
+  useEffect(() => {
+    import("dompurify").then(mod =>
+      setPurify(mod.default ? mod.default : (mod as any))
+    );
+  }, []);
+
+  const sanitize = (html: string) =>
+    purify ? { __html: purify.sanitize(html || "") } : undefined;
+
   return (
     <>
       <SeoTags
@@ -109,16 +157,20 @@ export default function Home() {
       />
       <div className="flex flex-col gap-20 pb-20">
         {/* Hero Section */}
-        <section className="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden">
+        <section
+          ref={heroRef}
+          className="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden"
+        >
           {/* Background Video with Overlay */}
           <div className="absolute inset-0 z-0">
-            {isHeroVideo ? (
+            {shouldPlayVideo ? (
               <video
                 autoPlay
                 loop
                 muted
                 playsInline
-                preload="metadata"
+                preload="none"
+                poster={heroPoster}
                 className="w-full h-full object-cover"
               >
                 <source src={heroMedia} />
@@ -126,9 +178,10 @@ export default function Home() {
             ) : (
               <img
                 fetchPriority="high"
-                src={heroMedia}
-                alt="Hero"
+                src={heroPoster}
+                alt="Rayhana hero"
                 className="w-full h-full object-cover"
+                loading="eager"
               />
             )}
             <div className="absolute inset-0 bg-black/50" />
@@ -192,12 +245,16 @@ export default function Home() {
                     {valueTitle}
                   </h3>
                   {/* biome-ignore: lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
-                  <div
-                    className="text-muted-foreground text-sm mb-4 prose prose-sm max-w-none"
-                    dangerouslySetInnerHTML={{
-                      __html: DOMPurify.sanitize(valueBody || ""),
-                    }}
-                  />
+                  {sanitize(valueBody || "") ? (
+                    <div
+                      className="text-muted-foreground text-sm mb-4 prose prose-sm max-w-none"
+                      dangerouslySetInnerHTML={sanitize(valueBody || "")}
+                    />
+                  ) : (
+                    <p className="text-muted-foreground text-sm mb-4">
+                      {valueBody}
+                    </p>
+                  )}
                   <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-primary/5 rounded-full group-hover:scale-150 transition-transform duration-500" />
                 </div>
               );

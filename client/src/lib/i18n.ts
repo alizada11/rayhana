@@ -3,8 +3,21 @@ import { initReactI18next } from 'react-i18next';
 import LanguageDetector from 'i18next-browser-languagedetector';
 
 import en from '../locales/en.json';
-import fa from '../locales/fa.json';
-import ps from '../locales/ps.json';
+
+const localeLoaders: Record<string, () => Promise<any>> = {
+  en: () => import('../locales/en.json'),
+  fa: () => import('../locales/fa.json'),
+  ps: () => import('../locales/ps.json'),
+};
+
+async function ensureLocaleLoaded(lng: string) {
+  const loader = localeLoaders[lng];
+  if (!loader) return;
+  if (i18n.hasResourceBundle(lng, 'translation')) return;
+  const mod = await loader();
+  const resources = mod.default || mod;
+  i18n.addResourceBundle(lng, 'translation', resources, true, true);
+}
 
 i18n
   .use(LanguageDetector)
@@ -12,8 +25,6 @@ i18n
   .init({
     resources: {
       en: { translation: en },
-      fa: { translation: fa },
-      ps: { translation: ps },
     },
     interpolation: {
       escapeValue: false,
@@ -28,6 +39,15 @@ i18n
       lookupLocalStorage: 'i18nextLng',
       lookupSessionStorage: 'i18nextLng',
     },
+  })
+  .then(() => {
+    const current = (i18n.language || i18n.resolvedLanguage || 'en').split('-')[0];
+    ensureLocaleLoaded(current);
   });
+
+i18n.on('languageChanged', lng => {
+  const code = (lng || 'en').split('-')[0];
+  ensureLocaleLoaded(code);
+});
 
 export default i18n;

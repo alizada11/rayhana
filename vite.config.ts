@@ -54,6 +54,11 @@ export default defineConfig({
             ) {
               return "editor";
             }
+            if (id.includes("@radix-ui")) return "radix";
+            if (id.includes("i18next")) return "i18n";
+            if (inPkg("@tanstack/react-query")) return "react-query";
+            if (inPkg("recharts") || inPkg("d3")) return "charts";
+            if (inPkg("axios")) return "axios";
             return "vendor";
           }
         },
