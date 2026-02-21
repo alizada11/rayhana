@@ -22,11 +22,10 @@ export default function Layout({ children }: LayoutProps) {
   const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const langCode = i18n.language || i18n.resolvedLanguage || "en";
+  const langCode =
+    (i18n.language || i18n.resolvedLanguage || "en").split("-")[0];
   const isRTL = ["fa", "ar", "ps", "ku"].includes(langCode);
   const currentLang = langCode as "en" | "fa" | "ps";
-  const LANG_KEY = "rayhana_lang";
-  const LANG_TTL_MS = 24 * 60 * 60 * 1000;
 
   const apiBase = import.meta.env.VITE_API_URL?.replace(/\/api$/, "") || "";
   const resolveAsset = (url?: string) => {
@@ -98,27 +97,6 @@ gtag('config', '${gaMeasurementId}');`;
     };
   }, [gaMeasurementId]);
 
-  const saveLang = (code: string) => {
-    const payload = { code, expiresAt: Date.now() + LANG_TTL_MS };
-    sessionStorage.setItem(LANG_KEY, JSON.stringify(payload));
-  };
-
-  const loadLang = (): string | null => {
-    const raw = sessionStorage.getItem(LANG_KEY);
-    if (!raw) return null;
-    try {
-      const { code, expiresAt } = JSON.parse(raw);
-      if (!expiresAt || expiresAt < Date.now()) {
-        sessionStorage.removeItem(LANG_KEY);
-        return null;
-      }
-      return code;
-    } catch {
-      sessionStorage.removeItem(LANG_KEY);
-      return null;
-    }
-  };
-
   useEffect(() => {
     document.dir = isRTL ? "rtl" : "ltr";
     document.documentElement.lang = langCode;
@@ -156,20 +134,12 @@ gtag('config', '${gaMeasurementId}');`;
 
   const changeLanguage = (langCode: string) => {
     i18n.changeLanguage(langCode);
-    saveLang(langCode);
     setShowLangMenu(false);
   };
 
   const toggleTheme = () => {
     setTheme(theme === "dark" ? "light" : "dark");
   };
-  useEffect(() => {
-    const stored = loadLang();
-    if (stored && stored !== langCode) {
-      i18n.changeLanguage(stored);
-    }
-  }, []);
-
   const navItems: NavItem[] = Array.isArray(settingsContent?.data?.nav)
     ? settingsContent.data.nav
     : [

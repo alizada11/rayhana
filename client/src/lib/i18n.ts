@@ -24,7 +24,6 @@ i18n
       ku: { translation: ku },
     },
     fallbackLng: 'en',
-    lng: 'en',
     interpolation: {
       escapeValue: false,
     },
