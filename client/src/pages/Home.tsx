@@ -143,6 +143,11 @@ export default function Home() {
   const sanitize = (html: string) =>
     DOMPurify ? { __html: DOMPurify.sanitize(html || "") } : undefined;
 
+  // Ensure below-fold sections render once homepage data is ready
+  useEffect(() => {
+    if (homepage) setShowBelowFold(true);
+  }, [homepage]);
+
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") {
       const idleId = requestIdleCallback?.(() => setShowBelowFold(true));
@@ -170,10 +175,13 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+<<<<<<< HEAD
   useEffect(() => {
     if (homepage) setShowBelowFold(true);
   }, [homepage]);
 
+=======
+>>>>>>> e547a384991fa6888abb9c90ee82bca9e4359a18
   if (isLoading) {
     return (
       <div className="container py-16 space-y-6">

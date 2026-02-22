@@ -63,10 +63,20 @@ export interface DeleteBlogCommentVariables {
   commentId: ID;
 }
 
-export const useBlogs = (params: BlogListParams) => {
+export const useBlogs = (
+  params: BlogListParams,
+  options?: {
+    enabled?: boolean;
+    initialData?: BlogListResult;
+    placeholderData?: BlogListResult;
+  }
+) => {
   return useQuery<BlogListResult>({
     queryKey: ["blogs", params],
     queryFn: () => getBlogPosts(params),
+    enabled: options?.enabled ?? true,
+    initialData: options?.initialData,
+    placeholderData: options?.placeholderData,
   });
 };
 

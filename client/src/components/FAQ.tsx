@@ -5,13 +5,13 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useContent } from "@/hooks/useContent";
 import DOMPurify from "dompurify";
 
-export default function FAQ() {
+type FAQItem = { id?: string; question: any; answer: any };
+
+export default function FAQ({ items, title, subtitle }: { items?: FAQItem[]; title?: any; subtitle?: any }) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
-  const { data: faqContent, isError } = useContent("faq");
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
@@ -22,15 +22,13 @@ export default function FAQ() {
 
   type Question = { id: string; question: string; answer: string };
 
-  const questions: Question[] = faqContent?.data?.items?.map(
-    (item: any, index: number): Question => ({
-      id: item?.id || `q${index + 1}`,
-      question: toPlainText(
-        getLocalized(item?.question, t(`faq.q${index + 1}`))
-      ),
-      answer: toPlainText(getLocalized(item?.answer, t(`faq.a${index + 1}`))),
-    })
-  ) ?? [
+  const fromContent = items?.map((item, index): Question => ({
+    id: item?.id || `q${index + 1}`,
+    question: toPlainText(getLocalized(item?.question, t(`faq.q${index + 1}`))),
+    answer: toPlainText(getLocalized(item?.answer, t(`faq.a${index + 1}`))),
+  }));
+
+  const questions: Question[] = fromContent ?? [
     { id: "q1", question: toPlainText(t("faq.q1")), answer: toPlainText(t("faq.a1")) },
     { id: "q2", question: toPlainText(t("faq.q2")), answer: toPlainText(t("faq.a2")) },
     { id: "q3", question: toPlainText(t("faq.q3")), answer: toPlainText(t("faq.a3")) },
@@ -42,16 +40,11 @@ export default function FAQ() {
       <div className="container max-w-3xl mx-auto px-4">
         <div className="text-center mb-12">
           <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary mb-4">
-            {getLocalized(faqContent?.data?.title, t("faq.title"))}
+            {getLocalized(title, t("faq.title"))}
           </h2>
           <p className="text-muted-foreground text-lg">
-            {getLocalized(faqContent?.data?.subtitle, t("faq.subtitle"))}
+            {getLocalized(subtitle, t("faq.subtitle"))}
           </p>
-          {isError && (
-            <p className="text-sm text-destructive mt-3">
-              {t("common.error", "Content failed to load, showing defaults.")}
-            </p>
-          )}
         </div>
 
         <div>

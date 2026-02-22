@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import * as queries from "../db/queries";
 import { getAuth } from "../lib/auth";
+import { createHash } from "crypto";
 
 const getParam = (value: string | string[]) =>
   Array.isArray(value) ? value[0] : value;
@@ -73,5 +74,33 @@ export const upsertContent = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Error saving content:", error);
     res.status(500).json({ error: "Failed to save content" });
+  }
+};
+
+// GET /api/homepage (public aggregated payload)
+export const getHomepage = async (_req: Request, res: Response) => {
+  try {
+    const payload = await queries.getHomepageBundle();
+    // weak ETag to allow quick 304s
+    const etag = `"${createHash("sha256").update(JSON.stringify(payload)).digest("hex").slice(0, 32)}"`;
+    const ifNoneMatch = _req.headers["if-none-match"];
+    if (
+      ifNoneMatch === "*" ||
+      (ifNoneMatch ?? "")
+        .split(",")
+        .map(v => v.trim())
+        .includes(etag)
+    ) {
+      return res.status(304).end();
+    }
+    res
+      .set({
+        "Cache-Control": "public, max-age=300, stale-while-revalidate=600",
+        ETag: etag,
+      })
+      .json(payload);
+  } catch (error) {
+    console.error("Error fetching homepage bundle:", error);
+    res.status(500).json({ error: "Failed to fetch homepage" });
   }
 };

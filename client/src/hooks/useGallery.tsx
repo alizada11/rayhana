@@ -32,10 +32,15 @@ export interface GallerySubmission {
   };
 }
 
-export const useApprovedGallery = () => {
+export const useApprovedGallery = (opts?: {
+  enabled?: boolean;
+  initialData?: GallerySubmission[];
+}) => {
   return useQuery<GallerySubmission[]>({
     queryKey: ["gallery", "approved"],
     queryFn: getApprovedGallery,
+    enabled: opts?.enabled ?? true,
+    initialData: opts?.initialData,
   });
 };
 
