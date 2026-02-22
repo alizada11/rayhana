@@ -55,6 +55,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchMe = async () => {
     const fetchId = ++latestFetchIdRef.current;
+    // Skip network call if there are no cookies at all (avoids 401 spam for anonymous users)
+    if (typeof document !== "undefined" && (!document.cookie || !document.cookie.includes("="))) {
+      setState({
+        user: null,
+        isLoaded: true,
+        isSignedIn: false,
+        error: null,
+      });
+      return;
+    }
     try {
       const res = await api.get("/auth/me", { withCredentials: true });
       const user = res.data?.user as User;

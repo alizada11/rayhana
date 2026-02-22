@@ -20,6 +20,7 @@ import { Link } from "wouter";
 import SeoTags from "@/components/SeoTags";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { useHomepage } from "@/hooks/useHomepage";
+import { useQueryClient } from "@tanstack/react-query";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -30,6 +31,7 @@ export default function Home() {
     isLoading,
     isError,
   } = useHomepage();
+  const queryClient = useQueryClient();
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
@@ -147,6 +149,26 @@ export default function Home() {
   useEffect(() => {
     if (homepage) setShowBelowFold(true);
   }, [homepage]);
+
+  // Seed shared content queries so Layout won't refetch settings/contact/seo
+  useEffect(() => {
+    if (!homepage) return;
+    queryClient.setQueryData(["content", "settings"], {
+      key: "settings",
+      data: homepage.settings ?? {},
+      updatedAt: null,
+    });
+    queryClient.setQueryData(["content", "contact"], {
+      key: "contact",
+      data: homepage.contact ?? {},
+      updatedAt: null,
+    });
+    queryClient.setQueryData(["content", "seo"], {
+      key: "seo",
+      data: homepage.seo ?? {},
+      updatedAt: null,
+    });
+  }, [homepage, queryClient]);
 
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") {
