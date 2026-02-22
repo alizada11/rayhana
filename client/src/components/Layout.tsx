@@ -18,7 +18,10 @@ type NavItem = { href: string; label: LocalizedLabel };
 
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
-  const { data: settingsContent } = useContent("settings");
+  const isHome = location === "/";
+  const { data: settingsContent } = useContent("settings", {
+    enabled: !isHome,
+  });
   const [footerLogoBroken, setFooterLogoBroken] = useState(false);
   const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -175,7 +178,9 @@ gtag('config', '${gaMeasurementId}');`;
         { href: "https://www.facebook.com", label: "Facebook" },
       ];
 
-  const { data: contactContent } = useContent("contact");
+  const { data: contactContent } = useContent("contact", {
+    enabled: !isHome,
+  });
   const contactInfo = useMemo(() => {
     const fallback = {
       email: t("contact_page.email_value"),

@@ -1,12 +1,19 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { getContentByKey, upsertContent, getAllContent } from "@/lib/api";
 
-export const useContent = (key: string) => {
+type ContentOptions = {
+  enabled?: boolean;
+  initialData?: any;
+  staleTime?: number;
+};
+
+export const useContent = (key: string, options?: ContentOptions) => {
   return useQuery({
     queryKey: ["content", key],
     queryFn: () => getContentByKey(key),
-    enabled: Boolean(key),
-    staleTime: 5 * 60 * 1000, // cache for 5 min
+    enabled: Boolean(key) && (options?.enabled ?? true),
+    initialData: options?.initialData,
+    staleTime: options?.staleTime ?? 5 * 60 * 1000, // cache for 5 min
     retry: 1, // don't retry forever
     retryDelay: 1000,
   });
