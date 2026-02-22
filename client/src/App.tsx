@@ -9,7 +9,7 @@ import useUserSync from "./hooks/useUserSync";
 import { ConfirmProvider } from "./components/ConfirmProvider";
 import FullPageLoader from "./components/FullPageLoader";
 
-const Layout = lazy(() => import("./components/Layout"));
+import Layout from "./components/Layout";
 const DashboardShell = lazy(() => import("@/components/DashboardShell"));
 const Home = lazy(() => import("@/pages/Home"));
 const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
