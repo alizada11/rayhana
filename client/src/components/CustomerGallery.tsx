@@ -17,6 +17,7 @@ import {
   useApprovedGallery,
   useCreateGallerySubmission,
   useToggleGalleryLike,
+  type GallerySubmission,
 } from "@/hooks/useGallery";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/lib/auth";

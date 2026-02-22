@@ -11,15 +11,13 @@ export type HomepagePayload = {
     id: string;
     title: any;
     slug: string;
-    coverImage?: string | null;
+    imageUrl?: string | null;
     excerpt?: any;
     publishedAt?: string | null;
   }>;
   gallery: Array<{
     id: string;
-    image?: string | null;
-    title?: string | null;
-    description?: string | null;
+    imageUrl?: string | null;
   }>;
 };
 

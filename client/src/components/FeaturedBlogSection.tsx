@@ -51,7 +51,7 @@ export default function FeaturedBlogSection({
         {posts.map((post, index) => {
           const title = post.title?.[currentLang] || post.title?.en || "";
           const excerpt = post.excerpt?.[currentLang] || post.excerpt?.en || "";
-          const image = (post as any).coverImage || (post as any).imageUrl || "";
+          const image = post.imageUrl || "";
           return (
             <div
               key={post.id}

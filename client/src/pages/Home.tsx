@@ -143,18 +143,6 @@ export default function Home() {
   const sanitize = (html: string) =>
     DOMPurify ? { __html: DOMPurify.sanitize(html || "") } : undefined;
 
-  const galleryItems =
-    homepage?.gallery?.map(g => ({
-      ...g,
-      imageUrl: (g as any).imageUrl ?? (g as any).image,
-    })) ?? undefined;
-
-  const blogItems =
-    homepage?.blogs?.map(b => ({
-      ...b,
-      imageUrl: (b as any).imageUrl ?? (b as any).coverImage,
-    })) ?? undefined;
-
   // Ensure below-fold sections render once homepage data is ready
   useEffect(() => {
     if (homepage) setShowBelowFold(true);

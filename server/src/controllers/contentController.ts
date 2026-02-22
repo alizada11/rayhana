@@ -1,6 +1,7 @@
 import type { Request, Response } from "express";
 import * as queries from "../db/queries";
 import { getAuth } from "../lib/auth";
+import { createHash } from "crypto";
 
 const getParam = (value: string | string[]) =>
   Array.isArray(value) ? value[0] : value;
@@ -81,8 +82,15 @@ export const getHomepage = async (_req: Request, res: Response) => {
   try {
     const payload = await queries.getHomepageBundle();
     // weak ETag to allow quick 304s
-    const etag = `"${Buffer.from(JSON.stringify(payload)).toString("base64url")}"`;
-    if (_req.headers["if-none-match"] === etag) {
+    const etag = `"${createHash("sha256").update(JSON.stringify(payload)).digest("hex").slice(0, 32)}"`;
+    const ifNoneMatch = _req.headers["if-none-match"];
+    if (
+      ifNoneMatch === "*" ||
+      (ifNoneMatch ?? "")
+        .split(",")
+        .map(v => v.trim())
+        .includes(etag)
+    ) {
       return res.status(304).end();
     }
     res
