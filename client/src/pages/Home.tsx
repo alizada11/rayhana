@@ -175,13 +175,7 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
-<<<<<<< HEAD
-  useEffect(() => {
-    if (homepage) setShowBelowFold(true);
-  }, [homepage]);
 
-=======
->>>>>>> e547a384991fa6888abb9c90ee82bca9e4359a18
   if (isLoading) {
     return (
       <div className="container py-16 space-y-6">
