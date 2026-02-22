@@ -18,12 +18,12 @@ type NavItem = { href: string; label: LocalizedLabel };
 
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
+  const [location] = useLocation();
   const isHome = location === "/";
   const { data: settingsContent } = useContent("settings", {
     enabled: !isHome,
   });
   const [footerLogoBroken, setFooterLogoBroken] = useState(false);
-  const [location] = useLocation();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
   const langCode =
