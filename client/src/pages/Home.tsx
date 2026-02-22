@@ -150,7 +150,6 @@ export default function Home() {
         if (idleId !== undefined) cancelIdleCallback(idleId);
         clearTimeout(timeoutId);
       };
-      return;
     }
 
     const observer = new IntersectionObserver(
