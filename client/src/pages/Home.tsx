@@ -17,28 +17,29 @@ const Newsletter = lazy(() =>
 const FAQ = lazy(() => import("@/components/FAQ"));
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
-import { useContent } from "@/hooks/useContent";
 import SeoTags from "@/components/SeoTags";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import { useHomepage } from "@/hooks/useHomepage";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const currentLang = i18n.language as "en" | "fa" | "ps";
-  const { data: homeContent } = useContent("home");
+  const {
+    data: homepage,
+    isLoading,
+    isError,
+  } = useHomepage();
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
 
-  const heroTitle = getLocalized(
-    homeContent?.data?.hero?.title,
-    t("hero.title")
-  );
+  const heroTitle = getLocalized(homepage?.home?.hero?.title, t("hero.title"));
   const heroSubtitle = getLocalized(
-    homeContent?.data?.hero?.subtitle,
+    homepage?.home?.hero?.subtitle,
     t("hero.subtitle")
   );
-  const heroCta = getLocalized(homeContent?.data?.hero?.cta, t("hero.cta"));
+  const heroCta = getLocalized(homepage?.home?.hero?.cta, t("hero.cta"));
   const heroMedia =
     "https://res.cloudinary.com/ds4pfbv9i/video/upload/v1771768593/hero-video_rryxgf.mp4";
   // Derived poster frame from Cloudinary (first second, auto‑optimized JPEG)
@@ -89,29 +90,29 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
   const featuredImage =
-    typeof homeContent?.data?.images?.featuredProduct === "string"
-      ? homeContent.data.images.featuredProduct
+    typeof homepage?.home?.images?.featuredProduct === "string"
+      ? homepage?.home?.images?.featuredProduct
       : "";
   const storyImage =
-    typeof homeContent?.data?.images?.storyImage === "string"
-      ? homeContent.data.images.storyImage
+    typeof homepage?.home?.images?.storyImage === "string"
+      ? homepage?.home?.images?.storyImage
       : "";
   const storyTitle = getLocalized(
-    homeContent?.data?.story?.title,
+    homepage?.home?.story?.title,
     t("about.title")
   );
   const storyBody = getLocalized(
-    homeContent?.data?.story?.body,
+    homepage?.home?.story?.body,
     i18n.language === "en"
       ? "RAYHANA was born from the longing many immigrants feel for home and the authentic taste of their traditional dishes. We bridge the gap between culture and modernity."
       : "ریحانه از دلتنگی بسیاری از مهاجران برای خانه و طعم اصیل غذاهای سنتی متولد شد. ما پلی بین فرهنگ و مدرنیته هستیم."
   );
   const storyCta = getLocalized(
-    homeContent?.data?.story?.cta,
+    homepage?.home?.story?.cta,
     t("common.fullStory", "Read our Full Story")
   );
-  const values = Array.isArray(homeContent?.data?.values)
-    ? homeContent.data.values
+  const values = Array.isArray(homepage?.home?.values)
+    ? homepage?.home?.values
     : [
         {
           title: t("about.authenticity"),
@@ -142,6 +143,11 @@ export default function Home() {
   const sanitize = (html: string) =>
     DOMPurify ? { __html: DOMPurify.sanitize(html || "") } : undefined;
 
+  // Ensure below-fold sections render once homepage data is ready
+  useEffect(() => {
+    if (homepage) setShowBelowFold(true);
+  }, [homepage]);
+
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") {
       const idleId = requestIdleCallback?.(() => setShowBelowFold(true));
@@ -169,19 +175,43 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  if (isLoading) {
+    return (
+      <div className="container py-16 space-y-6">
+        <div className="h-12 w-64 bg-muted animate-pulse rounded" />
+        <div className="h-64 bg-muted animate-pulse rounded-3xl" />
+      </div>
+    );
+  }
+
+  if (isError || !homepage) {
+    return (
+      <div className="container py-16">
+        <p className="text-destructive">
+          {t("common.error", "Failed to load homepage content.")}
+        </p>
+      </div>
+    );
+  }
+
   return (
     <>
       <SeoTags
         pageKey="home"
-        title={heroTitle || "Rayhana Afghan Cooking"}
+        title={
+          (homepage.seo as any)?.title ||
+          heroTitle ||
+          "Rayhana Afghan Cooking"
+        }
         description={
+          (homepage.seo as any)?.description ||
           heroSubtitle ||
           t(
             "seo.home.description",
             "Discover authentic Afghan recipes, cookware, and stories."
           )
         }
-        image={featuredImage}
+        image={(homepage.seo as any)?.image_url || featuredImage}
         url={`${import.meta.env.VITE_BASE_URL || ""}/`}
       />
       <div className="flex flex-col gap-20 pb-20">
@@ -316,7 +346,7 @@ export default function Home() {
             <div className="space-y-6">
               <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground">
                 {getLocalized(
-                  homeContent?.data?.featuredProduct?.title,
+                  homepage?.home?.featuredProduct?.title,
                   i18n.language === "en"
                     ? "The Perfect Pot for Every Meal"
                     : "دیگ کامل برای هر وعده غذایی"
@@ -324,7 +354,7 @@ export default function Home() {
               </h2>
               {sanitize(
                 getLocalized(
-                  homeContent?.data?.featuredProduct?.description,
+                  homepage?.home?.featuredProduct?.description,
                   i18n.language === "en"
                     ? "Designed for the modern kitchen but rooted in tradition. Our non-stick granite coating ensures healthy cooking with less oil, while the premium aluminum body distributes heat evenly for that perfect taste of home."
                     : "طراحی شده برای آشپزخانه مدرن اما ریشه در سنت دارد. پوشش گرانیتی نچسب ما پخت سالم با روغن کمتر را تضمین می‌کند، در حالی که بدنه آلومینیومی ممتاز گرما را به طور یکنواخت توزیع می‌کند تا طعم کامل خانه را تجربه کنید."
@@ -334,7 +364,7 @@ export default function Home() {
                   className="text-lg text-muted-foreground leading-relaxed prose prose-sm max-w-none"
                   dangerouslySetInnerHTML={sanitize(
                     getLocalized(
-                      homeContent?.data?.featuredProduct?.description,
+                      homepage?.home?.featuredProduct?.description,
                       i18n.language === "en"
                         ? "Designed for the modern kitchen but rooted in tradition. Our non-stick granite coating ensures healthy cooking with less oil, while the premium aluminum body distributes heat evenly for that perfect taste of home."
                         : "طراحی شده برای آشپزخانه مدرن اما ریشه در سنت دارد. پوشش گرانیتی نچسب ما پخت سالم با روغن کمتر را تضمین می‌کند، در حالی که بدنه آلومینیومی ممتاز گرما را به طور یکنواخت توزیع می‌کند تا طعم کامل خانه را تجربه کنید."
@@ -344,7 +374,7 @@ export default function Home() {
               ) : (
                 <p className="text-lg text-muted-foreground leading-relaxed">
                   {getLocalized(
-                    homeContent?.data?.featuredProduct?.description,
+                    homepage?.home?.featuredProduct?.description,
                     i18n.language === "en"
                       ? "Designed for the modern kitchen but rooted in tradition. Our non-stick granite coating ensures healthy cooking with less oil, while the premium aluminum body distributes heat evenly for that perfect taste of home."
                       : "طراحی شده برای آشپزخانه مدرن اما ریشه در سنت دارد. پوشش گرانیتی نچسب ما پخت سالم با روغن کمتر را تضمین می‌کند، در حالی که بدنه آلومینیومی ممتاز گرما را به طور یکنواخت توزیع می‌کند تا طعم کامل خانه را تجربه کنید."
@@ -352,8 +382,8 @@ export default function Home() {
                 </p>
               )}
               <ul className="space-y-3">
-                {(Array.isArray(homeContent?.data?.featuredProduct?.bullets)
-                  ? homeContent.data.featuredProduct.bullets
+                {(Array.isArray(homepage?.home?.featuredProduct?.bullets)
+                  ? homepage?.home?.featuredProduct?.bullets
                   : [
                       { text: { en: "PFOA Free", fa: "", ps: "" } },
                       { text: { en: "FDA Approved", fa: "", ps: "" } },
@@ -453,7 +483,7 @@ export default function Home() {
                   <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
                 }
               >
-                <CustomerGallery />
+                <CustomerGallery items={homepage?.gallery as any} />
               </Suspense>
             </ErrorBoundary>
 
@@ -464,7 +494,7 @@ export default function Home() {
                   <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
                 }
               >
-                <FeaturedBlogSection />
+                <FeaturedBlogSection items={homepage?.blogs as any} />
               </Suspense>
             </ErrorBoundary>
 
@@ -475,7 +505,11 @@ export default function Home() {
                   <div className="min-h-48 w-full animate-pulse bg-muted/30 rounded-2xl" />
                 }
               >
-                <FAQ />
+                <FAQ
+                  items={(homepage?.faq as any)?.items}
+                  title={(homepage?.faq as any)?.title}
+                  subtitle={(homepage?.faq as any)?.subtitle}
+                />
               </Suspense>
             </ErrorBoundary>
 

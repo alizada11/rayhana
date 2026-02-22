@@ -1,13 +1,31 @@
 import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import { ArrowRight, Star } from "lucide-react";
-import { useBlogs } from "@/hooks/useBlogs";
+import { useBlogs, type BlogPost } from "@/hooks/useBlogs";
 
-export default function FeaturedBlogSection() {
+export default function FeaturedBlogSection({
+  items,
+}: {
+  items?: BlogPost[];
+}) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
-  const { data, isLoading } = useBlogs({ page: 1, limit: 4, featured: true });
-  const posts = data?.items ?? [];
+  const { data, isLoading } = useBlogs(
+    { page: 1, limit: 4, featured: true },
+    {
+      enabled: !items,
+      placeholderData: items
+        ? {
+            items,
+            total: items.length,
+            page: 1,
+            pageSize: items.length,
+            totalPages: 1,
+          }
+        : undefined,
+    }
+  );
+  const posts = items ?? data?.items ?? [];
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
 
   const isRTL = ["fa", "ps"].includes(i18n.language);
@@ -44,6 +62,7 @@ export default function FeaturedBlogSection() {
         {posts.map((post, index) => {
           const title = post.title?.[currentLang] || post.title?.en || "";
           const excerpt = post.excerpt?.[currentLang] || post.excerpt?.en || "";
+          const image = post.imageUrl || "";
           return (
             <div
               key={post.id}
@@ -53,7 +72,7 @@ export default function FeaturedBlogSection() {
                 <div className="relative h-52 overflow-hidden">
                   <img
                     loading={index === 0 ? "eager" : "lazy"}
-                    src={resolveImageUrl(post.imageUrl)}
+                    src={resolveImageUrl(image)}
                     alt={title}
                     className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
                   />
