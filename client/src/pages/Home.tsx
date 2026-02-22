@@ -62,8 +62,12 @@ export default function Home() {
     }
 
     if (typeof IntersectionObserver === "undefined") {
-      requestIdleCallback?.(() => setShouldPlayVideo(true));
-      setTimeout(() => setShouldPlayVideo(true), 1000);
+      const idleId = requestIdleCallback?.(() => setShouldPlayVideo(true));
+      const timeoutId = window.setTimeout(() => setShouldPlayVideo(true), 1000);
+      return () => {
+        if (idleId !== undefined) cancelIdleCallback(idleId);
+        clearTimeout(timeoutId);
+      };
       return;
     }
 
@@ -140,8 +144,12 @@ export default function Home() {
 
   useEffect(() => {
     if (typeof IntersectionObserver === "undefined") {
-      requestIdleCallback?.(() => setShowBelowFold(true));
-      setTimeout(() => setShowBelowFold(true), 3000);
+      const idleId = requestIdleCallback?.(() => setShowBelowFold(true));
+      const timeoutId = window.setTimeout(() => setShowBelowFold(true), 3000);
+      return () => {
+        if (idleId !== undefined) cancelIdleCallback(idleId);
+        clearTimeout(timeoutId);
+      };
       return;
     }
 
