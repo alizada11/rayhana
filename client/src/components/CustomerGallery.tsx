@@ -23,7 +23,11 @@ import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 
-export function CustomerGallery() {
+type CustomerGalleryProps = {
+  items?: GallerySubmission[];
+};
+
+export function CustomerGallery({ items }: CustomerGalleryProps) {
   const { t, i18n } = useTranslation();
   const isRTL = i18n.language === "fa";
   const [isOpen, setIsOpen] = useState(false);
@@ -37,7 +41,10 @@ export function CustomerGallery() {
 
   const { isSignedIn } = useAuth();
   const { data: me } = useUserRole();
-  const { data: galleryImages = [], isLoading } = useApprovedGallery();
+  const { data: galleryImages = [], isLoading } = useApprovedGallery({
+    enabled: !items,
+    initialData: items,
+  });
   const createMutation = useCreateGallerySubmission();
   const toggleLikeMutation = useToggleGalleryLike();
   const [, setLocation] = useLocation();

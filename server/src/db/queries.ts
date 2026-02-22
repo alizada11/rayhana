@@ -801,6 +801,52 @@ export const getAllSiteContent = async () => {
   return db.query.siteContent.findMany();
 };
 
+// Aggregated homepage payload (minimal fields, limited rows)
+export const getHomepageBundle = async () => {
+  const [seo, home, settings, contact, faq] = await Promise.all([
+    getSiteContentByKey("seo"),
+    getSiteContentByKey("home"),
+    getSiteContentByKey("settings"),
+    getSiteContentByKey("contact"),
+    getSiteContentByKey("faq"),
+  ]);
+
+  const blogs = await db.query.blogPosts.findMany({
+    where: and(eq(blogPosts.status, "published"), eq(blogPosts.featured, true)),
+    columns: {
+      id: true,
+      title: true,
+      slug: true,
+      imageUrl: true,
+      excerpt: true,
+      publishedAt: true,
+    },
+    orderBy: [desc(blogPosts.publishedAt)],
+    limit: 4,
+  });
+
+  const gallery = await db.query.gallerySubmissions.findMany({
+    where: eq(gallerySubmissions.status, "approved"),
+    columns: {
+      id: true,
+      imageUrl: true,
+      // title/description are stored in site content, so keep payload lean here
+    },
+    orderBy: [desc(gallerySubmissions.createdAt)],
+    limit: 4,
+  });
+
+  return {
+    seo: seo?.data ?? {},
+    home: home?.data ?? {},
+    settings: settings?.data ?? {},
+    contact: contact?.data ?? {},
+    faq: faq?.data ?? {},
+    blogs,
+    gallery,
+  };
+};
+
 // MEDIA QUERIES
 export const createMediaAsset = async (data: NewMediaAsset) => {
   const [asset] = await db.insert(mediaAssets).values(data).returning();

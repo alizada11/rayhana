@@ -75,3 +75,24 @@ export const upsertContent = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to save content" });
   }
 };
+
+// GET /api/homepage (public aggregated payload)
+export const getHomepage = async (_req: Request, res: Response) => {
+  try {
+    const payload = await queries.getHomepageBundle();
+    // weak ETag to allow quick 304s
+    const etag = `"${Buffer.from(JSON.stringify(payload)).toString("base64url")}"`;
+    if (_req.headers["if-none-match"] === etag) {
+      return res.status(304).end();
+    }
+    res
+      .set({
+        "Cache-Control": "public, max-age=300, stale-while-revalidate=600",
+        ETag: etag,
+      })
+      .json(payload);
+  } catch (error) {
+    console.error("Error fetching homepage bundle:", error);
+    res.status(500).json({ error: "Failed to fetch homepage" });
+  }
+};
