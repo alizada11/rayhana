@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { ArrowRight, Check, Star, ShieldCheck } from "lucide-react";
 
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
+import DOMPurify from "dompurify";
 const CustomerGallery = lazy(() =>
   import("@/components/CustomerGallery").then(mod => ({
     default: mod.CustomerGallery,
@@ -38,10 +39,15 @@ export default function Home() {
     t("hero.subtitle")
   );
   const heroCta = getLocalized(homeContent?.data?.hero?.cta, t("hero.cta"));
-  const heroMedia = "/images/hero-video.mp4";
-  const heroPoster = "/images/hero-poster.jpg";
+  const heroMedia =
+    "https://res.cloudinary.com/ds4pfbv9i/video/upload/v1771768593/hero-video_rryxgf.mp4";
+  // Derived poster frame from Cloudinary (first second, auto‑optimized JPEG)
+  const heroPoster =
+    "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_jpg,q_auto/v1771768593/hero-video_rryxgf.jpg";
   const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
   const heroRef = useRef<HTMLDivElement | null>(null);
+  const belowFoldRef = useRef<HTMLDivElement | null>(null);
+  const [showBelowFold, setShowBelowFold] = useState(false);
 
   useEffect(() => {
     const mql =
@@ -55,28 +61,32 @@ export default function Home() {
       return;
     }
 
-    const observer =
-      typeof IntersectionObserver !== "undefined"
-        ? new IntersectionObserver(
-            entries => {
-              const entry = entries[0];
-              if (entry?.isIntersecting) {
-                setShouldPlayVideo(true);
-                observer.disconnect();
-              }
-            },
-            { threshold: 0.2 }
-          )
-        : null;
-
-    if (heroRef.current && observer) {
-      observer.observe(heroRef.current);
-    } else {
-      // Fallback: load after idle if IntersectionObserver not available
-      requestIdleCallback?.(() => setShouldPlayVideo(true));
+    if (typeof IntersectionObserver === "undefined") {
+      const idleId = requestIdleCallback?.(() => setShouldPlayVideo(true));
+      const timeoutId = window.setTimeout(() => setShouldPlayVideo(true), 1000);
+      return () => {
+        if (idleId !== undefined) cancelIdleCallback(idleId);
+        clearTimeout(timeoutId);
+      };
+      return;
     }
 
-    return () => observer?.disconnect();
+    const observer = new IntersectionObserver(
+      entries => {
+        const entry = entries[0];
+        if (entry?.isIntersecting) {
+          setShouldPlayVideo(true);
+          observer.disconnect();
+        }
+      },
+      { threshold: 0.2 }
+    );
+
+    if (heroRef.current) {
+      observer.observe(heroRef.current);
+    }
+
+    return () => observer.disconnect();
   }, []);
   const featuredImage =
     typeof homeContent?.data?.images?.featuredProduct === "string"
@@ -129,16 +139,35 @@ export default function Home() {
         },
       ];
 
-  const [purify, setPurify] = useState<typeof import("dompurify").default>();
+  const sanitize = (html: string) =>
+    DOMPurify ? { __html: DOMPurify.sanitize(html || "") } : undefined;
 
   useEffect(() => {
-    import("dompurify").then(mod =>
-      setPurify(mod.default ? mod.default : (mod as any))
-    );
-  }, []);
+    if (typeof IntersectionObserver === "undefined") {
+      const idleId = requestIdleCallback?.(() => setShowBelowFold(true));
+      const timeoutId = window.setTimeout(() => setShowBelowFold(true), 3000);
+      return () => {
+        if (idleId !== undefined) cancelIdleCallback(idleId);
+        clearTimeout(timeoutId);
+      };
+    }
 
-  const sanitize = (html: string) =>
-    purify ? { __html: purify.sanitize(html || "") } : undefined;
+    const observer = new IntersectionObserver(
+      entries => {
+        if (entries[0]?.isIntersecting) {
+          setShowBelowFold(true);
+          observer.disconnect();
+        }
+      },
+      { rootMargin: "400px 0px" }
+    );
+
+    if (belowFoldRef.current) {
+      observer.observe(belowFoldRef.current);
+    }
+
+    return () => observer.disconnect();
+  }, []);
 
   return (
     <>
@@ -413,49 +442,55 @@ export default function Home() {
           </div>
         </section>
 
-        {/* Customer Gallery */}
-        <ErrorBoundary>
-          <Suspense
-            fallback={
-              <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
-            }
-          >
-            <CustomerGallery />
-          </Suspense>
-        </ErrorBoundary>
+        <div ref={belowFoldRef} />
 
-        {/* Featured Blog */}
-        <ErrorBoundary>
-          <Suspense
-            fallback={
-              <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
-            }
-          >
-            <FeaturedBlogSection />
-          </Suspense>
-        </ErrorBoundary>
+        {showBelowFold && (
+          <>
+            {/* Customer Gallery */}
+            <ErrorBoundary>
+              <Suspense
+                fallback={
+                  <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
+                }
+              >
+                <CustomerGallery />
+              </Suspense>
+            </ErrorBoundary>
 
-        {/* FAQ Section */}
-        <ErrorBoundary>
-          <Suspense
-            fallback={
-              <div className="min-h-48 w-full animate-pulse bg-muted/30 rounded-2xl" />
-            }
-          >
-            <FAQ />
-          </Suspense>
-        </ErrorBoundary>
+            {/* Featured Blog */}
+            <ErrorBoundary>
+              <Suspense
+                fallback={
+                  <div className="min-h-64 w-full animate-pulse bg-muted/40 rounded-3xl" />
+                }
+              >
+                <FeaturedBlogSection />
+              </Suspense>
+            </ErrorBoundary>
 
-        {/* Newsletter */}
-        <ErrorBoundary>
-          <Suspense
-            fallback={
-              <div className="min-h-40 w-full animate-pulse bg-muted/20 rounded-2xl" />
-            }
-          >
-            <Newsletter />
-          </Suspense>
-        </ErrorBoundary>
+            {/* FAQ Section */}
+            <ErrorBoundary>
+              <Suspense
+                fallback={
+                  <div className="min-h-48 w-full animate-pulse bg-muted/30 rounded-2xl" />
+                }
+              >
+                <FAQ />
+              </Suspense>
+            </ErrorBoundary>
+
+            {/* Newsletter */}
+            <ErrorBoundary>
+              <Suspense
+                fallback={
+                  <div className="min-h-40 w-full animate-pulse bg-muted/20 rounded-2xl" />
+                }
+              >
+                <Newsletter />
+              </Suspense>
+            </ErrorBoundary>
+          </>
+        )}
       </div>
     </>
   );

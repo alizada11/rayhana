@@ -6,6 +6,9 @@ export const useContent = (key: string) => {
     queryKey: ["content", key],
     queryFn: () => getContentByKey(key),
     enabled: Boolean(key),
+    staleTime: 5 * 60 * 1000, // cache for 5 min
+    retry: 1, // don't retry forever
+    retryDelay: 1000,
   });
 };
 
