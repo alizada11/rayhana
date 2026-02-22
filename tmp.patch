@@ -1,0 +1,13 @@
+*** Begin Patch
+*** Update File: client/src/pages/Home.tsx
+@@
+-  const heroPoster =
+-    "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_jpg,q_auto/v1771768593/hero-video_rryxgf.mp4";
+-  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
++  const heroPoster =
++    "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_jpg,q_auto/v1771768593/hero-video_rryxgf.jpg";
++  const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
+   const heroRef = useRef<HTMLDivElement | null>(null);
+   const belowFoldRef = useRef<HTMLDivElement | null>(null);
+   const [showBelowFold, setShowBelowFold] = useState(false);
+*** End Patch

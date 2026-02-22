@@ -24,8 +24,16 @@ export type SeoDefaults = {
       }>;
 };
 
-export const useSeoDefaults = () => {
-  const { data, isLoading, isError } = useContent("seo");
+export const useSeoDefaults = (options?: {
+  initialData?: any;
+  enabled?: boolean;
+}) => {
+  const { data, isLoading, isError } = useContent("seo", {
+    initialData: options?.initialData
+      ? { key: "seo", data: options.initialData }
+      : undefined,
+    enabled: options?.enabled ?? true,
+  });
   const rawSeo = (data?.data || {}) as SeoDefaults;
 
   const pages =

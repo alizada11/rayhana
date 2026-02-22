@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useTranslation } from "react-i18next";
-import { useSeoDefaults } from "@/hooks/useSeoDefaults";
+import { useSeoDefaults, type SeoDefaults } from "@/hooks/useSeoDefaults";
 
 type SeoTagsProps = {
   title?: string;
@@ -11,12 +11,16 @@ type SeoTagsProps = {
   publishedTime?: string;
   modifiedTime?: string;
   pageKey?: string;
+  seoData?: SeoDefaults;
 };
 
 export default function SeoTags(props: SeoTagsProps) {
   const { i18n } = useTranslation();
   const lang = i18n.language || "en";
-  const { seo } = useSeoDefaults();
+  const { seo } = useSeoDefaults({
+    initialData: props.seoData,
+    enabled: !props.seoData,
+  });
 
   const pageSeo =
     (props.pageKey && seo.pages?.[props.pageKey]) ||

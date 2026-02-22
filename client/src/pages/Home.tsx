@@ -91,6 +91,12 @@ export default function Home() {
 
     return () => observer.disconnect();
   }, []);
+
+  // Safety fallback to start video even if IO never fires
+  useEffect(() => {
+    const timeoutId = window.setTimeout(() => setShouldPlayVideo(true), 1500);
+    return () => clearTimeout(timeoutId);
+  }, []);
   const featuredImage =
     typeof homepage?.home?.images?.featuredProduct === "string"
       ? homepage?.home?.images?.featuredProduct
@@ -196,6 +202,13 @@ export default function Home() {
   }, []);
 
 
+  // Gentle timeout to reveal below-the-fold content after initial paint
+  useEffect(() => {
+    if (!homepage) return;
+    const timeoutId = window.setTimeout(() => setShowBelowFold(true), 1500);
+    return () => clearTimeout(timeoutId);
+  }, [homepage]);
+
   if (isLoading) {
     return (
       <div className="container py-16 space-y-6">
@@ -234,6 +247,7 @@ export default function Home() {
         }
         image={(homepage.seo as any)?.image_url || featuredImage}
         url={`${import.meta.env.VITE_BASE_URL || ""}/`}
+        seoData={homepage.seo as any}
       />
       <div className="flex flex-col gap-20 pb-20">
         {/* Hero Section */}
