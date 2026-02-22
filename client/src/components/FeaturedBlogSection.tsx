@@ -12,7 +12,18 @@ export default function FeaturedBlogSection({
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const { data, isLoading } = useBlogs(
     { page: 1, limit: 4, featured: true },
-    { enabled: !items, initialData: items ? { items, total: items.length, page: 1, pageSize: items.length, totalPages: 1 } : undefined }
+    {
+      enabled: !items,
+      placeholderData: items
+        ? {
+            items,
+            total: items.length,
+            page: 1,
+            pageSize: items.length,
+            totalPages: 1,
+          }
+        : undefined,
+    }
   );
   const posts = items ?? data?.items ?? [];
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
