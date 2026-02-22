@@ -146,9 +146,7 @@ export default function Home() {
     DOMPurify ? { __html: DOMPurify.sanitize(html || "") } : undefined;
 
   // Ensure below-fold sections render once homepage data is ready
-  useEffect(() => {
-    if (homepage) setShowBelowFold(true);
-  }, [homepage]);
+  // (Keep below-fold gated by IO so we don't load heavy sections early)
 
   // Seed shared content queries so Layout won't refetch settings/contact/seo
   useEffect(() => {
