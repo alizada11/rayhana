@@ -175,6 +175,7 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+
   if (isLoading) {
     return (
       <div className="container py-16 space-y-6">
