@@ -5,7 +5,7 @@ import {
   useMemo,
   useState,
   ReactNode,
-  useRef,
+  useCallback,
 } from "react";
 import { useLocation } from "wouter";
 import { useQueryClient } from "@tanstack/react-query";
@@ -23,20 +23,12 @@ type AuthState = {
   user: User | null;
   isLoaded: boolean;
   isSignedIn: boolean;
-  error?: string | null;
+  error: string | null;
 };
 
 type AuthContextValue = AuthState & {
   login: (email: string, password: string) => Promise<any>;
-  register: (
-    email: string,
-    password: string,
-    name?: string
-  ) => Promise<{
-    verificationRequired?: boolean;
-    email?: string;
-    message?: string;
-  }>;
+  register: (email: string, password: string, name?: string) => Promise<any>;
   logout: () => Promise<void>;
   refresh: () => Promise<void>;
 };
@@ -45,27 +37,25 @@ const AuthContext = createContext<AuthContextValue | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const queryClient = useQueryClient();
+
   const [state, setState] = useState<AuthState>({
     user: null,
     isLoaded: false,
     isSignedIn: false,
     error: null,
   });
-  const latestFetchIdRef = useRef(0);
 
-  const hasFetchedRef = useRef(false);
-
-  const fetchMe = async () => {
-    if (hasFetchedRef.current) return;
-    hasFetchedRef.current = true;
-
-    const fetchId = ++latestFetchIdRef.current;
-
+  /**
+   * Fetch current authenticated user
+   * Always rely on backend validation (HttpOnly cookie safe)
+   */
+  const fetchMe = useCallback(async () => {
     try {
-      const res = await api.get("/auth/me", { withCredentials: true });
-      const user = res.data?.user as User;
+      const res = await api.get("/auth/me", {
+        withCredentials: true,
+      });
 
-      if (fetchId !== latestFetchIdRef.current) return;
+      const user = res.data?.user ?? null;
 
       setState({
         user,
@@ -73,9 +63,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         isSignedIn: Boolean(user),
         error: null,
       });
-    } catch {
-      if (fetchId !== latestFetchIdRef.current) return;
-
+    } catch (err: any) {
       setState({
         user: null,
         isLoaded: true,
@@ -83,95 +71,51 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         error: null,
       });
     }
-  };
-  // const fetchMe = async () => {
-  //   const fetchId = ++latestFetchIdRef.current;
-  //   // Skip network call if there is no auth/session cookie (avoids 401 spam for anonymous visitors)
-  //   if (typeof document !== "undefined") {
-  //     const cookie = document.cookie || "";
-  //     // Look only for real auth/session cookies; avoid matching csrfToken
-  //     const hasAuthCookie = /(auth|session|sid|jwt)=/i.test(cookie);
-  //     if (!hasAuthCookie) {
-  //       setState({
-  //         user: null,
-  //         isLoaded: true,
-  //         isSignedIn: false,
-  //         error: null,
-  //       });
-  //       return;
-  //     }
-  //   }
-  //   try {
-  //     const res = await api.get("/auth/me", { withCredentials: true });
-  //     const user = res.data?.user as User;
-  //     if (fetchId !== latestFetchIdRef.current) return;
-  //     setState({
-  //       user,
-  //       isLoaded: true,
-  //       isSignedIn: Boolean(user),
-  //       error: null,
-  //     });
-  //   } catch {
-  //     if (fetchId !== latestFetchIdRef.current) return;
-  //     setState({
-  //       user: null,
-  //       isLoaded: true,
-  //       isSignedIn: false,
-  //       error: null,
-  //     });
-  //   }
-  // };
-
-  // const fetchMe = async () => {
-  //   const fetchId = ++latestFetchIdRef.current;
-  //   try {
-  //     const res = await api.get("/auth/me", { withCredentials: true });
-  //     const user = res.data?.user as User;
-  //     if (fetchId !== latestFetchIdRef.current) return;
-  //     setState({
-  //       user,
-  //       isLoaded: true,
-  //       isSignedIn: Boolean(user),
-  //       error: null,
-  //     });
-  //   } catch {
-  //     if (fetchId !== latestFetchIdRef.current) return;
-  //     setState({
-  //       user: null,
-  //       isLoaded: true,
-  //       isSignedIn: false,
-  //       error: null,
-  //     });
-  //   }
-  // };
-
-  useEffect(() => {
-    fetchMe();
   }, []);
 
+  /**
+   * Run once on app mount
+   */
+  useEffect(() => {
+    fetchMe();
+  }, [fetchMe]);
+
+  /**
+   * Login
+   */
   const login = async (email: string, password: string) => {
     const res = await api.post(
       "/auth/login",
       { email, password },
       { withCredentials: true }
     );
-    await fetchMe();
+
+    await fetchMe(); // refresh user after login
     return res.data;
   };
 
+  /**
+   * Register
+   */
   const register = async (email: string, password: string, name?: string) => {
     const res = await api.post(
       "/auth/register",
       { email, password, name },
       { withCredentials: true }
     );
-    await fetchMe();
+
+    await fetchMe(); // refresh after register
     return res.data;
   };
 
+  /**
+   * Logout
+   */
   const logout = async () => {
     await api.post("/auth/logout", {}, { withCredentials: true });
-    queryClient.removeQueries({ queryKey: ["me"] });
+
+    queryClient.clear(); // optional: clear all cached queries
+
     setState({
       user: null,
       isLoaded: true,
@@ -188,15 +132,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       logout,
       refresh: fetchMe,
     }),
-    [state]
+    [state, fetchMe]
   );
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }
 
+/**
+ * Hooks
+ */
 export function useAuth() {
   const ctx = useContext(AuthContext);
   if (!ctx) throw new Error("useAuth must be used within AuthProvider");
+
   return {
     ...ctx,
     userId: ctx.user?.id ?? null,
@@ -204,19 +152,21 @@ export function useAuth() {
 }
 
 export function useUser() {
-  const ctx = useAuth();
-  return { user: ctx.user };
+  const { user } = useAuth();
+  return { user };
 }
 
-// UI helpers mimicking Clerk primitives
+/**
+ * UI Helpers
+ */
 export function SignedIn({ children }: { children: ReactNode }) {
-  const { isSignedIn, isLoaded } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
   if (!isLoaded || !isSignedIn) return null;
   return <>{children}</>;
 }
 
 export function SignedOut({ children }: { children: ReactNode }) {
-  const { isSignedIn, isLoaded } = useAuth();
+  const { isLoaded, isSignedIn } = useAuth();
   if (!isLoaded || isSignedIn) return null;
   return <>{children}</>;
 }
@@ -224,7 +174,6 @@ export function SignedOut({ children }: { children: ReactNode }) {
 type ButtonLikeProps = {
   children: ReactNode;
   forceRedirectUrl?: string;
-  mode?: "modal" | "redirect";
 };
 
 export function SignInButton({ children, forceRedirectUrl }: ButtonLikeProps) {
@@ -275,6 +224,7 @@ export function SignOutButton({ children }: { children: ReactNode }) {
 export function UserButton() {
   const { user } = useUser();
   const initial = user?.name?.[0] || user?.email?.[0] || "U";
+
   return (
     <div className="w-12 h-12 rounded-full bg-primary text-primary-foreground flex items-center justify-center text-lg font-semibold">
       {initial}
