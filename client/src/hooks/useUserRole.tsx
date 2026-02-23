@@ -13,3 +13,4 @@ export const useUserRole = (opts?: { enabled?: boolean }) => {
     enabled: (opts?.enabled ?? true) && isSignedIn, // avoid hitting /users/me when not authenticated
   });
 };
+
