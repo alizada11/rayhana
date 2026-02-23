@@ -362,23 +362,35 @@ export default function DashboardContent() {
     setFormData(nextData);
   }, [data, initialData, key]);
 
-  const setDeep = (obj: any, path: string[], value: any) => {
-    const clone = structuredClone(obj);
-    let node = clone;
-    for (let i = 0; i < path.length - 1; i++) {
-      node[path[i]] = node[path[i]] ?? {};
-      node = node[path[i]];
+  const cloneBranch = (node: any) => {
+    if (Array.isArray(node)) return [...node];
+    if (node && typeof node === "object") return { ...node };
+    return {} as any;
+  };
+
+  const setByPath = (obj: any, path: (string | number)[], value: any) => {
+    const next = cloneBranch(obj);
+    let cursor: any = next;
+
+    for (let i = 0; i < path.length; i++) {
+      const key = path[i];
+      if (i === path.length - 1) {
+        cursor[key] = value;
+      } else {
+        cursor[key] = cloneBranch(cursor[key]);
+        cursor = cursor[key];
+      }
     }
-    node[path[path.length - 1]] = value;
-    return clone;
+
+    return next;
   };
 
-  const updateLangField = (path: string[], value: string) => {
-    setFormData((prev: any) => setDeep(prev, [...path, activeLang], value));
+  const updateLangField = (path: (string | number)[], value: string) => {
+    setFormData((prev: any) => setByPath(prev, [...path, activeLang], value));
   };
 
-  const updateField = (path: string[], value: any) => {
-    setFormData((prev: any) => setDeep(prev, path, value));
+  const updateField = (path: (string | number)[], value: any) => {
+    setFormData((prev: any) => setByPath(prev, path, value));
   };
 
   const openMediaPicker = (path: string[]) => {
