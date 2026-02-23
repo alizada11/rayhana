@@ -3,7 +3,6 @@ import react from "@vitejs/plugin-react";
 import fs from "node:fs";
 import path from "path";
 import { defineConfig } from "vite";
-import { vitePluginManusRuntime } from "vite-plugin-manus-runtime";
 import { jsxLocPlugin } from "@builder.io/vite-plugin-jsx-loc";
 
 export default defineConfig(({ mode }) => {
@@ -12,8 +11,6 @@ export default defineConfig(({ mode }) => {
     react(),
     tailwindcss(),
     !isProd && jsxLocPlugin(),
-    // Manus runtime is useful in preview/builder, but adds weight in production bundles.
-    !isProd && vitePluginManusRuntime(),
   ].filter(Boolean);
 
   return {

@@ -27,12 +27,14 @@ export default function FeaturedBlogSection({
   );
   const posts = items ?? data?.items ?? [];
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const cloud_fetch_base = "https://res.cloudinary.com/ds4pfbv9i/image/fetch/f_auto,q_auto,w_1200/";
 
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const resolveImageUrl = (url?: string) => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
-    return `${apiBase}${url}`;
+    const absolute = `${apiBase}${url}`;
+    return `${cloud_fetch_base}${encodeURIComponent(absolute)}`;
   };
 
   if (isLoading || posts.length === 0) return null;

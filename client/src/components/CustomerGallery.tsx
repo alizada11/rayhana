@@ -52,6 +52,7 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
   const loginRequiredMessage = t("login_page.loginRequired");
 
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
+  const cloud_fetch_base = "https://res.cloudinary.com/ds4pfbv9i/image/fetch/f_auto,q_auto,w_1200/";
   const resolveImageUrl = (url: string) => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
