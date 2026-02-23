@@ -53,27 +53,20 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   });
   const latestFetchIdRef = useRef(0);
 
+  const hasFetchedRef = useRef(false);
+
   const fetchMe = async () => {
+    if (hasFetchedRef.current) return;
+    hasFetchedRef.current = true;
+
     const fetchId = ++latestFetchIdRef.current;
-    // Skip network call if there is no auth/session cookie (avoids 401 spam for anonymous visitors)
-    if (typeof document !== "undefined") {
-      const cookie = document.cookie || "";
-      // Look only for real auth/session cookies; avoid matching csrfToken
-      const hasAuthCookie = /(auth|session|sid|jwt)=/i.test(cookie);
-      if (!hasAuthCookie) {
-        setState({
-          user: null,
-          isLoaded: true,
-          isSignedIn: false,
-          error: null,
-        });
-        return;
-      }
-    }
+
     try {
       const res = await api.get("/auth/me", { withCredentials: true });
       const user = res.data?.user as User;
+
       if (fetchId !== latestFetchIdRef.current) return;
+
       setState({
         user,
         isLoaded: true,
@@ -82,6 +75,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
     } catch {
       if (fetchId !== latestFetchIdRef.current) return;
+
       setState({
         user: null,
         isLoaded: true,
@@ -90,6 +84,43 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
     }
   };
+  // const fetchMe = async () => {
+  //   const fetchId = ++latestFetchIdRef.current;
+  //   // Skip network call if there is no auth/session cookie (avoids 401 spam for anonymous visitors)
+  //   if (typeof document !== "undefined") {
+  //     const cookie = document.cookie || "";
+  //     // Look only for real auth/session cookies; avoid matching csrfToken
+  //     const hasAuthCookie = /(auth|session|sid|jwt)=/i.test(cookie);
+  //     if (!hasAuthCookie) {
+  //       setState({
+  //         user: null,
+  //         isLoaded: true,
+  //         isSignedIn: false,
+  //         error: null,
+  //       });
+  //       return;
+  //     }
+  //   }
+  //   try {
+  //     const res = await api.get("/auth/me", { withCredentials: true });
+  //     const user = res.data?.user as User;
+  //     if (fetchId !== latestFetchIdRef.current) return;
+  //     setState({
+  //       user,
+  //       isLoaded: true,
+  //       isSignedIn: Boolean(user),
+  //       error: null,
+  //     });
+  //   } catch {
+  //     if (fetchId !== latestFetchIdRef.current) return;
+  //     setState({
+  //       user: null,
+  //       isLoaded: true,
+  //       isSignedIn: false,
+  //       error: null,
+  //     });
+  //   }
+  // };
 
   // const fetchMe = async () => {
   //   const fetchId = ++latestFetchIdRef.current;
