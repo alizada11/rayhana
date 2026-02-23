@@ -26,7 +26,7 @@ export default function DashboardShell() {
   const { data, isLoading } = useUserRole({
     enabled: isSignedIn && !user?.role,
   });
-  const role = user?.role;
+  const role = user?.role ?? data?.role;
   const hasShownToast = useRef(false);
 
   if (!isLoaded) {
@@ -38,7 +38,7 @@ export default function DashboardShell() {
   if (isLoading && !role) {
     return <FullPageLoader />;
   }
-  if (role !== "admin") {
+  if (role && role !== "admin") {
     if (!hasShownToast.current) {
       hasShownToast.current = true;
       toast.error(t("login_page.adminRequired", "Admin access required"));
@@ -67,4 +67,3 @@ export default function DashboardShell() {
     </DashboardLayout>
   );
 }
-
