@@ -4,12 +4,12 @@ import { useAuth } from "@/lib/auth";
 
 export type UserRole = "admin" | "guest";
 
-export const useUserRole = () => {
+export const useUserRole = (opts?: { enabled?: boolean }) => {
   const { isSignedIn } = useAuth();
 
   return useQuery<{ role: UserRole }>({
     queryKey: ["me"],
     queryFn: getMe,
-    enabled: isSignedIn, // avoid hitting /users/me when not authenticated
+    enabled: (opts?.enabled ?? true) && isSignedIn, // avoid hitting /users/me when not authenticated
   });
 };
