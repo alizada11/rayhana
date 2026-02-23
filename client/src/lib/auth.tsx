@@ -58,7 +58,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     // Skip network call if there is no auth/session cookie (avoids 401 spam for anonymous visitors)
     if (typeof document !== "undefined") {
       const cookie = document.cookie || "";
-      const hasAuthCookie = /(auth|session|token)=/i.test(cookie);
+      // Look only for real auth/session cookies; avoid matching csrfToken
+      const hasAuthCookie = /(auth|session|sid|jwt)=/i.test(cookie);
       if (!hasAuthCookie) {
         setState({
           user: null,
