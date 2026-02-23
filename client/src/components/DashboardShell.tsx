@@ -22,10 +22,11 @@ export default function DashboardShell() {
   const { t } = useTranslation();
 
   const { user, isSignedIn, isLoaded } = useAuth();
+
   const { data, isLoading } = useUserRole({
     enabled: isSignedIn && !user?.role,
   });
-  const role = user?.role ?? data?.role;
+  const role = user?.role;
   const hasShownToast = useRef(false);
 
   if (!isLoaded) {
