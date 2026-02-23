@@ -47,6 +47,7 @@ export default function Home() {
   // Derived poster frame from Cloudinary (first second, auto‑optimized JPEG)
   const heroPoster =
     "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_jpg,q_auto/v1771768593/hero-video_rryxgf.jpg";
+  const heroPosterLow = heroPoster.replace("/upload/", "/upload/q_auto:eco,w_900/");
   const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const belowFoldRef = useRef<HTMLDivElement | null>(null);
@@ -264,7 +265,6 @@ export default function Home() {
                 muted
                 playsInline
                 preload="none"
-                poster={heroPoster}
                 className="w-full h-full object-cover"
               >
                 <source src={heroMedia} />
@@ -272,7 +272,7 @@ export default function Home() {
             ) : (
               <img
                 fetchPriority="high"
-                src={heroPoster}
+                src={heroPosterLow}
                 alt="Rayhana hero"
                 className="w-full h-full object-cover"
                 loading="eager"

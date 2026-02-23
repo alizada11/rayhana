@@ -55,15 +55,19 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const fetchMe = async () => {
     const fetchId = ++latestFetchIdRef.current;
-    // Skip network call if there are no cookies at all (avoids 401 spam for anonymous users)
-    if (typeof document !== "undefined" && (!document.cookie || !document.cookie.includes("="))) {
-      setState({
-        user: null,
-        isLoaded: true,
-        isSignedIn: false,
-        error: null,
-      });
-      return;
+    // Skip network call if there is no auth/session cookie (avoids 401 spam for anonymous visitors)
+    if (typeof document !== "undefined") {
+      const cookie = document.cookie || "";
+      const hasAuthCookie = /(auth|session|token)=/i.test(cookie);
+      if (!hasAuthCookie) {
+        setState({
+          user: null,
+          isLoaded: true,
+          isSignedIn: false,
+          error: null,
+        });
+        return;
+      }
     }
     try {
       const res = await api.get("/auth/me", { withCredentials: true });
