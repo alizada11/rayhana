@@ -36,8 +36,8 @@ setInterval(
 );
 
 const app = express();
-// Frontend build output (Vite outDir is dist/public relative to repo root)
-const distPath = path.resolve(process.cwd(), "dist", "public");
+// Frontend build output (Vite outDir is dist/public). Use __dirname so PM2 cwd doesn't matter.
+const distPath = path.resolve(__dirname, "public");
 const uploadsPath = path.resolve(process.cwd(), "server", "uploads");
 const hasBuiltFrontend = fs.existsSync(path.join(distPath, "index.html"));
 const isProduction = process.env.NODE_ENV === "production";
@@ -51,6 +51,8 @@ const allowedOrigins = (ENV.FRONTEND_URL || "")
   .split(",")
   .map(o => o.trim())
   .filter(Boolean);
+// Permit common performance-test origins to avoid noisy CORS failures
+allowedOrigins.push("https://www.google.com", "https://gtmetrix.com");
 if (!allowedOrigins.length) {
   allowedOrigins.push("http://localhost:5173", "http://localhost:3000");
 }
