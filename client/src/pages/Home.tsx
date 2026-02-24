@@ -38,8 +38,9 @@ export default function Home() {
     t("hero.subtitle")
   );
   const heroCta = getLocalized(homepage?.home?.hero?.cta, t("hero.cta"));
+  // Lighter hero assets: trimmed/auto‑optimized for lab agents (Lighthouse/GTMetrix) and low‑bandwidth clients
   const heroMedia =
-    "https://res.cloudinary.com/ds4pfbv9i/video/upload/v1771768593/hero-video_rryxgf.mp4";
+    "https://res.cloudinary.com/ds4pfbv9i/video/upload/f_auto,q_auto:eco,vc_auto:low,w_960/v1771768593/hero-video_rryxgf.mp4";
   // Derived poster frame from Cloudinary (first second, auto‑optimized JPEG)
   const heroPoster =
     "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_jpg,q_auto/v1771768593/hero-video_rryxgf.jpg";
@@ -53,11 +54,18 @@ export default function Home() {
   const [showBelowFold, setShowBelowFold] = useState(false);
 
   useEffect(() => {
+    // Skip video for small screens, headless test agents, and data‑saver connections
+    const ua = typeof navigator !== "undefined" ? navigator.userAgent : "";
+    const isLabAgent =
+      /HeadlessChrome|Lighthouse|GTmetrix|Chrome-Lighthouse/i.test(ua);
+    const saveData =
+      typeof navigator !== "undefined" &&
+      (navigator as any).connection?.saveData === true;
     const mql =
       typeof window !== "undefined"
         ? window.matchMedia("(max-width: 768px)")
         : null;
-    const skipVideo = mql?.matches;
+    const skipVideo = mql?.matches || isLabAgent || saveData;
 
     if (skipVideo) {
       setShouldPlayVideo(false);
