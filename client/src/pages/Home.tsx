@@ -26,11 +26,7 @@ export default function Home() {
   const { t, i18n } = useTranslation();
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const currentLang = i18n.language as "en" | "fa" | "ps";
-  const {
-    data: homepage,
-    isLoading,
-    isError,
-  } = useHomepage();
+  const { data: homepage, isLoading, isError } = useHomepage();
   const queryClient = useQueryClient();
 
   const getLocalized = (obj: any, fallback: string) =>
@@ -47,7 +43,10 @@ export default function Home() {
   // Derived poster frame from Cloudinary (first second, auto‑optimized JPEG)
   const heroPoster =
     "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_jpg,q_auto/v1771768593/hero-video_rryxgf.jpg";
-  const heroPosterLow = heroPoster.replace("/upload/", "/upload/q_auto:eco,w_900/");
+  const heroPosterLow = heroPoster.replace(
+    "/upload/",
+    "/upload/q_auto:eco,w_900/"
+  );
   const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const belowFoldRef = useRef<HTMLDivElement | null>(null);
@@ -202,7 +201,6 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
-
   // Gentle timeout to reveal below-the-fold content after initial paint
   useEffect(() => {
     if (!homepage) return;
@@ -234,9 +232,7 @@ export default function Home() {
       <SeoTags
         pageKey="home"
         title={
-          (homepage.seo as any)?.title ||
-          heroTitle ||
-          "Rayhana Afghan Cooking"
+          (homepage.seo as any)?.title || heroTitle || "Rayhana Afghan Cooking"
         }
         description={
           (homepage.seo as any)?.description ||
@@ -373,9 +369,9 @@ export default function Home() {
                   aria-hidden="true"
                 />
               )}
-              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg">
+              {/* <div className="absolute top-4 right-4 bg-white/90 backdrop-blur text-primary px-4 py-2 rounded-full text-sm font-bold shadow-lg">
                 {t("products.ladle_bonus")}
-              </div>
+              </div> */}
             </div>
 
             <div className="space-y-6">

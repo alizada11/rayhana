@@ -358,7 +358,7 @@
       "needHelp": "کمک می‌خواهید؟ سری بزنید به",
       "helpCenter": "مرکز راهنما"
     },
-    "effectiveDate": "تاریخ اجرا"
+    "effectiveDate": "بروز رسانی شده در"
   },
   "comments": {
     "reply": "پاسخ",
@@ -387,7 +387,7 @@
     "failed_delete": "حذف کاربر انجام نشد"
   },
   "privacy": {
-    "effectiveDate": "تاریخ اجرا",
+    "effectiveDate": "بروز رسانی شده در",
     "needHelp": "کمک می‌خواهید؟ سری بزنید به"
   },
   "contact_page": {

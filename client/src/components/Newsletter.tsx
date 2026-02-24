@@ -37,22 +37,22 @@ export function Newsletter() {
   };
 
   return (
-    <section className="py-20 relative overflow-hidden bg-amber-900/5 dark:bg-amber-900/10">
+    <section className="py-20 relative overflow-hidden bg-primary/5 dark:bg-primary/15">
       {/* Background decoration */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-amber-900/20 dark:via-amber-500/20 to-transparent" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 dark:via-primary/25 to-transparent" />
 
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto bg-white dark:bg-stone-900 rounded-3xl p-8 md:p-12 border border-amber-900/10 dark:border-amber-500/10 shadow-xl relative overflow-hidden">
+        <div className="max-w-4xl mx-auto bg-white dark:bg-stone-900 rounded-3xl p-8 md:p-12 border border-primary/10 dark:border-primary/15 shadow-xl relative overflow-hidden">
           {/* Decorative circles */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-amber-500/10 rounded-full blur-3xl" />
+          <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/12 rounded-full blur-3xl" />
+          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-primary/12 rounded-full blur-3xl" />
 
           <div className="grid md:grid-cols-2 gap-8 items-center relative z-10">
             <div className="space-y-4 text-center md:text-start">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-amber-100 dark:bg-amber-900/30 text-amber-700 dark:text-amber-500 mb-2">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/25 text-primary dark:text-primary mb-2">
                 <Mail className="w-6 h-6" />
               </div>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-amber-900 dark:text-amber-500">
+              <h2 className="font-serif text-2xl md:text-3xl font-bold text-primary dark:text-primary">
                 {t("newsletter.title")}
               </h2>
               <p className="text-stone-600 dark:text-stone-400">
@@ -67,15 +67,15 @@ export function Newsletter() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    className="bg-amber-50 dark:bg-amber-900/20 border border-amber-200 dark:border-amber-900/50 rounded-xl p-6 text-center"
+                    className="bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 rounded-xl p-6 text-center"
                   >
-                    <div className="w-12 h-12 bg-amber-100 dark:bg-amber-900/40 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <Check className="w-6 h-6 text-amber-600 dark:text-amber-400" />
+                    <div className="w-12 h-12 bg-primary/15 dark:bg-primary/30 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Check className="w-6 h-6 text-primary dark:text-primary" />
                     </div>
-                    <h3 className="font-serif font-bold text-amber-800 dark:text-amber-300 mb-1">
+                    <h3 className="font-serif font-bold text-primary dark:text-primary mb-1">
                       {t("newsletter.success_title")}
                     </h3>
-                    <p className="text-sm text-amber-700 dark:text-amber-400/80">
+                    <p className="text-sm text-primary/80 dark:text-primary/80">
                       {t("newsletter.success_message")}
                     </p>
                   </motion.div>
@@ -97,7 +97,7 @@ export function Newsletter() {
                         className={`
                                 h-14 rounded-full bg-stone-50 dark:bg-stone-800
                                 border-stone-200 dark:border-stone-700
-                                focus:border-amber-500 focus:ring-amber-500
+                                focus:border-primary focus:ring-primary
                                 text-base
                                 ${isRTL ? "pr-6 pl-16" : "pl-6 pr-16"}
                               `}
@@ -110,7 +110,7 @@ export function Newsletter() {
       absolute top-1.5 bottom-1.5
       ${isRTL ? "left-1.5" : "right-1.5"}
       rounded-full aspect-square p-0
-      bg-amber-700 hover:bg-amber-800
+      bg-primary hover:bg-primary/90
       text-white h-11 w-11 shadow-md
       flex items-center justify-center
     `}
