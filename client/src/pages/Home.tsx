@@ -40,7 +40,7 @@ export default function Home() {
   const heroCta = getLocalized(homepage?.home?.hero?.cta, t("hero.cta"));
   // Lighter hero assets: trimmed/auto‑optimized for lab agents (Lighthouse/GTMetrix) and low‑bandwidth clients
   const heroMedia =
-    "https://res.cloudinary.com/ds4pfbv9i/video/upload/f_auto,q_auto:eco,vc_auto:low,w_960/v1771768593/hero-video_rryxgf.mp4";
+    "https://res.cloudinary.com/ds4pfbv9i/video/upload/v1771768593/hero-video_rryxgf.mp4";
   // Derived poster frame from Cloudinary (first second, auto‑optimized JPEG)
   const heroPoster =
     "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_jpg,q_auto/v1771768593/hero-video_rryxgf.jpg";
