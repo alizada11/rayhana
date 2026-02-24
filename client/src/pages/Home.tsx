@@ -280,7 +280,7 @@ export default function Home() {
           {/* Content */}
           <div className="container relative z-10 text-center text-white">
             <div className="max-w-3xl mx-auto space-y-6">
-              <h1 className="font-serif text-5xl md:text-7xl font-bold leading-tight">
+              <h1 className="font-serif text-5xl md:text-6xl font-bold leading-tight">
                 {heroTitle}
               </h1>
               <p className="text-lg md:text-xl text-white/90 max-w-2xl mx-auto font-light">

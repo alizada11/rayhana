@@ -7,6 +7,14 @@ import compression from "compression";
 import { ENV } from "./config/env";
 import { cookies, authMiddleware } from "./lib/auth";
 import { csrfMiddleware } from "./middleware/csrf";
+import Module from "module";
+
+// Ensure server-side deps (like argon2) resolve even if NODE_PATH isn't set by PM2.
+if (!process.env.NODE_PATH) {
+  process.env.NODE_PATH = path.resolve(__dirname, "../server/node_modules");
+  const modAny = Module as unknown as { _initPaths?: () => void };
+  modAny._initPaths?.();
+}
 
 import userRoutes from "./routes/userRoutes";
 import productRoutes from "./routes/productRoutes";
