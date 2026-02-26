@@ -15,14 +15,6 @@
 }
 
 @font-face {
-  font-family: "Playfair Display";
-  font-style: bold;
-  font-weight: 700;
-  font-display: optional;
-  src: url("./assets/fonts/casanova.woff2") format("woff2");
-}
-
-@font-face {
   font-family: "Vazirmatn";
   font-style: normal;
   font-weight: 400;

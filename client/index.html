@@ -12,6 +12,13 @@
     <!-- Preconnect to media CDN (Cloudinary) for hero/poster assets -->
     <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
     <link rel="dns-prefetch" href="https://res.cloudinary.com" />
+    <!-- Preload LCP hero poster (mobile-friendly compressed) -->
+    <link
+      rel="preload"
+      as="image"
+      href="https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_auto,q_auto:low,w_900/v1771768593/hero-video_rryxgf.jpg"
+      fetchpriority="high"
+    />
 
     <!-- Tiny critical styles to reserve header height before CSS loads -->
     <style>

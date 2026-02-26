@@ -367,10 +367,7 @@ gtag('config', '${gaMeasurementId}');`;
       <main className="flex-1">{children}</main>
 
       {/* Footer */}
-      <footer
-        className="border-t bg-muted/60"
-        style={{ minHeight: 280 }} // reserve space to prevent initial footer shift
-      >
+      <footer className="border-t bg-muted/60 site-footer">
         <div className="container py-8 md:py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
