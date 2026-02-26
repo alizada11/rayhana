@@ -298,24 +298,26 @@ export default function Home() {
     );
   }
 
+  const seo = homepage?.seo ?? {};
+
   return (
     <>
       <SeoTags
         pageKey="home"
         title={
-          (homepage.seo as any)?.title || heroTitle || "Rayhana Afghan Cooking"
+          (seo as any)?.title || heroTitle || "Rayhana Afghan Cooking"
         }
         description={
-          (homepage.seo as any)?.description ||
+          (seo as any)?.description ||
           heroSubtitle ||
           t(
             "seo.home.description",
             "Discover authentic Afghan recipes, cookware, and stories."
           )
         }
-        image={(homepage.seo as any)?.image_url || featuredImage}
+        image={(seo as any)?.image_url || featuredImage}
         url={`${import.meta.env.VITE_BASE_URL || ""}/`}
-        seoData={homepage.seo as any}
+        seoData={seo as any}
       />
       <div className="flex flex-col gap-20 pb-20">
         {/* Hero Section */}

@@ -12,22 +12,26 @@ import path from "path";
 function deleteUploadIfExists(url?: string) {
   if (!url || !url.startsWith("/uploads/")) return;
 
-  const primary = resolveUploadUrlToPath(url);
+  try {
+    const primary = resolveUploadUrlToPath(url);
 
-  const uploadsDir = getUploadsDir();
+    const uploadsDir = getUploadsDir();
 
-  // Prevent path traversal
-  if (!primary.startsWith(uploadsDir + path.sep)) return;
+    // Prevent path traversal
+    if (!primary.startsWith(uploadsDir + path.sep)) return;
 
-  if (fs.existsSync(primary)) {
-    fs.unlinkSync(primary);
-    return;
+    if (fs.existsSync(primary)) {
+      fs.unlinkSync(primary);
+      return;
+    }
+
+    const legacyDir = getLegacyUploadsDir();
+    const legacy = path.resolve(legacyDir, url.replace(/^\/+uploads\/?/, ""));
+    if (!legacy.startsWith(legacyDir + path.sep)) return;
+    if (fs.existsSync(legacy)) fs.unlinkSync(legacy);
+  } catch (err) {
+    console.warn?.("deleteUploadIfExists failed", { url, err });
   }
-
-  const legacyDir = getLegacyUploadsDir();
-  const legacy = path.resolve(legacyDir, url.replace(/^\/+uploads\/?/, ""));
-  if (!legacy.startsWith(legacyDir + path.sep)) return;
-  if (fs.existsSync(legacy)) fs.unlinkSync(legacy);
 }
 const getId = (rawId: string | string[]) =>
   Array.isArray(rawId) ? rawId[0] : rawId;

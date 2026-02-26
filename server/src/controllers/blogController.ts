@@ -42,10 +42,14 @@ const isAdminUser = async (userId: string) => {
 
 const safeUnlinkUpload = (url?: string) => {
   if (!url || !url.startsWith("/uploads/")) return;
-  const candidatePath = resolveUploadUrlToPath(url);
-  const uploadsDir = getUploadsDir();
-  if (!candidatePath.startsWith(uploadsDir + path.sep)) return;
-  if (fs.existsSync(candidatePath)) fs.unlinkSync(candidatePath);
+  try {
+    const uploadsDir = getUploadsDir();
+    const candidatePath = resolveUploadUrlToPath(url);
+    if (!candidatePath.startsWith(uploadsDir + path.sep)) return;
+    if (fs.existsSync(candidatePath)) fs.unlinkSync(candidatePath);
+  } catch (err) {
+    console.warn?.("safeUnlinkUpload failed", { url, err });
+  }
 };
 
 // -------------------------
