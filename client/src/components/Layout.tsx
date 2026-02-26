@@ -39,9 +39,9 @@ export default function Layout({ children }: LayoutProps) {
     return `${apiBase}${url}`;
   };
 
-  // Use optimized logo asset (scaled to display size) to cut bytes and CLS.
-  const headerLogoUrl = "/images/logo-256.png";
-  const footerLogoUrl = "/images/logo-256.png";
+  // Logo asset (served from public/images). Keep explicit dimensions for CLS.
+  const headerLogoUrl = "/images/logo.png";
+  const footerLogoUrl = "/images/logo.png";
   const logoWidth = 256;
   const logoHeight = 70;
 

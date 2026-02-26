@@ -29,3 +29,11 @@
   font-display: swap;
   src: url("./assets/fonts/vazirmatn-arabic-700-normal.woff2") format("woff2");
 }
+
+@font-face {
+  font-family: "Playfair Display";
+  font-style: normal;
+  font-weight: 700;
+  font-display: swap;
+  src: url("./assets/fonts/casanova.woff2") format("woff2");
+}
