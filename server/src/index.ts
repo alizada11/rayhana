@@ -47,9 +47,9 @@ const app = express();
 // Frontend build output (Vite outDir is dist/public). Use __dirname so PM2 cwd doesn't matter.
 const distPath = path.resolve(__dirname, "public");
 // Keep in sync with multer destination in middleware/upload.ts (server/uploads)
-const uploadsPath = path.resolve(process.cwd(), "server", "uploads");
-// Optional secondary location if files were copied elsewhere (backward compatibility)
-const altUploadsPath = path.resolve(process.cwd(), "uploads");
+const uploadsPathPrimary = path.resolve(__dirname, "..", "uploads");
+// Also serve uploads relative to process.cwd() to cover running from repo root
+const uploadsPathSecondary = path.resolve(process.cwd(), "uploads");
 const hasBuiltFrontend = fs.existsSync(path.join(distPath, "index.html"));
 const isProduction = process.env.NODE_ENV === "production";
 const isTsRuntime = path.extname(__filename) === ".ts"; // running via ts-node in dev
@@ -118,22 +118,21 @@ if (hasBuiltFrontend) {
   );
 }
 // serve uploaded assets (Render uses ephemeral FS; consider S3 if you need persistence)
-app.use(
-  "/uploads",
-  express.static(uploadsPath, {
-    maxAge: "7d",
-    immutable: false,
-  })
-);
-// Serve alternate uploads folder if present (helps during path migrations)
-if (fs.existsSync(altUploadsPath) && altUploadsPath !== uploadsPath) {
-  app.use(
-    "/uploads",
-    express.static(altUploadsPath, {
-      maxAge: "7d",
-      immutable: false,
-    })
-  );
+const uploadStaticDirs = [
+  uploadsPathPrimary,
+  uploadsPathSecondary,
+].filter((dir, idx, arr) => arr.indexOf(dir) === idx); // dedupe
+
+for (const dir of uploadStaticDirs) {
+  if (fs.existsSync(dir)) {
+    app.use(
+      "/uploads",
+      express.static(dir, {
+        maxAge: "7d",
+        immutable: false,
+      })
+    );
+  }
 }
 app.use(authMiddleware);
 app.use(express.json());
