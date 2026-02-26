@@ -53,6 +53,12 @@ export default function Gallery() {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
+  const formatDate = (iso?: string) =>
+    iso ? new Date(iso).toLocaleDateString() : "";
+  const loginRequiredMessage = t(
+    "login_page.loginRequired",
+    "You need to log in to access this feature."
+  );
 
   const revokePreview = () => {
     if (objectUrl) {
@@ -159,6 +165,11 @@ export default function Gallery() {
   const pageItems = filtered.slice((page - 1) * pageSize, page * pageSize);
 
   const handleToggleLike = (id: string) => {
+    if (!isSignedIn) {
+      toast.error(loginRequiredMessage);
+      setLocation("/login");
+      return;
+    }
     toggleLikeMutation.mutate(id);
   };
 
@@ -388,16 +399,25 @@ export default function Gallery() {
                 }
               }}
             >
-              <img loading="lazy"
+              <img
+                loading="lazy"
                 src={resolveImageUrl(item.imageUrl)}
                 alt={item.dishName}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-end">
-                <p className="text-white font-semibold">{item.dishName}</p>
-                <p className="text-white/80 text-xs">
-                  {item.user?.name || (isRTL ? "مهمان" : "Guest")}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 p-4 flex flex-col justify-end">
+                <p className="text-white font-semibold line-clamp-1">
+                  {item.dishName}
                 </p>
+                {item.description && (
+                  <p className="text-white/80 text-xs line-clamp-2">
+                    {item.description}
+                  </p>
+                )}
+                <div className="flex items-center justify-between mt-2 text-[11px] text-white/80">
+                  <span>{item.user?.name || (isRTL ? "مهمان" : "Guest")}</span>
+                  <span>{formatDate(item.createdAt)}</span>
+                </div>
               </div>
               <button
                 type="button"
@@ -452,7 +472,8 @@ export default function Gallery() {
           {activeImage && (
             <div className="grid md:grid-cols-2 gap-6">
               <div className="rounded-xl overflow-hidden bg-black">
-                <img loading="lazy"
+                <img
+                  loading="lazy"
                   src={resolveImageUrl(activeImage.imageUrl)}
                   alt={activeImage.dishName}
                   className="w-full h-full object-contain"
@@ -466,6 +487,9 @@ export default function Gallery() {
                 </DialogHeader>
                 <p className="text-sm text-muted-foreground">
                   {activeImage.user?.name || (isRTL ? "مهمان" : "Guest")}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {formatDate(activeImage.createdAt)}
                 </p>
                 {activeImage.description && (
                   <p className="text-sm text-muted-foreground">
