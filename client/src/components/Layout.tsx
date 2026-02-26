@@ -25,6 +25,7 @@ export default function Layout({ children }: LayoutProps) {
   });
   const [footerLogoBroken, setFooterLogoBroken] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(!isHome);
   const { theme, setTheme } = useTheme();
   const langCode = (i18n.language || i18n.resolvedLanguage || "en").split(
     "-"
@@ -55,6 +56,19 @@ export default function Layout({ children }: LayoutProps) {
   useEffect(() => {
     setFooterLogoBroken(false);
   }, [footerLogoUrl]);
+
+  useEffect(() => {
+    if (!isHome) {
+      setIsScrolled(true);
+      return;
+    }
+    const onScroll = () => {
+      setIsScrolled(window.scrollY > 10);
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, [isHome]);
 
   // Reset scroll to top on route changes to avoid landing mid-page
   useEffect(() => {
@@ -224,12 +238,22 @@ gtag('config', '${gaMeasurementId}');`;
       )}
     >
       {/* Header */}
-      <header className="sticky top-0 z-50 w-full border-b bg-background/80 backdrop-blur-md supports-[backdrop-filter]:bg-background/60">
+      <header
+        className={cn(
+          "sticky top-0 z-50 w-full transition-colors duration-200",
+          isHome && !isScrolled
+            ? "bg-transparent border-b-transparent shadow-none"
+            : "border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/50 shadow-sm"
+        )}
+      >
         <div className="container flex h-16 items-center justify-between">
           {/* Logo */}
           <Link
             href="/"
-            className="flex items-center gap-2 font-serif text-2xl font-bold text-primary"
+            className={cn(
+              "flex items-center gap-2 font-serif text-2xl font-bold",
+              isHome && !isScrolled ? "text-white" : "text-primary"
+            )}
           >
             {headerLogoUrl ? (
               <img
@@ -258,10 +282,14 @@ gtag('config', '${gaMeasurementId}');`;
                 key={item.href}
                 href={item.href}
                 className={cn(
-                  "text-sm font-medium transition-colors hover:text-primary",
-                  location === item.href
-                    ? "text-primary"
-                    : "text-muted-foreground"
+                  "text-sm font-medium transition-colors",
+                  isHome && !isScrolled
+                    ? "text-white hover:text-white/80"
+                    : "text-foreground hover:text-primary",
+                  location === item.href &&
+                    (isHome && !isScrolled
+                      ? "text-white font-bold"
+                      : "text-primary font-bold")
                 )}
               >
                 {getLocalizedLabel(item.label)}
@@ -277,10 +305,22 @@ gtag('config', '${gaMeasurementId}');`;
                 size="icon"
                 onClick={() => setShowLangMenu(!showLangMenu)}
                 title="Change Language"
-                className="relative"
+                className={cn(
+                  "relative",
+                  isHome && !isScrolled
+                    ? "text-white hover:text-white/80"
+                    : "text-foreground"
+                )}
               >
                 <Globe className="h-5 w-5" />
-                <span className="absolute -bottom-1 -right-1 text-[10px] font-bold bg-primary text-primary-foreground rounded-full w-4 h-4 flex items-center justify-center">
+                <span
+                  className={cn(
+                    "absolute -bottom-1 -right-1 text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center",
+                    isHome && !isScrolled
+                      ? "bg-white/90 text-primary"
+                      : "bg-primary text-primary-foreground"
+                  )}
+                >
                   {langCode.toUpperCase()}
                 </span>
               </Button>
@@ -313,6 +353,11 @@ gtag('config', '${gaMeasurementId}');`;
               size="icon"
               onClick={toggleTheme}
               title="Toggle Theme"
+              className={cn(
+                isHome && !isScrolled
+                  ? "text-white hover:text-white/80"
+                  : "text-foreground"
+              )}
             >
               {theme === "dark" ? (
                 <Sun className="h-5 w-5" />
@@ -326,8 +371,14 @@ gtag('config', '${gaMeasurementId}');`;
             <Button
               variant="ghost"
               size="icon"
-              className="md:hidden"
-              aria-label="Open menu"
+              className={cn(
+                "md:hidden",
+                isHome && !isScrolled
+                  ? "text-white hover:text-white/80"
+                  : "text-foreground"
+              )}
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
