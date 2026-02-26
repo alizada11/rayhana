@@ -98,6 +98,7 @@
 :root[dir="rtl"],
 html[dir="rtl"] {
   --font-serif: "Vazirmatn", "Noto Sans Arabic", "Noto Sans", sans-serif;
+  --font-sans: "Vazirmatn", "Noto Sans Arabic", "Noto Sans", sans-serif;
 }
 
 .dark {
