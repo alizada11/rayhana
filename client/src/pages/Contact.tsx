@@ -17,11 +17,52 @@ import { useContent } from "@/hooks/useContent";
 import { useSendContactMessage } from "@/hooks/useContactMessages";
 import { toast } from "sonner";
 import SeoTags from "@/components/SeoTags";
-import { TikTokIcon } from "@/components/TiktokIcon";
+import { TikTokIcon } from "@/components/TikTokIcon";
+
+type LangKey = "en" | "fa" | "ps";
+type LangValue = Record<LangKey, string>;
+type IconName =
+  | "mapPin"
+  | "phone"
+  | "mail"
+  | "globe"
+  | "messageSquare"
+  | "instagram"
+  | "facebook"
+  | "tiktok";
+
+type Hero = { title: LangValue; subtitle: LangValue };
+type InfoItem = {
+  icon: IconName;
+  title: LangValue;
+  value: LangValue;
+};
+type SocialItem = { icon: IconName; label: LangValue; url: string };
+type FormContent = {
+  nameLabel: LangValue;
+  emailLabel: LangValue;
+  subjectLabel: LangValue;
+  messageLabel: LangValue;
+  submitLabel: LangValue;
+  successMessage: LangValue;
+  errorMessage: LangValue;
+};
+type Content = {
+  hero: Hero;
+  info: InfoItem[];
+  socials: SocialItem[];
+  form: FormContent;
+};
 export default function Contact() {
   const { t, i18n } = useTranslation();
   const rtlLangs = ["fa", "ps", "ar", "ku"];
   const isRTL = rtlLangs.includes(i18n.language) || i18n.dir?.() === "rtl";
+  const supportedLangs: LangKey[] = ["en", "fa", "ps"];
+  const currentLang: LangKey = supportedLangs.includes(
+    i18n.language as LangKey
+  )
+    ? (i18n.language as LangKey)
+    : "en";
   const { data } = useContent("contact");
   const mutation = useSendContactMessage();
   const [form, setForm] = useState({
@@ -32,7 +73,7 @@ export default function Contact() {
     website: "", // honeypot
   });
 
-  const content = useMemo(() => {
+  const content = useMemo<Content>(() => {
     const fallback = {
       hero: {
         title: { en: t("contact_page.title"), fa: "", ps: "" },
@@ -124,16 +165,18 @@ export default function Contact() {
         }))
       : fallback.socials;
 
-    const form = Object.keys(fallback.form).reduce((acc, key) => {
-      // @ts-expect-error index
-      acc[key] = mergeLang(d?.form?.[key], fallback.form[key]);
-      return acc;
-    }, {} as any);
+    const form = (Object.keys(fallback.form) as Array<keyof FormContent>).reduce(
+      (acc, key) => {
+        acc[key] = mergeLang(d?.form?.[key], fallback.form[key]);
+        return acc;
+      },
+      {} as FormContent
+    );
 
     return { hero, info, socials, form };
   }, [data, t, i18n.language]);
 
-  const iconMap: Record<string, React.ComponentType<any>> = {
+  const iconMap: Record<IconName, React.ComponentType<any>> = {
     mapPin: MapPin,
     phone: Phone,
     mail: Mail,
@@ -153,14 +196,14 @@ export default function Contact() {
     mutation.mutate(form, {
       onSuccess: () => {
         toast.success(
-          content.form.successMessage[i18n.language as "en" | "fa" | "ps"] ||
+          content.form.successMessage[currentLang] ||
             t("toast.contact_sent", "Message sent")
         );
         setForm({ name: "", email: "", subject: "", message: "", website: "" });
       },
       onError: () => {
         toast.error(
-          content.form.errorMessage[i18n.language as "en" | "fa" | "ps"] ||
+          content.form.errorMessage[currentLang] ||
             t("common.error", "Failed to send")
         );
       },
@@ -172,11 +215,11 @@ export default function Contact() {
       <SeoTags
         pageKey="contact"
         title={
-          content?.hero?.title?.[i18n.language] ||
+          content?.hero?.title?.[currentLang] ||
           t("contact_page.title", "Contact Rayhana")
         }
         description={
-          content?.hero?.subtitle?.[i18n.language] ||
+          content?.hero?.subtitle?.[currentLang] ||
           t(
             "contact_page.subtitle",
             "Get in touch for support, partnerships, or questions."
@@ -192,8 +235,7 @@ export default function Contact() {
             animate={{ opacity: 1, y: 0 }}
             className="font-serif text-4xl md:text-6xl font-bold text-primary"
           >
-            {content.hero.title[i18n.language as "en" | "fa" | "ps"] ||
-              content.hero.title.en}
+            {content.hero.title[currentLang] || content.hero.title.en}
           </motion.h1>
           <motion.p
             initial={{ opacity: 0 }}
@@ -201,8 +243,7 @@ export default function Contact() {
             transition={{ delay: 0.2 }}
             className="text-muted-foreground text-lg max-w-2xl mx-auto"
           >
-            {content.hero.subtitle[i18n.language as "en" | "fa" | "ps"] ||
-              content.hero.subtitle.en}
+            {content.hero.subtitle[currentLang] || content.hero.subtitle.en}
           </motion.p>
         </div>
 
@@ -229,8 +270,7 @@ export default function Contact() {
                         </div>
                         <div>
                           <h3 className="font-serif font-bold mb-1">
-                            {item.title[i18n.language as "en" | "fa" | "ps"] ||
-                              item.title.en}
+                            {item.title[currentLang] || item.title.en}
                           </h3>
                           <p
                             dir="ltr"
@@ -240,8 +280,7 @@ export default function Contact() {
                                 : "text-left text-muted-foreground"
                             }
                           >
-                            {item.value[i18n.language as "en" | "fa" | "ps"] ||
-                              item.value.en}
+                            {item.value[currentLang] || item.value.en}
                           </p>
                         </div>
                       </div>
@@ -265,7 +304,7 @@ export default function Contact() {
                       target="_blank"
                       rel="noopener noreferrer"
                       aria-label={
-                        social.label[i18n.language as "en" | "fa" | "ps"] ||
+                        social.label[currentLang] ||
                         social.label.en ||
                         social.icon
                       }
@@ -303,16 +342,14 @@ export default function Contact() {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div className="space-y-2">
                   <label htmlFor="contact-name" className="text-sm font-medium">
-                    {content.form.nameLabel[
-                      i18n.language as "en" | "fa" | "ps"
-                    ] || content.form.nameLabel.en}
+                    {content.form.nameLabel[currentLang] ||
+                      content.form.nameLabel.en}
                   </label>
                   <Input
                     id="contact-name"
                     placeholder={
-                      content.form.nameLabel[
-                        i18n.language as "en" | "fa" | "ps"
-                      ] || content.form.nameLabel.en
+                      content.form.nameLabel[currentLang] ||
+                      content.form.nameLabel.en
                     }
                     value={form.name}
                     onChange={e =>
@@ -323,17 +360,15 @@ export default function Contact() {
                 </div>
                 <div className="space-y-2">
                   <label htmlFor="contactemail" className="text-sm font-medium">
-                    {content.form.emailLabel[
-                      i18n.language as "en" | "fa" | "ps"
-                    ] || content.form.emailLabel.en}
+                    {content.form.emailLabel[currentLang] ||
+                      content.form.emailLabel.en}
                   </label>
                   <Input
                     id="contact-email"
                     type="email"
                     placeholder={
-                      content.form.emailLabel[
-                        i18n.language as "en" | "fa" | "ps"
-                      ] || content.form.emailLabel.en
+                      content.form.emailLabel[currentLang] ||
+                      content.form.emailLabel.en
                     }
                     value={form.email}
                     onChange={e =>
@@ -346,16 +381,14 @@ export default function Contact() {
 
               <div className="space-y-2">
                 <label htmlFor="subject" className="text-sm font-medium">
-                  {content.form.subjectLabel[
-                    i18n.language as "en" | "fa" | "ps"
-                  ] || content.form.subjectLabel.en}
+                  {content.form.subjectLabel[currentLang] ||
+                    content.form.subjectLabel.en}
                 </label>
                 <Input
                   id="contact-subjec"
                   placeholder={
-                    content.form.subjectLabel[
-                      i18n.language as "en" | "fa" | "ps"
-                    ] || content.form.subjectLabel.en
+                    content.form.subjectLabel[currentLang] ||
+                    content.form.subjectLabel.en
                   }
                   value={form.subject}
                   onChange={e =>
@@ -369,16 +402,14 @@ export default function Contact() {
                   htmlFor="contact-message"
                   className="text-sm font-medium"
                 >
-                  {content.form.messageLabel[
-                    i18n.language as "en" | "fa" | "ps"
-                  ] || content.form.messageLabel.en}
+                  {content.form.messageLabel[currentLang] ||
+                    content.form.messageLabel.en}
                 </label>
                 <Textarea
                   id="contact-message"
                   placeholder={
-                    content.form.messageLabel[
-                      i18n.language as "en" | "fa" | "ps"
-                    ] || content.form.messageLabel.en
+                    content.form.messageLabel[currentLang] ||
+                    content.form.messageLabel.en
                   }
                   className="min-h-[150px] resize-none"
                   value={form.message}
@@ -397,9 +428,8 @@ export default function Contact() {
               >
                 {mutation.isPending
                   ? t("contact.sending", "Sending...")
-                  : content.form.submitLabel[
-                      i18n.language as "en" | "fa" | "ps"
-                    ] || content.form.submitLabel.en}
+                  : content.form.submitLabel[currentLang] ||
+                    content.form.submitLabel.en}
               </Button>
             </form>
           </motion.div>
