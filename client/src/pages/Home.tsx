@@ -298,7 +298,7 @@ export default function Home() {
     );
   }
 
-  const seo = homepage?.seo ?? {};
+  const seo = homepage?.seo;
 
   return (
     <>
