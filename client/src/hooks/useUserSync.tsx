@@ -10,6 +10,25 @@ function useUserSync() {
   const attemptedRef = useRef(false);
   const lastSyncedUserIdRef = useRef<string | null>(null);
 
+  // ✅ FIX: Store mutation in a ref so we can call it from effects without
+  // adding it to dependency arrays. `useMutation` returns a new object every
+  // render, so including it in deps caused an infinite loop:
+  // render → new mutation object → effect re-runs → reset/mutate → re-render → repeat
+  const mutation = useMutation({
+    mutationFn: syncUser,
+    retry: false,
+    onSuccess: () => {
+      attemptedRef.current = true;
+      lastSyncedUserIdRef.current = user?.id ?? null;
+      markSyncedThisSession();
+    },
+    onError: () => {
+      attemptedRef.current = true;
+    },
+  });
+  const mutationRef = useRef(mutation);
+  mutationRef.current = mutation;
+
   const hasSyncedThisSession = () => {
     try {
       const key = user?.id ? `user_sync:${user.id}` : null;
@@ -28,33 +47,22 @@ function useUserSync() {
     }
   };
 
-  const mutation = useMutation({
-    mutationFn: syncUser,
-    retry: false, // avoid hammering the endpoint
-    onSuccess: () => {
-      attemptedRef.current = true;
-      lastSyncedUserIdRef.current = user?.id ?? null;
-      markSyncedThisSession();
-    },
-    onError: () => {
-      attemptedRef.current = true;
-    },
-  });
-
   // Sync once per user session
   useEffect(() => {
+    const m = mutationRef.current; // ✅ read from ref, not from deps
+
     if (!isSignedIn) {
       attemptedRef.current = false;
       lastSyncedUserIdRef.current = null;
-      mutation.reset();
+      m.reset();
       return;
     }
     if (!user?.id) return;
-    if (mutation.isPending || mutation.isSuccess) return;
+    if (m.isPending || m.isSuccess) return;
     if (hasSyncedThisSession()) return;
 
     const alreadySyncedCurrentUser =
-      mutation.isSuccess && lastSyncedUserIdRef.current === user.id;
+      m.isSuccess && lastSyncedUserIdRef.current === user.id;
     if (alreadySyncedCurrentUser) return;
     if (attemptedRef.current) return;
 
@@ -65,11 +73,12 @@ function useUserSync() {
     if (last && Date.now() - last < ONE_DAY) return;
 
     attemptedRef.current = true;
-    mutation.mutate({
+    m.mutate({
       email: user.email,
       name: user.name,
       imageUrl: user.imageUrl,
     });
+
     if (lsKey) {
       try {
         localStorage.setItem(lsKey, `${Date.now()}`);
@@ -77,14 +86,15 @@ function useUserSync() {
         /* ignore */
       }
     }
-  }, [isSignedIn, user?.id, mutation]);
+  }, [isSignedIn, user?.id]); // ✅ mutation removed from deps
 
+  // Reset when user changes
   useEffect(() => {
-    attemptedRef.current = false;
     if (user?.id !== lastSyncedUserIdRef.current) {
-      mutation.reset();
+      attemptedRef.current = false;
+      mutationRef.current.reset(); // ✅ call via ref, not dep
     }
-  }, [user?.id, mutation]);
+  }, [user?.id]); // ✅ mutation removed from deps
 
   return {
     isSynced: mutation.isSuccess && lastSyncedUserIdRef.current === user?.id,
