@@ -62,8 +62,13 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
-  const formatDate = (iso?: string) =>
-    iso ? new Date(iso).toLocaleDateString() : "";
+  const formatDate = (iso?: string | Date) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
+  };
+  const displayUser = (user?: { name?: string | null; email?: string | null }) =>
+    user?.name?.trim() || user?.email || (isRTL ? "مهمان" : "Guest");
 
   const revokePreview = () => {
     if (objectUrl) {
@@ -192,10 +197,11 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                 <div className="flex items-center justify-between w-full text-sm">
                   <div className="flex flex-col">
                     <span className="opacity-90">
-                      {img.user?.name || (isRTL ? "مهمان" : "Guest")}
+                      {displayUser(img.user)}
                     </span>
                     <span className="text-xs opacity-80">
-                      {formatDate(img.createdAt)}
+                      {formatDate(img.createdAt) ||
+                        t("gallery.unknown_date", "Date unavailable")}
                     </span>
                   </div>
                   <button
@@ -396,12 +402,17 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                 <h3 className="text-2xl font-serif font-bold">
                   {activeImage.dishName}
                 </h3>
-                <p className="text-sm text-stone-600 dark:text-stone-400">
-                  {activeImage.user?.name || (isRTL ? "مهمان" : "Guest")}
-                </p>
-                <p className="text-xs text-stone-500">
-                  {formatDate(activeImage.createdAt)}
-                </p>
+                <div className="text-sm text-stone-600 dark:text-stone-400 space-y-1">
+                  <div>
+                    <strong>{t("gallery.sender", "Sender")}:</strong>{" "}
+                    {displayUser(activeImage.user)}
+                  </div>
+                  <div className="text-xs text-stone-500">
+                    <strong>{t("gallery.date_sent", "Date sent")}:</strong>{" "}
+                    {formatDate(activeImage.createdAt) ||
+                      t("gallery.unknown_date", "Date unavailable")}
+                  </div>
+                </div>
                 {activeImage.description && (
                   <p className="text-stone-700 dark:text-stone-300">
                     {activeImage.description}
@@ -409,10 +420,9 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                 )}
                 <div className="flex items-center gap-2 text-sm text-stone-500">
                   <Heart className="w-4 h-4" />
-                  <span>{activeImage.likesCount ?? 0}</span>
-                </div>
-                <div className="text-xs text-stone-400">
-                  {new Date(activeImage.createdAt).toLocaleDateString()}
+                  <span>
+                    {t("gallery.likes", "Likes")}: {activeImage.likesCount ?? 0}
+                  </span>
                 </div>
               </div>
             </div>

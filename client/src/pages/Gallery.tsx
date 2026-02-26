@@ -53,8 +53,15 @@ export default function Gallery() {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
-  const formatDate = (iso?: string) =>
-    iso ? new Date(iso).toLocaleDateString() : "";
+  const formatDate = (iso?: string | Date) => {
+    if (!iso) return "";
+    const d = new Date(iso);
+    return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
+  };
+  const displayUser = (user?: { name?: string | null; email?: string | null }) =>
+    user?.name?.trim() ||
+    user?.email ||
+    (isRTL ? "مهمان" : "Guest");
   const loginRequiredMessage = t(
     "login_page.loginRequired",
     "You need to log in to access this feature."
@@ -414,9 +421,20 @@ export default function Gallery() {
                     {item.description}
                   </p>
                 )}
-                <div className="flex items-center justify-between mt-2 text-[11px] text-white/80">
-                  <span>{item.user?.name || (isRTL ? "مهمان" : "Guest")}</span>
-                  <span>{formatDate(item.createdAt)}</span>
+                <div className="mt-2 text-[11px] text-white/80 space-y-1">
+                  <div className="flex items-center justify-between">
+                    <span className="font-medium">
+                      {displayUser(item.user)}
+                    </span>
+                    <span>
+                      {formatDate(item.createdAt) ||
+                        t("gallery.unknown_date", "Date unavailable")}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span>{t("gallery.likes", "Likes")}:</span>
+                    <span>{item.likesCount ?? 0}</span>
+                  </div>
                 </div>
               </div>
               <button
@@ -485,12 +503,17 @@ export default function Gallery() {
                     {activeImage.dishName}
                   </DialogTitle>
                 </DialogHeader>
-                <p className="text-sm text-muted-foreground">
-                  {activeImage.user?.name || (isRTL ? "مهمان" : "Guest")}
-                </p>
-                <p className="text-xs text-muted-foreground">
-                  {formatDate(activeImage.createdAt)}
-                </p>
+                <div className="text-sm text-muted-foreground space-y-1">
+                  <div>
+                    <strong>{t("gallery.sender", "Sender")}:</strong>{" "}
+                    {displayUser(activeImage.user)}
+                  </div>
+                  <div className="text-xs">
+                    <strong>{t("gallery.date_sent", "Date sent")}:</strong>{" "}
+                    {formatDate(activeImage.createdAt) ||
+                      t("gallery.unknown_date", "Date unavailable")}
+                  </div>
+                </div>
                 {activeImage.description && (
                   <p className="text-sm text-muted-foreground">
                     {activeImage.description}
@@ -498,10 +521,9 @@ export default function Gallery() {
                 )}
                 <div className="flex items-center gap-2 text-sm text-muted-foreground">
                   <Heart className="w-4 h-4" />
-                  <span>{activeImage.likesCount ?? 0}</span>
-                </div>
-                <div className="text-xs text-muted-foreground">
-                  {new Date(activeImage.createdAt).toLocaleDateString()}
+                  <span>
+                    {t("gallery.likes", "Likes")}: {activeImage.likesCount ?? 0}
+                  </span>
                 </div>
                 <Button
                   variant="outline"
