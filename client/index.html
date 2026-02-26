@@ -8,7 +8,23 @@
     <!-- optional fallbacks -->
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
+    <link rel="preload" as="image" href="/images/logo-256.png" />
+    <!-- Preconnect to media CDN (Cloudinary) for hero/poster assets -->
+    <link rel="preconnect" href="https://res.cloudinary.com" crossorigin />
+    <link rel="dns-prefetch" href="https://res.cloudinary.com" />
 
+    <!-- Tiny critical styles to reserve header height before CSS loads -->
+    <style>
+      :root {
+        --header-h: 64px;
+      }
+      header.sticky {
+        min-height: var(--header-h);
+      }
+      header .container {
+        min-height: var(--header-h);
+      }
+    </style>
   </head>
 
   <body>

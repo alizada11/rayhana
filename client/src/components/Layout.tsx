@@ -26,8 +26,9 @@ export default function Layout({ children }: LayoutProps) {
   const [footerLogoBroken, setFooterLogoBroken] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const { theme, setTheme } = useTheme();
-  const langCode =
-    (i18n.language || i18n.resolvedLanguage || "en").split("-")[0];
+  const langCode = (i18n.language || i18n.resolvedLanguage || "en").split(
+    "-"
+  )[0];
   const isRTL = ["fa", "ps"].includes(langCode);
   const currentLang = langCode as "en" | "fa" | "ps";
 
@@ -38,8 +39,11 @@ export default function Layout({ children }: LayoutProps) {
     return `${apiBase}${url}`;
   };
 
-  const headerLogoUrl = "/images/logo.png";
-  const footerLogoUrl = "/images/logo.png";
+  // Use optimized logo asset (scaled to display size) to cut bytes and CLS.
+  const headerLogoUrl = "/images/logo-256.png";
+  const footerLogoUrl = "/images/logo-256.png";
+  const logoWidth = 256;
+  const logoHeight = 70;
 
   const defaultImgFallback =
     "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///ywAAAAAAQABAAACAUwAOw==";
@@ -138,9 +142,7 @@ gtag('config', '${gaMeasurementId}');`;
 
   const changeLanguage = (newLang: string) => {
     const inst =
-      i18n && typeof i18n.changeLanguage === "function"
-        ? i18n
-        : i18nInstance;
+      i18n && typeof i18n.changeLanguage === "function" ? i18n : i18nInstance;
     inst.changeLanguage(newLang);
     try {
       window.localStorage.setItem("i18nextLng", newLang);
@@ -234,7 +236,9 @@ gtag('config', '${gaMeasurementId}');`;
                 loading="eager"
                 src={headerLogoUrl}
                 alt="Rayhana logo"
-                className="h-9 w-auto object-contain"
+                width={logoWidth}
+                height={logoHeight}
+                className="h-9 w-auto object-contain block"
                 data-skip-global-fallback="1"
                 onError={e => {
                   e.currentTarget.style.display = "none";
@@ -323,6 +327,7 @@ gtag('config', '${gaMeasurementId}');`;
               variant="ghost"
               size="icon"
               className="md:hidden"
+              aria-label="Open menu"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -362,7 +367,10 @@ gtag('config', '${gaMeasurementId}');`;
       <main className="flex-1">{children}</main>
 
       {/* Footer */}
-      <footer className="border-t bg-muted/30">
+      <footer
+        className="border-t bg-muted/60"
+        style={{ minHeight: 280 }} // reserve space to prevent initial footer shift
+      >
         <div className="container py-8 md:py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
@@ -372,7 +380,9 @@ gtag('config', '${gaMeasurementId}');`;
                     loading="lazy"
                     src={footerLogoUrl}
                     alt="Rayhana logo"
-                    className="h-10 w-auto object-contain"
+                    width={logoWidth}
+                    height={logoHeight}
+                    className="h-10 w-auto object-contain block"
                     data-skip-global-fallback="1"
                     onError={() => setFooterLogoBroken(true)}
                   />
@@ -380,7 +390,7 @@ gtag('config', '${gaMeasurementId}');`;
                   <span>RAYHANA</span>
                 )}
               </h3>
-              <p className="text-muted-foreground max-w-xs">
+              <p className="text-foreground/80 max-w-xs">
                 {t("hero.subtitle")}
               </p>
             </div>
@@ -388,7 +398,7 @@ gtag('config', '${gaMeasurementId}');`;
               <h4 className="font-serif font-bold mb-4">
                 {t("nav.quickLinks")}
               </h4>
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2 text-sm text-foreground">
                 {footerLinks.map((item: any, idx: number) => (
                   <li key={`${item.href}-${idx}`}>
                     <Link
@@ -406,7 +416,7 @@ gtag('config', '${gaMeasurementId}');`;
                 {t("contact.title")}
               </h4>
 
-              <ul className="space-y-2 text-sm text-muted-foreground">
+              <ul className="space-y-2 text-sm text-foreground">
                 <li>{contactInfo.email}</li>
 
                 {/* Phone: LTR content, RTL position */}
@@ -423,6 +433,7 @@ gtag('config', '${gaMeasurementId}');`;
                       target="_blank"
                       rel="noopener noreferrer"
                       className="hover:text-primary"
+                      aria-label={`Visit us on ${getLocalizedLabel(item.label)}`}
                     >
                       {getLocalizedLabel(item.label)}
                     </a>
@@ -431,7 +442,7 @@ gtag('config', '${gaMeasurementId}');`;
               </ul>
             </div>
           </div>
-          <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
+          <div className="border-t mt-8 pt-8 text-center text-sm text-foreground/80">
             {t("footer.rights")}
           </div>
         </div>

@@ -1,5 +1,4 @@
 import { Suspense, lazy } from "react";
-import { Toaster } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Redirect, Route, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -10,6 +9,9 @@ import { ConfirmProvider } from "./components/ConfirmProvider";
 import FullPageLoader from "./components/FullPageLoader";
 
 import Layout from "./components/Layout";
+const LazyToaster = lazy(() =>
+  import("@/components/ui/sonner").then(mod => ({ default: mod.Toaster }))
+);
 const DashboardShell = lazy(() => import("@/components/DashboardShell"));
 const Home = lazy(() => import("@/pages/Home"));
 const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
@@ -153,7 +155,9 @@ function App() {
       <ThemeProvider defaultTheme="light">
         <ConfirmProvider>
           <TooltipProvider>
-            <Toaster />
+            <Suspense fallback={null}>
+              <LazyToaster />
+            </Suspense>
             <Router />
           </TooltipProvider>
         </ConfirmProvider>

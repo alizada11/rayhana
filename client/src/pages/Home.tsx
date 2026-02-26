@@ -41,18 +41,17 @@ export default function Home() {
   const heroCta = getLocalized(homepage?.home?.hero?.cta, t("hero.cta"));
   // Lighter hero assets: trimmed/auto‑optimized for lab agents (Lighthouse/GTMetrix) and low‑bandwidth clients
   const heroMedia =
-    "https://res.cloudinary.com/ds4pfbv9i/video/upload/v1771768593/hero-video_rryxgf.mp4";
-  // Derived poster frame from Cloudinary (first second, auto‑optimized JPEG)
+    "https://res.cloudinary.com/ds4pfbv9i/video/upload/f_auto,q_auto:eco,vc_h265,w_1280/v1771768593/hero-video_rryxgf.mp4";
+  // Poster frame: auto format + strong compression + width cap
   const heroPoster =
-    "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_jpg,q_auto/v1771768593/hero-video_rryxgf.jpg";
-  const heroPosterLow = heroPoster.replace(
-    "/upload/",
-    "/upload/q_auto:eco,w_900/"
-  );
+    "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_auto,q_auto:eco,w_1200/v1771768593/hero-video_rryxgf.jpg";
+  const heroPosterLow =
+    "https://res.cloudinary.com/ds4pfbv9i/video/upload/so_1,f_auto,q_auto:low,w_900/v1771768593/hero-video_rryxgf.jpg";
   const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const belowFoldRef = useRef<HTMLDivElement | null>(null);
   const [showBelowFold, setShowBelowFold] = useState(false);
+  const skipVideoRef = useRef(false);
 
   useEffect(() => {
     // Skip video for small screens, headless test agents, and data‑saver connections
@@ -67,6 +66,7 @@ export default function Home() {
         ? window.matchMedia("(max-width: 768px)")
         : null;
     const skipVideo = mql?.matches || isLabAgent || saveData;
+    skipVideoRef.current = !!skipVideo;
 
     if (skipVideo) {
       setShouldPlayVideo(false);
@@ -101,18 +101,42 @@ export default function Home() {
     return () => observer.disconnect();
   }, []);
 
+  // Preload LCP poster image early to improve request discovery
+  useEffect(() => {
+    const href = heroPosterLow;
+    if (!href) return;
+    const existing = document.querySelector(
+      `link[rel="preload"][as="image"][href="${href}"]`
+    );
+    if (existing) return;
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
+    link.href = href;
+    link.fetchPriority = "high";
+    document.head.appendChild(link);
+    return () => link.parentNode?.removeChild(link);
+  }, [heroPosterLow]);
+
   // Safety fallback to start video even if IO never fires
   useEffect(() => {
+    if (skipVideoRef.current) return;
     const timeoutId = window.setTimeout(() => setShouldPlayVideo(true), 1500);
     return () => clearTimeout(timeoutId);
   }, []);
   const featuredImage =
     typeof homepage?.home?.images?.featuredProduct === "string"
-      ? homepage?.home?.images?.featuredProduct
+      ? homepage?.home?.images?.featuredProduct.replace(
+          "/upload/",
+          "/upload/f_auto,q_auto:eco,w_1100/"
+        )
       : "";
   const storyImage =
     typeof homepage?.home?.images?.storyImage === "string"
-      ? homepage?.home?.images?.storyImage
+      ? homepage?.home?.images?.storyImage.replace(
+          "/upload/",
+          "/upload/f_auto,q_auto:eco,w_1100/"
+        )
       : "";
   const storyTitle = getLocalized(
     homepage?.home?.story?.title,
@@ -217,15 +241,6 @@ export default function Home() {
     return () => clearTimeout(timeoutId);
   }, [homepage]);
 
-  if (isLoading) {
-    return (
-      <div className="container py-16 space-y-6">
-        <div className="h-12 w-64 bg-muted animate-pulse rounded" />
-        <div className="h-64 bg-muted animate-pulse rounded-3xl" />
-      </div>
-    );
-  }
-
   if (isError || !homepage) {
     return (
       <div className="container py-16">
@@ -273,6 +288,13 @@ export default function Home() {
                 className="w-full h-full object-cover"
               >
                 <source src={heroMedia} />
+                <track
+                  kind="captions"
+                  src="/captions/hero.vtt"
+                  label="English"
+                  srcLang="en"
+                  default
+                />
               </video>
             ) : (
               <img
