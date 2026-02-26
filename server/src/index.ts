@@ -6,6 +6,7 @@ import cors from "cors";
 import compression from "compression";
 import { ENV } from "./config/env";
 import { cookies, authMiddleware } from "./lib/auth";
+import { getLegacyUploadsDir, getUploadsDir } from "./lib/paths";
 import { csrfMiddleware } from "./middleware/csrf";
 import Module from "module";
 
@@ -46,10 +47,10 @@ setInterval(
 const app = express();
 // Frontend build output (Vite outDir is dist/public). Use __dirname so PM2 cwd doesn't matter.
 const distPath = path.resolve(__dirname, "public");
-// Keep in sync with multer destination in middleware/upload.ts (server/uploads)
-const uploadsPathPrimary = path.resolve(__dirname, "..", "uploads");
-// Also serve uploads relative to process.cwd() to cover running from repo root
-const uploadsPathSecondary = path.resolve(process.cwd(), "uploads");
+// Keep in sync with multer destinations (middleware/upload*.ts)
+const uploadsPathPrimary = getUploadsDir();
+// Also serve any legacy path to avoid breaking already-uploaded assets
+const uploadsPathSecondary = getLegacyUploadsDir();
 const hasBuiltFrontend = fs.existsSync(path.join(distPath, "index.html"));
 const isProduction = process.env.NODE_ENV === "production";
 const isTsRuntime = path.extname(__filename) === ".ts"; // running via ts-node in dev

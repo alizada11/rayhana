@@ -2,8 +2,37 @@ import type { Request, Response } from "express";
 import * as queries from "../db/queries";
 import { getAuth } from "../lib/auth";
 import fs from "fs";
+import {
+  getLegacyUploadsDir,
+  getUploadsDir,
+  resolveUploadUrlToPath,
+} from "../lib/paths";
 import path from "path";
 
+function deleteUploadIfExists(url?: string) {
+  if (!url || !url.startsWith("/uploads/")) return;
+
+  try {
+    const primary = resolveUploadUrlToPath(url);
+
+    const uploadsDir = getUploadsDir();
+
+    // Prevent path traversal
+    if (!primary.startsWith(uploadsDir + path.sep)) return;
+
+    if (fs.existsSync(primary)) {
+      fs.unlinkSync(primary);
+      return;
+    }
+
+    const legacyDir = getLegacyUploadsDir();
+    const legacy = path.resolve(legacyDir, url.replace(/^\/+uploads\/?/, ""));
+    if (!legacy.startsWith(legacyDir + path.sep)) return;
+    if (fs.existsSync(legacy)) fs.unlinkSync(legacy);
+  } catch (err) {
+    console.warn?.("deleteUploadIfExists failed", { url, err });
+  }
+}
 const getId = (rawId: string | string[]) =>
   Array.isArray(rawId) ? rawId[0] : rawId;
 
@@ -120,10 +149,7 @@ export const deleteGallerySubmission = async (req: Request, res: Response) => {
     const submission = await queries.deleteGallerySubmission(id);
     if (!submission) return res.status(404).json({ error: "Not found" });
 
-    if (submission.imageUrl?.startsWith("/uploads/")) {
-      const imgPath = path.join(process.cwd(), submission.imageUrl);
-      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-    }
+    deleteUploadIfExists(submission.imageUrl);
 
     res.status(200).json({ message: "Submission deleted" });
   } catch (error) {
@@ -132,7 +158,10 @@ export const deleteGallerySubmission = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteMyGallerySubmission = async (req: Request, res: Response) => {
+export const deleteMyGallerySubmission = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
@@ -145,10 +174,7 @@ export const deleteMyGallerySubmission = async (req: Request, res: Response) => 
     const deleted = await queries.deleteGallerySubmission(id);
     if (!deleted) return res.status(404).json({ error: "Not found" });
 
-    if (deleted.imageUrl?.startsWith("/uploads/")) {
-      const imgPath = path.join(process.cwd(), deleted.imageUrl);
-      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-    }
+    deleteUploadIfExists(deleted.imageUrl);
 
     res.status(200).json({ message: "Submission deleted" });
   } catch (error) {

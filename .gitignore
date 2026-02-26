@@ -5,6 +5,7 @@
 # Build outputs
 dist/
 build/
+uploads/
 server/uploads/
 server/server/uploads/
 *.dist

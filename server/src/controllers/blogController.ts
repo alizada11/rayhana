@@ -2,8 +2,8 @@ import type { Request, Response } from "express";
 import * as queries from "../db/queries";
 import { getAuth } from "../lib/auth";
 import fs from "fs";
+import { getUploadsDir, resolveUploadUrlToPath } from "../lib/paths";
 import path from "path";
-
 const asQueryString = (value: unknown): string | undefined => {
   if (typeof value === "string") return value;
   if (Array.isArray(value) && typeof value[0] === "string") return value[0];
@@ -40,15 +40,16 @@ const isAdminUser = async (userId: string) => {
   return user?.role === "admin";
 };
 
-const uploadsBase = path.resolve(__dirname, "..", "..", "uploads");
-
 const safeUnlinkUpload = (url?: string) => {
   if (!url || !url.startsWith("/uploads/")) return;
-  const relativePath = url.replace(/^\/uploads\//, "");
-  if (!relativePath) return;
-  const candidatePath = path.resolve(uploadsBase, relativePath);
-  if (!candidatePath.startsWith(uploadsBase + path.sep)) return;
-  if (fs.existsSync(candidatePath)) fs.unlinkSync(candidatePath);
+  try {
+    const uploadsDir = getUploadsDir();
+    const candidatePath = resolveUploadUrlToPath(url);
+    if (!candidatePath.startsWith(uploadsDir + path.sep)) return;
+    if (fs.existsSync(candidatePath)) fs.unlinkSync(candidatePath);
+  } catch (err) {
+    console.warn?.("safeUnlinkUpload failed", { url, err });
+  }
 };
 
 // -------------------------

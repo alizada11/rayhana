@@ -1,13 +1,9 @@
-import fs from "fs";
-import path from "path";
 import multer from "multer";
+import path from "path";
+import { getUploadsDir } from "../lib/paths";
 
 // Keep uploads aligned with static serving in server/src/index.ts
-const uploadsDir = path.resolve(__dirname, "..", "..", "uploads");
-
-if (!fs.existsSync(uploadsDir)) {
-  fs.mkdirSync(uploadsDir, { recursive: true });
-}
+const uploadsDir = getUploadsDir();
 
 const MAX_IMAGE_SIZE_BYTES = 10 * 1024 * 1024;
 
