@@ -246,19 +246,19 @@ gtag('config', '${gaMeasurementId}');`;
             : "border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/50 shadow-sm"
         )}
       >
-          <div className="container flex h-16 items-center justify-between">
-            {/* Logo */}
-            <Link
-              href="/"
-              className={cn(
-                "flex items-center gap-2 font-serif text-2xl font-bold",
-                isHome && !isScrolled ? "text-white" : "text-primary"
-              )}
-            >
-              {headerLogoUrl ? (
-                <img
-                  loading="eager"
-                  src={headerLogoUrl}
+        <div className="container flex h-16 items-center justify-between">
+          {/* Logo */}
+          <Link
+            href="/"
+            className={cn(
+              "flex items-center gap-2 font-serif text-2xl font-bold",
+              isHome && !isScrolled ? "text-white" : "text-primary"
+            )}
+          >
+            {headerLogoUrl ? (
+              <img
+                loading="eager"
+                src={headerLogoUrl}
                 alt="Rayhana logo"
                 width={logoWidth}
                 height={logoHeight}
@@ -286,7 +286,10 @@ gtag('config', '${gaMeasurementId}');`;
                   isHome && !isScrolled
                     ? "text-white hover:text-white/80"
                     : "text-foreground hover:text-primary",
-                  location === item.href && "text-primary font-bold"
+                  location === item.href &&
+                    (isHome && !isScrolled
+                      ? "text-white font-bold"
+                      : "text-primary font-bold")
                 )}
               >
                 {getLocalizedLabel(item.label)}
@@ -374,7 +377,8 @@ gtag('config', '${gaMeasurementId}');`;
                   ? "text-white hover:text-white/80"
                   : "text-foreground"
               )}
-              aria-label="Open menu"
+              aria-label={isMenuOpen ? "Close menu" : "Open menu"}
+              aria-expanded={isMenuOpen}
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
