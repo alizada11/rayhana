@@ -274,7 +274,7 @@ export default function Home() {
         {/* Hero Section */}
         <section
           ref={heroRef}
-          className="relative h-[90vh] min-h-[600px] flex items-center justify-center overflow-hidden"
+          className="relative h-[100vh] min-h-[640px] flex items-center justify-center overflow-hidden"
         >
           {/* Background Video with Overlay */}
           <div className="absolute inset-0 z-0">
