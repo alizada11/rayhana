@@ -23,6 +23,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import SeoTags from "@/components/SeoTags";
+import { formatDate, displayUser } from "@/utils/formatters";
 
 export default function Gallery() {
   const { t, i18n } = useTranslation();
@@ -53,15 +54,7 @@ export default function Gallery() {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
-  const formatDate = (iso?: string | Date) => {
-    if (!iso) return "";
-    const d = new Date(iso);
-    return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
-  };
-  const displayUser = (user?: { name?: string | null; email?: string | null }) =>
-    user?.name?.trim() ||
-    user?.email ||
-    (isRTL ? "مهمان" : "Guest");
+  const locale = i18n.language;
   const loginRequiredMessage = t(
     "login_page.loginRequired",
     "You need to log in to access this feature."
@@ -424,10 +417,10 @@ export default function Gallery() {
                 <div className="mt-2 text-[11px] text-white/80 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">
-                      {displayUser(item.user)}
+                      {displayUser(item.user, { isRTL })}
                     </span>
                     <span>
-                      {formatDate(item.createdAt) ||
+                      {formatDate(item.createdAt, locale) ||
                         t("gallery.unknown_date", "Date unavailable")}
                     </span>
                   </div>
@@ -506,11 +499,11 @@ export default function Gallery() {
                 <div className="text-sm text-muted-foreground space-y-1">
                   <div>
                     <strong>{t("gallery.sender", "Sender")}:</strong>{" "}
-                    {displayUser(activeImage.user)}
+                    {displayUser(activeImage.user, { isRTL })}
                   </div>
                   <div className="text-xs">
                     <strong>{t("gallery.date_sent", "Date sent")}:</strong>{" "}
-                    {formatDate(activeImage.createdAt) ||
+                    {formatDate(activeImage.createdAt, locale) ||
                       t("gallery.unknown_date", "Date unavailable")}
                   </div>
                 </div>

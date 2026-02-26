@@ -23,6 +23,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { useAuth } from "@/lib/auth";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
+import { formatDate, displayUser } from "@/utils/formatters";
 
 type CustomerGalleryProps = {
   items?: GallerySubmission[];
@@ -62,13 +63,7 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
-  const formatDate = (iso?: string | Date) => {
-    if (!iso) return "";
-    const d = new Date(iso);
-    return isNaN(d.getTime()) ? "" : d.toLocaleDateString();
-  };
-  const displayUser = (user?: { name?: string | null; email?: string | null }) =>
-    user?.name?.trim() || user?.email || (isRTL ? "مهمان" : "Guest");
+  const locale = i18n.language;
 
   const revokePreview = () => {
     if (objectUrl) {
@@ -197,10 +192,10 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                 <div className="flex items-center justify-between w-full text-sm">
                   <div className="flex flex-col">
                     <span className="opacity-90">
-                      {displayUser(img.user)}
+                      {displayUser(img.user, { isRTL })}
                     </span>
                     <span className="text-xs opacity-80">
-                      {formatDate(img.createdAt) ||
+                      {formatDate(img.createdAt, locale) ||
                         t("gallery.unknown_date", "Date unavailable")}
                     </span>
                   </div>
@@ -405,11 +400,11 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                 <div className="text-sm text-stone-600 dark:text-stone-400 space-y-1">
                   <div>
                     <strong>{t("gallery.sender", "Sender")}:</strong>{" "}
-                    {displayUser(activeImage.user)}
+                    {displayUser(activeImage.user, { isRTL })}
                   </div>
                   <div className="text-xs text-stone-500">
                     <strong>{t("gallery.date_sent", "Date sent")}:</strong>{" "}
-                    {formatDate(activeImage.createdAt) ||
+                    {formatDate(activeImage.createdAt, locale) ||
                       t("gallery.unknown_date", "Date unavailable")}
                   </div>
                 </div>
