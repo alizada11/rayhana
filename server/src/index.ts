@@ -46,7 +46,10 @@ setInterval(
 const app = express();
 // Frontend build output (Vite outDir is dist/public). Use __dirname so PM2 cwd doesn't matter.
 const distPath = path.resolve(__dirname, "public");
+// Keep in sync with multer destination in middleware/upload.ts (server/uploads)
 const uploadsPath = path.resolve(process.cwd(), "server", "uploads");
+// Optional secondary location if files were copied elsewhere (backward compatibility)
+const altUploadsPath = path.resolve(process.cwd(), "uploads");
 const hasBuiltFrontend = fs.existsSync(path.join(distPath, "index.html"));
 const isProduction = process.env.NODE_ENV === "production";
 const isTsRuntime = path.extname(__filename) === ".ts"; // running via ts-node in dev
@@ -122,6 +125,16 @@ app.use(
     immutable: false,
   })
 );
+// Serve alternate uploads folder if present (helps during path migrations)
+if (fs.existsSync(altUploadsPath) && altUploadsPath !== uploadsPath) {
+  app.use(
+    "/uploads",
+    express.static(altUploadsPath, {
+      maxAge: "7d",
+      immutable: false,
+    })
+  );
+}
 app.use(authMiddleware);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

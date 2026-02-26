@@ -49,7 +49,10 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
   const createMutation = useCreateGallerySubmission();
   const toggleLikeMutation = useToggleGalleryLike();
   const [, setLocation] = useLocation();
-  const loginRequiredMessage = t("login_page.loginRequired");
+  const loginRequiredMessage = t(
+    "login_page.loginRequired",
+    "You need to log in to access this feature."
+  );
 
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
   const cloud_fetch_base =
@@ -59,12 +62,20 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
     if (url.startsWith("http")) return url;
     return `${apiBase}${url}`;
   };
+  const formatDate = (iso?: string) =>
+    iso ? new Date(iso).toLocaleDateString() : "";
 
   const revokePreview = () => {
     if (objectUrl) {
       URL.revokeObjectURL(objectUrl);
       setObjectUrl(null);
     }
+  };
+
+  const clearSelection = () => {
+    revokePreview();
+    setSelectedImage(null);
+    setImageFile(null);
   };
 
   const handleImageUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -120,11 +131,9 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
             )
           );
           setIsOpen(false);
-          setSelectedImage(null);
-          setImageFile(null);
+          clearSelection();
           setDishName("");
           setDescription("");
-          revokePreview();
           setUploadProgress(null);
         },
         onError: () => {
@@ -171,12 +180,24 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                 alt={`Gallery by ${img.user?.name || "Guest"}`}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
-                <p className="font-bold text-lg mb-1">{img.dishName}</p>
-                <div className="flex items-center justify-between w-full">
-                  <p className="text-sm opacity-90">
-                    {img.user?.name || (isRTL ? "مهمان" : "Guest")}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
+                <p className="font-bold text-lg mb-1 line-clamp-1">
+                  {img.dishName}
+                </p>
+                {img.description && (
+                  <p className="text-sm opacity-85 line-clamp-2 mb-2">
+                    {img.description}
                   </p>
+                )}
+                <div className="flex items-center justify-between w-full text-sm">
+                  <div className="flex flex-col">
+                    <span className="opacity-90">
+                      {img.user?.name || (isRTL ? "مهمان" : "Guest")}
+                    </span>
+                    <span className="text-xs opacity-80">
+                      {formatDate(img.createdAt)}
+                    </span>
+                  </div>
                   <button
                     type="button"
                     onClick={e => {
@@ -222,9 +243,7 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
               setIsOpen(open);
               if (open) {
                 setUploadProgress(null);
-                revokePreview();
-                setSelectedImage(null);
-                setImageFile(null);
+                clearSelection();
               }
             }}
           >
@@ -251,17 +270,17 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                     className="flex flex-col items-center justify-center w-full h-64 border-2 border-stone-300 border-dashed rounded-xl cursor-pointer bg-stone-50 hover:bg-stone-100 dark:bg-stone-800 dark:border-stone-600 dark:hover:border-stone-500 dark:hover:bg-stone-700 transition-all duration-300 group"
                   >
                     {selectedImage ? (
-                      <div className="relative w-full h-full group-hover:opacity-90 transition-opacity">
+                      <div className="relative w-full h-full group-hover:opacity-90 transition-opacity bg-black/60 flex items-center justify-center rounded-xl">
                         <img
                           src={selectedImage}
                           alt="Preview"
-                          className="w-full h-full object-cover rounded-xl"
+                          className="max-h-full max-w-full object-contain rounded-xl"
                         />
                         <button
                           type="button"
                           onClick={e => {
                             e.preventDefault();
-                            setSelectedImage(null);
+                            clearSelection();
                           }}
                           className="absolute top-2 right-2 bg-black/50 text-white p-1.5 rounded-full hover:bg-red-500 transition-colors backdrop-blur-sm"
                         >
@@ -379,6 +398,9 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                 </h3>
                 <p className="text-sm text-stone-600 dark:text-stone-400">
                   {activeImage.user?.name || (isRTL ? "مهمان" : "Guest")}
+                </p>
+                <p className="text-xs text-stone-500">
+                  {formatDate(activeImage.createdAt)}
                 </p>
                 {activeImage.description && (
                   <p className="text-stone-700 dark:text-stone-300">
