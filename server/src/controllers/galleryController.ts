@@ -4,9 +4,31 @@ import { getAuth } from "../lib/auth";
 import fs from "fs";
 import {
   getLegacyUploadsDir,
+  getUploadsDir,
   resolveUploadUrlToPath,
 } from "../lib/paths";
+import path from "path";
 
+function deleteUploadIfExists(url?: string) {
+  if (!url || !url.startsWith("/uploads/")) return;
+
+  const primary = resolveUploadUrlToPath(url);
+
+  const uploadsDir = getUploadsDir();
+
+  // Prevent path traversal
+  if (!primary.startsWith(uploadsDir + path.sep)) return;
+
+  if (fs.existsSync(primary)) {
+    fs.unlinkSync(primary);
+    return;
+  }
+
+  const legacyDir = getLegacyUploadsDir();
+  const legacy = path.resolve(legacyDir, url.replace(/^\/+uploads\/?/, ""));
+  if (!legacy.startsWith(legacyDir + path.sep)) return;
+  if (fs.existsSync(legacy)) fs.unlinkSync(legacy);
+}
 const getId = (rawId: string | string[]) =>
   Array.isArray(rawId) ? rawId[0] : rawId;
 
@@ -132,7 +154,10 @@ export const deleteGallerySubmission = async (req: Request, res: Response) => {
   }
 };
 
-export const deleteMyGallerySubmission = async (req: Request, res: Response) => {
+export const deleteMyGallerySubmission = async (
+  req: Request,
+  res: Response
+) => {
   try {
     const { userId } = getAuth(req);
     if (!userId) return res.status(401).json({ error: "Unauthorized" });
@@ -152,19 +177,6 @@ export const deleteMyGallerySubmission = async (req: Request, res: Response) => 
     console.error("Error deleting my gallery submission:", error);
     res.status(500).json({ error: "Failed to delete submission" });
   }
-};
-
-const deleteUploadIfExists = (url?: string) => {
-  if (!url || !url.startsWith("/uploads/")) return;
-
-  const primary = resolveUploadUrlToPath(url);
-  if (fs.existsSync(primary)) {
-    fs.unlinkSync(primary);
-    return;
-  }
-
-  const legacy = `${getLegacyUploadsDir()}${url.replace(/^\/uploads/, "")}`;
-  if (fs.existsSync(legacy)) fs.unlinkSync(legacy);
 };
 
 export const toggleLike = async (req: Request, res: Response) => {

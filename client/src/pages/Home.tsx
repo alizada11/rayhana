@@ -244,7 +244,7 @@ export default function Home() {
     return () => clearTimeout(timeoutId);
   }, [homepage]);
 
-  if (isError || !homepage) {
+  if (isError || (!isLoading && !homepage)) {
     return (
       <div className="flex items-center justify-center py-16">
         <div className="max-w-md rounded-lg border border-destructive/20 bg-destructive/5 p-8 text-center">

@@ -30,5 +30,13 @@ export const getLegacyUploadsDir = () =>
 
 export const resolveUploadUrlToPath = (url: string) => {
   const relative = url.replace(/^\/+uploads\/?/, "");
-  return path.resolve(getUploadsDir(), relative);
+  const uploadsDir = getUploadsDir();
+  const resolved = path.resolve(uploadsDir, relative);
+  const rel = path.relative(uploadsDir, resolved);
+  const isInside =
+    rel !== "" && !rel.startsWith("..") && !path.isAbsolute(rel);
+  if (!isInside) {
+    throw new Error("Invalid upload path");
+  }
+  return resolved;
 };

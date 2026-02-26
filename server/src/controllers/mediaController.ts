@@ -5,6 +5,7 @@ import fs from "fs";
 import path from "path";
 import { eq } from "drizzle-orm";
 import {
+  getUploadsDir,
   getLegacyUploadsDir,
   resolveUploadUrlToPath,
 } from "../lib/paths";
@@ -133,10 +134,16 @@ export const deleteOwnMedia = async (req: Request, res: Response) => {
   }
 };
 
-const deleteUploadIfExists = (url?: string) => {
+function deleteUploadIfExists(url?: string) {
   if (!url || !url.startsWith("/uploads/")) return;
 
-  const mainPath = resolveUploadUrlToPath(url);
+  const uploadsDir = path.resolve(getUploadsDir());
+
+  const mainPath = path.resolve(resolveUploadUrlToPath(url));
+  if (!mainPath.startsWith(uploadsDir + path.sep) && mainPath !== uploadsDir) {
+    return;
+  }
+
   if (fs.existsSync(mainPath)) {
     fs.unlinkSync(mainPath);
     return;
@@ -147,5 +154,8 @@ const deleteUploadIfExists = (url?: string) => {
     getLegacyUploadsDir(),
     url.replace(/^\/+uploads\/?/, "")
   );
+  if (!legacyPath.startsWith(uploadsDir + path.sep) && legacyPath !== uploadsDir) {
+    return;
+  }
   if (fs.existsSync(legacyPath)) fs.unlinkSync(legacyPath);
-};
+}

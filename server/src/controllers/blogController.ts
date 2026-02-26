@@ -3,7 +3,7 @@ import * as queries from "../db/queries";
 import { getAuth } from "../lib/auth";
 import fs from "fs";
 import { getUploadsDir, resolveUploadUrlToPath } from "../lib/paths";
-
+import path from "path";
 const asQueryString = (value: unknown): string | undefined => {
   if (typeof value === "string") return value;
   if (Array.isArray(value) && typeof value[0] === "string") return value[0];
@@ -40,11 +40,11 @@ const isAdminUser = async (userId: string) => {
   return user?.role === "admin";
 };
 
-const uploadsBase = getUploadsDir();
-
 const safeUnlinkUpload = (url?: string) => {
   if (!url || !url.startsWith("/uploads/")) return;
   const candidatePath = resolveUploadUrlToPath(url);
+  const uploadsDir = getUploadsDir();
+  if (!candidatePath.startsWith(uploadsDir + path.sep)) return;
   if (fs.existsSync(candidatePath)) fs.unlinkSync(candidatePath);
 };
 
