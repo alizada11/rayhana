@@ -168,6 +168,18 @@ const fallbackContact = {
       value: { en: "", fa: "", ps: "" },
     },
   ],
+  socials: [
+    {
+      icon: "instagram",
+      label: { en: "Instagram", fa: "", ps: "" },
+      url: "",
+    },
+    {
+      icon: "facebook",
+      label: { en: "Facebook", fa: "", ps: "" },
+      url: "",
+    },
+  ],
   form: {
     nameLabel: { en: "", fa: "", ps: "" },
     emailLabel: { en: "", fa: "", ps: "" },
@@ -336,8 +348,22 @@ export default function DashboardContent() {
                 en: item.value.en || "",
                 fa: item.value.fa || "",
                 ps: item.value.ps || "",
-              }
+          }
             : { en: item?.value || "", fa: "", ps: "" },
+      }));
+
+      nextData.socials = Array.isArray(nextData.socials) ? nextData.socials : [];
+      nextData.socials = nextData.socials.map((item: any) => ({
+        icon: item?.icon || "globe",
+        url: item?.url || "",
+        label:
+          item?.label && typeof item.label === "object"
+            ? {
+                en: item.label.en || "",
+                fa: item.label.fa || "",
+                ps: item.label.ps || "",
+              }
+            : { en: item?.label || "", fa: "", ps: "" },
       }));
 
       nextData.form = nextData.form || {};
@@ -1770,30 +1796,112 @@ export default function DashboardContent() {
                 />
               </div>
             ))}
-            <button
-              type="button"
-              className="text-sm text-primary hover:underline"
-              onClick={() => {
-                const next = [
-                  ...(formData.info || []),
-                  {
-                    icon: "mapPin",
-                    title: { en: "", fa: "", ps: "" },
-                    value: { en: "", fa: "", ps: "" },
-                  },
-                ];
-                updateField(["info"], next);
-              }}
-            >
-              + Add Info Item
-            </button>
-          </div>
+              <button
+                type="button"
+                className="text-sm text-primary hover:underline"
+                onClick={() => {
+                  const next = [
+                    ...(formData.info || []),
+                    {
+                      icon: "mapPin",
+                      title: { en: "", fa: "", ps: "" },
+                      value: { en: "", fa: "", ps: "" },
+                    },
+                  ];
+                  updateField(["info"], next);
+                }}
+              >
+                + Add Info Item
+              </button>
+            </div>
 
-          <div className="bg-card border rounded-xl p-4 space-y-4">
-            <h2 className="font-serif text-xl font-bold">Form</h2>
-            <div className="grid md:grid-cols-2 gap-4">
-              <input
-                className="border rounded-lg px-3 py-2"
+            <div className="bg-card border rounded-xl p-4 space-y-4">
+              <h2 className="font-serif text-xl font-bold">Social Links</h2>
+              {formData.socials?.map((item: any, idx: number) => (
+                <div
+                  key={`contact-social-${idx}`}
+                  className="border rounded-lg p-4 space-y-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <h3 className="font-medium text-foreground/90">Social {idx + 1}</h3>
+                    <button
+                      type="button"
+                      className="text-sm text-red-600 hover:underline"
+                      onClick={() => {
+                        const next = structuredClone(formData.socials || []);
+                        next.splice(idx, 1);
+                        updateField(["socials"], next);
+                      }}
+                    >
+                      Remove
+                    </button>
+                  </div>
+                  <div className="grid md:grid-cols-2 gap-3">
+                    <input
+                      className="border rounded-lg px-3 py-2 w-full"
+                      placeholder="Icon name (lucide)"
+                      value={item.icon || ""}
+                      onChange={e => {
+                        const next = structuredClone(formData.socials || []);
+                        next[idx] = { ...next[idx], icon: e.target.value };
+                        updateField(["socials"], next);
+                      }}
+                    />
+                    <input
+                      className="border rounded-lg px-3 py-2 w-full"
+                      placeholder="https://example.com/username"
+                      value={item.url || ""}
+                      onChange={e => {
+                        const next = structuredClone(formData.socials || []);
+                        next[idx] = { ...next[idx], url: e.target.value };
+                        updateField(["socials"], next);
+                      }}
+                    />
+                  </div>
+                  <input
+                    className="border rounded-lg px-3 py-2 w-full"
+                    placeholder={`Label (${activeLang.toUpperCase()})`}
+                    value={item?.label?.[activeLang] || ""}
+                    onChange={e => {
+                      const next = structuredClone(formData.socials || []);
+                      const current = next[idx] || {};
+                      const label =
+                        current.label && typeof current.label === "object"
+                          ? { ...current.label }
+                          : { en: "", fa: "", ps: "" };
+                      next[idx] = {
+                        ...current,
+                        label: { ...label, [activeLang]: e.target.value },
+                      };
+                      updateField(["socials"], next);
+                    }}
+                  />
+                </div>
+              ))}
+              <button
+                type="button"
+                className="text-sm text-primary hover:underline"
+                onClick={() => {
+                  const next = [
+                    ...(formData.socials || []),
+                    {
+                      icon: "globe",
+                      url: "",
+                      label: { en: "", fa: "", ps: "" },
+                    },
+                  ];
+                  updateField(["socials"], next);
+                }}
+              >
+                + Add Social Link
+              </button>
+            </div>
+
+            <div className="bg-card border rounded-xl p-4 space-y-4">
+              <h2 className="font-serif text-xl font-bold">Form</h2>
+              <div className="grid md:grid-cols-2 gap-4">
+                <input
+                  className="border rounded-lg px-3 py-2"
                 placeholder="Name label"
                 value={formData.form?.nameLabel?.[activeLang] || ""}
                 onChange={e =>

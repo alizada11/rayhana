@@ -49,7 +49,7 @@
 
 :root {
   /* Rayhana Brand Colors */
-  --primary: oklch(0.55 0.22 25); /* Red #E63946 equivalent */
+  --primary: #de1020;
   --primary-foreground: oklch(0.98 0 0);
 
   --background: oklch(0.98 0.01 85); /* Warm beige/cream */
@@ -75,20 +75,20 @@
 
   --border: oklch(0.9 0.01 85);
   --input: oklch(0.9 0.01 85);
-  --ring: oklch(0.55 0.22 25);
+  --ring: #de1020;
 
   --radius: 0.5rem;
 
   --sidebar: oklch(0.98 0.01 85);
   --sidebar-foreground: oklch(0.25 0.02 260);
-  --sidebar-primary: oklch(0.55 0.22 25);
+  --sidebar-primary: #de1020;
   --sidebar-primary-foreground: oklch(0.98 0 0);
   --sidebar-accent: oklch(0.95 0.01 85);
   --sidebar-accent-foreground: oklch(0.25 0.02 260);
   --sidebar-border: oklch(0.9 0.01 85);
   --sidebar-ring: oklch(0.55 0.22 25);
 
-  --chart-1: oklch(0.55 0.22 25);
+  --chart-1: #de1020;
   --chart-2: oklch(0.65 0.15 25);
   --chart-3: oklch(0.75 0.1 25);
   --chart-4: oklch(0.85 0.05 25);
@@ -110,7 +110,7 @@ html[dir="rtl"] {
   --popover: oklch(0.2 0.02 260);
   --popover-foreground: oklch(0.95 0.01 85);
 
-  --primary: oklch(0.6 0.22 25);
+  --primary: #de1020;
   --primary-foreground: oklch(0.98 0 0);
 
   --secondary: oklch(0.25 0.02 260);
@@ -127,11 +127,11 @@ html[dir="rtl"] {
 
   --border: oklch(0.3 0.02 260);
   --input: oklch(0.3 0.02 260);
-  --ring: oklch(0.6 0.22 25);
+  --ring: #de1020;
 
   --sidebar: oklch(0.2 0.02 260);
   --sidebar-foreground: oklch(0.95 0.01 85);
-  --sidebar-primary: oklch(0.6 0.22 25);
+  --sidebar-primary: #de1020;
   --sidebar-primary-foreground: oklch(0.98 0 0);
   --sidebar-accent: oklch(0.25 0.02 260);
   --sidebar-accent-foreground: oklch(0.95 0.01 85);

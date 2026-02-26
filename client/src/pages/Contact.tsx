@@ -17,7 +17,7 @@ import { useContent } from "@/hooks/useContent";
 import { useSendContactMessage } from "@/hooks/useContactMessages";
 import { toast } from "sonner";
 import SeoTags from "@/components/SeoTags";
-
+import { TikTokIcon } from "@/components/TiktokIcon";
 export default function Contact() {
   const { t, i18n } = useTranslation();
   const rtlLangs = ["fa", "ps", "ar", "ku"];
@@ -53,6 +53,18 @@ export default function Contact() {
           icon: "mail",
           title: { en: t("contact_page.email"), fa: "", ps: "" },
           value: { en: t("contact_page.email_value"), fa: "", ps: "" },
+        },
+      ],
+      socials: [
+        {
+          icon: "instagram",
+          label: { en: "Instagram", fa: "", ps: "" },
+          url: "https://instagram.com/rayhanafamily",
+        },
+        {
+          icon: "facebook",
+          label: { en: "Facebook", fa: "", ps: "" },
+          url: "https://facebook.com/rayhanafamily",
         },
       ],
       form: {
@@ -100,13 +112,25 @@ export default function Contact() {
         }))
       : fallback.info;
 
+    const socials = Array.isArray(d.socials)
+      ? d.socials.map((item: any, idx: number) => ({
+          icon:
+            item?.icon || fallback.socials[idx % fallback.socials.length].icon,
+          label: mergeLang(
+            item?.label,
+            fallback.socials[idx % fallback.socials.length].label
+          ),
+          url: item?.url || fallback.socials[idx % fallback.socials.length].url,
+        }))
+      : fallback.socials;
+
     const form = Object.keys(fallback.form).reduce((acc, key) => {
       // @ts-expect-error index
       acc[key] = mergeLang(d?.form?.[key], fallback.form[key]);
       return acc;
     }, {} as any);
 
-    return { hero, info, form };
+    return { hero, info, socials, form };
   }, [data, t, i18n.language]);
 
   const iconMap: Record<string, React.ComponentType<any>> = {
@@ -115,6 +139,9 @@ export default function Contact() {
     mail: Mail,
     globe: Globe,
     messageSquare: MessageSquare,
+    instagram: Instagram,
+    facebook: Facebook,
+    tiktok: TikTokIcon,
   };
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -144,10 +171,16 @@ export default function Contact() {
     <div className="min-h-screen py-20">
       <SeoTags
         pageKey="contact"
-        title={content?.hero?.title?.[i18n.language] || t("contact_page.title", "Contact Rayhana")}
+        title={
+          content?.hero?.title?.[i18n.language] ||
+          t("contact_page.title", "Contact Rayhana")
+        }
         description={
           content?.hero?.subtitle?.[i18n.language] ||
-          t("contact_page.subtitle", "Get in touch for support, partnerships, or questions.")
+          t(
+            "contact_page.subtitle",
+            "Get in touch for support, partnerships, or questions."
+          )
         }
         url={`${import.meta.env.VITE_BASE_URL || ""}/contact`}
       />
@@ -223,22 +256,25 @@ export default function Contact() {
                 {t("contact_page.socials")}
               </h3>
               <div className="flex gap-4">
-                <a
-                  href="https://instagram.com/rayhanafamily"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                >
-                  <Instagram className="w-5 h-5" />
-                </a>
-                <a
-                  href="https://facebook.com/rayhanafamily"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors"
-                >
-                  <Facebook className="w-5 h-5" />
-                </a>
+                {content.socials.map((social, idx) => {
+                  const SocialIcon = iconMap[social.icon] || Globe;
+                  return (
+                    <a
+                      key={`${social.icon}-${idx}`}
+                      href={social.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      aria-label={
+                        social.label[i18n.language as "en" | "fa" | "ps"] ||
+                        social.label.en ||
+                        social.icon
+                      }
+                      className="w-12 h-12 rounded-full border border-border flex items-center justify-center hover:bg-primary hover:text-white hover:border-primary transition-colors"
+                    >
+                      <SocialIcon className="w-5 h-5" />
+                    </a>
+                  );
+                })}
               </div>
             </div>
           </motion.div>
@@ -247,26 +283,28 @@ export default function Contact() {
           <motion.div
             initial={{ opacity: 0, x: isRTL ? -50 : 50 }}
             whileInView={{ opacity: 1, x: 0 }}
-        viewport={{ once: true }}
-        className="bg-card p-8 rounded-3xl shadow-lg border border-border/50"
-      >
-        <form className="space-y-6" onSubmit={handleSubmit}>
-          {/* Honeypot field for bots */}
-          <input
-            type="text"
-            name="website"
-            value={form.website}
-            onChange={e => setForm(prev => ({ ...prev, website: e.target.value }))}
-            tabIndex={-1}
-            autoComplete="off"
-            className="hidden"
-            aria-hidden="true"
-          />
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="space-y-2">
-              <label htmlFor="contact-name" className="text-sm font-medium">
-                {content.form.nameLabel[
-                  i18n.language as "en" | "fa" | "ps"
+            viewport={{ once: true }}
+            className="bg-card p-8 rounded-3xl shadow-lg border border-border/50"
+          >
+            <form className="space-y-6" onSubmit={handleSubmit}>
+              {/* Honeypot field for bots */}
+              <input
+                type="text"
+                name="website"
+                value={form.website}
+                onChange={e =>
+                  setForm(prev => ({ ...prev, website: e.target.value }))
+                }
+                tabIndex={-1}
+                autoComplete="off"
+                className="hidden"
+                aria-hidden="true"
+              />
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                  <label htmlFor="contact-name" className="text-sm font-medium">
+                    {content.form.nameLabel[
+                      i18n.language as "en" | "fa" | "ps"
                     ] || content.form.nameLabel.en}
                   </label>
                   <Input

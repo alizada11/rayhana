@@ -21,6 +21,7 @@ import SeoTags from "@/components/SeoTags";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { useHomepage } from "@/hooks/useHomepage";
 import { useQueryClient } from "@tanstack/react-query";
+import BrandValues from "@/components/BrandValues";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -314,52 +315,8 @@ export default function Home() {
         </section>
 
         {/* Values Section */}
-        <section className="container">
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
-            {values.map((value: any, index: number) => {
-              const Icon =
-                value.icon === "shield"
-                  ? ShieldCheck
-                  : value.icon === "globe"
-                    ? Globe
-                    : Star;
-              const valueTitle =
-                typeof value.title === "object"
-                  ? getLocalized(value.title, "")
-                  : value.title;
-              const valueBody =
-                typeof value.body === "object"
-                  ? getLocalized(value.body, "")
-                  : value.body;
-              return (
-                <div
-                  key={`${value.title}-${index}`}
-                  className="p-6 rounded-2xl bg-secondary/50 hover:bg-secondary transition-colors relative overflow-hidden group"
-                >
-                  <div className="w-12 h-12 bg-primary/10 text-primary rounded-full flex items-center justify-center mx-auto mb-4">
-                    <Icon className="h-6 w-6" />
-                  </div>
-                  <h3 className="font-serif text-xl font-bold mb-2">
-                    {valueTitle}
-                  </h3>
-                  {/* biome-ignore: lint/security/noDangerouslySetInnerHtml -- sanitized via DOMPurify */}
-                  {sanitize(valueBody || "") ? (
-                    <div
-                      className="text-muted-foreground text-sm mb-4 prose prose-sm max-w-none"
-                      dangerouslySetInnerHTML={sanitize(valueBody || "")}
-                    />
-                  ) : (
-                    <p className="text-muted-foreground text-sm mb-4">
-                      {valueBody}
-                    </p>
-                  )}
-                  <div className="absolute -bottom-10 -right-10 w-32 h-32 bg-primary/5 rounded-full group-hover:scale-150 transition-transform duration-500" />
-                </div>
-              );
-            })}
-          </div>
-        </section>
 
+        <BrandValues />
         {/* Featured Product */}
         <section className="container">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">

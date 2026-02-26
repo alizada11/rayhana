@@ -33,6 +33,33 @@
     "connection": "Connection",
     "simplicity": "Simplicity"
   },
+  "brand_values": {
+    "kicker": "Brand DNA",
+    "title": "Our Core Brand Values",
+    "subtitle": "Five promises that guide every product we design for modern kitchens rooted in heritage.",
+    "items": {
+      "simplicity": {
+        "title": "Simplicity",
+        "subtitle": "Beauty in ease of use and clean design."
+      },
+      "connection": {
+        "title": "Connection",
+        "subtitle": "Linking immigrants to the flavors and memories of home."
+      },
+      "quality": {
+        "title": "Quality",
+        "subtitle": "Crafted with premium materials and global standards."
+      },
+      "innovation": {
+        "title": "Innovation",
+        "subtitle": "Smart, thoughtful solutions for modern life."
+      },
+      "authenticity": {
+        "title": "Authenticity",
+        "subtitle": "Proudly preserving cultural roots in every detail."
+      }
+    }
+  },
   "common": {
     "sending": "Sending...",
     "loading": "Loading...",

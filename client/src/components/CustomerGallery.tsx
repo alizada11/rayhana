@@ -52,7 +52,8 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
   const loginRequiredMessage = t("login_page.loginRequired");
 
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
-  const cloud_fetch_base = "https://res.cloudinary.com/ds4pfbv9i/image/fetch/f_auto,q_auto,w_1200/";
+  const cloud_fetch_base =
+    "https://res.cloudinary.com/ds4pfbv9i/image/fetch/f_auto,q_auto,w_1200/";
   const resolveImageUrl = (url: string) => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
@@ -139,7 +140,7 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
     <section className="py-20 bg-stone-50 dark:bg-stone-900/50">
       <div className="container mx-auto px-4">
         <div className="text-center mb-12 space-y-4">
-          <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary dark:text-amber-500">
+          <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary dark:text-primary">
             {t("gallery.title")}
           </h2>
           <p className="text-stone-600 dark:text-stone-400 text-lg max-w-2xl mx-auto">
