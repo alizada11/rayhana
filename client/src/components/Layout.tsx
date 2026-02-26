@@ -240,8 +240,10 @@ gtag('config', '${gaMeasurementId}');`;
       {/* Header */}
       <header
         className={cn(
-          isHome && !isScrolled ? "absolute top-0" : "sticky top-0",
-          "z-50 w-full transition-colors duration-200",
+          isHome && !isScrolled
+            ? "absolute top-0 translate-y-2"
+            : "sticky top-0 translate-y-0 delay-150",
+          "z-50 w-full transition-[transform,background-color,border-color,box-shadow] duration-300 ease-out will-change-transform",
           isHome && !isScrolled
             ? "bg-transparent border-b-transparent shadow-none"
             : "border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/50 shadow-sm"
@@ -309,17 +311,18 @@ gtag('config', '${gaMeasurementId}');`;
                 className={cn(
                   "relative",
                   isHome && !isScrolled
-                    ? "text-white hover:text-white/80"
-                    : "text-foreground"
+                    ? "text-white hover:text-white/90 hover:bg-white/15"
+                    : "text-foreground hover:bg-muted/60"
                 )}
               >
                 <Globe className="h-5 w-5" />
                 <span
+                  aria-hidden="true"
                   className={cn(
-                    "absolute -bottom-1 -right-1 text-[10px] font-bold rounded-full w-4 h-4 flex items-center justify-center",
+                    "absolute -bottom-1.5 -right-1.5 min-w-[1.4rem] px-1 h-5 rounded-full text-[10px] font-semibold tracking-tight flex items-center justify-center border shadow-sm",
                     isHome && !isScrolled
-                      ? "bg-white/90 text-primary"
-                      : "bg-primary text-primary-foreground"
+                      ? "bg-white/90 text-primary border-white/60"
+                      : "bg-primary text-primary-foreground border-primary/70"
                   )}
                 >
                   {langCode.toUpperCase()}
@@ -356,8 +359,8 @@ gtag('config', '${gaMeasurementId}');`;
               title="Toggle Theme"
               className={cn(
                 isHome && !isScrolled
-                  ? "text-white hover:text-white/80"
-                  : "text-foreground"
+                  ? "text-white hover:text-white/90 hover:bg-white/15"
+                  : "text-foreground hover:bg-muted/60"
               )}
             >
               {theme === "dark" ? (
@@ -375,8 +378,8 @@ gtag('config', '${gaMeasurementId}');`;
               className={cn(
                 "md:hidden",
                 isHome && !isScrolled
-                  ? "text-white hover:text-white/80"
-                  : "text-foreground"
+                  ? "text-white hover:text-white/90 hover:bg-white/15"
+                  : "text-foreground hover:bg-muted/60"
               )}
               aria-label={isMenuOpen ? "Close menu" : "Open menu"}
               aria-expanded={isMenuOpen}
