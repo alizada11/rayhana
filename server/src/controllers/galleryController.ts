@@ -2,7 +2,10 @@ import type { Request, Response } from "express";
 import * as queries from "../db/queries";
 import { getAuth } from "../lib/auth";
 import fs from "fs";
-import path from "path";
+import {
+  getLegacyUploadsDir,
+  resolveUploadUrlToPath,
+} from "../lib/paths";
 
 const getId = (rawId: string | string[]) =>
   Array.isArray(rawId) ? rawId[0] : rawId;
@@ -120,10 +123,7 @@ export const deleteGallerySubmission = async (req: Request, res: Response) => {
     const submission = await queries.deleteGallerySubmission(id);
     if (!submission) return res.status(404).json({ error: "Not found" });
 
-    if (submission.imageUrl?.startsWith("/uploads/")) {
-      const imgPath = path.join(process.cwd(), submission.imageUrl);
-      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-    }
+    deleteUploadIfExists(submission.imageUrl);
 
     res.status(200).json({ message: "Submission deleted" });
   } catch (error) {
@@ -145,16 +145,26 @@ export const deleteMyGallerySubmission = async (req: Request, res: Response) => 
     const deleted = await queries.deleteGallerySubmission(id);
     if (!deleted) return res.status(404).json({ error: "Not found" });
 
-    if (deleted.imageUrl?.startsWith("/uploads/")) {
-      const imgPath = path.join(process.cwd(), deleted.imageUrl);
-      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-    }
+    deleteUploadIfExists(deleted.imageUrl);
 
     res.status(200).json({ message: "Submission deleted" });
   } catch (error) {
     console.error("Error deleting my gallery submission:", error);
     res.status(500).json({ error: "Failed to delete submission" });
   }
+};
+
+const deleteUploadIfExists = (url?: string) => {
+  if (!url || !url.startsWith("/uploads/")) return;
+
+  const primary = resolveUploadUrlToPath(url);
+  if (fs.existsSync(primary)) {
+    fs.unlinkSync(primary);
+    return;
+  }
+
+  const legacy = `${getLegacyUploadsDir()}${url.replace(/^\/uploads/, "")}`;
+  if (fs.existsSync(legacy)) fs.unlinkSync(legacy);
 };
 
 export const toggleLike = async (req: Request, res: Response) => {

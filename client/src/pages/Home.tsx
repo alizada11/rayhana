@@ -115,7 +115,10 @@ export default function Home() {
     link.href = href;
     link.fetchPriority = "high";
     document.head.appendChild(link);
-    return () => link.parentNode?.removeChild(link);
+    return () => {
+      // ensure cleanup returns void to satisfy EffectCallback type
+      link.parentNode?.removeChild(link);
+    };
   }, [heroPosterLow]);
 
   // Safety fallback to start video even if IO never fires
@@ -243,10 +246,54 @@ export default function Home() {
 
   if (isError || !homepage) {
     return (
-      <div className="container py-16">
-        <p className="text-destructive">
-          {t("common.error", "Failed to load homepage content.")}
-        </p>
+      <div className="flex items-center justify-center py-16">
+        <div className="max-w-md rounded-lg border border-destructive/20 bg-destructive/5 p-8 text-center">
+          <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full bg-destructive/10">
+            <svg
+              className="h-8 w-8 text-destructive"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={1.5}
+                d="M3 15a4 4 0 004 4h9a5 5 0 10-.1-9.999 5.002 5.002 0 10-9.78 2.096A4.001 4.001 0 003 15z"
+              />
+            </svg>
+          </div>
+
+          <h3 className="font-serif mt-6 text-xl font-semibold text-foreground">
+            {t("common.connectionLost", "Unable to connect")}
+          </h3>
+
+          <p className="mt-2 text-sm text-muted-foreground">
+            {t("common.errorLoading", "Failed to load homepage content.")}
+          </p>
+
+          <div className="mt-6">
+            <button
+              onClick={() => window.location.reload()}
+              className="inline-flex items-center rounded-md bg-destructive px-4 py-2 text-sm font-medium text-destructive-foreground hover:bg-destructive/90 focus:outline-none focus:ring-2 focus:ring-destructive focus:ring-offset-2"
+            >
+              <svg
+                className="mr-2 h-4 w-4"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"
+                />
+              </svg>
+              {t("common.tryAgain", "Try again")}
+            </button>
+          </div>
+        </div>
       </div>
     );
   }

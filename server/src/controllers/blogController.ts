@@ -2,7 +2,7 @@ import type { Request, Response } from "express";
 import * as queries from "../db/queries";
 import { getAuth } from "../lib/auth";
 import fs from "fs";
-import path from "path";
+import { getUploadsDir, resolveUploadUrlToPath } from "../lib/paths";
 
 const asQueryString = (value: unknown): string | undefined => {
   if (typeof value === "string") return value;
@@ -40,14 +40,11 @@ const isAdminUser = async (userId: string) => {
   return user?.role === "admin";
 };
 
-const uploadsBase = path.resolve(__dirname, "..", "..", "uploads");
+const uploadsBase = getUploadsDir();
 
 const safeUnlinkUpload = (url?: string) => {
   if (!url || !url.startsWith("/uploads/")) return;
-  const relativePath = url.replace(/^\/uploads\//, "");
-  if (!relativePath) return;
-  const candidatePath = path.resolve(uploadsBase, relativePath);
-  if (!candidatePath.startsWith(uploadsBase + path.sep)) return;
+  const candidatePath = resolveUploadUrlToPath(url);
   if (fs.existsSync(candidatePath)) fs.unlinkSync(candidatePath);
 };
 

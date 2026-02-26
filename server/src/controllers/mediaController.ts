@@ -4,6 +4,10 @@ import { getAuth } from "../lib/auth";
 import fs from "fs";
 import path from "path";
 import { eq } from "drizzle-orm";
+import {
+  getLegacyUploadsDir,
+  resolveUploadUrlToPath,
+} from "../lib/paths";
 
 const getParam = (value: string | string[]) =>
   Array.isArray(value) ? value[0] : value;
@@ -51,7 +55,7 @@ export const uploadMedia = async (req: Request, res: Response) => {
     }
 
     const url = `/uploads/${req.file.filename}`;
-    const fullPath = path.resolve(__dirname, "..", "..", "uploads", req.file.filename);
+    const fullPath = resolveUploadUrlToPath(url);
     const { width, height } = await getImageSize(fullPath);
 
     const asset = await queries.createMediaAsset({
@@ -97,11 +101,7 @@ export const deleteMedia = async (req: Request, res: Response) => {
     const asset = await queries.deleteMediaAsset(id);
     if (!asset) return res.status(404).json({ error: "Not found" });
 
-    if (asset.url?.startsWith("/uploads/")) {
-      const relativeUrl = asset.url.replace(/^\/+/, "");
-      const imgPath = path.join(process.cwd(), relativeUrl);
-      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-    }
+    deleteUploadIfExists(asset.url);
 
     res.status(200).json({ message: "Media deleted" });
   } catch (error) {
@@ -124,15 +124,28 @@ export const deleteOwnMedia = async (req: Request, res: Response) => {
     }
 
     const deleted = await queries.deleteMediaAsset(id);
-    if (deleted?.url?.startsWith("/uploads/")) {
-      const relativeUrl = deleted.url.replace(/^\/+/, "");
-      const imgPath = path.join(process.cwd(), relativeUrl);
-      if (fs.existsSync(imgPath)) fs.unlinkSync(imgPath);
-    }
+    deleteUploadIfExists(deleted?.url);
 
     res.status(200).json({ message: "Media deleted" });
   } catch (error) {
     console.error("Error deleting own media:", error);
     res.status(500).json({ error: "Failed to delete media" });
   }
+};
+
+const deleteUploadIfExists = (url?: string) => {
+  if (!url || !url.startsWith("/uploads/")) return;
+
+  const mainPath = resolveUploadUrlToPath(url);
+  if (fs.existsSync(mainPath)) {
+    fs.unlinkSync(mainPath);
+    return;
+  }
+
+  // Clean up any legacy location in case older uploads were stored there
+  const legacyPath = path.resolve(
+    getLegacyUploadsDir(),
+    url.replace(/^\/+uploads\/?/, "")
+  );
+  if (fs.existsSync(legacyPath)) fs.unlinkSync(legacyPath);
 };
