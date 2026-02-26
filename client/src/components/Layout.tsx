@@ -240,7 +240,8 @@ gtag('config', '${gaMeasurementId}');`;
       {/* Header */}
       <header
         className={cn(
-          "sticky top-0 z-50 w-full transition-colors duration-200",
+          isHome && !isScrolled ? "absolute top-0" : "sticky top-0",
+          "z-50 w-full transition-colors duration-200",
           isHome && !isScrolled
             ? "bg-transparent border-b-transparent shadow-none"
             : "border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/50 shadow-sm"
