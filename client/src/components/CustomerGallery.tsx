@@ -43,9 +43,14 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
 
   const { isSignedIn } = useAuth();
   const { data: me } = useUserRole();
+  const hasMetadataSeed =
+    Array.isArray(items) &&
+    items.some(
+      i => i?.dishName || i?.description || i?.user || i?.submittedBy
+    );
+
   const { data: galleryImages = [], isLoading } = useApprovedGallery({
-    enabled: !items,
-    initialData: items,
+    initialData: hasMetadataSeed ? items : undefined,
   });
   const createMutation = useCreateGallerySubmission();
   const toggleLikeMutation = useToggleGalleryLike();

@@ -303,7 +303,11 @@
       "submission_deleted": "لېږنه په بریالیتوب سره حذف شوه.",
       "submission_delete_failed": "د لېږنې حذف ناکام شو."
     },
-    "noPhotosYet": "تراوسه هېڅ عکس نشته"
+    "noPhotosYet": "تراوسه هېڅ عکس نشته",
+    "likes": "خوښونې",
+    "sender": "لېږونکی",
+    "date_sent": "د لېږلو نېټه",
+    "unknown_date": "نېټه نشته"
   },
   "newsletter": {
     "title": "د ریحانه کورنۍ سره یوځای شئ",

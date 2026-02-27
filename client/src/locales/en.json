@@ -310,7 +310,11 @@
       "submission_deleted": "Submission deleted.",
       "submission_delete_failed": "Failed to delete submission."
     },
-    "noPhotosYet": "No photos yet"
+    "noPhotosYet": "No photos yet",
+    "likes": "Likes",
+    "sender": "Sender",
+    "date_sent": "Date sent",
+    "unknown_date": "Date unavailable"
   },
   "newsletter": {
     "title": "Join the Rayhana Family",

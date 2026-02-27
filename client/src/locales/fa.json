@@ -290,7 +290,11 @@
       "submission_deleted": "ارسال با موفقیت حذف شد.",
       "submission_delete_failed": "حذف ارسال ناموفق بود."
     },
-    "noPhotosYet": "هنوز هیچ عکسی ارسال نشده"
+    "noPhotosYet": "هنوز هیچ عکسی ارسال نشده",
+    "likes": "پسندیده‌ها",
+    "sender": "ارسال‌کننده",
+    "date_sent": "تاریخ ارسال",
+    "unknown_date": "تاریخ نامشخص"
   },
   "newsletter": {
     "title": "عضویت در خانواده ریحانه",
