@@ -177,7 +177,7 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
               <img
                 loading={index < 4 ? "eager" : "lazy"}
                 src={resolveImageUrl(img.imageUrl)}
-                alt={`Gallery by ${img.user?.name || "Guest"}`}
+                alt={`Gallery by ${img.user?.name}`}
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-end p-4 text-white">
@@ -192,7 +192,7 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                 <div className="flex items-center justify-between w-full text-sm">
                   <div className="flex flex-col">
                     <span className="opacity-90">
-                      {displayUser(img.user, { isRTL })}
+                      {img.submittedBy || displayUser(img.user, { isRTL })}
                     </span>
                     <span className="text-xs opacity-80">
                       {formatDate(img.createdAt, locale) ||
@@ -400,7 +400,8 @@ export function CustomerGallery({ items }: CustomerGalleryProps) {
                 <div className="text-sm text-stone-600 dark:text-stone-400 space-y-1">
                   <div>
                     <strong>{t("gallery.sender", "Sender")}:</strong>{" "}
-                    {displayUser(activeImage.user, { isRTL })}
+                    {activeImage.submittedBy ||
+                      displayUser(activeImage.user, { isRTL })}
                   </div>
                   <div className="text-xs text-stone-500">
                     <strong>{t("gallery.date_sent", "Date sent")}:</strong>{" "}

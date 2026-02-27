@@ -21,6 +21,7 @@ export interface GallerySubmission {
   imageUrl: string;
   dishName: string;
   description?: string | null;
+  submittedBy?: string;
   status: GalleryStatus;
   likesCount?: number;
   viewerHasLiked?: boolean;

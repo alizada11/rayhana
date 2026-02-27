@@ -42,16 +42,20 @@ export const getApprovedGallery = async (_req: Request, res: Response) => {
     const submissions = await queries.getApprovedGallerySubmissions();
 
     // Always expose sender metadata publicly (name/email/id only)
-    const publicSubmissions = submissions.map(s => ({
-      ...s,
-      user: s.user
+    const publicSubmissions = submissions.map(s => {
+      const user = s.user
         ? {
             id: s.user.id,
             name: s.user.name,
             email: s.user.email,
           }
-        : null,
-    }));
+        : null;
+      return {
+        ...s,
+        user,
+        submittedBy: user?.name || user?.email || "Guest",
+      };
+    });
 
     if (!userId) {
       return res.status(200).json(publicSubmissions);

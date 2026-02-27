@@ -417,7 +417,7 @@ export default function Gallery() {
                 <div className="mt-2 text-[11px] text-white/80 space-y-1">
                   <div className="flex items-center justify-between">
                     <span className="font-medium">
-                      {displayUser(item.user, { isRTL })}
+                      {item.submittedBy || displayUser(item.user, { isRTL })}
                     </span>
                     <span>
                       {formatDate(item.createdAt, locale) ||
@@ -499,7 +499,8 @@ export default function Gallery() {
                 <div className="text-sm text-muted-foreground space-y-1">
                   <div>
                     <strong>{t("gallery.sender", "Sender")}:</strong>{" "}
-                    {displayUser(activeImage.user, { isRTL })}
+                    {activeImage.submittedBy ||
+                      displayUser(activeImage.user, { isRTL })}
                   </div>
                   <div className="text-xs">
                     <strong>{t("gallery.date_sent", "Date sent")}:</strong>{" "}
