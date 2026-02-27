@@ -41,13 +41,25 @@ export const getApprovedGallery = async (_req: Request, res: Response) => {
     const { userId } = getAuth(_req);
     const submissions = await queries.getApprovedGallerySubmissions();
 
+    // Always expose sender metadata publicly (name/email/id only)
+    const publicSubmissions = submissions.map(s => ({
+      ...s,
+      user: s.user
+        ? {
+            id: s.user.id,
+            name: s.user.name,
+            email: s.user.email,
+          }
+        : null,
+    }));
+
     if (!userId) {
-      return res.status(200).json(submissions);
+      return res.status(200).json(publicSubmissions);
     }
 
     const likes = await queries.getGalleryLikesByUserId(userId);
     const likedSet = new Set(likes.map(l => l.submissionId));
-    const enriched = submissions.map(s => ({
+    const enriched = publicSubmissions.map(s => ({
       ...s,
       viewerHasLiked: likedSet.has(s.id),
     }));
