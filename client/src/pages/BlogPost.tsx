@@ -82,27 +82,36 @@ export default function BlogPost() {
   const sanitizedContent = addHeadingFont(
     DOMPurify.sanitize(cleanHtml(content), {
       ALLOWED_TAGS: [
-      "h1",
-      "h2",
-      "h3",
-      "h4",
-      "h5",
-      "h6",
-      "p",
-      "br",
-      "strong",
-      "em",
-      "u",
-      "ul",
-      "ol",
-      "li",
-      "blockquote",
-      "a",
-      "img",
-      "span",
-      "div",
-    ],
-      ALLOWED_ATTR: ["href", "target", "rel", "class", "src", "alt", "title", "style"],
+        "h1",
+        "h2",
+        "h3",
+        "h4",
+        "h5",
+        "h6",
+        "p",
+        "br",
+        "strong",
+        "em",
+        "u",
+        "ul",
+        "ol",
+        "li",
+        "blockquote",
+        "a",
+        "img",
+        "span",
+        "div",
+      ],
+      ALLOWED_ATTR: [
+        "href",
+        "target",
+        "rel",
+        "class",
+        "src",
+        "alt",
+        "title",
+        "style",
+      ],
     })
   );
   const shareUrl =
@@ -218,7 +227,9 @@ export default function BlogPost() {
                   {t("referral.share", "Share")}
                 </Button>
                 {shareOpen && (
-                  <div className="absolute right-0 mt-2 w-64 rounded-lg border bg-card shadow-lg z-10">
+                  <div
+                    className={`absolute ${isRTL ? "right-0" : "left-0"} mt-2 w-64 rounded-lg border bg-card shadow-lg z-10`}
+                  >
                     {shareTargets.map(target => {
                       const Icon = target.icon || LinkIcon;
                       const onClick = target.action

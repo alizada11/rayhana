@@ -1,7 +1,7 @@
 import type { Request, Response } from "express";
 import * as queries from "../db/queries";
 import { ENV } from "../config/env";
-import { sendContactEmail } from "../utils/mailer";
+// import { sendContactEmail } from "../utils/mailer";
 
 export const createMessage = async (req: Request, res: Response) => {
   try {
@@ -52,14 +52,14 @@ export const createMessage = async (req: Request, res: Response) => {
         .replace(/"/g, "&quot;")
         .replace(/'/g, "&#039;");
 
-    sendContactEmail({
-      to: ENV.CONTACT_EMAIL_TO || "codewithja@gmail.com",
-      from: ENV.SMTP_FROM_EMAIL || ENV.SMTP_USER || "no-reply@rayhana.com",
-      subject: subjectValue || `New contact message from ${nameValue}`,
-      html: `<p><b>Name:</b> ${escapeHtml(nameValue)}</p><p><b>Email:</b> ${escapeHtml(emailValue)}</p><p><b>Subject:</b> ${escapeHtml(
-        subjectValue || "(none)"
-      )}</p><p>${escapeHtml(messageValue)}</p>`,
-    }).catch(err => console.error("Failed to send contact email", err));
+    // sendContactEmail({
+    //   to: ENV.CONTACT_EMAIL_TO || "info@rayhana.com",
+    //   from: ENV.SMTP_FROM_EMAIL || ENV.SMTP_USER || "no-reply@rayhana.com",
+    //   subject: subjectValue || `New contact message from ${nameValue}`,
+    //   html: `<p><b>Name:</b> ${escapeHtml(nameValue)}</p><p><b>Email:</b> ${escapeHtml(emailValue)}</p><p><b>Subject:</b> ${escapeHtml(
+    //     subjectValue || "(none)"
+    //   )}</p><p>${escapeHtml(messageValue)}</p>`,
+    // }).catch(err => console.error("Failed to send contact email", err));
 
     res.status(201).json(record);
   } catch (error) {
