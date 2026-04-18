@@ -23,7 +23,7 @@ import SeoTags from "@/components/SeoTags";
 
 export default function Products() {
   const { t, i18n } = useTranslation();
-  const isRTL = i18n.language === "fa";
+  const isRTL = ["fa", "ps"].includes(i18n.language);
   const { data: products = [], isLoading } = useProducts();
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
 
@@ -75,6 +75,29 @@ export default function Products() {
           <p className="text-primary font-medium">
             {t("products_page.coming_soon_markets")}
           </p>
+        </div>
+        {/* Can't Wait - Direct Shop CTA */}
+        <div className="max-w-4xl mx-auto mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl border border-primary/20">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className={isRTL ? "text-right" : "text-left"}>
+              <h3 className={`text-xl md:text-2xl font-semibold mb-1 ${isRTL ? "font-[Vazirmatn]" : "font-serif"}`}>
+                {t("products_page.cant_wait_title")}
+              </h3>
+              <p className={`text-muted-foreground text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : "font-sans"}`}>
+                {t("products_page.cant_wait_description")}
+              </p>
+            </div>
+            
+            <a
+              href="https://rayhana.odoo.com/shop"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg shadow-md transition-colors whitespace-nowrap"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {t("products_page.cant_wait_button")}
+            </a>
+          </div>
         </div>
 
         {/* Product Grid - Centered */}
