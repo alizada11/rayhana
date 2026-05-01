@@ -52,7 +52,6 @@ const productSchema = z.object({
   colors: z.array(z.string()).max(50).optional(),
   prices: z.record(z.string(), z.number()).optional(),
   productUrl: z.string().url().optional(),
-  amazonCaUrl: z.string().url().optional(),
   // allow relative /uploads/... or absolute URL
   imageUrl: z
     .string()
@@ -135,7 +134,6 @@ export const createProduct = async (req: Request, res: Response) => {
       colors,
       prices,
       productUrl,
-      amazonCaUrl,
     } = req.body;
 
     const uploadedImageUrl = req.file
@@ -154,11 +152,6 @@ export const createProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid productUrl protocol" });
     }
 
-    const normalizedAmazonCaUrl = normalizeProductUrl(amazonCaUrl);
-    if (normalizedAmazonCaUrl === null) {
-      return res.status(400).json({ error: "Invalid amazonCaUrl protocol" });
-    }
-
     const payload = {
       title: parseJSON<Record<string, string>>(title, { en: "", fa: "", ps: "" }),
       description: parseJSON<Record<string, string>>(description, {
@@ -168,7 +161,6 @@ export const createProduct = async (req: Request, res: Response) => {
       }),
       imageUrl: (uploadedImageUrl ?? imageUrl) as string,
       productUrl: normalizedProductUrl,
-      amazonCaUrl: normalizedAmazonCaUrl,
       category,
       rating: Number(rating ?? 5),
       sizes: parseJSON<number[]>(sizes, []),
@@ -210,7 +202,6 @@ export const updateProduct = async (req: Request, res: Response) => {
       colors,
       prices,
       productUrl,
-      amazonCaUrl,
     } = req.body;
 
     const uploadedImageUrl = req.file
@@ -239,12 +230,6 @@ export const updateProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid productUrl protocol" });
     }
 
-    const normalizedAmazonCaUrl =
-      amazonCaUrl !== undefined ? normalizeProductUrl(amazonCaUrl) : undefined;
-    if (normalizedAmazonCaUrl === null) {
-      return res.status(400).json({ error: "Invalid amazonCaUrl protocol" });
-    }
-
     const payload = {
       title: title
         ? parseJSON<Record<string, string>>(title, { en: "", fa: "", ps: "" })
@@ -261,10 +246,6 @@ export const updateProduct = async (req: Request, res: Response) => {
         normalizedProductUrl === undefined
           ? existingProduct.productUrl
           : normalizedProductUrl,
-      amazonCaUrl:
-        normalizedAmazonCaUrl === undefined
-          ? existingProduct.amazonCaUrl
-          : normalizedAmazonCaUrl,
       category: category ?? existingProduct.category,
       rating:
         rating !== undefined ? Number(rating) : Number(existingProduct.rating),

@@ -9,9 +9,6 @@ import {
   Gift,
   ShieldCheck,
   Heart,
-  CreditCard,
-  Wallet,
-  Smartphone,
 } from "lucide-react";
 import {
   Dialog,
@@ -79,6 +76,30 @@ export default function Products() {
             {t("products_page.coming_soon_markets")}
           </p>
         </div>
+        {/* Can't Wait - Direct Shop CTA */}
+        <div className="max-w-4xl mx-auto mb-12 p-6 md:p-8 bg-gradient-to-br from-primary/5 to-primary/10 rounded-2xl border border-primary/20">
+          <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+            <div className={isRTL ? "text-right" : "text-left"}>
+              <h3 className={`text-xl md:text-2xl font-semibold mb-1 ${isRTL ? "font-[Vazirmatn]" : "font-serif"}`}>
+                {t("products_page.cant_wait_title")}
+              </h3>
+              <p className={`text-muted-foreground text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : "font-sans"}`}>
+                {t("products_page.cant_wait_description")}
+              </p>
+            </div>
+            
+            <a
+              href="https://rayhana.odoo.com/shop"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-lg shadow-md transition-colors whitespace-nowrap"
+            >
+              <ShoppingBag className="w-5 h-5" />
+              {t("products_page.cant_wait_button")}
+            </a>
+          </div>
+        </div>
+
         {/* Product Grid - Centered */}
         <motion.div
           layout
@@ -104,91 +125,6 @@ export default function Products() {
               localize={localize}
             />
           ))}
-        </motion.div>
-	
-
-	{/* In a Hurry - Regional Shop CTA */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true }}
-          className="max-w-5xl mx-auto mb-24 p-6 md:p-10 bg-gradient-to-br from-primary/5 to-primary/10 rounded-3xl border border-primary/20"
-        >
-          <div className="text-center mb-6">
-            <h3 className={`text-2xl md:text-3xl font-semibold mb-2 ${isRTL ? "font-[Vazirmatn]" : "font-serif"} text-primary`}>
-              {t("products_page.hurry_title")}
-            </h3>
-            <p className={`text-muted-foreground text-sm md:text-base max-w-2xl mx-auto ${isRTL ? "font-[Vazirmatn]" : "font-sans"}`}>
-              {t("products_page.hurry_subtitle")}
-            </p>
-          </div>
-
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8 max-w-4xl mx-auto">
-            <a href="https://www.paypal.com/ncp/payment/6YR8TPB4YFSPY" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group">
-              <span className="text-3xl mb-2">🇬🇧</span>
-              <span className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.region_uk")}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">GBP £</span>
-            </a>
-            <a href="https://www.paypal.com/ncp/payment/A44VPB9VDT72J" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group">
-              <span className="text-3xl mb-2">🇪🇺</span>
-              <span className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.region_eu")}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">EUR €</span>
-            </a>
-            <a href="https://www.paypal.com/ncp/payment/XLH22LR32VGKQ" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group">
-              <span className="text-3xl mb-2">🌍</span>
-              <span className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.region_arabic")}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">USD $</span>
-            </a>
-            <a href="https://www.paypal.com/ncp/payment/EAE4RU297UTX4" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group">
-              <span className="text-3xl mb-2">🇦🇺</span>
-              <span className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.region_au")}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">AUD $</span>
-            </a>
-          </div>
-
-          <div className="flex flex-col items-center gap-3 mb-8 pb-8 border-b border-primary/10">
-            <p className={`text-xs uppercase tracking-wider text-muted-foreground ${isRTL ? "font-[Vazirmatn]" : ""}`}>
-              {t("products_page.payment_methods")}
-            </p>
-            <div className="flex items-center gap-6 text-muted-foreground">
-              <div className="flex items-center gap-2">
-                <Wallet className="w-5 h-5" />
-                <span className="text-sm font-medium">PayPal</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Smartphone className="w-5 h-5" />
-                <span className="text-sm font-medium">Apple Pay</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5" />
-                <span className={`text-sm font-medium ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.card")}</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="max-w-2xl mx-auto space-y-3">
-            <p className={`text-xs uppercase tracking-wider text-muted-foreground text-center mb-4 ${isRTL ? "font-[Vazirmatn]" : ""}`}>
-              {t("products_page.shipping_status")}
-            </p>
-            <div className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}>
-              <span className="text-2xl flex-shrink-0">🇹🇷</span>
-              <p className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}>
-                {t("products_page.shipping_tr")}
-              </p>
-            </div>
-            <div className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}>
-              <span className="text-2xl flex-shrink-0">🇮🇷</span>
-              <p className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}>
-                {t("products_page.shipping_ir")}
-              </p>
-            </div>
-            <div className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}>
-              <span className="text-2xl flex-shrink-0">🇦🇫</span>
-              <p className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}>
-                {t("products_page.shipping_af")}
-              </p>
-            </div>
-          </div>
         </motion.div>
 
         {/* Brand Message Section */}
@@ -250,18 +186,6 @@ function ProductCard({
     product.prices && selectedSize ? product.prices[selectedSize] : undefined;
   const productLink = (() => {
     const url = product.productUrl;
-    if (!url || typeof url !== "string") return null;
-    try {
-      const parsed = new URL(url);
-      const proto = parsed.protocol.toLowerCase();
-      if (proto === "http:" || proto === "https:") return parsed.toString();
-    } catch {
-      return null;
-    }
-    return null;
-  })();
-  const caLink = (() => {
-    const url = product.amazonCaUrl;
     if (!url || typeof url !== "string") return null;
     try {
       const parsed = new URL(url);
@@ -369,42 +293,26 @@ function ProductCard({
                   ? `${isRTL ? "" : "$"}${currentPrice}${isRTL ? " دلار" : ""}`
                   : t("products_page.price_na")}
               </span>
-              <div className="flex flex-col gap-2 items-end">
-                <Button
-                  size="sm"
-                  className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
-                  onClick={e => {
-                    e.stopPropagation();
-                    const searchQuery = encodeURIComponent(
-                      `Rayhana Kitchen ${localize(product.title)} ${
-                        selectedSize ? `size ${selectedSize}` : ""
-                      }`
-                    );
-                    const href =
-                      productLink || `https://www.amazon.com/s?k=${searchQuery}`;
-                    window.open(href, "_blank", "noopener,noreferrer");
-                  }}
-                >
-                  <ShoppingBag className="w-4 h-4 mr-2" />
-                  {t("products_page.buy_amazon")}
-                </Button>
-                {caLink && (
-                  <Button
-                    size="sm"
-                    className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
-                    onClick={e => {
-                      e.stopPropagation();
-                      window.open(caLink, "_blank", "noopener,noreferrer");
-                    }}
-                  >
-                    <ShoppingBag className="w-4 h-4 mr-2" />
-                    {t("products_page.buy_amazon_ca")}
-                  </Button>
-                )}
-              </div>
+              <Button
+                size="sm"
+                className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
+                onClick={e => {
+                  e.stopPropagation();
+                  const searchQuery = encodeURIComponent(
+                    `Rayhana Kitchen ${localize(product.title)} ${
+                      selectedSize ? `size ${selectedSize}` : ""
+                    }`
+                  );
+                  const href =
+                    productLink || `https://www.amazon.com/s?k=${searchQuery}`;
+                  window.open(href, "_blank", "noopener,noreferrer");
+                }}
+              >
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                {t("products_page.buy_amazon")}
+              </Button>
             </div>
-            </div>
-
+          </div>
         </motion.div>
       </DialogTrigger>
 
@@ -449,17 +357,6 @@ function ProductCard({
                 {t("products_page.buy_amazon")}
               </Button>
             </div>
-            {caLink && (
-                <Button
-                  className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8 mt-2 w-full"
-                  onClick={() => {
-                    window.open(caLink, "_blank", "noopener,noreferrer");
-                  }}
-                >
-                  <ShoppingBag className="w-4 h-4 mr-2" />
-                  {t("products_page.buy_amazon_ca")}
-                </Button>
-              )}
 
             {/* Bonus Gifts Section */}
             <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
