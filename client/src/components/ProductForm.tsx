@@ -29,6 +29,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     category: string;
     imageUrl: string;
     productUrl?: string;
+    amazonCaUrl?: string;
     rating: number;
     sizes: number[];
     colors: string[];
@@ -41,6 +42,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     category: product?.category || "",
     imageUrl: product?.imageUrl || "",
     productUrl: product?.productUrl || "",
+    amazonCaUrl: product?.amazonCaUrl || "",
     rating: product?.rating || 5,
     sizes: product?.sizes || [],
     colors: product?.colors || [],
@@ -87,6 +89,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     payload.append("category", formData.category);
     payload.append("imageUrl", formData.imageUrl);
     if (formData.productUrl) payload.append("productUrl", formData.productUrl);
+    if (formData.amazonCaUrl) payload.append("amazonCaUrl", formData.amazonCaUrl);
     payload.append("rating", String(formData.rating));
     payload.append("sizes", JSON.stringify(formData.sizes));
     payload.append("colors", JSON.stringify(formData.colors));
@@ -304,22 +307,41 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
               />
             </div>
 
+            
+       
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
-                Product URL (optional)
+                Amazon US URL (optional)
               </label>
               <input
                 type="url"
-                placeholder="https://example.com/product"
+                placeholder="https://www.amazon.com/dp/..."
                 value={formData.productUrl}
                 onChange={e => handleChange("productUrl", e.target.value)}
                 className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
               />
               <p className="text-xs text-gray-500 mt-1">
-                This link will be used for the “Buy” button on the products
-                page.
+                Used for the "Buy on Amazon US" button.
               </p>
             </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Amazon CA URL (optional)
+              </label>
+              <input
+                type="url"
+                placeholder="https://www.amazon.ca/dp/..."
+                value={formData.amazonCaUrl}
+                onChange={e => handleChange("amazonCaUrl", e.target.value)}
+                className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Used for the "Buy on Amazon CA" button. Leave empty to hide.
+              </p>
+            </div>
+
+
+            
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
