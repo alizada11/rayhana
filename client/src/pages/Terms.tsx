@@ -16,6 +16,7 @@ export default function Terms() {
   const headingFontClass = isRTL ? "prose-headings:font-serif" : "";
 
   const addHeadingFont = (html: string) => {
+    if (typeof DOMParser === "undefined") return html || "";
     const doc = new DOMParser().parseFromString(html || "", "text/html");
     doc.body?.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(el => {
       el.classList.add("font-serif");

@@ -27,6 +27,7 @@ export default function HelpCenter() {
     obj?.[currentLang] || obj?.en || fallback;
 
   const decodeHtml = (value: string) => {
+    if (typeof DOMParser === "undefined") return value || "";
     const doc = new DOMParser().parseFromString(value || "", "text/html");
     // decode entities but keep markup intact
     return doc.body?.innerHTML || "";
