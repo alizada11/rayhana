@@ -1,4 +1,4 @@
-import { hydrateRoot } from "react-dom/client";
+import { createRoot, hydrateRoot } from "react-dom/client";
 import "./index.css";
 import "./fonts.css";
 import { QueryClient } from "@tanstack/react-query";
@@ -35,12 +35,13 @@ const bootstrap = async () => {
   const pathname = ssrPayload?.pathname || route.pathname;
   const origin = ssrPayload?.origin || window.location.origin;
   const i18n = await createI18n(locale);
-
-  hydrateRoot(
-    document.getElementById("root")!,
+  const root = document.getElementById("root")!;
+  const app = (
     <AppShell
       queryClient={queryClient}
-      dehydratedState={(ssrPayload?.dehydratedState as any) || dehydrate(queryClient)}
+      dehydratedState={
+        (ssrPayload?.dehydratedState as any) || dehydrate(queryClient)
+      }
       i18n={i18n}
       locale={locale}
       pathname={pathname}
@@ -48,6 +49,13 @@ const bootstrap = async () => {
       seo={{ current: null, setCurrent: () => undefined }}
     />
   );
+
+  if (!import.meta.env.DEV && (ssrPayload || root.hasChildNodes())) {
+    hydrateRoot(root, app);
+    return;
+  }
+
+  createRoot(root).render(app);
 };
 
 void bootstrap();

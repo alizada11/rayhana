@@ -5,7 +5,8 @@ const escapeHtml = (value: string) =>
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
-    .replace(/"/g, "&quot;");
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
 
 const metaTag = (name: string, content?: string) =>
   content ? `<meta name="${name}" content="${escapeHtml(content)}" />` : "";
@@ -32,7 +33,10 @@ export function renderSeoHead(seo: SeoPayload | null) {
     propertyTag("og:url", seo.canonical),
     propertyTag("og:image", seo.image),
     metaTag("twitter:card", "summary_large_image"),
-    metaTag("twitter:site", seo.twitterHandle ? `@${seo.twitterHandle}` : ""),
+    metaTag(
+      "twitter:site",
+      seo.twitterHandle?.trim() ? `@${seo.twitterHandle.trim()}` : ""
+    ),
     metaTag("twitter:title", seo.title),
     metaTag("twitter:description", seo.description),
     metaTag("twitter:image", seo.image),
@@ -44,10 +48,9 @@ export function renderSeoHead(seo: SeoPayload | null) {
     ),
     ...(seo.structuredData || []).map(
       item =>
-        `<script type="application/ld+json">${escapeHtml(JSON.stringify(item))}</script>`
+        `<script type="application/ld+json">${JSON.stringify(item).replace(/<\/script/gi, "<\\/script")}</script>`
     ),
   ]
     .filter(Boolean)
     .join("\n");
 }
-

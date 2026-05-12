@@ -40,7 +40,7 @@ export function AppShell({
           <QueryClientProvider client={queryClient}>
             <HydrationBoundary state={dehydratedState}>
               <AuthProvider>
-                <Router base={getLocalePrefix(locale) || undefined} ssrPath={pathname}>
+                <Router base={getLocalePrefix(locale)} ssrPath={pathname}>
                   <App />
                 </Router>
               </AuthProvider>

@@ -78,8 +78,7 @@ export const matchRoute = (pathname: string): RouteMatch => {
 };
 
 export const canRenderSsr = (pathname: string) => {
-  const route = matchRoute(pathname);
-  return route.type !== "not-found";
+  return Boolean(matchRoute(pathname));
 };
 
 const createQueryClient = () =>
@@ -140,7 +139,7 @@ export const preloadRouteData = async (pathname: string) => {
 };
 
 const loadEntryServer = async () => {
-  const entryPath = path.resolve(__dirname, "server", "entry-server.js");
+  const entryPath = path.resolve(__dirname, "..", "server", "entry-server.js");
   const moduleUrl = pathToFileURL(entryPath).href;
   return import(moduleUrl);
 };

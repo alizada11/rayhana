@@ -1,6 +1,6 @@
 import { createInstance, type i18n as I18nInstance } from "i18next";
 import { initReactI18next, I18nextProvider } from "react-i18next";
-import { createElement, useMemo, type PropsWithChildren } from "react";
+import { createElement, type PropsWithChildren } from "react";
 import en from "../locales/en.json";
 import fa from "../locales/fa.json";
 import ps from "../locales/ps.json";
@@ -32,6 +32,5 @@ export function I18nProvider({
   i18n,
   children,
 }: PropsWithChildren<{ i18n: I18nInstance }>) {
-  const value = useMemo(() => i18n, [i18n]);
-  return createElement(I18nextProvider, { i18n: value }, children);
+  return createElement(I18nextProvider, { i18n }, children);
 }

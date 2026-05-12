@@ -216,13 +216,21 @@ const SEO_LOCALES = ["en", "fa", "ps"] as const;
 
 type SeoLocale = (typeof SEO_LOCALES)[number];
 
+const escapeXml = (str: string) =>
+  str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+
 const buildAlternateLinks = (base: string, locale: SeoLocale, path: string) =>
   SEO_LOCALES.map(
     current =>
-      `<xhtml:link rel="alternate" hreflang="${current}" href="${base}${localizePath(current, path)}" />`
+      `<xhtml:link rel="alternate" hreflang="${current}" href="${escapeXml(`${base}${localizePath(current, path)}`)}" />`
   )
     .concat(
-      `<xhtml:link rel="alternate" hreflang="x-default" href="${base}${localizePath("en", path)}" />`
+      `<xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(`${base}${localizePath("en", path)}`)}" />`
     )
     .join("");
 
@@ -286,14 +294,6 @@ app.get("/sitemap-:locale.xml", async (req, res) => {
         .from(products)
         .orderBy(desc(products.createdAt)),
     ]);
-
-    const escapeXml = (str: string) =>
-      str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&apos;");
 
     type SitemapUrl = {
       loc: string;
@@ -388,9 +388,23 @@ if (ENV.NODE_ENV === "production" && hasBuiltFrontend) {
     }
   });
 }
+const port = Number(ENV.PORT) || 3001;
+
 if (ENV.NODE_ENV === "development") {
-  console.log("Hey donkey, you are developing I mean in development mode!");
+  console.log(`Development mode: API server listening on port ${port}`);
 }
-app.listen(ENV.PORT, () =>
-  console.log("Server is up and running on port:", ENV.PORT)
+
+const server = app.listen(port, () =>
+  console.log("Server is up and running on port:", port)
 );
+
+server.on("error", error => {
+  if ((error as NodeJS.ErrnoException).code === "EADDRINUSE") {
+    console.error(
+      `Port ${port} is already in use. Stop the other process or change server/.env PORT before restarting the API server.`
+    );
+    process.exit(1);
+  }
+
+  throw error;
+});

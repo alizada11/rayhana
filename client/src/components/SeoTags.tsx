@@ -52,7 +52,7 @@ export default function SeoTags(props: SeoTagsProps) {
     (pageSeo?.title?.[lang] || pageSeo?.title?.en) ||
     seo?.defaultTitle?.[lang] ||
     seo?.defaultTitle?.en ||
-    document.title;
+    "";
   const description =
     props.description ||
     (pageSeo?.description?.[lang] || pageSeo?.description?.en) ||
@@ -85,7 +85,7 @@ export default function SeoTags(props: SeoTagsProps) {
     () => ({
       title,
       description,
-      canonical: props.canonical || url,
+      canonical: props.canonical ?? url,
       robots: props.robots,
       image,
       type,
@@ -118,51 +118,32 @@ export default function SeoTags(props: SeoTagsProps) {
   }
 
   useEffect(() => {
-    if (title) document.title = title;
-    setMeta("name", "description", description);
-    setMeta("name", "robots", props.robots);
-    setMeta("property", "og:title", title);
-    setMeta("property", "og:description", description);
-    setMeta("property", "og:type", type);
-    if (siteName) setMeta("property", "og:site_name", siteName);
-    if (url) setMeta("property", "og:url", url);
-    if (image) setMeta("property", "og:image", image);
+    if (payload.title) document.title = payload.title;
+    setMeta("name", "description", payload.description);
+    setMeta("name", "robots", payload.robots);
+    setMeta("property", "og:title", payload.title);
+    setMeta("property", "og:description", payload.description);
+    setMeta("property", "og:type", payload.type);
+    setMeta("property", "og:site_name", payload.siteName);
+    setMeta("property", "og:url", payload.canonical);
+    setMeta("property", "og:image", payload.image);
     setMeta("name", "twitter:card", "summary_large_image");
-    if (twitterHandle) setMeta("name", "twitter:site", `@${twitterHandle}`);
-    if (title) setMeta("name", "twitter:title", title);
-    if (description) setMeta("name", "twitter:description", description);
-    if (image) setMeta("name", "twitter:image", image);
-    if (props.publishedTime)
-      setMeta("property", "article:published_time", props.publishedTime);
-    if (props.modifiedTime)
-      setMeta("property", "article:modified_time", props.modifiedTime);
-    // canonical
-    if (url) {
-      let link = document.querySelector("link[rel='canonical']") as
-        | HTMLLinkElement
-        | null;
-      if (!link) {
-        link = document.createElement("link");
-        link.rel = "canonical";
-        document.head.appendChild(link);
-      }
-      link.href = url;
-    }
+    setMeta(
+      "name",
+      "twitter:site",
+      payload.twitterHandle ? `@${payload.twitterHandle}` : undefined
+    );
+    setMeta("name", "twitter:title", payload.title);
+    setMeta("name", "twitter:description", payload.description);
+    setMeta("name", "twitter:image", payload.image);
+    setMeta("property", "article:published_time", payload.publishedTime);
+    setMeta("property", "article:modified_time", payload.modifiedTime);
+    syncCanonicalLink(payload.canonical);
     syncAlternateLinks(alternates);
-    syncStructuredData(props.structuredData);
+    syncStructuredData(payload.structuredData);
   }, [
     alternates,
-    title,
-    description,
-    image,
-    url,
-    type,
-    siteName,
-    twitterHandle,
-    props.publishedTime,
-    props.modifiedTime,
-    props.robots,
-    props.structuredData,
+    payload,
   ]);
 
   return null;
@@ -173,10 +154,13 @@ function setMeta(
   key: string,
   value?: string | null
 ) {
-  if (value == null) return;
   let tag = document.querySelector(`meta[${attr}='${key}']`) as
     | HTMLMetaElement
     | null;
+  if (value == null || value === "") {
+    tag?.parentNode?.removeChild(tag);
+    return;
+  }
   if (!tag) {
     tag = document.createElement("meta");
     tag.setAttribute(attr, key);
@@ -190,6 +174,22 @@ function resolveUrl(url?: string, base?: string) {
   if (url.startsWith("http")) return url;
   if (base) return `${base.replace(/\/+$/, "")}${url.startsWith("/") ? "" : "/"}${url}`;
   return url;
+}
+
+function syncCanonicalLink(value?: string | null) {
+  let link = document.querySelector("link[rel='canonical']") as
+    | HTMLLinkElement
+    | null;
+  if (value == null || value === "") {
+    link?.parentNode?.removeChild(link);
+    return;
+  }
+  if (!link) {
+    link = document.createElement("link");
+    link.rel = "canonical";
+    document.head.appendChild(link);
+  }
+  link.href = value;
 }
 
 function syncAlternateLinks(alternates: Array<{ hrefLang: string; href: string }>) {

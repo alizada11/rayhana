@@ -25,10 +25,7 @@ interface CommentsProps {
 
 export default function Comments({ postId }: CommentsProps) {
   const { t, i18n } = useTranslation();
-  const currentLang = (i18n.language || "en").split("-")[0] as
-    | "en"
-    | "fa"
-    | "ps";
+  const currentLang = i18n.language as "en" | "fa" | "ps";
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const { isSignedIn, userId } = useAuth();
   const { user } = useUser();

@@ -62,10 +62,19 @@ export default function ProductDetail() {
     priceCurrency: "USD",
     price,
     availability: "https://schema.org/InStock",
-    url: productUrl || amazonCaUrl || "",
+    ...(productUrl || amazonCaUrl ? { url: productUrl || amazonCaUrl } : {}),
     itemOffered: title,
     size,
   }));
+  const reviewCount = product.reviews?.length;
+  const aggregateRating =
+    typeof product.rating === "number" && reviewCount && reviewCount > 0
+      ? {
+          "@type": "AggregateRating",
+          ratingValue: product.rating,
+          reviewCount,
+        }
+      : undefined;
 
   return (
     <article className="min-h-screen py-20">
@@ -86,22 +95,18 @@ export default function ProductDetail() {
               "@type": "Brand",
               name: "Rayhana",
             },
-            aggregateRating: {
-              "@type": "AggregateRating",
-              ratingValue: product.rating || 5,
-              reviewCount: product.reviews?.length || 1,
-            },
-            offers,
+            ...(aggregateRating ? { aggregateRating } : {}),
+            ...(offers.length ? { offers } : {}),
           },
         ]}
       />
       <div className="container space-y-10">
-        <Link href="/products">
-          <Button variant="outline">
+        <Button asChild variant="outline">
+          <Link href="/products">
             <ArrowLeft className={`h-4 w-4 ${isRTL ? "ml-2 rotate-180" : "mr-2"}`} />
             {t("blog.back", "Back")}
-          </Button>
-        </Link>
+          </Link>
+        </Button>
         <div className="grid gap-10 lg:grid-cols-2">
           <div className="space-y-6">
             <div className="overflow-hidden rounded-3xl bg-secondary/20">
@@ -191,20 +196,26 @@ export default function ProductDetail() {
 
             <div className="flex flex-col gap-3 sm:flex-row">
               {productUrl ? (
-                <a href={productUrl} target="_blank" rel="noopener noreferrer">
-                  <Button className="rounded-full bg-[#FF9900] text-black hover:bg-[#FF9900]/90">
+                <Button
+                  asChild
+                  className="rounded-full bg-[#FF9900] text-black hover:bg-[#FF9900]/90"
+                >
+                  <a href={productUrl} target="_blank" rel="noopener noreferrer">
                     <ShoppingBag className="mr-2 h-4 w-4" />
                     {t("products_page.buy_amazon")}
-                  </Button>
-                </a>
+                  </a>
+                </Button>
               ) : null}
               {amazonCaUrl ? (
-                <a href={amazonCaUrl} target="_blank" rel="noopener noreferrer">
-                  <Button className="rounded-full bg-[#FF9900] text-black hover:bg-[#FF9900]/90">
+                <Button
+                  asChild
+                  className="rounded-full bg-[#FF9900] text-black hover:bg-[#FF9900]/90"
+                >
+                  <a href={amazonCaUrl} target="_blank" rel="noopener noreferrer">
                     <ShoppingBag className="mr-2 h-4 w-4" />
                     {t("products_page.buy_amazon_ca")}
-                  </Button>
-                </a>
+                  </a>
+                </Button>
               ) : null}
             </div>
           </div>

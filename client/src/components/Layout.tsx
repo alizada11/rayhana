@@ -7,7 +7,11 @@ import { Button } from "@/components/ui/button";
 import { useContent } from "@/hooks/useContent";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
-import { localizePath } from "@/lib/routing/locale";
+import {
+  isSupportedLocale,
+  localizePath,
+  type Locale,
+} from "@/lib/routing/locale";
 import { useCurrentPath } from "@/ssr/request-context";
 
 interface LayoutProps {
@@ -154,9 +158,9 @@ gtag('config', '${gaMeasurementId}');`;
 
   const [showLangMenu, setShowLangMenu] = useState(false);
 
-  const changeLanguage = (newLang: string) => {
+  const changeLanguage = (newLang: Locale) => {
     if (typeof window !== "undefined") {
-      const target = localizePath(newLang as any, currentPath);
+      const target = localizePath(newLang, currentPath);
       const search = window.location.search || "";
       window.location.assign(`${target}${search}`);
       return;
@@ -335,7 +339,9 @@ gtag('config', '${gaMeasurementId}');`;
                   {languages.map(lang => (
                     <button
                       key={lang.code}
-                      onClick={() => changeLanguage(lang.code)}
+                      onClick={() => {
+                        if (isSupportedLocale(lang.code)) changeLanguage(lang.code);
+                      }}
                       className={cn(
                         "w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors flex items-center justify-between",
                         langCode === lang.code &&
