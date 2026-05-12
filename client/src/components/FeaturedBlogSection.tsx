@@ -2,6 +2,7 @@ import { useTranslation } from "react-i18next";
 import { Link } from "wouter";
 import { ArrowRight, Star } from "lucide-react";
 import { useBlogs, type BlogPost } from "@/hooks/useBlogs";
+import { formatLocalizedDate } from "@/utils/date";
 
 export default function FeaturedBlogSection({
   items,
@@ -92,7 +93,7 @@ export default function FeaturedBlogSection({
                   </p>
                   <span className="text-xs text-muted-foreground">
                     {post.publishedAt
-                      ? new Date(post.publishedAt).toLocaleDateString()
+                      ? formatLocalizedDate(post.publishedAt, currentLang)
                       : ""}
                   </span>
                   <div className="flex items-center justify-between text-sm text-muted-foreground">

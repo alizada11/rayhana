@@ -1,6 +1,13 @@
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { useSeoDefaults, type SeoDefaults } from "@/hooks/useSeoDefaults";
+import { useSeoContext } from "@/seo/seo-context";
+import {
+  SUPPORTED_LOCALES,
+  type Locale,
+  localizePath,
+} from "@/lib/routing/locale";
+import { useCurrentPath, useRequestContext } from "@/ssr/request-context";
 
 type SeoTagsProps = {
   title?: string;
@@ -12,15 +19,28 @@ type SeoTagsProps = {
   modifiedTime?: string;
   pageKey?: string;
   seoData?: SeoDefaults;
+  robots?: string;
+  canonical?: string;
+  structuredData?: Array<Record<string, any>>;
 };
 
 export default function SeoTags(props: SeoTagsProps) {
   const { i18n } = useTranslation();
-  const lang = i18n.language || "en";
+  const lang = ((i18n.language || "en").split("-")[0] || "en") as Locale;
   const { seo } = useSeoDefaults({
     initialData: props.seoData,
     enabled: !props.seoData,
   });
+  const seoContext = useSeoContext();
+  const currentPath = useCurrentPath();
+  const { locale: currentLocale, origin } = useRequestContext();
+  const defaultCanonical = `${origin}${localizePath(currentLocale, currentPath)}`;
+  const canonicalUrl =
+    props.url && props.url.startsWith("http")
+      ? props.url
+      : props.url
+        ? `${origin}${localizePath(currentLocale, props.url)}`
+        : defaultCanonical;
 
   const pageSeo =
     (props.pageKey && seo.pages?.[props.pageKey]) ||
@@ -43,14 +63,64 @@ export default function SeoTags(props: SeoTagsProps) {
     props.image || pageSeo?.image || seo?.defaultImage,
     seo?.baseUrl
   );
-  const url = resolveUrl(props.url, seo?.baseUrl) || window?.location?.href;
+  const url = resolveUrl(props.url, seo?.baseUrl) || canonicalUrl;
   const type = props.type || "website";
   const siteName = seo?.siteName || "";
   const twitterHandle = seo?.twitterHandle || "";
+  const alternates = useMemo(
+    () => [
+      ...SUPPORTED_LOCALES.map(locale => ({
+        hrefLang: locale,
+        href: `${defaultCanonical.replace(localizePath(lang, currentPath), localizePath(locale, currentPath))}`,
+      })),
+      {
+        hrefLang: "x-default",
+        href: `${defaultCanonical.replace(localizePath(lang, currentPath), localizePath("en", currentPath))}`,
+      },
+    ],
+    [currentPath, defaultCanonical, lang]
+  );
+
+  const payload = useMemo(
+    () => ({
+      title,
+      description,
+      canonical: props.canonical || url,
+      robots: props.robots,
+      image,
+      type,
+      publishedTime: props.publishedTime,
+      modifiedTime: props.modifiedTime,
+      siteName,
+      twitterHandle,
+      alternates,
+      structuredData: props.structuredData,
+    }),
+    [
+      alternates,
+      description,
+      image,
+      props.canonical,
+      props.modifiedTime,
+      props.publishedTime,
+      props.robots,
+      props.structuredData,
+      siteName,
+      title,
+      twitterHandle,
+      type,
+      url,
+    ]
+  );
+
+  if (typeof window === "undefined") {
+    seoContext.setCurrent(payload);
+  }
 
   useEffect(() => {
     if (title) document.title = title;
     setMeta("name", "description", description);
+    setMeta("name", "robots", props.robots);
     setMeta("property", "og:title", title);
     setMeta("property", "og:description", description);
     setMeta("property", "og:type", type);
@@ -78,7 +148,10 @@ export default function SeoTags(props: SeoTagsProps) {
       }
       link.href = url;
     }
+    syncAlternateLinks(alternates);
+    syncStructuredData(props.structuredData);
   }, [
+    alternates,
     title,
     description,
     image,
@@ -88,6 +161,8 @@ export default function SeoTags(props: SeoTagsProps) {
     twitterHandle,
     props.publishedTime,
     props.modifiedTime,
+    props.robots,
+    props.structuredData,
   ]);
 
   return null;
@@ -115,4 +190,31 @@ function resolveUrl(url?: string, base?: string) {
   if (url.startsWith("http")) return url;
   if (base) return `${base.replace(/\/+$/, "")}${url.startsWith("/") ? "" : "/"}${url}`;
   return url;
+}
+
+function syncAlternateLinks(alternates: Array<{ hrefLang: string; href: string }>) {
+  const previous = document.querySelectorAll("link[data-seo-alternate='1']");
+  previous.forEach(node => node.parentNode?.removeChild(node));
+  alternates.forEach(alternate => {
+    const link = document.createElement("link");
+    link.rel = "alternate";
+    link.hreflang = alternate.hrefLang;
+    link.href = alternate.href;
+    link.dataset.seoAlternate = "1";
+    document.head.appendChild(link);
+  });
+}
+
+function syncStructuredData(items?: Array<Record<string, any>>) {
+  const previous = document.querySelectorAll(
+    "script[data-structured-data='1']"
+  );
+  previous.forEach(node => node.parentNode?.removeChild(node));
+  items?.forEach(item => {
+    const script = document.createElement("script");
+    script.type = "application/ld+json";
+    script.dataset.structuredData = "1";
+    script.text = JSON.stringify(item);
+    document.head.appendChild(script);
+  });
 }

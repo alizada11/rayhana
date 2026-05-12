@@ -17,6 +17,7 @@ import { useUserRole } from "@/hooks/useUserRole";
 import { toast } from "sonner";
 import { useLocation } from "wouter";
 import { useConfirm } from "@/components/ConfirmProvider";
+import { formatLocalizedDate } from "@/utils/date";
 
 interface CommentsProps {
   postId: string;
@@ -24,6 +25,10 @@ interface CommentsProps {
 
 export default function Comments({ postId }: CommentsProps) {
   const { t, i18n } = useTranslation();
+  const currentLang = (i18n.language || "en").split("-")[0] as
+    | "en"
+    | "fa"
+    | "ps";
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const { isSignedIn, userId } = useAuth();
   const { user } = useUser();
@@ -308,7 +313,10 @@ export default function Comments({ postId }: CommentsProps) {
                           </h4>
                           <span className="text-xs text-muted-foreground">
                             {comment.createdAt
-                              ? new Date(comment.createdAt).toLocaleDateString()
+                              ? formatLocalizedDate(
+                                  comment.createdAt,
+                                  currentLang
+                                )
                               : ""}
                           </span>
                         </div>
@@ -436,9 +444,10 @@ export default function Comments({ postId }: CommentsProps) {
                                 </div>
                                 <div className="text-xs text-muted-foreground">
                                   {child.createdAt
-                                    ? new Date(
-                                        child.createdAt
-                                      ).toLocaleDateString()
+                                    ? formatLocalizedDate(
+                                        child.createdAt,
+                                        currentLang
+                                      )
                                     : ""}
                                 </div>
                               </div>

@@ -7,7 +7,8 @@ import { Button } from "@/components/ui/button";
 import { useContent } from "@/hooks/useContent";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
-import i18nInstance from "@/lib/i18n";
+import { localizePath } from "@/lib/routing/locale";
+import { useCurrentPath } from "@/ssr/request-context";
 
 interface LayoutProps {
   children: ReactNode;
@@ -19,6 +20,7 @@ type NavItem = { href: string; label: LocalizedLabel };
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
   const [location] = useLocation();
+  const currentPath = useCurrentPath();
   const isHome = location === "/";
   const { data: settingsContent } = useContent("settings");
   const [footerLogoBroken, setFooterLogoBroken] = useState(false);
@@ -153,14 +155,13 @@ gtag('config', '${gaMeasurementId}');`;
   const [showLangMenu, setShowLangMenu] = useState(false);
 
   const changeLanguage = (newLang: string) => {
-    const inst =
-      i18n && typeof i18n.changeLanguage === "function" ? i18n : i18nInstance;
-    inst.changeLanguage(newLang);
-    try {
-      window.localStorage.setItem("i18nextLng", newLang);
-    } catch {
-      /* ignore storage errors */
+    if (typeof window !== "undefined") {
+      const target = localizePath(newLang as any, currentPath);
+      const search = window.location.search || "";
+      window.location.assign(`${target}${search}`);
+      return;
     }
+    i18n.changeLanguage(newLang);
     setShowLangMenu(false);
   };
 

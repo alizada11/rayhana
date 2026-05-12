@@ -6,6 +6,7 @@ import { motion } from "framer-motion";
 import { useBlogs } from "@/hooks/useBlogs";
 import { useEffect, useMemo, useState } from "react";
 import SeoTags from "@/components/SeoTags";
+import { formatLocalizedDate } from "@/utils/date";
 
 export default function BlogIndex() {
   const { t, i18n } = useTranslation();
@@ -112,9 +113,10 @@ export default function BlogIndex() {
                             <Calendar className="w-4 h-4" />
                             <span>
                               {post.publishedAt
-                                ? new Date(
-                                    post.publishedAt
-                                  ).toLocaleDateString()
+                                ? formatLocalizedDate(
+                                    post.publishedAt,
+                                    currentLang
+                                  )
                                 : ""}
                             </span>
                           </div>

@@ -15,6 +15,7 @@ import { useBlogBySlug } from "@/hooks/useBlogs";
 import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
 import { useState } from "react";
+import { formatLocalizedDate } from "@/utils/date";
 
 export default function BlogPost() {
   const { t, i18n } = useTranslation();
@@ -27,6 +28,7 @@ export default function BlogPost() {
   const { data: post, isLoading } = useBlogBySlug(params?.slug);
 
   const decodeHtml = (value: string) => {
+    if (typeof DOMParser === "undefined") return value || "";
     const doc = new DOMParser().parseFromString(value || "", "text/html");
     return doc.body?.innerHTML || "";
   };
@@ -34,6 +36,7 @@ export default function BlogPost() {
   const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
 
   const addHeadingFont = (html: string) => {
+    if (typeof DOMParser === "undefined") return html || "";
     const doc = new DOMParser().parseFromString(html || "", "text/html");
     doc.body?.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(el => {
       el.classList.add("font-serif");
@@ -213,7 +216,7 @@ export default function BlogPost() {
                 <Calendar className="w-5 h-5" />
                 <span>
                   {post.publishedAt
-                    ? new Date(post.publishedAt).toLocaleDateString()
+                    ? formatLocalizedDate(post.publishedAt, currentLang)
                     : ""}
                 </span>
               </div>
