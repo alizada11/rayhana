@@ -8,7 +8,10 @@ import SeoTags from "@/components/SeoTags";
 export default function ProductDetail() {
   const { t, i18n } = useTranslation();
   const [match, params] = useRoute("/products/:id");
-  const currentLang = (i18n.language || "en").split("-")[0] as "en" | "fa" | "ps";
+  const currentLang = (i18n.language || "en").split("-")[0] as
+    | "en"
+    | "fa"
+    | "ps";
   const isRTL = currentLang === "fa" || currentLang === "ps";
   const { data: product, isLoading } = useProduct(params?.id);
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
@@ -28,13 +31,19 @@ export default function ProductDetail() {
   };
 
   if (isLoading) {
-    return <div className="min-h-screen py-24 text-center">{t("common.loading")}</div>;
+    return (
+      <div className="min-h-screen py-24 text-center">
+        {t("common.loading")}
+      </div>
+    );
   }
 
   if (!product) {
     return (
       <div className="min-h-screen py-24 text-center">
-        <h1 className="font-serif text-3xl font-bold">{t("products_page.no_products")}</h1>
+        <h1 className="font-serif text-3xl font-bold">
+          {t("products_page.no_products")}
+        </h1>
       </div>
     );
   }
@@ -48,7 +57,9 @@ export default function ProductDetail() {
   })();
   const amazonCaUrl = (() => {
     try {
-      return product.amazonCaUrl ? new URL(product.amazonCaUrl).toString() : null;
+      return product.amazonCaUrl
+        ? new URL(product.amazonCaUrl).toString()
+        : null;
     } catch {
       return null;
     }
@@ -103,8 +114,10 @@ export default function ProductDetail() {
       <div className="container space-y-10">
         <Button asChild variant="outline">
           <Link href="/products">
-            <ArrowLeft className={`h-4 w-4 ${isRTL ? "ml-2 rotate-180" : "mr-2"}`} />
-            {t("blog.back", "Back")}
+            <ArrowLeft
+              className={`h-4 w-4 ${isRTL ? "ml-2 rotate-180" : "mr-2"}`}
+            />
+            {t("products_page.back", "Back")}
           </Link>
         </Button>
         <div className="grid gap-10 lg:grid-cols-2">
@@ -163,9 +176,14 @@ export default function ProductDetail() {
                 </h2>
                 <div className="space-y-2 rounded-2xl border bg-card p-5">
                   {Object.entries(product.prices || {}).map(([size, price]) => (
-                    <div key={size} className="flex items-center justify-between">
+                    <div
+                      key={size}
+                      className="flex items-center justify-between"
+                    >
                       <span>{size}</span>
-                      <span className="font-semibold">${Number(price).toFixed(2)}</span>
+                      <span className="font-semibold">
+                        ${Number(price).toFixed(2)}
+                      </span>
                     </div>
                   ))}
                 </div>
@@ -178,7 +196,10 @@ export default function ProductDetail() {
                   {t("products_page.amazon_reviews")}
                 </h2>
                 {product.reviews.slice(0, 3).map((review: any) => (
-                  <div key={review.id} className="rounded-2xl border bg-card p-5">
+                  <div
+                    key={review.id}
+                    className="rounded-2xl border bg-card p-5"
+                  >
                     <div className="mb-2 flex items-center justify-between">
                       <strong>{review.author}</strong>
                       {review.verified ? (
@@ -188,7 +209,9 @@ export default function ProductDetail() {
                         </span>
                       ) : null}
                     </div>
-                    <p className="text-muted-foreground">{localize(review.text)}</p>
+                    <p className="text-muted-foreground">
+                      {localize(review.text)}
+                    </p>
                   </div>
                 ))}
               </section>
@@ -200,7 +223,11 @@ export default function ProductDetail() {
                   asChild
                   className="rounded-full bg-[#FF9900] text-black hover:bg-[#FF9900]/90"
                 >
-                  <a href={productUrl} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={productUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <ShoppingBag className="mr-2 h-4 w-4" />
                     {t("products_page.buy_amazon")}
                   </a>
@@ -211,7 +238,11 @@ export default function ProductDetail() {
                   asChild
                   className="rounded-full bg-[#FF9900] text-black hover:bg-[#FF9900]/90"
                 >
-                  <a href={amazonCaUrl} target="_blank" rel="noopener noreferrer">
+                  <a
+                    href={amazonCaUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
                     <ShoppingBag className="mr-2 h-4 w-4" />
                     {t("products_page.buy_amazon_ca")}
                   </a>
