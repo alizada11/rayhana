@@ -9,8 +9,10 @@ import {
 } from "lucide-react";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import { decodeHtml, sanitizeRichHtml } from "@/utils/html";
+import { createFaqSchema } from "@/seo/schema";
+import { useRuntime } from "@/ssr/runtime";
 
 const ICONS: Record<string, ComponentType<{ className?: string }>> = {
   lifeBuoy: LifeBuoy,
@@ -22,17 +24,11 @@ const ICONS: Record<string, ComponentType<{ className?: string }>> = {
 export default function HelpCenter() {
   const { data } = useContent("help");
   const { t, i18n } = useTranslation();
+  const runtime = useRuntime();
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
-
-  const decodeHtml = (value: string) => {
-    const doc = new DOMParser().parseFromString(value || "", "text/html");
-    // decode entities but keep markup intact
-    return doc.body?.innerHTML || "";
-  };
-
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+  const cleanHtml = (value: string) => sanitizeRichHtml(decodeHtml(value));
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const title = getLocalized(data?.data?.center?.title, "Help Center");
   const subtitle = getLocalized(
@@ -53,7 +49,13 @@ export default function HelpCenter() {
         pageKey="help"
         title={title}
         description={subtitle}
-        url={`${import.meta.env.VITE_BASE_URL || ""}/help`}
+        url={`${runtime.baseUrl}/help`}
+        schemas={[
+          {
+            key: "faq-page",
+            value: createFaqSchema(data?.data, currentLang),
+          },
+        ]}
       />
       <div className="container mx-auto px-4">
         <div className="max-w-3xl">

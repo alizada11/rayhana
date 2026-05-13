@@ -8,6 +8,9 @@ import { useContent } from "@/hooks/useContent";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import i18nInstance from "@/lib/i18n";
+import SeoTags from "./SeoTags";
+import { createOrganizationSchema } from "@/seo/schema";
+import { useRuntime } from "@/ssr/runtime";
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,6 +21,7 @@ type NavItem = { href: string; label: LocalizedLabel };
 
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
+  const runtime = useRuntime();
   const [location] = useLocation();
   const isHome = location === "/";
   const { data: settingsContent } = useContent("settings");
@@ -232,9 +236,17 @@ gtag('config', '${gaMeasurementId}');`;
     <div
       className={cn(
         "min-h-screen flex flex-col font-sans",
-        isRTL ? "font-vazir" : "font-poppins"
+        "font-sans"
       )}
     >
+      <SeoTags
+        schemas={[
+          {
+            key: "organization",
+            value: createOrganizationSchema(runtime.baseUrl || ""),
+          },
+        ]}
+      />
       {/* Header */}
       <header
         className={cn(

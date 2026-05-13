@@ -1,20 +1,11 @@
 import { useTranslation } from "react-i18next";
 import { ArrowRight, Check, Star, ShieldCheck } from "lucide-react";
 
-import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import DOMPurify from "dompurify";
-const CustomerGallery = lazy(() =>
-  import("@/components/CustomerGallery").then(mod => ({
-    default: mod.CustomerGallery,
-  }))
-);
-const FeaturedBlogSection = lazy(
-  () => import("@/components/FeaturedBlogSection")
-);
-const Newsletter = lazy(() =>
-  import("@/components/Newsletter").then(mod => ({ default: mod.Newsletter }))
-);
-const FAQ = lazy(() => import("@/components/FAQ"));
+import { Suspense, useEffect, useRef, useState } from "react";
+import { CustomerGallery } from "@/components/CustomerGallery";
+import FeaturedBlogSection from "@/components/FeaturedBlogSection";
+import { Newsletter } from "@/components/Newsletter";
+import FAQ from "@/components/FAQ";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import SeoTags from "@/components/SeoTags";
@@ -22,9 +13,12 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { useHomepage } from "@/hooks/useHomepage";
 import { useQueryClient } from "@tanstack/react-query";
 import BrandValues from "@/components/BrandValues";
+import { useRuntime } from "@/ssr/runtime";
+import { sanitizeRichHtml } from "@/utils/html";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
+  const runtime = useRuntime();
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const { data: homepage, isLoading, isError } = useHomepage();
@@ -50,7 +44,7 @@ export default function Home() {
   const [shouldPlayVideo, setShouldPlayVideo] = useState(false);
   const heroRef = useRef<HTMLDivElement | null>(null);
   const belowFoldRef = useRef<HTMLDivElement | null>(null);
-  const [showBelowFold, setShowBelowFold] = useState(false);
+  const [showBelowFold, setShowBelowFold] = useState(runtime.isSsrRender);
   const skipVideoRef = useRef(false);
 
   useEffect(() => {
@@ -185,7 +179,7 @@ export default function Home() {
       ];
 
   const sanitize = (html: string) =>
-    DOMPurify ? { __html: DOMPurify.sanitize(html || "") } : undefined;
+    html ? { __html: sanitizeRichHtml(html) } : undefined;
 
   // Ensure below-fold sections render once homepage data is ready
   // (Keep below-fold gated by IO so we don't load heavy sections early)
@@ -316,7 +310,7 @@ export default function Home() {
           )
         }
         image={(seo as any)?.image_url || featuredImage}
-        url={`${import.meta.env.VITE_BASE_URL || ""}/`}
+        url={`${runtime.baseUrl}/`}
         seoData={seo as any}
       />
       <div className="flex flex-col gap-20 pb-20">

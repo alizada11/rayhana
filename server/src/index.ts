@@ -9,6 +9,7 @@ import { cookies, authMiddleware } from "./lib/auth";
 import { getLegacyUploadsDir, getUploadsDir } from "./lib/paths";
 import { csrfMiddleware } from "./middleware/csrf";
 import Module from "module";
+import { pathToFileURL } from "url";
 
 // Ensure server-side deps (like argon2) resolve even if NODE_PATH isn't set by PM2.
 if (!process.env.NODE_PATH) {
@@ -47,11 +48,13 @@ setInterval(
 const app = express();
 // Frontend build output (Vite outDir is dist/public). Use __dirname so PM2 cwd doesn't matter.
 const distPath = path.resolve(__dirname, "public");
+const ssrEntryPath = path.resolve(__dirname, "server", "entry-server.js");
 // Keep in sync with multer destinations (middleware/upload*.ts)
 const uploadsPathPrimary = getUploadsDir();
 // Also serve any legacy path to avoid breaking already-uploaded assets
 const uploadsPathSecondary = getLegacyUploadsDir();
 const hasBuiltFrontend = fs.existsSync(path.join(distPath, "index.html"));
+const hasBuiltSsrEntry = fs.existsSync(ssrEntryPath);
 const isProduction = process.env.NODE_ENV === "production";
 const isTsRuntime = path.extname(__filename) === ".ts"; // running via ts-node in dev
 if (isProduction && !ENV.FRONTEND_URL) {
@@ -281,12 +284,141 @@ ${urls
 });
 
 // Serve built client assets in production (only if build exists)
-if (ENV.NODE_ENV === "production" && hasBuiltFrontend) {
-  app.get(/.*/, (_req, res) => res.sendFile(path.join(distPath, "index.html")));
-}
 if (ENV.NODE_ENV === "development") {
   console.log("Hey donkey, you are developing I mean in development mode!");
 }
+
+type RenderResult = {
+  appHtml: string;
+  head: string;
+  status: number;
+  lang: "en" | "fa" | "ps";
+  dehydratedState: unknown;
+  redirectTo?: string;
+};
+
+type SsrRenderer = (args: {
+  url: string;
+  origin: string;
+  lang?: "en" | "fa" | "ps";
+}) => Promise<RenderResult>;
+
+const detectLanguage = (req: express.Request) => {
+  const accepted = req.headers["accept-language"]?.toLowerCase() || "";
+  if (accepted.includes("fa")) return "fa";
+  if (accepted.includes("ps")) return "ps";
+  return "en";
+};
+
+const isRtlLanguage = (lang: string) => lang === "fa" || lang === "ps";
+
+async function loadProductionRenderer(): Promise<SsrRenderer> {
+  if (!hasBuiltSsrEntry) {
+    throw new Error(
+      `SSR bundle not found at ${ssrEntryPath}. Did you run "pnpm build"?`
+    );
+  }
+
+  const mod = await import(pathToFileURL(ssrEntryPath).href);
+  return mod.render as SsrRenderer;
+}
+
+function serializeSsrState(value: unknown) {
+  return JSON.stringify(value)
+    .replace(/</g, "\\u003c")
+    .replace(/>/g, "\\u003e")
+    .replace(/&/g, "\\u0026");
+}
+
+function injectRenderedDocument(
+  template: string,
+  renderResult: RenderResult,
+  url: string,
+  origin: string
+) {
+  const lang = renderResult.lang || "en";
+  const payload = {
+    lang,
+    url,
+    baseUrl: origin,
+    dehydratedState: renderResult.dehydratedState,
+  };
+
+  return template
+    .replace(/<html lang="[^"]+" dir="[^"]+">/, `<html lang="${lang}" dir="${isRtlLanguage(lang) ? "rtl" : "ltr"}">`)
+    .replace("<!--app-head-->", renderResult.head)
+    .replace("<!--app-html-->", renderResult.appHtml)
+    .replace("<!--app-state-->", serializeSsrState(payload));
+}
+
+async function renderSsrPage(req: express.Request, res: express.Response) {
+  const url = req.originalUrl;
+  const origin = (ENV.FRONTEND_URL || `${req.protocol}://${req.get("host") || "localhost:3001"}`)
+    .split(",")[0]
+    .trim()
+    .replace(/\/+$/, "");
+
+  try {
+    const lang = detectLanguage(req);
+    if (!isProduction) {
+      const { createServer } = await import("vite");
+      const vite = await createServer({
+        server: { middlewareMode: true },
+        appType: "custom",
+        root: path.resolve(__dirname, "..", "..", "client"),
+      });
+
+      const templatePath = path.resolve(__dirname, "..", "..", "client", "index.html");
+      const rawTemplate = fs.readFileSync(templatePath, "utf-8");
+      const template = await vite.transformIndexHtml(url, rawTemplate);
+      const mod = await vite.ssrLoadModule("/src/entry-server.tsx");
+      const render = mod.render as SsrRenderer;
+      const renderResult = await render({ url, origin, lang });
+
+      if (renderResult.redirectTo) {
+        return res.redirect(renderResult.redirectTo);
+      }
+
+      return res
+        .status(renderResult.status || 200)
+        .type("text/html")
+        .send(injectRenderedDocument(template, renderResult, url, origin));
+    }
+
+    const template = fs.readFileSync(path.join(distPath, "index.html"), "utf-8");
+    const render = await loadProductionRenderer();
+    const renderResult = await render({ url, origin, lang });
+
+    if (renderResult.redirectTo) {
+      return res.redirect(renderResult.redirectTo);
+    }
+
+    return res
+      .status(renderResult.status || 200)
+      .type("text/html")
+      .send(injectRenderedDocument(template, renderResult, url, origin));
+  } catch (error) {
+    console.error("SSR render failed", error);
+    if (!isProduction) {
+      return res.status(500).send(String(error));
+    }
+    return res.status(500).send("Internal Server Error");
+  }
+}
+
+app.get(/^(?!\/api\/).*/, async (req, res, next) => {
+  const excluded = ["/robots.txt", "/sitemap.xml", "/uploads"];
+  if (excluded.some(prefix => req.path.startsWith(prefix))) {
+    return next();
+  }
+
+  if (!isProduction && req.path.startsWith("/src/")) {
+    return next();
+  }
+
+  return renderSsrPage(req, res);
+});
+
 app.listen(ENV.PORT, () =>
   console.log("Server is up and running on port:", ENV.PORT)
 );

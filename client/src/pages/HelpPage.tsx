@@ -1,13 +1,15 @@
 import { Link, useRoute } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import { decodeHtml, sanitizeRichHtml } from "@/utils/html";
+import { useRuntime } from "@/ssr/runtime";
 
 export default function HelpPage() {
   const [match, params] = useRoute("/help/:slug");
   const { data } = useContent("help");
   const { i18n, t } = useTranslation();
+  const runtime = useRuntime();
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const contactEmail = data?.data?.center?.contactEmail || "info@rayhana.com";
 
@@ -15,14 +17,7 @@ export default function HelpPage() {
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
-
-  const decodeHtml = (value: string) => {
-    const doc = new DOMParser().parseFromString(value || "", "text/html");
-    // decode entities but keep markup intact
-    return doc.body?.innerHTML || "";
-  };
-
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+  const cleanHtml = (value: string) => sanitizeRichHtml(decodeHtml(value));
 
   const articles = Array.isArray(data?.data?.articles)
     ? data?.data?.articles
@@ -64,7 +59,7 @@ export default function HelpPage() {
             getLocalized(article.intro, "Help article")
           )
         }
-        url={`${import.meta.env.VITE_BASE_URL || ""}/help/${article.slug}`}
+        url={`${runtime.baseUrl}/help/${article.slug}`}
       />
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="text-sm text-muted-foreground">

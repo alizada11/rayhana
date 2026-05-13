@@ -23,9 +23,12 @@ import {
 } from "@/components/ui/dialog";
 import { useProducts, type Product } from "@/hooks/useProducts";
 import SeoTags from "@/components/SeoTags";
+import { createProductCollectionSchema } from "@/seo/schema";
+import { useRuntime } from "@/ssr/runtime";
 
 export default function Products() {
   const { t, i18n } = useTranslation();
+  const runtime = useRuntime();
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const { data: products = [], isLoading } = useProducts();
   const apiBase = import.meta.env.VITE_API_URL?.replace("/api", "") || "";
@@ -51,7 +54,20 @@ export default function Products() {
           "products_page.subtitle",
           "Cookware and tools crafted for authentic Afghan cooking."
         )}
-        url={`${import.meta.env.VITE_BASE_URL || ""}/products`}
+        url={`${runtime.baseUrl}/products`}
+        schemas={[
+          {
+            key: "products",
+            value: createProductCollectionSchema(
+              runtime.baseUrl,
+              products.map(product => ({
+                ...product,
+                imageUrl: resolveImageUrl(product.imageUrl),
+              })),
+              i18n.language
+            ),
+          },
+        ]}
       />
       <div className="container">
         {/* Header */}

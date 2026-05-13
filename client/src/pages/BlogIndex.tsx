@@ -6,9 +6,11 @@ import { motion } from "framer-motion";
 import { useBlogs } from "@/hooks/useBlogs";
 import { useEffect, useMemo, useState } from "react";
 import SeoTags from "@/components/SeoTags";
+import { useRuntime } from "@/ssr/runtime";
 
 export default function BlogIndex() {
   const { t, i18n } = useTranslation();
+  const runtime = useRuntime();
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const [page, setPage] = useState(1);
   const pageSize = 9;
@@ -40,7 +42,7 @@ export default function BlogIndex() {
           "blog.subtitle",
           "Stories, recipes, and tips from the Rayhana kitchen."
         )}
-        url={`${import.meta.env.VITE_BASE_URL || ""}/blog`}
+        url={`${runtime.baseUrl}/blog`}
       />
       <div className="container mx-auto px-4">
         <motion.div

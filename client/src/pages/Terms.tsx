@@ -1,12 +1,18 @@
 import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import {
+  addHeadingFontClasses,
+  sanitizeRichHtml,
+  stripHtml,
+} from "@/utils/html";
+import { useRuntime } from "@/ssr/runtime";
 
 export default function Terms() {
   const { data } = useContent("terms");
   const { t, i18n } = useTranslation();
+  const runtime = useRuntime();
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const isRTL = ["fa", "ps"].includes(currentLang);
 
@@ -15,21 +21,13 @@ export default function Terms() {
 
   const headingFontClass = isRTL ? "prose-headings:font-serif" : "";
 
-  const addHeadingFont = (html: string) => {
-    const doc = new DOMParser().parseFromString(html || "", "text/html");
-    doc.body?.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(el => {
-      el.classList.add("font-serif");
-    });
-    return doc.body?.innerHTML || "";
-  };
-
   const effectiveDate = data?.data?.effectiveDate || "February 7, 2026";
   const title = getLocalized(data?.data?.title, "Terms of Service");
   const intro = getLocalized(
     data?.data?.intro,
     "Welcome to Rayhana. These Terms of Service govern your use of our website, products, and services."
   );
-  const sanitizedIntro = addHeadingFont(DOMPurify.sanitize(intro));
+  const sanitizedIntro = addHeadingFontClasses(sanitizeRichHtml(intro));
   const sections = Array.isArray(data?.data?.sections)
     ? data?.data?.sections
     : [];
@@ -39,17 +37,14 @@ export default function Terms() {
       <SeoTags
         pageKey="terms"
         title={title}
-        description={DOMPurify.sanitize(intro, {
-          ALLOWED_TAGS: [],
-          ALLOWED_ATTR: [],
-        })}
-        url={`${import.meta.env.VITE_BASE_URL || ""}/terms`}
+        description={stripHtml(intro)}
+        url={`${runtime.baseUrl}/terms`}
       />
       <div className="container mx-auto px-4 max-w-4xl">
         <div className="mb-10">
           <h1
             className={`font-serif text-4xl md:text-5xl font-bold text-primary ${
-              isRTL ? "font-vazir" : "font-serif"
+              "font-serif"
             }`}
           >
             {title}
@@ -71,7 +66,7 @@ export default function Terms() {
             >
               <h2
                 className={`font-serif text-xl font-semibold text-foreground ${
-                  isRTL ? "font-vazir" : "font-serif"
+                  "font-serif"
                 }`}
               >
                 {getLocalized(section.title, `Section ${index + 1}`)}
@@ -80,8 +75,8 @@ export default function Terms() {
               <div
                 className={`text-muted-foreground mt-2 prose prose-sm max-w-none ${headingFontClass}`}
                 dangerouslySetInnerHTML={{
-                  __html: addHeadingFont(
-                    DOMPurify.sanitize(getLocalized(section.body, ""))
+                  __html: addHeadingFontClasses(
+                    sanitizeRichHtml(getLocalized(section.body, ""))
                   ),
                 }}
               />

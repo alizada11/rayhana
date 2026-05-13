@@ -18,16 +18,27 @@ export function ThemeProvider({
   children,
   defaultTheme = "light",
 }: ThemeProviderProps) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const stored = localStorage.getItem("theme");
-    return (stored as Theme) || defaultTheme;
-  });
+  const [theme, setTheme] = useState<Theme>(defaultTheme);
 
   useEffect(() => {
+    try {
+      const stored = window.localStorage.getItem("theme") as Theme | null;
+      if (stored && stored !== theme) {
+        setTheme(stored);
+        return;
+      }
+    } catch {
+      // Ignore storage failures and keep the default theme.
+    }
+
     const root = document.documentElement;
     root.classList.remove("light", "dark");
     root.classList.add(theme);
-    localStorage.setItem("theme", theme);
+    try {
+      window.localStorage.setItem("theme", theme);
+    } catch {
+      // Ignore storage failures.
+    }
   }, [theme]);
 
   return (

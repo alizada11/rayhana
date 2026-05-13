@@ -1,17 +1,18 @@
 import { useTranslation } from "react-i18next";
 import { useContent } from "@/hooks/useContent";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import { stripHtml } from "@/utils/html";
+import { useRuntime } from "@/ssr/runtime";
 
 export default function About() {
   const { t, i18n } = useTranslation();
+  const runtime = useRuntime();
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const { data: aboutContent } = useContent("about");
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
-  const plain = (value: string) =>
-    DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim();
+  const plain = (value: string) => stripHtml(value).trim();
 
   const heroTitle = plain(
     getLocalized(aboutContent?.data?.hero?.title, t("about_page.title"))
@@ -73,7 +74,7 @@ export default function About() {
           heroSubtitle || t("about_page.subtitle", "Our story and values.")
         }
         image={aboutContent?.data?.images?.story}
-        url={`${import.meta.env.VITE_BASE_URL || ""}/about`}
+        url={`${runtime.baseUrl}/about`}
       />
       {/* Hero */}
       <section className="relative py-24 bg-secondary/30">

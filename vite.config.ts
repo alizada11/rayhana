@@ -25,6 +25,7 @@ export default defineConfig(({ mode }) => {
     envDir: path.resolve(import.meta.dirname),
     root: path.resolve(import.meta.dirname, "client"),
     build: {
+      ssrManifest: true,
       outDir: path.resolve(import.meta.dirname, "dist/public"),
       emptyOutDir: true,
       sourcemap: false, // strip maps from production bundles

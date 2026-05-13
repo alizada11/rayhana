@@ -5,8 +5,7 @@
 @custom-variant dark (&:is(.dark *));
 
 @theme inline {
-  --font-sans:
-    "Poppins", "Vazirmatn", "Noto Sans Arabic", "Noto Sans", sans-serif;
+  --font-sans: "Vazirmatn", sans-serif;
   --font-serif: "Playfair Display", "Georgia", "Times New Roman", serif;
 
   --radius-sm: calc(var(--radius) - 4px);
@@ -97,8 +96,8 @@
 
 :root[dir="rtl"],
 html[dir="rtl"] {
-  --font-serif: "Vazirmatn", "Noto Sans Arabic", "Noto Sans", sans-serif;
-  --font-sans: "Vazirmatn", "Noto Sans Arabic", "Noto Sans", sans-serif;
+  --font-serif: "Vazirmatn", sans-serif;
+  --font-sans: "Vazirmatn", sans-serif;
 }
 
 .dark {
@@ -170,8 +169,7 @@ html[dir="rtl"] {
 
 @layer utilities {
   [dir="rtl"] .font-serif {
-    font-family:
-      "Vazirmatn", "Noto Sans Arabic", "Noto Sans", sans-serif !important;
+    font-family: "Vazirmatn", sans-serif !important;
   }
 }
 

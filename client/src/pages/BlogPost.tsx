@@ -12,12 +12,19 @@ import {
 import Comments from "@/components/Comments";
 import { motion } from "framer-motion";
 import { useBlogBySlug } from "@/hooks/useBlogs";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
 import { useState } from "react";
+import {
+  addHeadingFontClasses,
+  sanitizeRichHtml,
+  stripHtml,
+} from "@/utils/html";
+import { createArticleSchema } from "@/seo/schema";
+import { useRuntime } from "@/ssr/runtime";
 
 export default function BlogPost() {
   const { t, i18n } = useTranslation();
+  const runtime = useRuntime();
   const [match, params] = useRoute("/blog/:slug");
   const currentLang = i18n.language as "en" | "fa" | "ps";
   const isRTL = currentLang === "fa" || currentLang === "ps";
@@ -25,22 +32,6 @@ export default function BlogPost() {
   const [shareOpen, setShareOpen] = useState(false);
 
   const { data: post, isLoading } = useBlogBySlug(params?.slug);
-
-  const decodeHtml = (value: string) => {
-    const doc = new DOMParser().parseFromString(value || "", "text/html");
-    return doc.body?.innerHTML || "";
-  };
-
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
-
-  const addHeadingFont = (html: string) => {
-    const doc = new DOMParser().parseFromString(html || "", "text/html");
-    doc.body?.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(el => {
-      el.classList.add("font-serif");
-    });
-    return doc.body?.innerHTML || "";
-  };
-
   if (!match || !params) return null;
 
   if (isLoading) {
@@ -79,45 +70,11 @@ export default function BlogPost() {
 
   const title = post.title?.[currentLang] || post.title?.en || "";
   const content = post.content?.[currentLang] || post.content?.en || "";
-  const sanitizedContent = addHeadingFont(
-    DOMPurify.sanitize(cleanHtml(content), {
-      ALLOWED_TAGS: [
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
-        "p",
-        "br",
-        "strong",
-        "em",
-        "u",
-        "ul",
-        "ol",
-        "li",
-        "blockquote",
-        "a",
-        "img",
-        "span",
-        "div",
-      ],
-      ALLOWED_ATTR: [
-        "href",
-        "target",
-        "rel",
-        "class",
-        "src",
-        "alt",
-        "title",
-        "style",
-      ],
-    })
-  );
+  const sanitizedContent = addHeadingFontClasses(sanitizeRichHtml(content));
   const shareUrl =
     typeof window !== "undefined"
       ? window.location.href
-      : `${apiBase}/blog/${post.slug}`;
+      : `${runtime.baseUrl}/blog/${post.slug}`;
 
   const shareTargets = [
     {
@@ -171,13 +128,26 @@ export default function BlogPost() {
         description={
           post.excerpt?.[currentLang] ||
           post.excerpt?.en ||
-          content.slice(0, 150)
+          stripHtml(content).slice(0, 150)
         }
         image={resolveImageUrl(post.imageUrl)}
         url={shareUrl}
         type="article"
         publishedTime={post.publishedAt || post.createdAt}
         modifiedTime={post.updatedAt}
+        schemas={[
+          {
+            key: `article-${post.slug}`,
+            value: createArticleSchema(
+              runtime.baseUrl,
+              {
+                ...post,
+                imageUrl: resolveImageUrl(post.imageUrl),
+              },
+              currentLang
+            ),
+          },
+        ]}
       />
       {/* Hero + Metadata */}
       <div className="relative mb-12">

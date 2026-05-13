@@ -9,27 +9,27 @@ import { ConfirmProvider } from "./components/ConfirmProvider";
 import FullPageLoader from "./components/FullPageLoader";
 
 import Layout from "./components/Layout";
+import Home from "@/pages/Home";
+import BlogIndex from "@/pages/BlogIndex";
+import BlogPost from "@/pages/BlogPost";
+import Products from "./pages/Products";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
+import HelpCenter from "./pages/HelpCenter";
+import HelpPage from "./pages/HelpPage";
+import Privacy from "./pages/Privacy";
+import LoginPage from "./pages/LoginPage";
+import GuestDashboard from "./pages/GuestDashboard";
+import Gallery from "./pages/Gallery";
+import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
+import Profile from "./pages/Profile";
+import NotFound from "@/pages/NotFound";
 const LazyToaster = lazy(() =>
   import("@/components/ui/sonner").then(mod => ({ default: mod.Toaster }))
 );
 const DashboardShell = lazy(() => import("@/components/DashboardShell"));
-const Home = lazy(() => import("@/pages/Home"));
-const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
-const BlogPost = lazy(() => import("@/pages/BlogPost"));
-const Products = lazy(() => import("./pages/Products"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
-const Terms = lazy(() => import("./pages/Terms"));
-const HelpCenter = lazy(() => import("./pages/HelpCenter"));
-const HelpPage = lazy(() => import("./pages/HelpPage"));
-const Privacy = lazy(() => import("./pages/Privacy"));
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const GuestDashboard = lazy(() => import("./pages/GuestDashboard"));
-const Gallery = lazy(() => import("./pages/Gallery"));
-const ResetPassword = lazy(() => import("./pages/ResetPassword"));
-const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
-const Profile = lazy(() => import("./pages/Profile"));
-const NotFound = lazy(() => import("@/pages/NotFound"));
 
 function GuestDashboardRoute() {
   const { isLoaded, isSignedIn } = useAuthReq();
@@ -44,8 +44,7 @@ function GuestDashboardRoute() {
 
 function Router() {
   return (
-    <Suspense fallback={<FullPageLoader />}>
-      <Switch>
+    <Switch>
         {/* Public site */}
         <Route path="/">
           <Layout>
@@ -132,10 +131,14 @@ function Router() {
 
         {/* Dashboard group */}
         <Route path="/dashboard">
-          <DashboardShell />
+          <Suspense fallback={<FullPageLoader />}>
+            <DashboardShell />
+          </Suspense>
         </Route>
         <Route path="/dashboard/:rest*">
-          <DashboardShell />
+          <Suspense fallback={<FullPageLoader />}>
+            <DashboardShell />
+          </Suspense>
         </Route>
 
         <Route>
@@ -144,7 +147,6 @@ function Router() {
           </Layout>
         </Route>
       </Switch>
-    </Suspense>
   );
 }
 
