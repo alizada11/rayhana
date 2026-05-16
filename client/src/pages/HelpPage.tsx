@@ -2,7 +2,7 @@ import { Link, useRoute } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
 import SeoTags from "@/components/SeoTags";
-import { sanitizeHtml } from "@/utils/sanitize";
+import { decodeHtml, sanitizeHtml } from "@/lib/safeHtml";
 
 export default function HelpPage() {
   const [match, params] = useRoute("/help/:slug");

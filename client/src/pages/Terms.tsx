@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
 import SeoTags from "@/components/SeoTags";
-import { sanitizeHtml, sanitizeText } from "@/utils/sanitize";
+import { addHeadingFont, sanitizeHtml, stripHtml } from "@/lib/safeHtml";
 
 export default function Terms() {
   const { data } = useContent("terms");
@@ -40,7 +40,7 @@ export default function Terms() {
       <SeoTags
         pageKey="terms"
         title={title}
-        description={sanitizeText(intro)}
+        description={stripHtml(intro)}
         url={`${import.meta.env.VITE_BASE_URL || ""}/terms`}
       />
       <div className="container mx-auto px-4 max-w-4xl">

@@ -1,6 +1,6 @@
 import { Suspense } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Redirect, Route, Switch } from "wouter";
+import { Redirect, Route, Router as WouterRouter, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import useAuthReq from "./hooks/useAuthReq";
@@ -41,7 +41,7 @@ function GuestDashboardRoute() {
   );
 }
 
-function Router() {
+function AppRoutes() {
   return (
     <Switch>
       {/* Public site */}
@@ -150,11 +150,16 @@ function Router() {
   );
 }
 
-function App() {
+type AppProps = {
+  ssrPath?: string;
+  ssrSearch?: string;
+};
+
+function App({ ssrPath, ssrSearch }: AppProps) {
   useUserSync();
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="light">
+      <ThemeProvider defaultTheme="dark">
         <ConfirmProvider>
           <TooltipProvider>
             <Toaster />

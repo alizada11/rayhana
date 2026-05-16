@@ -10,7 +10,7 @@ export default function VerifyEmail() {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
   const params = new URLSearchParams(
-    typeof window === "undefined" ? "" : window.location.search
+    typeof window !== "undefined" ? window.location.search : ""
   );
   const token = params.get("token") || "";
   const emailParam = params.get("email") || "";

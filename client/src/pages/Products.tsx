@@ -49,8 +49,8 @@ export default function Products() {
         pageKey="products"
         title={t("products_page.title", "Shop Rayhana Products")}
         description={t(
-          "products_page.subtitle",
-          "Cookware and tools crafted for authentic Afghan cooking."
+          "seo.products.description",
+          "Shop Rayhana Heritage Pot for authentic Qabili Palaw, Qabili Pilaf, and Qabili Pilau. Premium non-stick cookware designed for traditional Afghan rice dishes."
         )}
         url={`${import.meta.env.VITE_BASE_URL || ""}/products`}
       />
@@ -106,9 +106,8 @@ export default function Products() {
             />
           ))}
         </motion.div>
-	
 
-	{/* In a Hurry - Regional Shop CTA */}
+        {/* In a Hurry - Regional Shop CTA */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -116,39 +115,89 @@ export default function Products() {
           className="max-w-5xl mx-auto mb-24 p-6 md:p-10 bg-gradient-to-br from-primary/5 to-primary/10 rounded-3xl border border-primary/20"
         >
           <div className="text-center mb-6">
-            <h3 className={`text-2xl md:text-3xl font-semibold mb-2 ${isRTL ? "font-[Vazirmatn]" : "font-serif"} text-primary`}>
+            <h3
+              className={`text-2xl md:text-3xl font-semibold mb-2 ${isRTL ? "font-[Vazirmatn]" : "font-serif"} text-primary`}
+            >
               {t("products_page.hurry_title")}
             </h3>
-            <p className={`text-muted-foreground text-sm md:text-base max-w-2xl mx-auto ${isRTL ? "font-[Vazirmatn]" : "font-sans"}`}>
+            <p
+              className={`text-muted-foreground text-sm md:text-base max-w-2xl mx-auto ${isRTL ? "font-[Vazirmatn]" : "font-sans"}`}
+            >
               {t("products_page.hurry_subtitle")}
             </p>
           </div>
 
           <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8 max-w-4xl mx-auto">
-            <a href="https://www.paypal.com/ncp/payment/6YR8TPB4YFSPY" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group">
+            <a
+              href="https://www.paypal.com/ncp/payment/6YR8TPB4YFSPY"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group"
+            >
               <span className="text-3xl mb-2">🇬🇧</span>
-              <span className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.region_uk")}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">GBP £</span>
+              <span
+                className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}
+              >
+                {t("products_page.region_uk")}
+              </span>
+              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">
+                GBP £
+              </span>
             </a>
-            <a href="https://www.paypal.com/ncp/payment/A44VPB9VDT72J" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group">
+            <a
+              href="https://www.paypal.com/ncp/payment/A44VPB9VDT72J"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group"
+            >
               <span className="text-3xl mb-2">🇪🇺</span>
-              <span className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.region_eu")}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">EUR €</span>
+              <span
+                className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}
+              >
+                {t("products_page.region_eu")}
+              </span>
+              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">
+                EUR €
+              </span>
             </a>
-            <a href="https://www.paypal.com/ncp/payment/XLH22LR32VGKQ" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group">
+            <a
+              href="https://www.paypal.com/ncp/payment/XLH22LR32VGKQ"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group"
+            >
               <span className="text-3xl mb-2">🌍</span>
-              <span className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.region_arabic")}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">USD $</span>
+              <span
+                className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}
+              >
+                {t("products_page.region_arabic")}
+              </span>
+              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">
+                USD $
+              </span>
             </a>
-            <a href="https://www.paypal.com/ncp/payment/EAE4RU297UTX4" target="_blank" rel="noopener noreferrer" className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group">
+            <a
+              href="https://www.paypal.com/ncp/payment/EAE4RU297UTX4"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group"
+            >
               <span className="text-3xl mb-2">🇦🇺</span>
-              <span className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.region_au")}</span>
-              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">AUD $</span>
+              <span
+                className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}
+              >
+                {t("products_page.region_au")}
+              </span>
+              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">
+                AUD $
+              </span>
             </a>
           </div>
 
           <div className="flex flex-col items-center gap-3 mb-8 pb-8 border-b border-primary/10">
-            <p className={`text-xs uppercase tracking-wider text-muted-foreground ${isRTL ? "font-[Vazirmatn]" : ""}`}>
+            <p
+              className={`text-xs uppercase tracking-wider text-muted-foreground ${isRTL ? "font-[Vazirmatn]" : ""}`}
+            >
               {t("products_page.payment_methods")}
             </p>
             <div className="flex items-center gap-6 text-muted-foreground">
@@ -162,30 +211,48 @@ export default function Products() {
               </div>
               <div className="flex items-center gap-2">
                 <CreditCard className="w-5 h-5" />
-                <span className={`text-sm font-medium ${isRTL ? "font-[Vazirmatn]" : ""}`}>{t("products_page.card")}</span>
+                <span
+                  className={`text-sm font-medium ${isRTL ? "font-[Vazirmatn]" : ""}`}
+                >
+                  {t("products_page.card")}
+                </span>
               </div>
             </div>
           </div>
 
           <div className="max-w-2xl mx-auto space-y-3">
-            <p className={`text-xs uppercase tracking-wider text-muted-foreground text-center mb-4 ${isRTL ? "font-[Vazirmatn]" : ""}`}>
+            <p
+              className={`text-xs uppercase tracking-wider text-muted-foreground text-center mb-4 ${isRTL ? "font-[Vazirmatn]" : ""}`}
+            >
               {t("products_page.shipping_status")}
             </p>
-            <div className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}>
+            <div
+              className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}
+            >
               <span className="text-2xl flex-shrink-0">🇹🇷</span>
-              <p className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}>
+              <p
+                className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}
+              >
                 {t("products_page.shipping_tr")}
               </p>
             </div>
-            <div className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}>
+            <div
+              className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}
+            >
               <span className="text-2xl flex-shrink-0">🇮🇷</span>
-              <p className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}>
+              <p
+                className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}
+              >
                 {t("products_page.shipping_ir")}
               </p>
             </div>
-            <div className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}>
+            <div
+              className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}
+            >
               <span className="text-2xl flex-shrink-0">🇦🇫</span>
-              <p className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}>
+              <p
+                className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}
+              >
                 {t("products_page.shipping_af")}
               </p>
             </div>
@@ -274,38 +341,37 @@ function ProductCard({
     return null;
   })();
 
-  const reviews =
-    product.reviews?.length
-      ? product.reviews.map((rev: any) => ({
-          id: rev.id,
-          author: rev.author,
-          rating: rev.rating ?? 5,
-          text: localize(rev.text) || "",
-          verified: rev.verified ?? true,
-        }))
-      : [
-          {
-            id: 1,
-            author: "Sarah M.",
-            rating: 5,
-            text: t("products_page.review_1"),
-            verified: true,
-          },
-          {
-            id: 2,
-            author: "David K.",
-            rating: 5,
-            text: t("products_page.review_2"),
-            verified: true,
-          },
-          {
-            id: 3,
-            author: "Emily R.",
-            rating: 5,
-            text: t("products_page.review_3"),
-            verified: true,
-          },
-        ];
+  const reviews = product.reviews?.length
+    ? product.reviews.map((rev: any) => ({
+        id: rev.id,
+        author: rev.author,
+        rating: rev.rating ?? 5,
+        text: localize(rev.text) || "",
+        verified: rev.verified ?? true,
+      }))
+    : [
+        {
+          id: 1,
+          author: "Sarah M.",
+          rating: 5,
+          text: t("products_page.review_1"),
+          verified: true,
+        },
+        {
+          id: 2,
+          author: "David K.",
+          rating: 5,
+          text: t("products_page.review_2"),
+          verified: true,
+        },
+        {
+          id: 3,
+          author: "Emily R.",
+          rating: 5,
+          text: t("products_page.review_3"),
+          verified: true,
+        },
+      ];
 
   return (
     <Dialog>
@@ -319,7 +385,8 @@ function ProductCard({
         >
           {/* Image */}
           <div className="relative aspect-square overflow-hidden bg-secondary/20">
-            <img loading="lazy"
+            <img
+              loading="lazy"
               src={resolveImageUrl(product.imageUrl)}
               alt={localize(product.title)}
               className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
@@ -390,7 +457,8 @@ function ProductCard({
                       }`
                     );
                     const href =
-                      productLink || `https://www.amazon.com/s?k=${searchQuery}`;
+                      productLink ||
+                      `https://www.amazon.com/s?k=${searchQuery}`;
                     window.open(href, "_blank", "noopener,noreferrer");
                   }}
                 >
@@ -412,8 +480,7 @@ function ProductCard({
                 )}
               </div>
             </div>
-            </div>
-
+          </div>
         </motion.div>
       </DialogTrigger>
 
@@ -428,7 +495,8 @@ function ProductCard({
         <div className="grid md:grid-cols-2 gap-8 py-4">
           <div className="space-y-6">
             <div className="aspect-square rounded-xl overflow-hidden bg-secondary/20">
-              <img loading="lazy"
+              <img
+                loading="lazy"
                 src={resolveImageUrl(product.imageUrl)}
                 alt={localize(product.title)}
                 className="w-full h-full object-cover"
@@ -459,16 +527,16 @@ function ProductCard({
               </Button>
             </div>
             {caLink && (
-                <Button
-                  className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8 mt-2 w-full"
-                  onClick={() => {
-                    window.open(caLink, "_blank", "noopener,noreferrer");
-                  }}
-                >
-                  <ShoppingBag className="w-4 h-4 mr-2" />
-                  {t("products_page.buy_amazon_ca")}
-                </Button>
-              )}
+              <Button
+                className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8 mt-2 w-full"
+                onClick={() => {
+                  window.open(caLink, "_blank", "noopener,noreferrer");
+                }}
+              >
+                <ShoppingBag className="w-4 h-4 mr-2" />
+                {t("products_page.buy_amazon_ca")}
+              </Button>
+            )}
 
             {/* Bonus Gifts Section */}
             <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">

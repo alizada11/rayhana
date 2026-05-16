@@ -282,8 +282,7 @@
     "shipping_tr": "Turkey: Customs restrictions currently prevent shipping, but our Amazon Turkey store is launching soon.",
     "shipping_ir": "Iran: Unfortunately, current conditions make direct shipping not possible.",
     "shipping_af": "Afghanistan: Coming soon through Shopino24.",
-    "buy_amazon_ca": "Buy on Amazon CA 🇨🇦",
-    "back": "Back to Products"
+    "buy_amazon_ca": "Buy on Amazon CA 🇨🇦"
   },
   "referral": {
     "card_title": "Rayhana Golden Invitation",
@@ -298,6 +297,14 @@
     "share": "Share",
     "share_message": "I invite you to experience authentic taste with Rayhana. Use my code {{code}} for a special welcome gift.",
     "terms": "Valid for new customers only"
+  },
+  "seo": {
+    "home": {
+      "description": "Cook authentic Qabili Palaw with Rayhana premium non-stick cookware. Designed for perfect Afghan Qabili Pilaf and Qabili Pilau with modern quality and traditional flavor."
+    },
+    "products": {
+      "description": "Shop Rayhana Heritage Pot for authentic Qabili Palaw, Qabili Pilaf, and Qabili Pilau. Premium non-stick cookware designed for traditional Afghan rice dishes."
+    }
   },
   "gallery": {
     "title": "Your Kitchen, Our Story",

@@ -10,7 +10,7 @@ import {
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
 import SeoTags from "@/components/SeoTags";
-import { sanitizeHtml } from "@/utils/sanitize";
+import { decodeHtml, sanitizeHtml } from "@/lib/safeHtml";
 
 const ICONS: Record<string, ComponentType<{ className?: string }>> = {
   lifeBuoy: LifeBuoy,

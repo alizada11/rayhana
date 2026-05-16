@@ -1,7 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { useContent } from "@/hooks/useContent";
 import SeoTags from "@/components/SeoTags";
-import { sanitizeText } from "@/utils/sanitize";
+import { stripHtml } from "@/lib/safeHtml";
 
 export default function About() {
   const { t, i18n } = useTranslation();
@@ -10,7 +10,7 @@ export default function About() {
 
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
-  const plain = (value: string) => sanitizeText(value);
+  const plain = (value: string) => stripHtml(value);
 
   const heroTitle = plain(
     getLocalized(aboutContent?.data?.hero?.title, t("about_page.title"))

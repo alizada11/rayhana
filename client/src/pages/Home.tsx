@@ -21,7 +21,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { useHomepage } from "@/hooks/useHomepage";
 import { useQueryClient } from "@tanstack/react-query";
 import BrandValues from "@/components/BrandValues";
-import { sanitizeHtml } from "@/utils/sanitize";
+import { sanitizeHtml } from "@/lib/safeHtml";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -184,8 +184,7 @@ export default function Home() {
         },
       ];
 
-  const sanitize = (html: string) =>
-    ({ __html: sanitizeHtml(html || "") });
+  const sanitize = (html: string) => ({ __html: sanitizeHtml(html || "") });
 
   // Ensure below-fold sections render once homepage data is ready
   // (Keep below-fold gated by IO so we don't load heavy sections early)

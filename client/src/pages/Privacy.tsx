@@ -2,7 +2,7 @@ import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
 import SeoTags from "@/components/SeoTags";
-import { sanitizeHtml, sanitizeText } from "@/utils/sanitize";
+import { sanitizeHtml } from "@/lib/safeHtml";
 
 export default function Privacy() {
   const { data } = useContent("privacy");
