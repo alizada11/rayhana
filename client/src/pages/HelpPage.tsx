@@ -1,8 +1,8 @@
 import { Link, useRoute } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import { sanitizeHtml } from "@/utils/sanitize";
 
 export default function HelpPage() {
   const [match, params] = useRoute("/help/:slug");
@@ -23,7 +23,7 @@ export default function HelpPage() {
     return doc.body?.innerHTML || "";
   };
 
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
 
   const articles = Array.isArray(data?.data?.articles)
     ? data?.data?.articles

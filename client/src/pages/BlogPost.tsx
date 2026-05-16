@@ -12,10 +12,10 @@ import {
 import Comments from "@/components/Comments";
 import { motion } from "framer-motion";
 import { useBlogBySlug } from "@/hooks/useBlogs";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
 import { useState } from "react";
 import { formatLocalizedDate } from "@/utils/date";
+import { sanitizeHtml } from "@/utils/sanitize";
 
 export default function BlogPost() {
   const { t, i18n } = useTranslation();
@@ -33,7 +33,7 @@ export default function BlogPost() {
     return doc.body?.innerHTML || "";
   };
 
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
 
   const addHeadingFont = (html: string) => {
     if (typeof DOMParser === "undefined") return html || "";
@@ -83,7 +83,7 @@ export default function BlogPost() {
   const title = post.title?.[currentLang] || post.title?.en || "";
   const content = post.content?.[currentLang] || post.content?.en || "";
   const sanitizedContent = addHeadingFont(
-    DOMPurify.sanitize(cleanHtml(content), {
+    sanitizeHtml(cleanHtml(content), {
       ALLOWED_TAGS: [
         "h1",
         "h2",
