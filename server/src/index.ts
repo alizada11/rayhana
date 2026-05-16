@@ -2,6 +2,7 @@ import "express-async-errors";
 import express from "express";
 import path from "path";
 import fs from "fs";
+import { pathToFileURL } from "url";
 import cors from "cors";
 import compression from "compression";
 import { ENV } from "./config/env";
@@ -61,6 +62,8 @@ const uploadsPathSecondary = getLegacyUploadsDir();
 const hasBuiltFrontend = fs.existsSync(path.join(distPath, "index.html"));
 const isProduction = process.env.NODE_ENV === "production";
 const isTsRuntime = path.extname(__filename) === ".ts"; // running via ts-node in dev
+const ssrEntryPath = path.resolve(__dirname, "server", "entry-server.js");
+const hasSsrEntry = fs.existsSync(ssrEntryPath);
 if (isProduction && !ENV.FRONTEND_URL) {
   throw new Error(
     "FRONTEND_URL environment variable is required in production"
@@ -126,10 +129,9 @@ if (hasBuiltFrontend) {
   );
 }
 // serve uploaded assets (Render uses ephemeral FS; consider S3 if you need persistence)
-const uploadStaticDirs = [
-  uploadsPathPrimary,
-  uploadsPathSecondary,
-].filter((dir, idx, arr) => arr.indexOf(dir) === idx); // dedupe
+const uploadStaticDirs = [uploadsPathPrimary, uploadsPathSecondary].filter(
+  (dir, idx, arr) => arr.indexOf(dir) === idx
+); // dedupe
 
 for (const dir of uploadStaticDirs) {
   if (fs.existsSync(dir)) {

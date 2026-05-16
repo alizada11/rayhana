@@ -1,8 +1,8 @@
 import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import { sanitizeHtml } from "@/lib/safeHtml";
 
 export default function Privacy() {
   const { data } = useContent("privacy");
@@ -18,7 +18,7 @@ export default function Privacy() {
     data?.data?.intro,
     "This Privacy Policy explains how we collect, use, and protect your information."
   );
-  const sanitizedIntro = DOMPurify.sanitize(intro);
+  const sanitizedIntro = sanitizeHtml(intro);
   const sections = Array.isArray(data?.data?.sections)
     ? data?.data?.sections
     : [];
@@ -58,7 +58,7 @@ export default function Privacy() {
               <div
                 className="text-muted-foreground mt-2 prose prose-sm max-w-none"
                 dangerouslySetInnerHTML={{
-                  __html: DOMPurify.sanitize(getLocalized(section.body, "")),
+                  __html: sanitizeHtml(getLocalized(section.body, "")),
                 }}
               />
             </section>

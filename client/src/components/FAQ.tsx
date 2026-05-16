@@ -5,7 +5,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import DOMPurify from "dompurify";
+import { stripHtml } from "@/lib/safeHtml";
 
 type FAQItem = { id?: string; question: any; answer: any };
 
@@ -16,9 +16,7 @@ export default function FAQ({ items, title, subtitle }: { items?: FAQItem[]; tit
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
   const toPlainText = (value?: string) =>
-    typeof value === "string"
-      ? DOMPurify.sanitize(value, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] }).trim()
-      : "";
+    typeof value === "string" ? stripHtml(value) : "";
 
   type Question = { id: string; question: string; answer: string };
 

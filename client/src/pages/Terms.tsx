@@ -1,8 +1,8 @@
 import { Link } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import { addHeadingFont, sanitizeHtml, stripHtml } from "@/lib/safeHtml";
 
 export default function Terms() {
   const { data } = useContent("terms");
@@ -30,7 +30,7 @@ export default function Terms() {
     data?.data?.intro,
     "Welcome to Rayhana. These Terms of Service govern your use of our website, products, and services."
   );
-  const sanitizedIntro = addHeadingFont(DOMPurify.sanitize(intro));
+  const sanitizedIntro = addHeadingFont(sanitizeHtml(intro));
   const sections = Array.isArray(data?.data?.sections)
     ? data?.data?.sections
     : [];
@@ -40,10 +40,7 @@ export default function Terms() {
       <SeoTags
         pageKey="terms"
         title={title}
-        description={DOMPurify.sanitize(intro, {
-          ALLOWED_TAGS: [],
-          ALLOWED_ATTR: [],
-        })}
+        description={stripHtml(intro)}
         url={`${import.meta.env.VITE_BASE_URL || ""}/terms`}
       />
       <div className="container mx-auto px-4 max-w-4xl">
@@ -82,7 +79,7 @@ export default function Terms() {
                 className={`text-muted-foreground mt-2 prose prose-sm max-w-none ${headingFontClass}`}
                 dangerouslySetInnerHTML={{
                   __html: addHeadingFont(
-                    DOMPurify.sanitize(getLocalized(section.body, ""))
+                    sanitizeHtml(getLocalized(section.body, ""))
                   ),
                 }}
               />

@@ -12,7 +12,9 @@ export default function ResetPassword() {
   const rtlLangs = ["fa", "ps", "ar", "ku"];
   const isRTL = rtlLangs.includes(i18n.language) || i18n.dir?.() === "rtl";
   const [, setLocation] = useLocation();
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(
+    typeof window !== "undefined" ? window.location.search : ""
+  );
   const token = params.get("token") || "";
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

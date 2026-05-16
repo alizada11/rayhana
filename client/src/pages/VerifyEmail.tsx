@@ -9,7 +9,9 @@ import SeoTags from "@/components/SeoTags";
 export default function VerifyEmail() {
   const { t } = useTranslation();
   const [, setLocation] = useLocation();
-  const params = new URLSearchParams(window.location.search);
+  const params = new URLSearchParams(
+    typeof window !== "undefined" ? window.location.search : ""
+  );
   const token = params.get("token") || "";
   const emailParam = params.get("email") || "";
   const [status, setStatus] = useState<

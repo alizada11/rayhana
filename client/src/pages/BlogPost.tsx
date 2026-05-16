@@ -12,7 +12,6 @@ import {
 import Comments from "@/components/Comments";
 import { motion } from "framer-motion";
 import { useBlogBySlug } from "@/hooks/useBlogs";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
 import { useState } from "react";
 import { formatLocalizedDate } from "@/utils/date";
@@ -83,7 +82,7 @@ export default function BlogPost() {
   const title = post.title?.[currentLang] || post.title?.en || "";
   const content = post.content?.[currentLang] || post.content?.en || "";
   const sanitizedContent = addHeadingFont(
-    DOMPurify.sanitize(cleanHtml(content), {
+    sanitizeHtml(cleanHtml(content), {
       ALLOWED_TAGS: [
         "h1",
         "h2",
