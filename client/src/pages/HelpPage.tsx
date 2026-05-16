@@ -1,8 +1,8 @@
 import { Link, useRoute } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import { decodeHtml, sanitizeHtml } from "@/lib/safeHtml";
 
 export default function HelpPage() {
   const [match, params] = useRoute("/help/:slug");
@@ -16,13 +16,7 @@ export default function HelpPage() {
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
 
-  const decodeHtml = (value: string) => {
-    const doc = new DOMParser().parseFromString(value || "", "text/html");
-    // decode entities but keep markup intact
-    return doc.body?.innerHTML || "";
-  };
-
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
 
   const articles = Array.isArray(data?.data?.articles)
     ? data?.data?.articles

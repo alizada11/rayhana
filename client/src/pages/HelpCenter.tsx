@@ -9,8 +9,8 @@ import {
 } from "lucide-react";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
+import { decodeHtml, sanitizeHtml } from "@/lib/safeHtml";
 
 const ICONS: Record<string, ComponentType<{ className?: string }>> = {
   lifeBuoy: LifeBuoy,
@@ -26,13 +26,7 @@ export default function HelpCenter() {
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
 
-  const decodeHtml = (value: string) => {
-    const doc = new DOMParser().parseFromString(value || "", "text/html");
-    // decode entities but keep markup intact
-    return doc.body?.innerHTML || "";
-  };
-
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const title = getLocalized(data?.data?.center?.title, "Help Center");
   const subtitle = getLocalized(

@@ -19,6 +19,7 @@ export function ThemeProvider({
   defaultTheme = "light",
 }: ThemeProviderProps) {
   const [theme, setTheme] = useState<Theme>(() => {
+    if (typeof localStorage === "undefined") return defaultTheme;
     const stored = localStorage.getItem("theme");
     return (stored as Theme) || defaultTheme;
   });

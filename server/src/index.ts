@@ -2,6 +2,7 @@ import "express-async-errors";
 import express from "express";
 import path from "path";
 import fs from "fs";
+import { pathToFileURL } from "url";
 import cors from "cors";
 import compression from "compression";
 import { ENV } from "./config/env";
@@ -54,6 +55,8 @@ const uploadsPathSecondary = getLegacyUploadsDir();
 const hasBuiltFrontend = fs.existsSync(path.join(distPath, "index.html"));
 const isProduction = process.env.NODE_ENV === "production";
 const isTsRuntime = path.extname(__filename) === ".ts"; // running via ts-node in dev
+const ssrEntryPath = path.resolve(__dirname, "server", "entry-server.js");
+const hasSsrEntry = fs.existsSync(ssrEntryPath);
 if (isProduction && !ENV.FRONTEND_URL) {
   throw new Error(
     "FRONTEND_URL environment variable is required in production"
@@ -119,10 +122,9 @@ if (hasBuiltFrontend) {
   );
 }
 // serve uploaded assets (Render uses ephemeral FS; consider S3 if you need persistence)
-const uploadStaticDirs = [
-  uploadsPathPrimary,
-  uploadsPathSecondary,
-].filter((dir, idx, arr) => arr.indexOf(dir) === idx); // dedupe
+const uploadStaticDirs = [uploadsPathPrimary, uploadsPathSecondary].filter(
+  (dir, idx, arr) => arr.indexOf(dir) === idx
+); // dedupe
 
 for (const dir of uploadStaticDirs) {
   if (fs.existsSync(dir)) {
@@ -280,9 +282,89 @@ ${urls
   }
 });
 
+type SsrRenderResult = {
+  appHtml: string;
+  dehydratedState: unknown;
+  head: {
+    title: string;
+    tags: string;
+  };
+};
+
+type SsrModule = {
+  render: (
+    url: string,
+    options: { apiOrigin: string; baseUrl: string; cookie?: string }
+  ) => Promise<SsrRenderResult>;
+};
+
+let ssrModulePromise: Promise<SsrModule> | null = null;
+
+function getSsrModule() {
+  if (!ssrModulePromise) {
+    ssrModulePromise = import(
+      pathToFileURL(ssrEntryPath).href
+    ) as Promise<SsrModule>;
+  }
+  return ssrModulePromise;
+}
+
+function getPublicBaseUrl(req: express.Request) {
+  const configured = (ENV.FRONTEND_URL || "")
+    .split(",")
+    .map(value => value.trim())
+    .find(Boolean);
+  if (configured) return configured.replace(/\/+$/, "");
+  return `${req.protocol}://${req.get("host")}`;
+}
+
+function injectSsrIntoTemplate(template: string, result: SsrRenderResult) {
+  const stateJson = JSON.stringify(result.dehydratedState).replace(
+    /</g,
+    "\\u003c"
+  );
+
+  return template
+    .replace(/<title>[\s\S]*?<\/title>/, `<title>${result.head.title}</title>`)
+    .replace("</head>", `    ${result.head.tags}\n  </head>`)
+    .replace(
+      '<div id="root"></div>',
+      `<div id="root">${result.appHtml}</div>\n    <script>window.__REACT_QUERY_STATE__=${stateJson};</script>`
+    );
+}
+
 // Serve built client assets in production (only if build exists)
 if (ENV.NODE_ENV === "production" && hasBuiltFrontend) {
-  app.get(/.*/, (_req, res) => res.sendFile(path.join(distPath, "index.html")));
+  app.get(/.*/, async (req, res, next) => {
+    const indexPath = path.join(distPath, "index.html");
+    const isDashboard =
+      req.path === "/dashboard" || req.path.startsWith("/dashboard/");
+
+    if (isDashboard || !hasSsrEntry) {
+      return res.sendFile(indexPath);
+    }
+
+    try {
+      const template = await fs.promises.readFile(indexPath, "utf8");
+      const { render } = await getSsrModule();
+      const result = await render(req.originalUrl, {
+        apiOrigin: `http://127.0.0.1:${ENV.PORT || 3001}`,
+        baseUrl: getPublicBaseUrl(req),
+        cookie: req.headers.cookie,
+      });
+
+      res
+        .status(200)
+        .type("html")
+        .set("Cache-Control", "public, max-age=60, stale-while-revalidate=300")
+        .send(injectSsrIntoTemplate(template, result));
+    } catch (error) {
+      console.error("SSR failed; serving client shell", error);
+      return res.sendFile(indexPath, err => {
+        if (err) next(err);
+      });
+    }
+  });
 }
 if (ENV.NODE_ENV === "development") {
   console.log("Hey donkey, you are developing I mean in development mode!");

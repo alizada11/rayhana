@@ -12,9 +12,9 @@ import {
 import Comments from "@/components/Comments";
 import { motion } from "framer-motion";
 import { useBlogBySlug } from "@/hooks/useBlogs";
-import DOMPurify from "dompurify";
 import SeoTags from "@/components/SeoTags";
 import { useState } from "react";
+import { addHeadingFont, decodeHtml, sanitizeHtml } from "@/lib/safeHtml";
 
 export default function BlogPost() {
   const { t, i18n } = useTranslation();
@@ -26,20 +26,7 @@ export default function BlogPost() {
 
   const { data: post, isLoading } = useBlogBySlug(params?.slug);
 
-  const decodeHtml = (value: string) => {
-    const doc = new DOMParser().parseFromString(value || "", "text/html");
-    return doc.body?.innerHTML || "";
-  };
-
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
-
-  const addHeadingFont = (html: string) => {
-    const doc = new DOMParser().parseFromString(html || "", "text/html");
-    doc.body?.querySelectorAll("h1,h2,h3,h4,h5,h6").forEach(el => {
-      el.classList.add("font-serif");
-    });
-    return doc.body?.innerHTML || "";
-  };
+  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
 
   if (!match || !params) return null;
 
@@ -80,7 +67,7 @@ export default function BlogPost() {
   const title = post.title?.[currentLang] || post.title?.en || "";
   const content = post.content?.[currentLang] || post.content?.en || "";
   const sanitizedContent = addHeadingFont(
-    DOMPurify.sanitize(cleanHtml(content), {
+    sanitizeHtml(cleanHtml(content), {
       ALLOWED_TAGS: [
         "h1",
         "h2",

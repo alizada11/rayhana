@@ -32,7 +32,7 @@ export default function SeoTags(props: SeoTagsProps) {
     (pageSeo?.title?.[lang] || pageSeo?.title?.en) ||
     seo?.defaultTitle?.[lang] ||
     seo?.defaultTitle?.en ||
-    document.title;
+    (typeof document !== "undefined" ? document.title : "");
   const description =
     props.description ||
     (pageSeo?.description?.[lang] || pageSeo?.description?.en) ||
@@ -43,7 +43,9 @@ export default function SeoTags(props: SeoTagsProps) {
     props.image || pageSeo?.image || seo?.defaultImage,
     seo?.baseUrl
   );
-  const url = resolveUrl(props.url, seo?.baseUrl) || window?.location?.href;
+  const url =
+    resolveUrl(props.url, seo?.baseUrl) ||
+    (typeof window !== "undefined" ? window.location.href : "");
   const type = props.type || "website";
   const siteName = seo?.siteName || "";
   const twitterHandle = seo?.twitterHandle || "";

@@ -1,6 +1,6 @@
 import { Suspense, lazy } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
-import { Redirect, Route, Switch } from "wouter";
+import { Redirect, Route, Router as WouterRouter, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import useAuthReq from "./hooks/useAuthReq";
@@ -42,7 +42,7 @@ function GuestDashboardRoute() {
   );
 }
 
-function Router() {
+function AppRoutes() {
   return (
     <Suspense fallback={<FullPageLoader />}>
       <Switch>
@@ -148,7 +148,12 @@ function Router() {
   );
 }
 
-function App() {
+type AppProps = {
+  ssrPath?: string;
+  ssrSearch?: string;
+};
+
+function App({ ssrPath, ssrSearch }: AppProps) {
   useUserSync();
   return (
     <ErrorBoundary>
@@ -158,7 +163,9 @@ function App() {
             <Suspense fallback={null}>
               <LazyToaster />
             </Suspense>
-            <Router />
+            <WouterRouter ssrPath={ssrPath} ssrSearch={ssrSearch}>
+              <AppRoutes />
+            </WouterRouter>
           </TooltipProvider>
         </ConfirmProvider>
       </ThemeProvider>

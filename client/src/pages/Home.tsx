@@ -2,7 +2,6 @@ import { useTranslation } from "react-i18next";
 import { ArrowRight, Check, Star, ShieldCheck } from "lucide-react";
 
 import { lazy, Suspense, useEffect, useRef, useState } from "react";
-import DOMPurify from "dompurify";
 const CustomerGallery = lazy(() =>
   import("@/components/CustomerGallery").then(mod => ({
     default: mod.CustomerGallery,
@@ -22,6 +21,7 @@ import ErrorBoundary from "@/components/ErrorBoundary";
 import { useHomepage } from "@/hooks/useHomepage";
 import { useQueryClient } from "@tanstack/react-query";
 import BrandValues from "@/components/BrandValues";
+import { sanitizeHtml } from "@/lib/safeHtml";
 
 export default function Home() {
   const { t, i18n } = useTranslation();
@@ -184,8 +184,7 @@ export default function Home() {
         },
       ];
 
-  const sanitize = (html: string) =>
-    DOMPurify ? { __html: DOMPurify.sanitize(html || "") } : undefined;
+  const sanitize = (html: string) => ({ __html: sanitizeHtml(html || "") });
 
   // Ensure below-fold sections render once homepage data is ready
   // (Keep below-fold gated by IO so we don't load heavy sections early)
