@@ -33,7 +33,7 @@ export default function HelpCenter() {
     return doc.body?.innerHTML || "";
   };
 
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const title = getLocalized(data?.data?.center?.title, "Help Center");
   const subtitle = getLocalized(

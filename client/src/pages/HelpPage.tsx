@@ -23,7 +23,7 @@ export default function HelpPage() {
     return doc.body?.innerHTML || "";
   };
 
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
 
   const articles = Array.isArray(data?.data?.articles)
     ? data?.data?.articles

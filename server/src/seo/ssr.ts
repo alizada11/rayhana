@@ -19,6 +19,9 @@ const PUBLIC_STATIC_ROUTES = new Set([
   "/terms",
   "/help",
   "/gallery",
+  "/login",
+  "/reset-password",
+  "/verify-email",
 ]);
 
 type RouteMatch =
@@ -27,6 +30,7 @@ type RouteMatch =
   | { type: "blog-post"; slug: string }
   | { type: "products" }
   | { type: "product"; id: string }
+  | { type: "help-article"; slug: string }
   | { type: "static" }
   | { type: "not-found" };
 
@@ -73,12 +77,15 @@ export const matchRoute = (pathname: string): RouteMatch => {
   if (pathname.startsWith("/products/")) {
     return { type: "product", id: decodeURIComponent(pathname.slice(10)) };
   }
+  if (pathname.startsWith("/help/")) {
+    return { type: "help-article", slug: decodeURIComponent(pathname.slice(6)) };
+  }
   if (PUBLIC_STATIC_ROUTES.has(pathname)) return { type: "static" };
   return { type: "not-found" };
 };
 
 export const canRenderSsr = (pathname: string) => {
-  return Boolean(matchRoute(pathname));
+  return matchRoute(pathname).type !== "not-found";
 };
 
 const createQueryClient = () =>
@@ -93,17 +100,37 @@ const createQueryClient = () =>
 
 export const preloadRouteData = async (pathname: string) => {
   const queryClient = createQueryClient();
-  const [settings, seo, contact] = await Promise.all([
-    queries.getSiteContentByKey("settings"),
-    queries.getSiteContentByKey("seo"),
-    queries.getSiteContentByKey("contact"),
-  ]);
-
-  queryClient.setQueryData(["content", "settings"], settings);
-  queryClient.setQueryData(["content", "seo"], seo);
-  queryClient.setQueryData(["content", "contact"], contact);
-
+  const contentKeys = new Set(["settings", "seo", "contact"]);
   const route = matchRoute(pathname);
+
+  switch (route.type) {
+    case "home":
+      contentKeys.add("home");
+      contentKeys.add("faq");
+      break;
+    case "static":
+      if (pathname === "/about") contentKeys.add("about");
+      if (pathname === "/privacy") contentKeys.add("privacy");
+      if (pathname === "/terms") contentKeys.add("terms");
+      if (pathname === "/help") contentKeys.add("help");
+      break;
+    case "help-article":
+      contentKeys.add("help");
+      break;
+    default:
+      break;
+  }
+
+  const contentEntries = await Promise.all(
+    Array.from(contentKeys).map(async key => [
+      key,
+      await queries.getSiteContentByKey(key),
+    ] as const)
+  );
+
+  for (const [key, value] of contentEntries) {
+    queryClient.setQueryData(["content", key], value);
+  }
 
   switch (route.type) {
     case "home":
@@ -127,6 +154,14 @@ export const preloadRouteData = async (pathname: string) => {
     case "product":
       queryClient.setQueryData(["product", route.id], await queries.getProductById(route.id));
       break;
+    case "static":
+      if (pathname === "/gallery") {
+        queryClient.setQueryData(
+          ["gallery", "approved"],
+          await queries.getApprovedGallerySubmissions()
+        );
+      }
+      break;
     default:
       break;
   }
@@ -139,7 +174,7 @@ export const preloadRouteData = async (pathname: string) => {
 };
 
 const loadEntryServer = async () => {
-  const entryPath = path.resolve(__dirname, "..", "server", "entry-server.js");
+  const entryPath = path.resolve(__dirname, "server", "entry-server.js");
   const moduleUrl = pathToFileURL(entryPath).href;
   return import(moduleUrl);
 };
@@ -174,6 +209,10 @@ export const renderSsrPage = async ({
   }).replace(/</g, "\\u003c");
 
   const rendered = template
+    .replace(
+      /<html\s+lang="[^"]*"/,
+      `<html lang="${locale}" dir="${locale === "fa" || locale === "ps" ? "rtl" : "ltr"}"`
+    )
     .replace("<!--app-head-->", head)
     .replace("<!--app-html-->", html)
     .replace(

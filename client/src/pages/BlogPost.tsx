@@ -15,6 +15,7 @@ import { useBlogBySlug } from "@/hooks/useBlogs";
 import SeoTags from "@/components/SeoTags";
 import { useState } from "react";
 import { formatLocalizedDate } from "@/utils/date";
+import { sanitizeHtml } from "@/utils/sanitize";
 
 export default function BlogPost() {
   const { t, i18n } = useTranslation();
@@ -32,7 +33,7 @@ export default function BlogPost() {
     return doc.body?.innerHTML || "";
   };
 
-  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
+  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
 
   const addHeadingFont = (html: string) => {
     if (typeof DOMParser === "undefined") return html || "";

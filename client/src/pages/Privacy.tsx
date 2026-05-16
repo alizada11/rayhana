@@ -22,7 +22,7 @@ export default function Privacy() {
   const sections = Array.isArray(data?.data?.sections)
     ? data?.data?.sections
     : [];
-  const plainIntro = intro.replace(/<[^>]*>/g, "").trim();
+  const plainIntro = sanitizeText(intro);
   return (
     <div className="min-h-screen bg-background pt-24 pb-16">
       <SeoTags

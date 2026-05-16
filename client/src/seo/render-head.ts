@@ -1,17 +1,23 @@
 import type { SeoPayload } from "@/seo/seo-context";
 
-const escapeHtml = (value: string) =>
-  value
+const toText = (value: unknown) => {
+  if (value == null) return "";
+  if (value instanceof Date) return value.toISOString();
+  return String(value);
+};
+
+const escapeHtml = (value: unknown) =>
+  toText(value)
     .replace(/&/g, "&amp;")
     .replace(/</g, "&lt;")
     .replace(/>/g, "&gt;")
     .replace(/"/g, "&quot;")
     .replace(/'/g, "&#39;");
 
-const metaTag = (name: string, content?: string) =>
+const metaTag = (name: string, content?: unknown) =>
   content ? `<meta name="${name}" content="${escapeHtml(content)}" />` : "";
 
-const propertyTag = (property: string, content?: string) =>
+const propertyTag = (property: string, content?: unknown) =>
   content
     ? `<meta property="${property}" content="${escapeHtml(content)}" />`
     : "";
