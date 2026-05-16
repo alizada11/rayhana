@@ -26,7 +26,14 @@ export default function HelpCenter() {
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
 
-  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
+  const decodeHtml = (value: string) => {
+    if (typeof DOMParser === "undefined") return value || "";
+    const doc = new DOMParser().parseFromString(value || "", "text/html");
+    // decode entities but keep markup intact
+    return doc.body?.innerHTML || "";
+  };
+
+  const cleanHtml = (value: string) => DOMPurify.sanitize(decodeHtml(value));
   const isRTL = ["fa", "ps"].includes(i18n.language);
   const title = getLocalized(data?.data?.center?.title, "Help Center");
   const subtitle = getLocalized(

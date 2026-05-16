@@ -1,6 +1,7 @@
 import { useTranslation } from "react-i18next";
 import { motion } from "framer-motion";
 import { useState } from "react";
+import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import {
   ShoppingBag,
@@ -437,6 +438,14 @@ function ProductCard({
                   : t("products_page.price_na")}
               </span>
               <div className="flex flex-col gap-2 items-end">
+                <Link
+                  href={`/products/${product.id}`}
+                  onClick={e => e.stopPropagation()}
+                >
+                  <Button size="sm" variant="outline">
+                    {t("products.view_details")}
+                  </Button>
+                </Link>
                 <Button
                   size="sm"
                   className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"

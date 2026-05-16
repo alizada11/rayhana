@@ -34,6 +34,13 @@ import { db } from "./db";
 import { blogPosts, products } from "./db/schema";
 import { desc, eq } from "drizzle-orm";
 import * as queries from "./db/queries";
+import {
+  canRenderSsr,
+  localizePath,
+  renderSsrPage,
+  shouldHandleAsHtml,
+  stripLocaleFromPath,
+} from "./seo/ssr";
 
 // Periodic cleanup of expired sessions (once per hour)
 setInterval(
@@ -179,68 +186,135 @@ app.get("/robots.txt", (_req, res) => {
     /\/+$/,
     ""
   );
-  res.type("text/plain").send(`User-agent: *
+  res.type("text/plain").send(`User-agent: Googlebot
 Allow: /
-Sitemap: ${base}/sitemap.xml
+
+User-agent: Bingbot
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: GPTBot
+Disallow: /
+
+User-agent: CCBot
+Disallow: /
+
+User-agent: anthropic-ai
+Disallow: /
+
+User-agent: *
+Allow: /
+
+Sitemap: ${base}/sitemap-index.xml
 `);
 });
 
-// --------------------
-// sitemap.xml (simple)
-// --------------------
-app.get("/sitemap.xml", async (_req, res) => {
+const SEO_LOCALES = ["en", "fa", "ps"] as const;
+
+type SeoLocale = (typeof SEO_LOCALES)[number];
+
+const escapeXml = (str: string) =>
+  str
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&apos;");
+
+const buildAlternateLinks = (base: string, locale: SeoLocale, path: string) =>
+  SEO_LOCALES.map(
+    current =>
+      `<xhtml:link rel="alternate" hreflang="${current}" href="${escapeXml(`${base}${localizePath(current, path)}`)}" />`
+  )
+    .concat(
+      `<xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(`${base}${localizePath("en", path)}`)}" />`
+    )
+    .join("");
+
+app.get(["/sitemap.xml", "/sitemap-index.xml"], async (_req, res) => {
   try {
+    const base = (ENV.FRONTEND_URL || "http://localhost:5173").replace(
+      /\/+$/,
+      ""
+    );
+    const xml = `<?xml version="1.0" encoding="UTF-8"?>
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${SEO_LOCALES.map(locale => `<sitemap><loc>${base}/sitemap-${locale}.xml</loc></sitemap>`).join("")}
+</sitemapindex>`;
+    res.type("application/xml").send(xml);
+  } catch (err) {
+    console.error("sitemap generation failed", err);
+    res.status(500).send("<!-- sitemap error -->");
+  }
+});
+
+app.get("/sitemap-:locale.xml", async (req, res) => {
+  try {
+    const locale = req.params.locale as SeoLocale;
+    if (!SEO_LOCALES.includes(locale)) {
+      return res.status(404).send("<!-- sitemap not found -->");
+    }
+
     const base = (ENV.FRONTEND_URL || "http://localhost:5173").replace(
       /\/+$/,
       ""
     );
 
     const staticUrls = [
-      "",
-      "/blog",
-      "/products",
-      "/about",
-      "/contact",
-      "/gallery",
-      "/privacy",
-      "/terms",
-      "/help",
+      { path: "/", changefreq: "weekly", priority: "1.0" },
+      { path: "/blog", changefreq: "weekly", priority: "0.8" },
+      { path: "/products", changefreq: "weekly", priority: "0.8" },
+      { path: "/about", changefreq: "monthly", priority: "0.6" },
+      { path: "/contact", changefreq: "monthly", priority: "0.6" },
+      { path: "/gallery", changefreq: "weekly", priority: "0.5" },
+      { path: "/privacy", changefreq: "yearly", priority: "0.3" },
+      { path: "/terms", changefreq: "yearly", priority: "0.3" },
+      { path: "/help", changefreq: "monthly", priority: "0.5" },
     ];
 
-    const blogList = await db
-      .select({
-        slug: blogPosts.slug,
-        updatedAt: blogPosts.updatedAt,
-        publishedAt: blogPosts.publishedAt,
-      })
-      .from(blogPosts)
-      .where(eq(blogPosts.status, "published"))
-      .orderBy(desc(blogPosts.publishedAt));
+    const [blogList, productList] = await Promise.all([
+      db
+        .select({
+          slug: blogPosts.slug,
+          updatedAt: blogPosts.updatedAt,
+          publishedAt: blogPosts.publishedAt,
+        })
+        .from(blogPosts)
+        .where(eq(blogPosts.status, "published"))
+        .orderBy(desc(blogPosts.publishedAt)),
+      db
+        .select({
+          id: products.id,
+          updatedAt: products.updatedAt,
+          createdAt: products.createdAt,
+        })
+        .from(products)
+        .orderBy(desc(products.createdAt)),
+    ]);
 
-    const productList = await db
-      .select({
-        id: products.id,
-        updatedAt: products.updatedAt,
-        createdAt: products.createdAt,
-      })
-      .from(products)
-      .orderBy(desc(products.createdAt));
-
-    type UrlEntry = {
+    type SitemapUrl = {
       loc: string;
+      path: string;
       changefreq: string;
       priority: string;
       lastmod?: string;
     };
 
-    const urls: UrlEntry[] = [
-      ...staticUrls.map(path => ({
-        loc: `${base}${path}`,
-        changefreq: "weekly",
-        priority: path === "" ? "1.0" : "0.6",
+    const urls: SitemapUrl[] = [
+      ...staticUrls.map(item => ({
+        loc: `${base}${localizePath(locale, item.path)}`,
+        path: item.path,
+        changefreq: item.changefreq,
+        priority: item.priority,
       })),
       ...blogList.map(post => ({
-        loc: `${base}/blog/${post.slug}`,
+        loc: `${base}${localizePath(locale, `/blog/${post.slug}`)}`,
+        path: `/blog/${post.slug}`,
         lastmod: (
           post.updatedAt ||
           post.publishedAt ||
@@ -249,126 +323,90 @@ app.get("/sitemap.xml", async (_req, res) => {
         changefreq: "weekly",
         priority: "0.7",
       })),
-      ...productList.map(p => ({
-        loc: `${base}/products/${p.id}`,
-        lastmod: (p.updatedAt || p.createdAt || new Date()).toISOString(),
+      ...productList.map(product => ({
+        loc: `${base}${localizePath(locale, `/products/${product.id}`)}`,
+        path: `/products/${product.id}`,
+        lastmod: (
+          product.updatedAt ||
+          product.createdAt ||
+          new Date()
+        ).toISOString(),
         changefreq: "monthly",
-        priority: "0.6",
+        priority: "0.7",
       })),
     ];
 
-    const escapeXml = (str: string) =>
-      str
-        .replace(/&/g, "&amp;")
-        .replace(/</g, "&lt;")
-        .replace(/>/g, "&gt;")
-        .replace(/"/g, "&quot;")
-        .replace(/'/g, "&apos;");
-
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls
   .map(
-    u =>
-      `<url><loc>${escapeXml(u.loc)}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}<changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
+    url =>
+      `<url><loc>${escapeXml(url.loc)}</loc>${url.lastmod ? `<lastmod>${url.lastmod}</lastmod>` : ""}<changefreq>${url.changefreq}</changefreq><priority>${url.priority}</priority>${buildAlternateLinks(base, locale, url.path)}</url>`
   )
   .join("")}
 </urlset>`;
 
     res.type("application/xml").send(xml);
-  } catch (err) {
-    console.error("sitemap generation failed", err);
+  } catch (error) {
+    console.error("localized sitemap generation failed", error);
     res.status(500).send("<!-- sitemap error -->");
   }
 });
 
-type SsrRenderResult = {
-  appHtml: string;
-  dehydratedState: unknown;
-  head: {
-    title: string;
-    tags: string;
-  };
-};
-
-type SsrModule = {
-  render: (
-    url: string,
-    options: { apiOrigin: string; baseUrl: string; cookie?: string }
-  ) => Promise<SsrRenderResult>;
-};
-
-let ssrModulePromise: Promise<SsrModule> | null = null;
-
-function getSsrModule() {
-  if (!ssrModulePromise) {
-    ssrModulePromise = import(
-      pathToFileURL(ssrEntryPath).href
-    ) as Promise<SsrModule>;
-  }
-  return ssrModulePromise;
-}
-
-function getPublicBaseUrl(req: express.Request) {
-  const configured = (ENV.FRONTEND_URL || "")
-    .split(",")
-    .map(value => value.trim())
-    .find(Boolean);
-  if (configured) return configured.replace(/\/+$/, "");
-  return `${req.protocol}://${req.get("host")}`;
-}
-
-function injectSsrIntoTemplate(template: string, result: SsrRenderResult) {
-  const stateJson = JSON.stringify(result.dehydratedState).replace(
-    /</g,
-    "\\u003c"
-  );
-
-  return template
-    .replace(/<title>[\s\S]*?<\/title>/, `<title>${result.head.title}</title>`)
-    .replace("</head>", `    ${result.head.tags}\n  </head>`)
-    .replace(
-      '<div id="root"></div>',
-      `<div id="root">${result.appHtml}</div>\n    <script>window.__REACT_QUERY_STATE__=${stateJson};</script>`
-    );
-}
-
-// Serve built client assets in production (only if build exists)
+// Serve built client assets / SSR pages in production (only if build exists)
 if (ENV.NODE_ENV === "production" && hasBuiltFrontend) {
   app.get(/.*/, async (req, res, next) => {
-    const indexPath = path.join(distPath, "index.html");
-    const isDashboard =
-      req.path === "/dashboard" || req.path.startsWith("/dashboard/");
-
-    if (isDashboard || !hasSsrEntry) {
-      return res.sendFile(indexPath);
+    if (!shouldHandleAsHtml(req.path)) {
+      return next();
     }
 
-    try {
-      const template = await fs.promises.readFile(indexPath, "utf8");
-      const { render } = await getSsrModule();
-      const result = await render(req.originalUrl, {
-        apiOrigin: `http://127.0.0.1:${ENV.PORT || 3001}`,
-        baseUrl: getPublicBaseUrl(req),
-        cookie: req.headers.cookie,
-      });
+    const route = stripLocaleFromPath(req.path);
+    if (route.hadLocalePrefix && route.locale === "en") {
+      const target = localizePath(route.locale, route.pathname);
+      const query = req.url.includes("?") ? req.url.slice(req.url.indexOf("?")) : "";
+      return res.redirect(308, `${target}${query}`);
+    }
 
-      res
-        .status(200)
-        .type("html")
-        .set("Cache-Control", "public, max-age=60, stale-while-revalidate=300")
-        .send(injectSsrIntoTemplate(template, result));
-    } catch (error) {
-      console.error("SSR failed; serving client shell", error);
-      return res.sendFile(indexPath, err => {
-        if (err) next(err);
+    if (!canRenderSsr(route.pathname)) {
+      return res.sendFile(path.join(distPath, "index.html"));
+    }
+
+    const origin = (ENV.FRONTEND_URL || `${req.protocol}://${req.get("host")}`)
+      .split(",")[0]
+      .trim()
+      .replace(/\/+$/, "");
+
+    try {
+      const rendered = await renderSsrPage({
+        distPath,
+        locale: route.locale,
+        pathname: route.pathname,
+        origin,
       });
+      res.status(rendered.statusCode).send(rendered.html);
+    } catch (error) {
+      console.error("SSR render failed", error);
+      res.sendFile(path.join(distPath, "index.html"));
     }
   });
 }
+const port = Number(ENV.PORT) || 3001;
+
 if (ENV.NODE_ENV === "development") {
-  console.log("Hey donkey, you are developing I mean in development mode!");
+  console.log(`Development mode: API server listening on port ${port}`);
 }
-app.listen(ENV.PORT, () =>
-  console.log("Server is up and running on port:", ENV.PORT)
+
+const server = app.listen(port, () =>
+  console.log("Server is up and running on port:", port)
 );
+
+server.on("error", error => {
+  if ((error as NodeJS.ErrnoException).code === "EADDRINUSE") {
+    console.error(
+      `Port ${port} is already in use. Stop the other process or change server/.env PORT before restarting the API server.`
+    );
+    process.exit(1);
+  }
+
+  throw error;
+});

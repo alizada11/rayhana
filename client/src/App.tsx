@@ -1,4 +1,4 @@
-import { Suspense, lazy } from "react";
+import { Suspense } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Redirect, Route, Router as WouterRouter, Switch } from "wouter";
 import ErrorBoundary from "./components/ErrorBoundary";
@@ -7,29 +7,28 @@ import useAuthReq from "./hooks/useAuthReq";
 import useUserSync from "./hooks/useUserSync";
 import { ConfirmProvider } from "./components/ConfirmProvider";
 import FullPageLoader from "./components/FullPageLoader";
+import { Toaster } from "@/components/ui/sonner";
 
 import Layout from "./components/Layout";
-const LazyToaster = lazy(() =>
-  import("@/components/ui/sonner").then(mod => ({ default: mod.Toaster }))
-);
-const DashboardShell = lazy(() => import("@/components/DashboardShell"));
-const Home = lazy(() => import("@/pages/Home"));
-const BlogIndex = lazy(() => import("@/pages/BlogIndex"));
-const BlogPost = lazy(() => import("@/pages/BlogPost"));
-const Products = lazy(() => import("./pages/Products"));
-const About = lazy(() => import("./pages/About"));
-const Contact = lazy(() => import("./pages/Contact"));
-const Terms = lazy(() => import("./pages/Terms"));
-const HelpCenter = lazy(() => import("./pages/HelpCenter"));
-const HelpPage = lazy(() => import("./pages/HelpPage"));
-const Privacy = lazy(() => import("./pages/Privacy"));
-const LoginPage = lazy(() => import("./pages/LoginPage"));
-const GuestDashboard = lazy(() => import("./pages/GuestDashboard"));
-const Gallery = lazy(() => import("./pages/Gallery"));
-const ResetPassword = lazy(() => import("./pages/ResetPassword"));
-const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
-const Profile = lazy(() => import("./pages/Profile"));
-const NotFound = lazy(() => import("@/pages/NotFound"));
+import DashboardShell from "@/components/DashboardShell";
+import Home from "@/pages/Home";
+import BlogIndex from "@/pages/BlogIndex";
+import BlogPost from "@/pages/BlogPost";
+import Products from "./pages/Products";
+import ProductDetail from "./pages/ProductDetail";
+import About from "./pages/About";
+import Contact from "./pages/Contact";
+import Terms from "./pages/Terms";
+import HelpCenter from "./pages/HelpCenter";
+import HelpPage from "./pages/HelpPage";
+import Privacy from "./pages/Privacy";
+import LoginPage from "./pages/LoginPage";
+import GuestDashboard from "./pages/GuestDashboard";
+import Gallery from "./pages/Gallery";
+import ResetPassword from "./pages/ResetPassword";
+import VerifyEmail from "./pages/VerifyEmail";
+import Profile from "./pages/Profile";
+import NotFound from "@/pages/NotFound";
 
 function GuestDashboardRoute() {
   const { isLoaded, isSignedIn } = useAuthReq();
@@ -44,107 +43,110 @@ function GuestDashboardRoute() {
 
 function AppRoutes() {
   return (
-    <Suspense fallback={<FullPageLoader />}>
-      <Switch>
-        {/* Public site */}
-        <Route path="/">
-          <Layout>
-            <Home />
-          </Layout>
-        </Route>
+    <Switch>
+      {/* Public site */}
+      <Route path="/">
+        <Layout>
+          <Home />
+        </Layout>
+      </Route>
 
-        <Route path="/blog/:slug">
-          <Layout>
-            <BlogPost />
-          </Layout>
-        </Route>
+      <Route path="/blog/:slug">
+        <Layout>
+          <BlogPost />
+        </Layout>
+      </Route>
 
-        <Route path="/blog">
-          <Layout>
-            <BlogIndex />
-          </Layout>
-        </Route>
-        <Route path="/products">
-          <Layout>
-            <Products />
-          </Layout>
-        </Route>
+      <Route path="/blog">
+        <Layout>
+          <BlogIndex />
+        </Layout>
+      </Route>
+      <Route path="/products">
+        <Layout>
+          <Products />
+        </Layout>
+      </Route>
+      <Route path="/products/:id">
+        <Layout>
+          <ProductDetail />
+        </Layout>
+      </Route>
 
-        <Route path="/about">
-          <Layout>
-            <About />
-          </Layout>
-        </Route>
+      <Route path="/about">
+        <Layout>
+          <About />
+        </Layout>
+      </Route>
 
-        <Route path="/contact">
-          <Layout>
-            <Contact />
-          </Layout>
-        </Route>
-        <Route path="/terms">
-          <Layout>
-            <Terms />
-          </Layout>
-        </Route>
-        <Route path="/privacy">
-          <Layout>
-            <Privacy />
-          </Layout>
-        </Route>
-        <Route path="/gallery">
-          <Layout>
-            <Gallery />
-          </Layout>
-        </Route>
-        <Route path="/reset-password">
-          <Layout>
-            <ResetPassword />
-          </Layout>
-        </Route>
-        <Route path="/verify-email">
-          <Layout>
-            <VerifyEmail />
-          </Layout>
-        </Route>
-        <Route path="/help/:slug">
-          <Layout>
-            <HelpPage />
-          </Layout>
-        </Route>
-        <Route path="/help">
-          <Layout>
-            <HelpCenter />
-          </Layout>
-        </Route>
-        <Route path="/login">
-          <Layout>
-            <LoginPage />
-          </Layout>
-        </Route>
-        <Route path="/profile">
-          <Layout>
-            <Profile />
-          </Layout>
-        </Route>
-        <Route path="/my-submissions">
-          <GuestDashboardRoute />
-        </Route>
+      <Route path="/contact">
+        <Layout>
+          <Contact />
+        </Layout>
+      </Route>
+      <Route path="/terms">
+        <Layout>
+          <Terms />
+        </Layout>
+      </Route>
+      <Route path="/privacy">
+        <Layout>
+          <Privacy />
+        </Layout>
+      </Route>
+      <Route path="/gallery">
+        <Layout>
+          <Gallery />
+        </Layout>
+      </Route>
+      <Route path="/reset-password">
+        <Layout>
+          <ResetPassword />
+        </Layout>
+      </Route>
+      <Route path="/verify-email">
+        <Layout>
+          <VerifyEmail />
+        </Layout>
+      </Route>
+      <Route path="/help/:slug">
+        <Layout>
+          <HelpPage />
+        </Layout>
+      </Route>
+      <Route path="/help">
+        <Layout>
+          <HelpCenter />
+        </Layout>
+      </Route>
+      <Route path="/login">
+        <Layout>
+          <LoginPage />
+        </Layout>
+      </Route>
+      <Route path="/profile">
+        <Layout>
+          <Profile />
+        </Layout>
+      </Route>
+      <Route path="/my-submissions">
+        <GuestDashboardRoute />
+      </Route>
 
-        {/* Dashboard group */}
-        <Route path="/dashboard">
-          <DashboardShell />
-        </Route>
-        <Route path="/dashboard/:rest*">
-          <DashboardShell />
-        </Route>
+      {/* Dashboard group */}
+      <Route path="/dashboard">
+        <DashboardShell />
+      </Route>
+      <Route path="/dashboard/:rest*">
+        <DashboardShell />
+      </Route>
 
-        <Route>
-          <Layout>
-            <NotFound />
-          </Layout>
-        </Route>
-      </Switch>
-    </Suspense>
+      <Route>
+        <Layout>
+          <NotFound />
+        </Layout>
+      </Route>
+    </Switch>
   );
 }
 
@@ -160,12 +162,8 @@ function App({ ssrPath, ssrSearch }: AppProps) {
       <ThemeProvider defaultTheme="light">
         <ConfirmProvider>
           <TooltipProvider>
-            <Suspense fallback={null}>
-              <LazyToaster />
-            </Suspense>
-            <WouterRouter ssrPath={ssrPath} ssrSearch={ssrSearch}>
-              <AppRoutes />
-            </WouterRouter>
+            <Toaster />
+            <Router />
           </TooltipProvider>
         </ConfirmProvider>
       </ThemeProvider>
