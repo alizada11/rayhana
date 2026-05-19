@@ -134,6 +134,41 @@ export interface NewsletterSubscription {
   createdAt: string;
 }
 
+export type PreLaunchReservationStatus = "pending" | "contacted" | "completed";
+
+export interface PreLaunchReservationPayload {
+  productId: string;
+  productSize: string;
+  fullName: string;
+  email: string;
+  whatsapp: string;
+  region: string;
+}
+
+export interface PreLaunchReservation {
+  id: string;
+  productId: string;
+  productSize: string;
+  fullName: string;
+  email: string;
+  whatsapp: string;
+  region: string;
+  userId?: string | null;
+  status: PreLaunchReservationStatus;
+  createdAt: string;
+  updatedAt: string;
+  product?: {
+    id: string;
+    title?: Record<string, string> | string | null;
+    imageUrl?: string | null;
+  } | null;
+  user?: {
+    id: string;
+    email?: string | null;
+    name?: string | null;
+  } | null;
+}
+
 // ---------- USERS API ----------
 export const syncUser = async (userData: UserData) => {
   const { data } = await api.post("/users/sync", userData);
@@ -161,7 +196,9 @@ export const getUsersAdmin = async ({
   if (role && role !== "all") params.set("role", role);
   if (cursor) params.set("cursor", cursor);
   if (limit) params.set("limit", String(limit));
-  const { data } = await api.get(`/users/admin${params.toString() ? `?${params}` : ""}`);
+  const { data } = await api.get(
+    `/users/admin${params.toString() ? `?${params}` : ""}`
+  );
   return data as { items: AdminUser[]; nextCursor: string | null };
 };
 
@@ -503,7 +540,10 @@ export const getContentByKey = async (key: string) => {
   return data;
 };
 
-export const upsertContent = async (key: string, payload: SiteContentPayload) => {
+export const upsertContent = async (
+  key: string,
+  payload: SiteContentPayload
+) => {
   const { data } = await api.put(`/content/${key}`, payload);
   return data;
 };
@@ -547,7 +587,9 @@ export const getMedia = async ({
   const params = new URLSearchParams();
   if (cursor) params.set("cursor", cursor);
   if (limit) params.set("limit", String(limit));
-  const { data } = await api.get(`/media${params.toString() ? `?${params}` : ""}`);
+  const { data } = await api.get(
+    `/media${params.toString() ? `?${params}` : ""}`
+  );
   return data as { items: MediaAsset[]; nextCursor: string | null };
 };
 
@@ -587,7 +629,9 @@ export const getContactMessages = async ({
   if (cursor) params.set("cursor", cursor);
   if (limit) params.set("limit", String(limit));
   const query = params.toString();
-  const { data } = await api.get(`/contact/messages${query ? `?${query}` : ""}`);
+  const { data } = await api.get(
+    `/contact/messages${query ? `?${query}` : ""}`
+  );
   return data as { items: ContactMessage[]; nextCursor: string | null };
 };
 
@@ -657,6 +701,75 @@ export const exportNewsletterCsv = async (params: {
     { responseType: "blob" }
   );
   return response.data as Blob;
+};
+
+// ---------- PRE-LAUNCH RESERVATIONS API ----------
+export const createPreLaunchReservation = async (
+  payload: PreLaunchReservationPayload
+) => {
+  const { data } = await api.post("/pre-launch-reservations", payload);
+  return data as PreLaunchReservation;
+};
+
+export const createPreLaunchReservationAdmin = async (
+  payload: PreLaunchReservationPayload
+) => {
+  const { data } = await api.post("/pre-launch-reservations/admin", payload);
+  return data as PreLaunchReservation;
+};
+
+export const getMyPreLaunchReservations = async () => {
+  const { data } = await api.get("/pre-launch-reservations/my");
+  return data as PreLaunchReservation[];
+};
+
+export const getPreLaunchReservationsAdmin = async ({
+  product,
+  region,
+  status,
+  search,
+  cursor,
+  limit,
+}: {
+  product?: string;
+  region?: string;
+  status?: PreLaunchReservationStatus | "all";
+  search?: string;
+  cursor?: string | null;
+  limit?: number;
+}) => {
+  const params = new URLSearchParams();
+  if (product) params.set("product", product);
+  if (region) params.set("region", region);
+  if (status && status !== "all") params.set("status", status);
+  if (search) params.set("search", search);
+  if (cursor) params.set("cursor", cursor);
+  if (limit) params.set("limit", String(limit));
+  const { data } = await api.get(
+    `/pre-launch-reservations/admin${params.toString() ? `?${params}` : ""}`
+  );
+  return data as { items: PreLaunchReservation[]; nextCursor: string | null };
+};
+
+export const updatePreLaunchReservationAdmin = async ({
+  id,
+  payload,
+}: {
+  id: string;
+  payload: Partial<PreLaunchReservationPayload> & {
+    status?: PreLaunchReservationStatus;
+  };
+}) => {
+  const { data } = await api.patch(
+    `/pre-launch-reservations/admin/${id}`,
+    payload
+  );
+  return data as PreLaunchReservation;
+};
+
+export const deletePreLaunchReservationAdmin = async (id: string) => {
+  const { data } = await api.delete(`/pre-launch-reservations/admin/${id}`);
+  return data as PreLaunchReservation;
 };
 export interface MediaAsset {
   id: string;

@@ -284,6 +284,68 @@
     "shipping_af": "Afghanistan: Coming soon through Shopino24.",
     "buy_amazon_ca": "Buy on Amazon CA 🇨🇦"
   },
+  "reserve_discount": {
+    "badge": "Pre-launch offer",
+    "title": "Reserve your 15% discount",
+    "description": "We are launching on Amazon EU and UK soon. Reserve your code now and we will email you the moment your region goes live.",
+    "cta": "Reserve your discount",
+    "features": {
+      "discount": "15% launch code",
+      "payment": "No payment today",
+      "alert": "Email launch alert"
+    },
+    "modal": {
+      "title": "Reserve your 15% discount",
+      "description": "No payment, no commitment. We will send your code when the Amazon shop launches in your region.",
+      "submit": "Reserve my discount"
+    },
+    "form": {
+      "product": "Product",
+      "full_name": "Full name",
+      "email": "Email",
+      "whatsapp": "WhatsApp",
+      "region": "Region",
+      "region_placeholder": "Choose your region",
+      "no_image": "No image",
+      "size_aria": "Select size {{size}}"
+    },
+    "errors": {
+      "product": "Choose a product",
+      "size": "Choose a size",
+      "name": "Enter your name",
+      "email": "Enter a valid email",
+      "whatsapp": "Use a country code, for example +447700900123",
+      "region": "Choose your region"
+    },
+    "regions": {
+      "EU": "Europe",
+      "United Kingdom": "United Kingdom",
+      "United States": "United States",
+      "Canada": "Canada",
+      "Australia": "Australia",
+      "Arabic Countries": "Arabic Countries",
+      "Afghanistan": "Afghanistan"
+    },
+    "reservations": {
+      "loading": "Loading your reservations",
+      "item_prefix": "Your reserved item:",
+      "size": "size",
+      "empty": "You do not have a pre-launch reservation yet.",
+      "login_prompt": "Already have an account?",
+      "login_link": "Login to manage your reservation.",
+      "product_fallback": "Rayhana pot"
+    },
+    "status": {
+      "pending": "Pending",
+      "contacted": "Contacted",
+      "completed": "Completed"
+    },
+    "toast": {
+      "success": "Your discount is reserved",
+      "error": "Reservation could not be saved",
+      "duplicate": "You already reserved this product and size with this email."
+    }
+  },
   "referral": {
     "card_title": "Rayhana Golden Invitation",
     "card_subtitle": "Share the culture, gift the quality",

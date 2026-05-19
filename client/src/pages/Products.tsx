@@ -23,6 +23,7 @@ import {
 } from "@/components/ui/dialog";
 import { useProducts, type Product } from "@/hooks/useProducts";
 import SeoTags from "@/components/SeoTags";
+import ReserveDiscountSection from "@/components/ReserveDiscountSection";
 
 export default function Products() {
   const { t, i18n } = useTranslation();
@@ -105,6 +106,8 @@ export default function Products() {
             />
           ))}
         </motion.div>
+
+        <ReserveDiscountSection products={products} localize={localize} />
 
         {/* In a Hurry - Regional Shop CTA */}
         <motion.div

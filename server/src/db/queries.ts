@@ -8,6 +8,7 @@ import {
   oauthAccounts,
   comments,
   products,
+  preLaunchReservations,
   productReviews,
   blogPosts,
   blogComments,
@@ -24,6 +25,7 @@ import {
   type NewOauthAccount,
   type NewComment,
   type NewProduct,
+  type NewPreLaunchReservation,
   type NewBlogPost,
   type NewBlogComment,
   type NewSiteContent,
@@ -209,7 +211,10 @@ export const listUsersWithStats = async ({
       nextCursor,
     };
   } catch (error) {
-    console.error("listUsersWithStats failed, falling back to basic list", error);
+    console.error(
+      "listUsersWithStats failed, falling back to basic list",
+      error
+    );
     const fallback = await db
       .select({
         id: users.id,
@@ -277,14 +282,11 @@ export const deleteUserWithCleanup = async (id: string) => {
 
     await tx.delete(galleryLikes).where(eq(galleryLikes.userId, id));
 
-    const [user] = await tx
-      .delete(users)
-      .where(eq(users.id, id))
-      .returning({
-        id: users.id,
-        email: users.email,
-        role: users.role,
-      });
+    const [user] = await tx.delete(users).where(eq(users.id, id)).returning({
+      id: users.id,
+      email: users.email,
+      role: users.role,
+    });
 
     if (!user) throw new Error(`User with id ${id} not found`);
     return user;
@@ -324,9 +326,7 @@ export const revokeSessionsByUserId = async (userId: string) => {
 };
 
 export const deleteExpiredSessions = async () => {
-  await db
-    .delete(authSessions)
-    .where(lt(authSessions.expiresAt, new Date()));
+  await db.delete(authSessions).where(lt(authSessions.expiresAt, new Date()));
 };
 
 export const createPasswordResetToken = async (data: NewPasswordResetToken) => {
@@ -443,9 +443,7 @@ export const getProductById = async (id: string) => {
         orderBy: (comments, { desc }) => [desc(comments.createdAt)],
       },
       reviews: {
-        orderBy: (productReviews, { desc }) => [
-          desc(productReviews.createdAt),
-        ],
+        orderBy: (productReviews, { desc }) => [desc(productReviews.createdAt)],
       },
     },
   });
@@ -466,7 +464,9 @@ export const updateProductReview = async (
   const [review] = await db
     .update(productReviews)
     .set(data)
-    .where(and(eq(productReviews.id, id), eq(productReviews.productId, productId)))
+    .where(
+      and(eq(productReviews.id, id), eq(productReviews.productId, productId))
+    )
     .returning();
   return review;
 };
@@ -474,7 +474,9 @@ export const updateProductReview = async (
 export const deleteProductReview = async (id: string, productId: string) => {
   const [deleted] = await db
     .delete(productReviews)
-    .where(and(eq(productReviews.id, id), eq(productReviews.productId, productId)))
+    .where(
+      and(eq(productReviews.id, id), eq(productReviews.productId, productId))
+    )
     .returning();
   return deleted;
 };
@@ -485,9 +487,7 @@ export const getProductsByUserId = async (userId: string) => {
     with: {
       user: true,
       reviews: {
-        orderBy: (productReviews, { desc }) => [
-          desc(productReviews.createdAt),
-        ],
+        orderBy: (productReviews, { desc }) => [desc(productReviews.createdAt)],
       },
     },
     orderBy: (products, { desc }) => [desc(products.createdAt)],
@@ -519,6 +519,170 @@ export const deleteProduct = async (id: string) => {
     .where(eq(products.id, id))
     .returning();
   return product;
+};
+
+// PRE-LAUNCH RESERVATIONS
+export type PreLaunchReservationStatus = "pending" | "contacted" | "completed";
+
+export const createPreLaunchReservation = async (
+  data: NewPreLaunchReservation
+) => {
+  const [reservation] = await db
+    .insert(preLaunchReservations)
+    .values(data)
+    .returning();
+  return reservation;
+};
+
+export const getPreLaunchReservationByDuplicateKey = async ({
+  email,
+  productId,
+  productSize,
+}: {
+  email: string;
+  productId: string;
+  productSize: string;
+}) => {
+  return db.query.preLaunchReservations.findFirst({
+    where: and(
+      eq(preLaunchReservations.email, email),
+      eq(preLaunchReservations.productId, productId),
+      eq(preLaunchReservations.productSize, productSize)
+    ),
+    with: { product: true, user: true },
+  });
+};
+
+export const getPreLaunchReservationById = async (id: string) => {
+  return db.query.preLaunchReservations.findFirst({
+    where: eq(preLaunchReservations.id, id),
+    with: { product: true, user: true },
+  });
+};
+
+export const claimPreLaunchReservationsForUser = async ({
+  userId,
+  email,
+}: {
+  userId: string;
+  email: string;
+}) => {
+  await db
+    .update(preLaunchReservations)
+    .set({ userId })
+    .where(
+      and(
+        eq(preLaunchReservations.email, email),
+        sql`${preLaunchReservations.userId} is null`
+      )
+    );
+};
+
+export const getPreLaunchReservationsForUser = async ({
+  userId,
+  email,
+}: {
+  userId: string;
+  email: string;
+}) => {
+  return db.query.preLaunchReservations.findMany({
+    where: or(
+      eq(preLaunchReservations.userId, userId),
+      eq(preLaunchReservations.email, email)
+    ),
+    with: { product: true },
+    orderBy: [desc(preLaunchReservations.createdAt)],
+  });
+};
+
+export const listPreLaunchReservations = async ({
+  productId,
+  region,
+  status,
+  search,
+  limit,
+  cursorId,
+}: {
+  productId?: string;
+  region?: string;
+  status?: PreLaunchReservationStatus;
+  search?: string;
+  limit: number;
+  cursorId?: string | null;
+}) => {
+  let cursor: { id: string; createdAt: Date | null } | null | undefined = null;
+
+  if (cursorId) {
+    cursor = await db.query.preLaunchReservations.findFirst({
+      where: eq(preLaunchReservations.id, cursorId),
+      columns: { id: true, createdAt: true },
+    });
+  }
+
+  const filters = [];
+  if (productId) filters.push(eq(preLaunchReservations.productId, productId));
+  if (region) {
+    filters.push(
+      sql`LOWER(${preLaunchReservations.region}) = ${region.trim().toLowerCase()}`
+    );
+  }
+  if (status) filters.push(eq(preLaunchReservations.status, status));
+  if (search?.trim()) {
+    const term = `%${search.trim().toLowerCase()}%`;
+    filters.push(
+      sql`(
+        LOWER(${preLaunchReservations.fullName}) LIKE ${term} OR
+        LOWER(${preLaunchReservations.email}) LIKE ${term} OR
+        LOWER(${preLaunchReservations.whatsapp}) LIKE ${term}
+      )`
+    );
+  }
+
+  const cursorClause = cursor
+    ? or(
+        lt(preLaunchReservations.createdAt, cursor.createdAt ?? new Date(0)),
+        and(
+          eq(preLaunchReservations.createdAt, cursor.createdAt ?? new Date(0)),
+          lt(preLaunchReservations.id, cursor.id)
+        )
+      )
+    : undefined;
+
+  const whereClause =
+    filters.length || cursorClause ? and(...filters, cursorClause) : undefined;
+
+  const items = await db.query.preLaunchReservations.findMany({
+    where: whereClause,
+    with: { product: true, user: true },
+    orderBy: [
+      desc(preLaunchReservations.createdAt),
+      desc(preLaunchReservations.id),
+    ],
+    limit,
+  });
+
+  const nextCursor = items.length === limit ? items[items.length - 1].id : null;
+  return { items, nextCursor };
+};
+
+export const updatePreLaunchReservation = async (
+  id: string,
+  data: Partial<NewPreLaunchReservation>
+) => {
+  const [reservation] = await db
+    .update(preLaunchReservations)
+    .set(data)
+    .where(eq(preLaunchReservations.id, id))
+    .returning();
+  return reservation;
+};
+
+export const deletePreLaunchReservation = async (id: string) => {
+  const [reservation] = await db
+    .delete(preLaunchReservations)
+    .where(eq(preLaunchReservations.id, id))
+    .returning();
+  return reservation;
 };
 
 // COMMENT QUERIES
