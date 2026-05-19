@@ -27,6 +27,7 @@ import contentRoutes from "./routes/contentRoutes";
 import mediaRoutes from "./routes/mediaRoutes";
 import contactRoutes from "./routes/contactRoutes";
 import newsletterRoutes from "./routes/newsletterRoutes";
+import preLaunchReservationRoutes from "./routes/preLaunchReservationRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 import authRoutes from "./routes/authRoutes";
 import homepageRoutes from "./routes/homepageRoutes";
@@ -155,6 +156,7 @@ app.use("/api/homepage", homepageRoutes);
 app.use("/api/media", mediaRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/newsletter", newsletterRoutes);
+app.use("/api/pre-launch-reservations", preLaunchReservationRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
 

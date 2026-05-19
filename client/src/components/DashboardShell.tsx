@@ -11,6 +11,7 @@ import DashboardSettings from "@/pages/DashboardSettings";
 import DashboardContactMessages from "@/pages/DashboardContactMessages";
 import DashboardNewsletter from "@/pages/DashboardNewsletter";
 import DashboardUsers from "@/pages/DashboardUsers";
+import DashboardPreLaunchReservations from "@/pages/DashboardPreLaunchReservations";
 import { useAuth } from "@/lib/auth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useRef } from "react";
@@ -57,6 +58,10 @@ export default function DashboardShell() {
         />
         <Route path="/dashboard/users" component={DashboardUsers} />
         <Route path="/dashboard/products" component={DashboardProducts} />
+        <Route
+          path="/dashboard/pre-launch-reservations"
+          component={DashboardPreLaunchReservations}
+        />
         <Route path="/dashboard/blogs" component={DashboardBlogs} />
         <Route path="/dashboard/comments" component={DashboardBlogComments} />
         <Route path="/dashboard/media" component={DashboardMedia} />

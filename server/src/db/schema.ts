@@ -21,6 +21,10 @@ export const galleryStatusEnum = pgEnum("gallery_status", [
 ]);
 
 export const contactStatusEnum = pgEnum("contact_status", ["new", "resolved"]);
+export const preLaunchReservationStatusEnum = pgEnum(
+  "pre_launch_reservation_status",
+  ["pending", "contacted", "completed"]
+);
 
 export const newsletterSubscriptions = pgTable("newsletter_subscriptions", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -128,6 +132,37 @@ export const products = pgTable("products", {
     .defaultNow()
     .$onUpdate(() => new Date()),
 });
+
+export const preLaunchReservations = pgTable(
+  "pre_launch_reservations",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    productId: uuid("product_id")
+      .notNull()
+      .references(() => products.id, { onDelete: "cascade" }),
+    productSize: text("product_size").notNull(),
+    fullName: text("full_name").notNull(),
+    email: text("email").notNull(),
+    whatsapp: text("whatsapp").notNull(),
+    region: text("region").notNull(),
+    userId: text("user_id").references(() => users.id, {
+      onDelete: "set null",
+    }),
+    status: preLaunchReservationStatusEnum("status")
+      .notNull()
+      .default("pending"),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  table => ({
+    uniqueEmailProductSize: uniqueIndex(
+      "pre_launch_reservations_email_product_size_unique"
+    ).on(table.email, table.productId, table.productSize),
+  })
+);
 
 export const productReviews = pgTable("product_reviews", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -286,6 +321,7 @@ export const galleryLikes = pgTable(
 
 export const usersRelations = relations(users, ({ many }) => ({
   products: many(products), // 🔴 One user → many products
+  preLaunchReservations: many(preLaunchReservations),
   comments: many(comments), // 🔴 One user → many comments
   blogPosts: many(blogPosts),
   blogComments: many(blogComments),
@@ -299,10 +335,25 @@ export const usersRelations = relations(users, ({ many }) => ({
 export const productsRelations = relations(products, ({ one, many }) => ({
   comments: many(comments),
   reviews: many(productReviews),
+  preLaunchReservations: many(preLaunchReservations),
   // `fields` = the foreign key column in THIS table (products.userId)
   // `references` = the primary key column in the RELATED table (users.id)
   user: one(users, { fields: [products.userId], references: [users.id] }), // one product → one user
 }));
+
+export const preLaunchReservationsRelations = relations(
+  preLaunchReservations,
+  ({ one }) => ({
+    product: one(products, {
+      fields: [preLaunchReservations.productId],
+      references: [products.id],
+    }),
+    user: one(users, {
+      fields: [preLaunchReservations.userId],
+      references: [users.id],
+    }),
+  })
+);
 
 // Comments Relations: A comment belongs to one user and one product
 export const commentsRelations = relations(comments, ({ one }) => ({
@@ -376,6 +427,8 @@ export type NewUser = typeof users.$inferInsert;
 
 export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
+export type PreLaunchReservation = typeof preLaunchReservations.$inferSelect;
+export type NewPreLaunchReservation = typeof preLaunchReservations.$inferInsert;
 export type ProductReview = typeof productReviews.$inferSelect;
 export type NewProductReview = typeof productReviews.$inferInsert;
 

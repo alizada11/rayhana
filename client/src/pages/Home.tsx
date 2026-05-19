@@ -303,15 +303,12 @@ export default function Home() {
     <>
       <SeoTags
         pageKey="home"
-        title={
-          (seo as any)?.title || heroTitle || "Rayhana Afghan Cooking"
-        }
+        title={(seo as any)?.title || "Rayhana Afghan Cooking"}
         description={
           (seo as any)?.description ||
-          heroSubtitle ||
           t(
             "seo.home.description",
-            "Discover authentic Afghan recipes, cookware, and stories."
+            "Cook authentic Qabili Palaw with Rayhana premium non-stick cookware. Designed for perfect Afghan Qabili Pilaf and Qabili Pilau with modern quality and traditional flavor."
           )
         }
         image={(seo as any)?.image_url || featuredImage}

@@ -17,6 +17,7 @@ import {
   Users,
   Sun,
   Moon,
+  ClipboardList,
 } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -60,6 +61,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
     { path: "/dashboard/users", label: "Users", Icon: Users },
     { path: "/dashboard/settings", label: "Settings", Icon: Settings },
     { path: "/dashboard/products", label: "Products", Icon: Boxes },
+    {
+      path: "/dashboard/pre-launch-reservations",
+      label: "Reservations",
+      Icon: ClipboardList,
+    },
     { path: "/dashboard/gallery", label: "Gallery", Icon: GalleryHorizontal },
     { path: "/dashboard/newsletter", label: "Newsletter", Icon: Mails },
   ];
