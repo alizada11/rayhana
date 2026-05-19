@@ -303,7 +303,9 @@ export default function Home() {
     <>
       <SeoTags
         pageKey="home"
-        title={(seo as any)?.title || "Rayhana Afghan Cooking"}
+        title={
+          (seo as any)?.title || t("seo.home.title", "Rayhana Afghan Cooking")
+        }
         description={
           (seo as any)?.description ||
           t(

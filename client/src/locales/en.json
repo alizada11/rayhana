@@ -282,10 +282,11 @@
     "shipping_tr": "Turkey: Customs restrictions currently prevent shipping, but our Amazon Turkey store is launching soon.",
     "shipping_ir": "Iran: Unfortunately, current conditions make direct shipping not possible.",
     "shipping_af": "Afghanistan: Coming soon through Shopino24.",
-    "buy_amazon_ca": "Buy on Amazon CA 🇨🇦"
+    "buy_amazon_ca": "Buy on Amazon CA 🇨🇦",
+    "buy_shopino24": "Buy on Shopino24 🇦🇫"
   },
   "reserve_discount": {
-    "badge": "Pre-launch offer",
+    "badge": "PRE-LAUNCH OFFER",
     "title": "Reserve your 15% discount",
     "description": "We are launching on Amazon EU and UK soon. Reserve your code now and we will email you the moment your region goes live.",
     "cta": "Reserve your discount",
@@ -340,6 +341,17 @@
       "contacted": "Contacted",
       "completed": "Completed"
     },
+    "success": {
+      "close": "Close",
+      "title": "Your discount is reserved!",
+      "description": "We saved your 15% discount. The moment our Amazon shop launches in your region, you will receive your personal code by email.",
+      "next_title": "What happens next?",
+      "step_1": "We launch on Amazon Europe and United Kingdom in the coming weeks",
+      "step_2": "You receive your personal 15% discount code by email",
+      "step_3": "You use the code on our Amazon listing to claim your discount",
+      "selection": "Your selection:",
+      "button": "Got it, thanks!"
+    },
     "toast": {
       "success": "Your discount is reserved",
       "error": "Reservation could not be saved",
@@ -362,6 +374,7 @@
   },
   "seo": {
     "home": {
+      "title": "Rayhana Afghan Qabili Cooking Pot",
       "description": "Cook authentic Qabili Palaw with Rayhana premium non-stick cookware. Designed for perfect Afghan Qabili Pilaf and Qabili Pilau with modern quality and traditional flavor."
     },
     "products": {

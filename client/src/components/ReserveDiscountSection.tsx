@@ -22,8 +22,9 @@ import {
   useMyPreLaunchReservations,
 } from "@/hooks/usePreLaunchReservations";
 import type { Product } from "@/hooks/useProducts";
+import type { PreLaunchReservation } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { CheckCircle, Gift, Loader2, Mail, ShieldCheck } from "lucide-react";
+import { CheckCircle, Gift, Loader2, Mail, ShieldCheck, X } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -52,15 +53,7 @@ const defaultForm: FormState = {
   region: "",
 };
 
-const regions = [
-  "EU",
-  "United Kingdom",
-  "United States",
-  "Canada",
-  "Australia",
-  "Arabic Countries",
-  "Afghanistan",
-];
+const regions = ["EU", "United Kingdom"];
 
 const normalizeWhatsapp = (value: string) => value.replace(/[\s().-]/g, "");
 const isValidWhatsapp = (value: string) => /^\+[1-9]\d{6,14}$/.test(value);
@@ -72,6 +65,8 @@ export default function ReserveDiscountSection({
   const { t } = useTranslation();
   const { user, isLoaded, isSignedIn } = useAuth();
   const [open, setOpen] = useState(false);
+  const [successReservation, setSuccessReservation] =
+    useState<PreLaunchReservation | null>(null);
   const [form, setForm] = useState<FormState>(defaultForm);
   const [errors, setErrors] = useState<
     Partial<Record<keyof FormState, string>>
@@ -176,11 +171,9 @@ export default function ReserveDiscountSection({
         region: form.region,
       },
       {
-        onSuccess: () => {
-          toast.success(
-            t("reserve_discount.toast.success", "Your discount is reserved")
-          );
+        onSuccess: reservation => {
           setOpen(false);
+          setSuccessReservation(reservation);
         },
         onError: (error: any) => {
           if (error?.response?.status === 409) {
@@ -202,13 +195,16 @@ export default function ReserveDiscountSection({
   };
 
   const reservationItems = myReservations.data ?? [];
+  const successProductName =
+    localize(successReservation?.product?.title) ||
+    t("reserve_discount.reservations.product_fallback", "Rayhana pot");
 
   return (
     <section className="max-w-5xl mx-auto mb-24">
       <div className="border border-primary/15 bg-card text-card-foreground rounded-lg p-6 md:p-10 shadow-sm">
         <div className="mx-auto flex max-w-3xl flex-col items-center gap-7 text-center">
           <div className="space-y-5">
-            <Badge className="mx-auto w-fit rounded-md bg-primary text-primary-foreground">
+            <Badge className="mx-auto p-2 w-fit rounded-full bg-primary text-primary-foreground">
               {t("reserve_discount.badge", "Pre-launch offer")}
             </Badge>
             <div className="space-y-3">
@@ -239,7 +235,7 @@ export default function ReserveDiscountSection({
             </div>
           </div>
           <Button
-            className="rounded-md px-6"
+            className="rounded-full px-8"
             disabled={products.length === 0}
             onClick={() => setOpen(true)}
           >
@@ -525,6 +521,100 @@ export default function ReserveDiscountSection({
           </DialogFooter>
         </DialogContent>
       </Dialog>
+
+      {successReservation && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-5">
+          <div className="relative max-h-[90vh] w-full max-w-md overflow-y-auto rounded-2xl bg-white text-gray-900 shadow-2xl">
+            <button
+              type="button"
+              onClick={() => setSuccessReservation(null)}
+              className="absolute right-4 top-4 z-10 flex h-8 w-8 items-center justify-center rounded-full bg-gray-100 text-gray-500 transition-colors hover:bg-gray-200 hover:text-gray-700"
+              aria-label={t("reserve_discount.success.close", "Close")}
+            >
+              <X className="h-4 w-4" />
+            </button>
+
+            <div className="p-6 text-center md:p-8">
+              <div className="relative mb-6">
+                <div className="absolute inset-0 flex items-center justify-center">
+                  <div className="h-20 w-20 animate-ping rounded-full bg-green-100 opacity-75" />
+                </div>
+                <div className="relative mx-auto flex h-20 w-20 items-center justify-center rounded-full bg-gradient-to-br from-green-400 to-green-500 shadow-lg">
+                  <CheckCircle className="h-10 w-10 text-white" />
+                </div>
+              </div>
+
+              <h3 className="mb-2 font-serif text-2xl text-gray-800">
+                {t(
+                  "reserve_discount.success.title",
+                  "Your discount is reserved!"
+                )}
+              </h3>
+              <p className="mb-6 text-sm leading-relaxed text-gray-500">
+                {t(
+                  "reserve_discount.success.description",
+                  "We saved your 15% discount. The moment our Amazon shop launches in your region, you will receive your personal code by email."
+                )}
+              </p>
+
+              <div className="mb-6 rounded-xl border border-red-100 bg-gradient-to-r from-red-50 to-orange-50 p-5 text-start">
+                <div className="mb-3 flex items-center gap-2 border-b border-red-100 pb-2">
+                  <CheckCircle className="h-5 w-5 text-red-600" />
+                  <strong className="text-sm text-red-700">
+                    {t(
+                      "reserve_discount.success.next_title",
+                      "What happens next?"
+                    )}
+                  </strong>
+                </div>
+                <div className="space-y-3 text-sm text-gray-700">
+                  {[
+                    t(
+                      "reserve_discount.success.step_1",
+                      "We launch on Amazon EU and UK in the coming weeks"
+                    ),
+                    t(
+                      "reserve_discount.success.step_2",
+                      "You receive your personal 15% discount code by email"
+                    ),
+                    t(
+                      "reserve_discount.success.step_3",
+                      "You use the code on our Amazon listing to claim your discount"
+                    ),
+                  ].map((step, index) => (
+                    <div key={step} className="flex items-start gap-2">
+                      <span className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full bg-red-500 text-xs text-white">
+                        {index + 1}
+                      </span>
+                      <span>{step}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="mb-6 rounded-xl bg-gray-50 p-3 text-sm">
+                <div className="flex flex-wrap items-center justify-between gap-3 text-start">
+                  <span className="text-gray-500">
+                    {t("reserve_discount.success.selection", "Your selection:")}
+                  </span>
+                  <span className="font-semibold text-gray-700 sm:text-end">
+                    {successProductName} ·{" "}
+                    {t("reserve_discount.reservations.size", "size")}{" "}
+                    {successReservation.productSize}
+                  </span>
+                </div>
+              </div>
+
+              <Button
+                className="w-full rounded-xl bg-gradient-to-r from-red-600 to-red-700 py-3 font-bold text-white shadow-md transition-all hover:from-red-700 hover:to-red-800 hover:shadow-lg"
+                onClick={() => setSuccessReservation(null)}
+              >
+                {t("reserve_discount.success.button", "Got it, thanks!")}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
     </section>
   );
 }

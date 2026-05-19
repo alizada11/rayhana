@@ -30,6 +30,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     imageUrl: string;
     productUrl?: string;
     amazonCaUrl?: string;
+    shopino24Url?: string;
     rating: number;
     sizes: number[];
     colors: string[];
@@ -43,6 +44,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     imageUrl: product?.imageUrl || "",
     productUrl: product?.productUrl || "",
     amazonCaUrl: product?.amazonCaUrl || "",
+    shopino24Url: product?.shopino24Url || "",
     rating: product?.rating || 5,
     sizes: product?.sizes || [],
     colors: product?.colors || [],
@@ -89,7 +91,10 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     payload.append("category", formData.category);
     payload.append("imageUrl", formData.imageUrl);
     if (formData.productUrl) payload.append("productUrl", formData.productUrl);
-    if (formData.amazonCaUrl) payload.append("amazonCaUrl", formData.amazonCaUrl);
+    if (formData.amazonCaUrl)
+      payload.append("amazonCaUrl", formData.amazonCaUrl);
+    if (formData.shopino24Url)
+      payload.append("shopino24Url", formData.shopino24Url);
     payload.append("rating", String(formData.rating));
     payload.append("sizes", JSON.stringify(formData.sizes));
     payload.append("colors", JSON.stringify(formData.colors));
@@ -307,8 +312,6 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
               />
             </div>
 
-            
-       
             <div>
               <label className="block text-sm font-medium text-foreground mb-2">
                 Amazon US URL (optional)
@@ -339,9 +342,21 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
                 Used for the "Buy on Amazon CA" button. Leave empty to hide.
               </p>
             </div>
-
-
-            
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Shopino24 URL (optional)
+              </label>
+              <input
+                type="url"
+                placeholder="https://shopino24.com/..."
+                value={formData.shopino24Url}
+                onChange={e => handleChange("shopino24Url", e.target.value)}
+                className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Used for the "Buy on Shopino24" button. Leave empty to hide.
+              </p>
+            </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

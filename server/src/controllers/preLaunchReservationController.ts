@@ -65,28 +65,6 @@ const localizeProductTitle = (product: any) => {
   return title.en || Object.values(title)[0] || "Unknown product";
 };
 
-async function sendGuestAccountEmail(user: any) {
-  const [{ token: verifyToken, expiresAt }, { token: resetToken }] =
-    await Promise.all([
-      issueEmailVerificationToken(user.id),
-      issuePasswordResetToken(user.id),
-    ]);
-
-  const verifyUrl = `${getFrontendBase()}/verify-email?token=${verifyToken}`;
-  const resetUrl = `${getFrontendBase()}/reset-password?token=${resetToken}`;
-
-  await sendContactEmail({
-    to: user.email,
-    from: ENV.SMTP_FROM_EMAIL || "no-reply@rayhana.com",
-    subject: "Your Rayhana discount reservation",
-    html: `<p>Your Rayhana pre-launch discount is reserved.</p>
-<p>We created an account for this email so you can manage the reservation later.</p>
-<p><a href="${escapeHtml(verifyUrl)}">Verify your email</a></p>
-<p><a href="${escapeHtml(resetUrl)}">Set your password</a></p>
-<p>The verification link expires at ${escapeHtml(expiresAt.toISOString())}.</p>`,
-  });
-}
-
 async function sendAdminNotification(reservation: any) {
   const productTitle = localizeProductTitle(reservation.product);
   const editUrl = getAdminReservationUrl(reservation.id);
@@ -106,6 +84,109 @@ async function sendAdminNotification(reservation: any) {
 <p><strong>Status:</strong> ${escapeHtml(reservation.status)}</p>
 <p><a href="${escapeHtml(editUrl)}">Edit reservation</a></p>
 <p><a href="${escapeHtml(deleteUrl)}">Delete reservation in dashboard</a></p>`,
+  });
+}
+
+async function sendCustomerReservationEmail(
+  reservation: any,
+  createdGuestUser?: any | null
+) {
+  const productTitle = localizeProductTitle(reservation.product);
+  const baseUrl = getFrontendBase();
+  const logoUrl = `${baseUrl}/images/logo.png`;
+  const loginUrl = `${baseUrl}/login`;
+  let accountBlock = "";
+
+  if (createdGuestUser) {
+    const [{ token: verifyToken, expiresAt }, { token: resetToken }] =
+      await Promise.all([
+        issueEmailVerificationToken(createdGuestUser.id),
+        issuePasswordResetToken(createdGuestUser.id),
+      ]);
+
+    const verifyUrl = `${baseUrl}/verify-email?token=${verifyToken}`;
+    const resetUrl = `${baseUrl}/reset-password?token=${resetToken}`;
+
+    accountBlock = `
+      <tr>
+        <td style="padding: 0 28px 28px;">
+          <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:16px;padding:18px;">
+            <p style="margin:0 0 10px;color:#9a3412;font-size:14px;font-weight:700;">Manage your reservation</p>
+            <p style="margin:0 0 14px;color:#57534e;font-size:14px;line-height:1.6;">We created a Rayhana account for this email so you can manage your reservation later.</p>
+            <p style="margin:0 0 12px;">
+              <a href="${escapeHtml(verifyUrl)}" style="display:inline-block;background:#b91c1c;color:#ffffff;text-decoration:none;padding:10px 14px;border-radius:10px;font-size:14px;font-weight:700;">Verify email</a>
+              <a href="${escapeHtml(resetUrl)}" style="display:inline-block;margin-left:8px;background:#ffffff;color:#b91c1c;text-decoration:none;padding:9px 13px;border-radius:10px;border:1px solid #fecaca;font-size:14px;font-weight:700;">Set password</a>
+            </p>
+            <p style="margin:0;color:#78716c;font-size:12px;">Verification link expires at ${escapeHtml(expiresAt.toISOString())}.</p>
+          </div>
+        </td>
+      </tr>`;
+  }
+
+  await sendContactEmail({
+    to: reservation.email,
+    from: ENV.SMTP_FROM_EMAIL || "no-reply@rayhana.com",
+    subject: "Your Rayhana 15% discount is reserved",
+    html: `<!doctype html>
+<html>
+  <body style="margin:0;background:#f6f1eb;font-family:Arial,Helvetica,sans-serif;color:#1f2937;">
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#f6f1eb;padding:28px 12px;">
+      <tr>
+        <td align="center">
+          <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="max-width:620px;background:#ffffff;border-radius:24px;overflow:hidden;box-shadow:0 18px 48px rgba(120,53,15,.14);">
+            <tr>
+              <td align="center" style="background:#7f1d1d;padding:28px 24px;">
+                <img src="${escapeHtml(logoUrl)}" alt="Rayhana" width="84" style="display:block;margin:0 auto 14px;border-radius:14px;">
+                <p style="margin:0;color:#fecaca;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;">Pre-launch reservation</p>
+                <h1 style="margin:10px 0 0;color:#ffffff;font-family:Georgia,serif;font-size:30px;line-height:1.2;">Your 15% discount is reserved</h1>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:28px 28px 18px;">
+                <p style="margin:0 0 16px;font-size:16px;line-height:1.7;color:#374151;">Hi ${escapeHtml(reservation.fullName)},</p>
+                <p style="margin:0;font-size:16px;line-height:1.7;color:#374151;">Thank you for reserving your Rayhana pre-launch offer. We saved your spot and will email your personal discount code when Amazon EU and UK launch goes live.</p>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 28px 24px;">
+                <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="background:#fef2f2;border:1px solid #fecaca;border-radius:16px;">
+                  <tr>
+                    <td style="padding:18px;border-bottom:1px solid #fecaca;color:#991b1b;font-weight:700;">Reservation details</td>
+                  </tr>
+                  <tr>
+                    <td style="padding:18px;">
+                      <p style="margin:0 0 10px;font-size:14px;color:#4b5563;"><strong style="color:#111827;">Product:</strong> ${escapeHtml(productTitle)}</p>
+                      <p style="margin:0 0 10px;font-size:14px;color:#4b5563;"><strong style="color:#111827;">Size:</strong> ${escapeHtml(reservation.productSize)}</p>
+                      <p style="margin:0 0 10px;font-size:14px;color:#4b5563;"><strong style="color:#111827;">Region:</strong> ${escapeHtml(reservation.region)}</p>
+                      <p style="margin:0;font-size:14px;color:#4b5563;"><strong style="color:#111827;">WhatsApp:</strong> ${escapeHtml(reservation.whatsapp)}</p>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding:0 28px 24px;">
+                <div style="background:#f9fafb;border-radius:16px;padding:18px;">
+                  <p style="margin:0 0 10px;color:#111827;font-size:15px;font-weight:700;">What happens next?</p>
+                  <p style="margin:0 0 8px;color:#4b5563;font-size:14px;line-height:1.6;">1. We launch on Amazon EU and UK.</p>
+                  <p style="margin:0 0 8px;color:#4b5563;font-size:14px;line-height:1.6;">2. You receive your personal 15% discount code by email.</p>
+                  <p style="margin:0;color:#4b5563;font-size:14px;line-height:1.6;">3. You use the code on our Amazon listing to claim your discount.</p>
+                </div>
+              </td>
+            </tr>
+            ${accountBlock}
+            <tr>
+              <td align="center" style="padding:0 28px 32px;">
+                <a href="${escapeHtml(loginUrl)}" style="display:inline-block;background:#b91c1c;color:#ffffff;text-decoration:none;padding:12px 18px;border-radius:999px;font-size:14px;font-weight:700;">Visit Rayhana</a>
+              </td>
+            </tr>
+          </table>
+          <p style="margin:18px 0 0;color:#9ca3af;font-size:12px;">Rayhana Kitchen Appliance</p>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`,
   });
 }
 
@@ -190,9 +271,7 @@ async function createReservationFromRequest(
 
   await Promise.allSettled([
     sendAdminNotification(reservationWithProduct),
-    createdGuestUser
-      ? sendGuestAccountEmail(createdGuestUser)
-      : Promise.resolve(),
+    sendCustomerReservationEmail(reservationWithProduct, createdGuestUser),
   ]);
 
   return res.status(201).json(reservationWithProduct);

@@ -61,15 +61,7 @@ const statuses: PreLaunchReservationStatus[] = [
   "completed",
 ];
 
-const regions = [
-  "EU",
-  "United Kingdom",
-  "United States",
-  "Canada",
-  "Australia",
-  "Arabic Countries",
-  "Afghanistan",
-];
+const regions = ["EU", "United Kingdom"];
 
 const normalizeWhatsapp = (value: string) => value.replace(/[\s().-]/g, "");
 const isValidWhatsapp = (value: string) => /^\+[1-9]\d{6,14}$/.test(value);
@@ -386,9 +378,16 @@ export default function DashboardPreLaunchReservations() {
                   <div className="text-sm text-muted-foreground">
                     {reservation.email} · {reservation.whatsapp}
                   </div>
-                  <div className="text-sm">
-                    {localizeTitle(reservation.product?.title)} · Size{" "}
-                    {reservation.productSize} · {reservation.region}
+                  <div className="flex flex-wrap gap-2 text-sm">
+                    <Badge variant="secondary" className="rounded-md">
+                      Product: {localizeTitle(reservation.product?.title)}
+                    </Badge>
+                    <Badge variant="secondary" className="rounded-md">
+                      Size: {reservation.productSize}
+                    </Badge>
+                    <Badge variant="outline" className="rounded-md">
+                      {reservation.region}
+                    </Badge>
                   </div>
                   <div className="text-xs text-muted-foreground">
                     {format(
