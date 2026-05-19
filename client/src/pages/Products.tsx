@@ -12,6 +12,7 @@ import {
   CreditCard,
   Wallet,
   Smartphone,
+  Mail,
 } from "lucide-react";
 import {
   Dialog,
@@ -248,16 +249,6 @@ export default function Products() {
                 {t("products_page.shipping_ir")}
               </p>
             </div>
-            <div
-              className={`flex items-start gap-3 p-3 bg-card/50 rounded-lg ${isRTL ? "text-right" : "text-left"}`}
-            >
-              <span className="text-2xl flex-shrink-0">🇦🇫</span>
-              <p
-                className={`text-sm text-muted-foreground flex-1 ${isRTL ? "font-[Vazirmatn] text-right" : "text-left"}`}
-              >
-                {t("products_page.shipping_af")}
-              </p>
-            </div>
           </div>
         </motion.div>
 
@@ -332,6 +323,18 @@ function ProductCard({
   })();
   const caLink = (() => {
     const url = product.amazonCaUrl;
+    if (!url || typeof url !== "string") return null;
+    try {
+      const parsed = new URL(url);
+      const proto = parsed.protocol.toLowerCase();
+      if (proto === "http:" || proto === "https:") return parsed.toString();
+    } catch {
+      return null;
+    }
+    return null;
+  })();
+  const shopinoLink = (() => {
+    const url = product.shopino24Url;
     if (!url || typeof url !== "string") return null;
     try {
       const parsed = new URL(url);
@@ -472,6 +475,19 @@ function ProductCard({
                     {t("products_page.buy_amazon_ca")}
                   </Button>
                 )}
+                {shopinoLink && (
+                  <Button
+                    size="sm"
+                    className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+                    onClick={e => {
+                      e.stopPropagation();
+                      window.open(shopinoLink, "_blank", "noopener,noreferrer");
+                    }}
+                  >
+                    <Mail className="w-4 h-4 mr-2" />
+                    {t("products_page.buy_shopino24")}
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -500,7 +516,7 @@ function ProductCard({
             <div className="flex items-center flex-col justify-between p-4 bg-secondary/30 rounded-xl">
               <span className="text-2xl font-bold text-primary">
                 {currentPrice !== undefined
-                  ? `${isRTL ? "" : "$"}${currentPrice}${isRTL ? " تومان" : ""}`
+                  ? `${isRTL ? "" : "$"}${currentPrice}${isRTL ? " دلار" : ""}`
                   : t("products_page.price_na")}
               </span>
               <Button
@@ -529,6 +545,17 @@ function ProductCard({
               >
                 <ShoppingBag className="w-4 h-4 mr-2" />
                 {t("products_page.buy_amazon_ca")}
+              </Button>
+            )}
+            {shopinoLink && (
+              <Button
+                className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 mt-2 w-full"
+                onClick={() => {
+                  window.open(shopinoLink, "_blank", "noopener,noreferrer");
+                }}
+              >
+                <Mail className="w-4 h-4 mr-2" />
+                {t("products_page.buy_shopino24")}
               </Button>
             )}
 

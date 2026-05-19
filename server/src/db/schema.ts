@@ -118,6 +118,7 @@ export const products = pgTable("products", {
   imageUrl: text("image_url").notNull(),
   productUrl: text("product_url"),
   amazonCaUrl: text("amazon_ca_url"),
+  shopino24Url: text("shopino24_url"),
   rating: integer("rating").notNull().default(5),
   sizes: jsonb("sizes").$type<number[]>().notNull().default([]),
   colors: jsonb("colors").$type<string[]>().notNull().default([]),

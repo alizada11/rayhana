@@ -18,6 +18,7 @@ export interface Product {
   id: ID;
   productUrl?: string | null;
   amazonCaUrl?: string | null;
+  shopino24Url?: string | null;
   reviews?: Array<{
     id: string;
     author: string;

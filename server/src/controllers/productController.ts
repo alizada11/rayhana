@@ -28,7 +28,8 @@ const normalizeProductUrl = (raw?: unknown) => {
   if (!trimmed) return undefined;
   try {
     const parsed = new URL(trimmed);
-    if (parsed.protocol !== "http:" && parsed.protocol !== "https:") return null;
+    if (parsed.protocol !== "http:" && parsed.protocol !== "https:")
+      return null;
     return parsed.toString();
   } catch {
     return null;
@@ -53,6 +54,7 @@ const productSchema = z.object({
   prices: z.record(z.string(), z.number()).optional(),
   productUrl: z.string().url().optional(),
   amazonCaUrl: z.string().url().optional(),
+  shopino24Url: z.string().url().optional(),
   // allow relative /uploads/... or absolute URL
   imageUrl: z
     .string()
@@ -136,6 +138,7 @@ export const createProduct = async (req: Request, res: Response) => {
       prices,
       productUrl,
       amazonCaUrl,
+      shopino24Url,
     } = req.body;
 
     const uploadedImageUrl = req.file
@@ -143,7 +146,12 @@ export const createProduct = async (req: Request, res: Response) => {
       : undefined;
 
     // Validate required fields
-    if (!title || !description || !category || (!imageUrl && !uploadedImageUrl)) {
+    if (
+      !title ||
+      !description ||
+      !category ||
+      (!imageUrl && !uploadedImageUrl)
+    ) {
       return res.status(400).json({
         error: "Title, description, category, and image are required",
       });
@@ -159,8 +167,17 @@ export const createProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid amazonCaUrl protocol" });
     }
 
+    const normalizedShopino24Url = normalizeProductUrl(shopino24Url);
+    if (normalizedShopino24Url === null) {
+      return res.status(400).json({ error: "Invalid shopino24Url protocol" });
+    }
+
     const payload = {
-      title: parseJSON<Record<string, string>>(title, { en: "", fa: "", ps: "" }),
+      title: parseJSON<Record<string, string>>(title, {
+        en: "",
+        fa: "",
+        ps: "",
+      }),
       description: parseJSON<Record<string, string>>(description, {
         en: "",
         fa: "",
@@ -169,6 +186,7 @@ export const createProduct = async (req: Request, res: Response) => {
       imageUrl: (uploadedImageUrl ?? imageUrl) as string,
       productUrl: normalizedProductUrl,
       amazonCaUrl: normalizedAmazonCaUrl,
+      shopino24Url: normalizedShopino24Url,
       category,
       rating: Number(rating ?? 5),
       sizes: parseJSON<number[]>(sizes, []),
@@ -211,6 +229,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       prices,
       productUrl,
       amazonCaUrl,
+      shopino24Url,
     } = req.body;
 
     const uploadedImageUrl = req.file
@@ -245,6 +264,14 @@ export const updateProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid amazonCaUrl protocol" });
     }
 
+    const normalizedShopino24Url =
+      shopino24Url !== undefined
+        ? normalizeProductUrl(shopino24Url)
+        : undefined;
+    if (normalizedShopino24Url === null) {
+      return res.status(400).json({ error: "Invalid shopino24Url protocol" });
+    }
+
     const payload = {
       title: title
         ? parseJSON<Record<string, string>>(title, { en: "", fa: "", ps: "" })
@@ -265,6 +292,10 @@ export const updateProduct = async (req: Request, res: Response) => {
         normalizedAmazonCaUrl === undefined
           ? existingProduct.amazonCaUrl
           : normalizedAmazonCaUrl,
+      shopino24Url:
+        normalizedShopino24Url === undefined
+          ? existingProduct.shopino24Url
+          : normalizedShopino24Url,
       category: category ?? existingProduct.category,
       rating:
         rating !== undefined ? Number(rating) : Number(existingProduct.rating),
