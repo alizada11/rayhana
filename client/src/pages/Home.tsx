@@ -297,23 +297,36 @@ export default function Home() {
     );
   }
 
-  const seo = homepage?.seo;
+  const seo = homepage?.seo ?? {};
+  const seoPages = Array.isArray((seo as any).pages)
+    ? (seo as any).pages.reduce((acc: Record<string, any>, item: any) => {
+        if (item?.key) acc[item.key.toLowerCase()] = item;
+        return acc;
+      }, {})
+    : ((seo as any).pages ?? {});
+  const homeSeo = seoPages.home || {};
+  const getOptionalLocalized = (obj: any) => {
+    if (!obj) return "";
+    if (typeof obj === "string") return obj.trim();
+    return (obj[currentLang] || obj.en || "").trim();
+  };
+  const seoTitle =
+    getOptionalLocalized(homeSeo.title) ||
+    getOptionalLocalized((seo as any).defaultTitle) ||
+    heroTitle;
+  const seoDescription =
+    getOptionalLocalized(homeSeo.description) ||
+    getOptionalLocalized((seo as any).defaultDescription) ||
+    heroSubtitle;
+  const seoImage = homeSeo.image || (seo as any).defaultImage || featuredImage;
 
   return (
     <>
       <SeoTags
         pageKey="home"
-        title={
-          (seo as any)?.title || t("seo.home.title", "Rayhana Afghan Cooking")
-        }
-        description={
-          (seo as any)?.description ||
-          t(
-            "seo.home.description",
-            "Cook authentic Qabili Palaw with Rayhana premium non-stick cookware. Designed for perfect Afghan Qabili Pilaf and Qabili Pilau with modern quality and traditional flavor."
-          )
-        }
-        image={(seo as any)?.image_url || featuredImage}
+        title={seoTitle}
+        description={seoDescription}
+        image={seoImage}
         url={`${import.meta.env.VITE_BASE_URL || ""}/`}
         seoData={seo as any}
       />

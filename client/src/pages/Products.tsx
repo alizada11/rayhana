@@ -12,7 +12,6 @@ import {
   CreditCard,
   Wallet,
   Smartphone,
-  Mail,
 } from "lucide-react";
 import {
   Dialog,
@@ -442,10 +441,10 @@ function ProductCard({
                   ? `${isRTL ? "" : "$"}${currentPrice}${isRTL ? " دلار" : ""}`
                   : t("products_page.price_na")}
               </span>
-              <div className="flex flex-col gap-2 items-end">
+              <div className="flex w-full max-w-48 flex-col items-stretch gap-2">
                 <Button
                   size="sm"
-                  className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
+                  className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
                   onClick={e => {
                     e.stopPropagation();
                     const searchQuery = encodeURIComponent(
@@ -465,7 +464,7 @@ function ProductCard({
                 {caLink && (
                   <Button
                     size="sm"
-                    className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
+                    className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
                     onClick={e => {
                       e.stopPropagation();
                       window.open(caLink, "_blank", "noopener,noreferrer");
@@ -478,13 +477,13 @@ function ProductCard({
                 {shopinoLink && (
                   <Button
                     size="sm"
-                    className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+                    className="w-full rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
                     onClick={e => {
                       e.stopPropagation();
                       window.open(shopinoLink, "_blank", "noopener,noreferrer");
                     }}
                   >
-                    <Mail className="w-4 h-4 mr-2" />
+                    <ShoppingBag className="w-4 h-4 mr-2" />
                     {t("products_page.buy_shopino24")}
                   </Button>
                 )}
@@ -513,51 +512,58 @@ function ProductCard({
               />
             </div>
 
-            <div className="flex items-center flex-col justify-between p-4 bg-secondary/30 rounded-xl">
+            <div className="flex flex-col items-center gap-3 p-4 bg-secondary/30 rounded-xl">
               <span className="text-2xl font-bold text-primary">
                 {currentPrice !== undefined
                   ? `${isRTL ? "" : "$"}${currentPrice}${isRTL ? " دلار" : ""}`
                   : t("products_page.price_na")}
               </span>
-              <Button
-                className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
-                onClick={() => {
-                  const searchQuery = encodeURIComponent(
-                    `Rayhana Kitchen ${localize(product.title)} ${
-                      selectedSize ? `size ${selectedSize}` : ""
-                    }`
-                  );
-                  const href =
-                    productLink || `https://www.amazon.com/s?k=${searchQuery}`;
-                  window.open(href, "_blank", "noopener,noreferrer");
-                }}
-              >
-                <ShoppingBag className="w-4 h-4 mr-2" />
-                {t("products_page.buy_amazon")}
-              </Button>
+              <div className="flex w-full max-w-64 flex-col items-stretch gap-2">
+                <Button
+                  className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
+                  onClick={() => {
+                    const searchQuery = encodeURIComponent(
+                      `Rayhana Kitchen ${localize(product.title)} ${
+                        selectedSize ? `size ${selectedSize}` : ""
+                      }`
+                    );
+                    const href =
+                      productLink ||
+                      `https://www.amazon.com/s?k=${searchQuery}`;
+                    window.open(href, "_blank", "noopener,noreferrer");
+                  }}
+                >
+                  <ShoppingBag className="w-4 h-4 mr-2" />
+                  {t("products_page.buy_amazon")}
+                </Button>
+                {caLink && (
+                  <Button
+                    className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
+                    onClick={() => {
+                      window.open(caLink, "_blank", "noopener,noreferrer");
+                    }}
+                  >
+                    <ShoppingBag className="w-4 h-4 mr-2" />
+                    {t("products_page.buy_amazon_ca")}
+                  </Button>
+                )}
+                {shopinoLink && (
+                  <Button
+                    className="w-full rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8"
+                    onClick={() => {
+                      window.open(
+                        shopinoLink,
+                        "_blank",
+                        "noopener,noreferrer"
+                      );
+                    }}
+                  >
+                    <ShoppingBag className="w-4 h-4 mr-2" />
+                    {t("products_page.buy_shopino24")}
+                  </Button>
+                )}
+              </div>
             </div>
-            {caLink && (
-              <Button
-                className="rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8 mt-2 w-full"
-                onClick={() => {
-                  window.open(caLink, "_blank", "noopener,noreferrer");
-                }}
-              >
-                <ShoppingBag className="w-4 h-4 mr-2" />
-                {t("products_page.buy_amazon_ca")}
-              </Button>
-            )}
-            {shopinoLink && (
-              <Button
-                className="rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8 mt-2 w-full"
-                onClick={() => {
-                  window.open(shopinoLink, "_blank", "noopener,noreferrer");
-                }}
-              >
-                <Mail className="w-4 h-4 mr-2" />
-                {t("products_page.buy_shopino24")}
-              </Button>
-            )}
 
             {/* Bonus Gifts Section */}
             <div className="p-4 bg-primary/5 rounded-xl border border-primary/10">
