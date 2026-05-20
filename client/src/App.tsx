@@ -157,7 +157,7 @@ function App({ ssrPath, ssrSearch }: AppProps) {
   useUserSync();
   return (
     <ErrorBoundary>
-      <ThemeProvider defaultTheme="dark">
+      <ThemeProvider defaultTheme="light">
         <ConfirmProvider>
           <TooltipProvider>
             <Suspense fallback={null}>
