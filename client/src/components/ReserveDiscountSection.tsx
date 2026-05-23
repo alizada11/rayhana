@@ -211,26 +211,28 @@ export default function ReserveDiscountSection({
     t("reserve_discount.reservations.product_fallback", "Rayhana pot");
 
   return (
-    <section className="relative mx-auto mb-24 max-w-[90rem] px-4 pt-24 sm:pt-28">
+    <section className="relative mx-auto mb-24 w-full max-w-[90rem] overflow-x-clip px-3 pt-24 sm:px-4 sm:pt-28">
       <img
         src={eidImage}
         alt=""
         aria-hidden="true"
         className="pointer-events-none absolute left-1/2 top-0 z-20 w-[min(74vw,20rem)] -translate-x-1/2 select-none object-contain sm:w-[23rem] md:w-[26rem]"
       />
-      <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#fff4ec] via-[#ffeadf] to-[#fff3d6] px-6 pb-16 pt-20 text-[#061526] shadow-sm sm:px-10 sm:pb-16 sm:pt-24 md:px-16 lg:px-24">
+      <div className="relative w-full max-w-full overflow-hidden rounded-[28px] bg-gradient-to-br from-[#fff4ec] via-[#ffeadf] to-[#fff3d6] px-4 pb-16 pt-20 text-[#061526] shadow-sm sm:px-10 sm:pb-16 sm:pt-24 md:px-16 lg:px-24">
         <div className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-[#efd1c7]/45 sm:h-64 sm:w-64" />
         <div className="pointer-events-none absolute -right-8 top-0 h-44 w-44 rounded-full bg-[#efd2aa]/45 sm:-right-10 sm:h-52 sm:w-52" />
         <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-9 text-center">
           <div className="space-y-6">
-            <Badge className="mx-auto inline-flex w-fit items-center gap-2 rounded-md border-0 bg-[#d51b2a] px-5 py-2 text-[1.5rem] font-extrabold uppercase tracking-[0.12em] text-white shadow-none hover:bg-[#d51b2a]">
+            <Badge className="mx-auto flex w-full max-w-full shrink items-center justify-center gap-2 whitespace-normal rounded-md border-0 bg-[#d51b2a] px-3 py-2 text-center text-[clamp(0.9rem,3.8vw,1.5rem)] font-extrabold uppercase leading-tight tracking-[0.06em] text-white shadow-none hover:bg-[#d51b2a] min-[420px]:w-fit sm:max-w-full sm:px-5 sm:tracking-[0.12em] [&>svg]:!size-6">
               <Moon
                 aria-hidden="true"
                 className={`h-6 w-6 shrink-0 fill-yellow-300 text-yellow-300 ${
                   isRTL ? "rotate-270" : "-rotate-12"
                 }`}
               />
-              {t("reserve_discount.badge", "Pre-launch offer")}
+              <span className="min-w-0 break-words">
+                {t("reserve_discount.badge", "Pre-launch offer")}
+              </span>
             </Badge>
             <div className="space-y-5">
               <h2 className="font-serif text-4xl md:text-6xl font-bold text-primary">
