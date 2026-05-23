@@ -269,6 +269,7 @@ export const products = pgTable("products", {
 	prices: jsonb().default({}).notNull(),
 	productUrl: text("product_url"),
 	amazonCaUrl: text("amazon_ca_url"),
+	amazonAuUrl: text("amazon_au_url"),
 }, (table) => [
 	foreignKey({
 			columns: [table.userId],

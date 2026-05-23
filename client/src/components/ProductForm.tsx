@@ -30,6 +30,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     imageUrl: string;
     productUrl?: string;
     amazonCaUrl?: string;
+    amazonAuUrl?: string;
     shopino24Url?: string;
     rating: number;
     sizes: number[];
@@ -44,6 +45,7 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     imageUrl: product?.imageUrl || "",
     productUrl: product?.productUrl || "",
     amazonCaUrl: product?.amazonCaUrl || "",
+    amazonAuUrl: product?.amazonAuUrl || "",
     shopino24Url: product?.shopino24Url || "",
     rating: product?.rating || 5,
     sizes: product?.sizes || [],
@@ -93,6 +95,8 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
     if (formData.productUrl) payload.append("productUrl", formData.productUrl);
     if (formData.amazonCaUrl)
       payload.append("amazonCaUrl", formData.amazonCaUrl);
+    if (formData.amazonAuUrl)
+      payload.append("amazonAuUrl", formData.amazonAuUrl);
     if (formData.shopino24Url)
       payload.append("shopino24Url", formData.shopino24Url);
     payload.append("rating", String(formData.rating));
@@ -340,6 +344,21 @@ export default function ProductForm({ product, onClose }: ProductFormProps) {
               />
               <p className="text-xs text-gray-500 mt-1">
                 Used for the "Buy on Amazon CA" button. Leave empty to hide.
+              </p>
+            </div>
+            <div>
+              <label className="block text-sm font-medium text-foreground mb-2">
+                Amazon AU URL (optional)
+              </label>
+              <input
+                type="url"
+                placeholder="https://www.amazon.com.au/dp/..."
+                value={formData.amazonAuUrl}
+                onChange={e => handleChange("amazonAuUrl", e.target.value)}
+                className="w-full px-4 py-2 border border-border bg-background rounded-lg focus:ring-2 focus:ring-primary/20 focus:border-primary transition-all text-foreground placeholder:text-muted-foreground"
+              />
+              <p className="text-xs text-gray-500 mt-1">
+                Used for the "Buy on Amazon AU" button. Leave empty to hide.
               </p>
             </div>
             <div>

@@ -54,6 +54,7 @@ const productSchema = z.object({
   prices: z.record(z.string(), z.number()).optional(),
   productUrl: z.string().url().optional(),
   amazonCaUrl: z.string().url().optional(),
+  amazonAuUrl: z.string().url().optional(),
   shopino24Url: z.string().url().optional(),
   // allow relative /uploads/... or absolute URL
   imageUrl: z
@@ -138,6 +139,7 @@ export const createProduct = async (req: Request, res: Response) => {
       prices,
       productUrl,
       amazonCaUrl,
+      amazonAuUrl,
       shopino24Url,
     } = req.body;
 
@@ -167,6 +169,11 @@ export const createProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid amazonCaUrl protocol" });
     }
 
+    const normalizedAmazonAuUrl = normalizeProductUrl(amazonAuUrl);
+    if (normalizedAmazonAuUrl === null) {
+      return res.status(400).json({ error: "Invalid amazonAuUrl protocol" });
+    }
+
     const normalizedShopino24Url = normalizeProductUrl(shopino24Url);
     if (normalizedShopino24Url === null) {
       return res.status(400).json({ error: "Invalid shopino24Url protocol" });
@@ -186,6 +193,7 @@ export const createProduct = async (req: Request, res: Response) => {
       imageUrl: (uploadedImageUrl ?? imageUrl) as string,
       productUrl: normalizedProductUrl,
       amazonCaUrl: normalizedAmazonCaUrl,
+      amazonAuUrl: normalizedAmazonAuUrl,
       shopino24Url: normalizedShopino24Url,
       category,
       rating: Number(rating ?? 5),
@@ -229,6 +237,7 @@ export const updateProduct = async (req: Request, res: Response) => {
       prices,
       productUrl,
       amazonCaUrl,
+      amazonAuUrl,
       shopino24Url,
     } = req.body;
 
@@ -264,6 +273,12 @@ export const updateProduct = async (req: Request, res: Response) => {
       return res.status(400).json({ error: "Invalid amazonCaUrl protocol" });
     }
 
+    const normalizedAmazonAuUrl =
+      amazonAuUrl !== undefined ? normalizeProductUrl(amazonAuUrl) : undefined;
+    if (normalizedAmazonAuUrl === null) {
+      return res.status(400).json({ error: "Invalid amazonAuUrl protocol" });
+    }
+
     const normalizedShopino24Url =
       shopino24Url !== undefined
         ? normalizeProductUrl(shopino24Url)
@@ -292,6 +307,10 @@ export const updateProduct = async (req: Request, res: Response) => {
         normalizedAmazonCaUrl === undefined
           ? existingProduct.amazonCaUrl
           : normalizedAmazonCaUrl,
+      amazonAuUrl:
+        normalizedAmazonAuUrl === undefined
+          ? existingProduct.amazonAuUrl
+          : normalizedAmazonAuUrl,
       shopino24Url:
         normalizedShopino24Url === undefined
           ? existingProduct.shopino24Url

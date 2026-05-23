@@ -259,7 +259,7 @@
     "review_2": "Great quality and beautiful design. The ladle is a nice bonus.",
     "review_3": "Perfect size for my family. Highly recommended!",
     "out_of_5": "out of 5 stars",
-    "coming_soon_markets": "Coming soon to Amazon Europe, UK, and Australia",
+    "coming_soon_markets": "Coming soon to Amazon Europe and the UK",
     "brand_message_title": "The Beginning of a Journey",
     "brand_message_p1": "In a world of endless choices, you chose culture. You chose quality. You chose to honor the generations who taught us that the best meals are crafted with patience and love.",
     "brand_message_highlight": "Your support changes lives.",
@@ -283,17 +283,18 @@
     "shipping_ir": "Iran: Unfortunately, current conditions make direct shipping not possible.",
     "shipping_af": "Afghanistan: Coming soon through Shopino24.",
     "buy_amazon_ca": "Buy on Amazon CA 🇨🇦",
+    "buy_amazon_au": "Buy on Amazon AU 🇦🇺",
     "buy_shopino24": "Buy on Shopino24 🇦🇫"
   },
   "reserve_discount": {
-    "badge": "PRE-LAUNCH OFFER",
-    "title": "Reserve your 15% discount",
-    "description": "We are launching on Amazon EU and UK soon. Reserve your code now and we will email you the moment your region goes live.",
-    "cta": "Reserve your discount",
+    "badge": "EID AL-ADHA OFFER",
+    "title": "Reserve your 15% Eid discount",
+    "description": "Rayhana launches soon on Amazon Europe and the UK. Reserve your Eid discount now and be among our very first.",
+    "cta": "Reserve your Eid discount",
     "features": {
-      "discount": "15% launch code",
+      "discount": "15% Eid discount code",
       "payment": "No payment today",
-      "alert": "Email launch alert"
+      "alert": "We email you at launch"
     },
     "modal": {
       "title": "Reserve your 15% discount",
