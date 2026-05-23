@@ -332,6 +332,18 @@ function ProductCard({
     }
     return null;
   })();
+  const auLink = (() => {
+    const url = product.amazonAuUrl;
+    if (!url || typeof url !== "string") return null;
+    try {
+      const parsed = new URL(url);
+      const proto = parsed.protocol.toLowerCase();
+      if (proto === "http:" || proto === "https:") return parsed.toString();
+    } catch {
+      return null;
+    }
+    return null;
+  })();
   const shopinoLink = (() => {
     const url = product.shopino24Url;
     if (!url || typeof url !== "string") return null;
@@ -474,10 +486,23 @@ function ProductCard({
                     {t("products_page.buy_amazon_ca")}
                   </Button>
                 )}
+                {auLink && (
+                  <Button
+                    size="sm"
+                    className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
+                    onClick={e => {
+                      e.stopPropagation();
+                      window.open(auLink, "_blank", "noopener,noreferrer");
+                    }}
+                  >
+                    <ShoppingBag className="w-4 h-4 mr-2" />
+                    {t("products_page.buy_amazon_au")}
+                  </Button>
+                )}
                 {shopinoLink && (
                   <Button
                     size="sm"
-                    className="w-full rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+                    className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
                     onClick={e => {
                       e.stopPropagation();
                       window.open(shopinoLink, "_blank", "noopener,noreferrer");
@@ -518,7 +543,7 @@ function ProductCard({
                   ? `${isRTL ? "" : "$"}${currentPrice}${isRTL ? " دلار" : ""}`
                   : t("products_page.price_na")}
               </span>
-              <div className="flex w-full max-w-64 flex-col items-stretch gap-2">
+              <div className="flex w-full max-w-70 flex-col items-stretch gap-2">
                 <Button
                   className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
                   onClick={() => {
@@ -547,15 +572,22 @@ function ProductCard({
                     {t("products_page.buy_amazon_ca")}
                   </Button>
                 )}
+                {auLink && (
+                  <Button
+                    className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
+                    onClick={() => {
+                      window.open(auLink, "_blank", "noopener,noreferrer");
+                    }}
+                  >
+                    <ShoppingBag className="w-4 h-4 mr-2" />
+                    {t("products_page.buy_amazon_au")}
+                  </Button>
+                )}
                 {shopinoLink && (
                   <Button
-                    className="w-full rounded-full bg-emerald-600 hover:bg-emerald-700 text-white font-bold px-8"
+                    className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
                     onClick={() => {
-                      window.open(
-                        shopinoLink,
-                        "_blank",
-                        "noopener,noreferrer"
-                      );
+                      window.open(shopinoLink, "_blank", "noopener,noreferrer");
                     }}
                   >
                     <ShoppingBag className="w-4 h-4 mr-2" />

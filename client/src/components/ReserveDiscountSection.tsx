@@ -21,10 +21,20 @@ import {
   useCreatePreLaunchReservation,
   useMyPreLaunchReservations,
 } from "@/hooks/usePreLaunchReservations";
+import eidImage from "@/assets/eid.png";
 import type { Product } from "@/hooks/useProducts";
 import type { PreLaunchReservation } from "@/lib/api";
 import { useAuth } from "@/lib/auth";
-import { CheckCircle, Gift, Loader2, Mail, ShieldCheck, X } from "lucide-react";
+import {
+  Check,
+  CheckCircle,
+  Gift,
+  Loader2,
+  Mail,
+  Moon,
+  ShieldCheck,
+  X,
+} from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { useTranslation } from "react-i18next";
 import { toast } from "sonner";
@@ -62,7 +72,8 @@ export default function ReserveDiscountSection({
   products,
   localize,
 }: ReserveDiscountSectionProps) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
+  const isRTL = i18n.dir() === "rtl";
   const { user, isLoaded, isSignedIn } = useAuth();
   const [open, setOpen] = useState(false);
   const [successReservation, setSuccessReservation] =
@@ -200,25 +211,39 @@ export default function ReserveDiscountSection({
     t("reserve_discount.reservations.product_fallback", "Rayhana pot");
 
   return (
-    <section className="max-w-5xl mx-auto mb-24">
-      <div className="border border-primary/15 bg-card text-card-foreground rounded-lg p-6 md:p-10 shadow-sm">
-        <div className="mx-auto flex max-w-3xl flex-col items-center gap-7 text-center">
-          <div className="space-y-5">
-            <Badge className="mx-auto p-2 w-fit rounded-full bg-primary text-primary-foreground">
+    <section className="relative mx-auto mb-24 max-w-[90rem] px-4 pt-24 sm:pt-28">
+      <img
+        src={eidImage}
+        alt=""
+        aria-hidden="true"
+        className="pointer-events-none absolute left-1/2 top-0 z-20 w-[min(74vw,20rem)] -translate-x-1/2 select-none object-contain sm:w-[23rem] md:w-[26rem]"
+      />
+      <div className="relative overflow-hidden rounded-[28px] bg-gradient-to-br from-[#fff4ec] via-[#ffeadf] to-[#fff3d6] px-6 pb-16 pt-20 text-[#061526] shadow-sm sm:px-10 sm:pb-16 sm:pt-24 md:px-16 lg:px-24">
+        <div className="pointer-events-none absolute -bottom-24 -left-20 h-52 w-52 rounded-full bg-[#efd1c7]/45 sm:h-64 sm:w-64" />
+        <div className="pointer-events-none absolute -right-8 top-0 h-44 w-44 rounded-full bg-[#efd2aa]/45 sm:-right-10 sm:h-52 sm:w-52" />
+        <div className="relative z-10 mx-auto flex max-w-4xl flex-col items-center gap-9 text-center">
+          <div className="space-y-6">
+            <Badge className="mx-auto inline-flex w-fit items-center gap-2 rounded-md border-0 bg-[#d51b2a] px-5 py-2 text-[1.5rem] font-extrabold uppercase tracking-[0.12em] text-white shadow-none hover:bg-[#d51b2a]">
+              <Moon
+                aria-hidden="true"
+                className={`h-6 w-6 shrink-0 fill-yellow-300 text-yellow-300 ${
+                  isRTL ? "rotate-270" : "-rotate-12"
+                }`}
+              />
               {t("reserve_discount.badge", "Pre-launch offer")}
             </Badge>
-            <div className="space-y-3">
-              <h2 className="font-serif text-3xl md:text-4xl font-bold text-primary">
+            <div className="space-y-5">
+              <h2 className="font-serif text-4xl md:text-6xl font-bold text-primary">
                 {t("reserve_discount.title", "Reserve your 15% discount")}
               </h2>
-              <p className="mx-auto max-w-2xl text-muted-foreground">
+              <p className="mx-auto max-w-4xl text-lg leading-8 text-[#061526] md:text-xl">
                 {t(
                   "reserve_discount.description",
                   "We are launching on Amazon EU and UK soon. Reserve your code now and we will email you the moment your region goes live."
                 )}
               </p>
             </div>
-            <div className="grid gap-3 sm:grid-cols-3">
+            <div className="flex flex-col items-center justify-center gap-4 sm:flex-row sm:flex-wrap sm:gap-10">
               {[
                 t("reserve_discount.features.discount", "15% launch code"),
                 t("reserve_discount.features.payment", "No payment today"),
@@ -226,20 +251,20 @@ export default function ReserveDiscountSection({
               ].map(item => (
                 <div
                   key={item}
-                  className="flex items-center justify-center gap-2 text-sm text-foreground"
+                  className="flex items-center justify-center gap-3 text-base text-[#061526]"
                 >
-                  <CheckCircle className="h-4 w-4 text-primary" />
+                  <Check className="h-4 w-4 stroke-[3] text-[#d51b2a]" />
                   <span>{item}</span>
                 </div>
               ))}
             </div>
           </div>
           <Button
-            className="rounded-full px-8"
+            className="inline-flex h-14 items-center justify-center gap-3 rounded-full bg-[#d51b2a] px-8 text-lg font-bold text-white shadow-none hover:bg-[#b91623] sm:px-11"
             disabled={products.length === 0}
             onClick={() => setOpen(true)}
           >
-            <Gift className="mr-2 h-4 w-4" />
+            <Check className="h-5 w-5 stroke-[3]" />
             {t("reserve_discount.cta", "Reserve your discount")}
           </Button>
         </div>
