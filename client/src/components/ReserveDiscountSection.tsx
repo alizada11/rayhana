@@ -211,6 +211,8 @@ export default function ReserveDiscountSection({
     t("reserve_discount.reservations.product_fallback", "Rayhana pot");
 
   return (
+    <>
+      {/*
     <section className="relative mx-auto mb-24 w-full max-w-[90rem] overflow-x-clip px-3 pt-24 sm:px-4 sm:pt-28">
       <img
         src={eidImage}
@@ -643,5 +645,7 @@ export default function ReserveDiscountSection({
         </div>
       )}
     </section>
+    */}
+    </>
   );
 }
