@@ -129,7 +129,7 @@ export default function Products() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4 mb-8 max-w-4xl mx-auto">
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-4 mb-8 max-w-3xl mx-auto">
             <a
               href="https://www.paypal.com/ncp/payment/6YR8TPB4YFSPY"
               target="_blank"
@@ -176,22 +176,6 @@ export default function Products() {
               </span>
               <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">
                 USD $
-              </span>
-            </a>
-            <a
-              href="https://www.paypal.com/ncp/payment/EAE4RU297UTX4"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="flex flex-col items-center justify-center p-4 bg-card hover:bg-primary hover:text-primary-foreground border-2 border-primary/30 hover:border-primary rounded-xl transition-all shadow-sm hover:shadow-md group"
-            >
-              <span className="text-3xl mb-2">🇦🇺</span>
-              <span
-                className={`font-semibold text-sm md:text-base ${isRTL ? "font-[Vazirmatn]" : ""}`}
-              >
-                {t("products_page.region_au")}
-              </span>
-              <span className="text-xs text-muted-foreground group-hover:text-primary-foreground/80 mt-1">
-                AUD $
               </span>
             </a>
           </div>

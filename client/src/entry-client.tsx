@@ -5,6 +5,7 @@ import { createAppQueryClient } from "./queryClient";
 import "./index.css";
 import "./fonts.css";
 import "./lib/i18n";
+import { initClarity } from "./lib/clarity";
 
 declare global {
   interface Window {
@@ -14,6 +15,7 @@ declare global {
 
 const queryClient = createAppQueryClient();
 const root = document.getElementById("root")!;
+initClarity();
 const app = (
   <Root
     queryClient={queryClient}
