@@ -198,7 +198,29 @@ const fallbackSeo = {
   twitterHandle: "",
   siteName: "",
   baseUrl: "",
-  pages: [],
+  pages: [
+    "home",
+    "products",
+    "about",
+    "blog-index",
+    "blog-post",
+    "contact",
+    "gallery",
+    "faq",
+    "help",
+    "help-article",
+    "privacy",
+    "terms",
+    "login",
+    "reset-password",
+    "verify-email",
+    "404",
+  ].map(key => ({
+    key,
+    title: { en: "", fa: "", ps: "" },
+    description: { en: "", fa: "", ps: "" },
+    image: "",
+  })),
 };
 
 const CONTENT_KEYS = [

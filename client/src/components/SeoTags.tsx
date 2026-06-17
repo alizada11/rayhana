@@ -36,20 +36,18 @@ export default function SeoTags(props: SeoTagsProps) {
     undefined;
 
   const title =
+    getLocalizedSeoValue(pageSeo?.title, lang) ||
     props.title ||
-    (pageSeo?.title?.[lang] || pageSeo?.title?.en) ||
-    seo?.defaultTitle?.[lang] ||
-    seo?.defaultTitle?.en ||
+    getLocalizedSeoValue(seo?.defaultTitle, lang) ||
     (typeof document !== "undefined" ? document.title : "");
   const description =
+    getLocalizedSeoValue(pageSeo?.description, lang) ||
     props.description ||
-    (pageSeo?.description?.[lang] || pageSeo?.description?.en) ||
-    seo?.defaultDescription?.[lang] ||
-    seo?.defaultDescription?.en ||
+    getLocalizedSeoValue(seo?.defaultDescription, lang) ||
     "";
   const baseUrl = getBaseUrl(seo?.baseUrl);
   const image = resolveUrl(
-    props.image || pageSeo?.image || seo?.defaultImage,
+    pageSeo?.image || props.image || seo?.defaultImage,
     baseUrl
   );
   const pagePath = getPathForSeo(props.url, location);
@@ -171,6 +169,15 @@ function resolveUrl(url?: string, base?: string) {
   if (url.startsWith("http")) return url;
   if (base) return `${base.replace(/\/+$/, "")}${url.startsWith("/") ? "" : "/"}${url}`;
   return url;
+}
+
+function getLocalizedSeoValue(
+  value: Record<string, string> | string | undefined,
+  lang: string
+) {
+  if (!value) return "";
+  if (typeof value === "string") return value.trim();
+  return (value[lang] || value.en || "").trim();
 }
 
 function buildJsonLd({

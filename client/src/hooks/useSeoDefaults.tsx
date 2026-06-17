@@ -41,6 +41,7 @@ export const useSeoDefaults = (options?: {
       ? rawSeo.pages.reduce<Record<string, any>>((acc, item) => {
           if (!item?.key) return acc;
           acc[item.key] = { ...item, key: undefined };
+          acc[String(item.key).toLowerCase()] = { ...item, key: undefined };
           return acc;
         }, {})
       : (rawSeo.pages as Record<string, any>) || {};

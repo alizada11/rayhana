@@ -183,15 +183,11 @@ function buildHeadTags(
     lang
   )}`;
 
-  let title =
-    local(pageSeo?.title) ||
-    defaultTitle ||
-    "Rayhana Kitchen Appliance";
+  let title = defaultTitle || "Rayhana Kitchen Appliance";
   let description =
-    local(pageSeo?.description) ||
     defaultDescription ||
     "Cookware and stories inspired by authentic Afghan cooking.";
-  let image = pageSeo?.image || seoContent?.defaultImage || "/images/logo.png";
+  let image = seoContent?.defaultImage || "/images/logo.png";
   let type = "website";
   let publishedTime = "";
   let modifiedTime = "";
@@ -209,10 +205,8 @@ function buildHeadTags(
   }
 
   if (unlocalizedPath === "/blog") {
-    title = local(pageSeo?.title) || "Rayhana Blog";
-    description =
-      local(pageSeo?.description) ||
-      "Stories, recipes, and tips from the Rayhana kitchen.";
+    title = "Rayhana Blog";
+    description = "Stories, recipes, and tips from the Rayhana kitchen.";
   }
 
   const blogPostMatch = unlocalizedPath.match(/^\/blog\/([^/]+)$/);
@@ -246,17 +240,14 @@ function buildHeadTags(
   }
 
   if (unlocalizedPath === "/products") {
-    title = local(pageSeo?.title) || "Shop Rayhana Products";
+    title = "Shop Rayhana Products";
     description =
-      local(pageSeo?.description) ||
       "Cookware and tools crafted for authentic Afghan cooking.";
   }
 
   if (unlocalizedPath === "/gallery") {
-    title = local(pageSeo?.title) || "Customer Gallery";
-    description =
-      local(pageSeo?.description) ||
-      "See dishes from our community and share your own.";
+    title = "Customer Gallery";
+    description = "See dishes from our community and share your own.";
   }
 
   if (unlocalizedPath === "/privacy" || unlocalizedPath === "/terms") {
@@ -268,9 +259,9 @@ function buildHeadTags(
 
   if (unlocalizedPath === "/faq") {
     const data = queryClient.getQueryData<any>(["content", "faq"])?.data;
-    title = local(data?.title) || local(pageSeo?.title) || "Frequently Asked Questions";
+    title = local(data?.title) || "Frequently Asked Questions";
     description =
-      stripHtml(local(data?.subtitle) || local(pageSeo?.description) || description).slice(
+      stripHtml(local(data?.subtitle) || description).slice(
         0,
         180
       );
@@ -294,6 +285,10 @@ function buildHeadTags(
       "Find quick answers or browse detailed help articles.";
     description = stripHtml(description);
   }
+
+  title = local(pageSeo?.title) || title;
+  description = local(pageSeo?.description) || description;
+  image = pageSeo?.image || image;
 
   const absoluteImage = resolveUrl(image, baseUrl);
   const escapedTitle = escapeHtml(title);
