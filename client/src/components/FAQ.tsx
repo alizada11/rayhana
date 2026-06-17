@@ -1,4 +1,5 @@
 import { useTranslation } from "react-i18next";
+import { Link } from "wouter";
 import {
   Accordion,
   AccordionContent,
@@ -9,7 +10,17 @@ import { stripHtml } from "@/lib/safeHtml";
 
 type FAQItem = { id?: string; question: any; answer: any };
 
-export default function FAQ({ items, title, subtitle }: { items?: FAQItem[]; title?: any; subtitle?: any }) {
+export default function FAQ({
+  items,
+  title,
+  subtitle,
+  showPageLink = true,
+}: {
+  items?: FAQItem[];
+  title?: any;
+  subtitle?: any;
+  showPageLink?: boolean;
+}) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
 
@@ -43,6 +54,14 @@ export default function FAQ({ items, title, subtitle }: { items?: FAQItem[]; tit
           <p className="text-muted-foreground text-lg">
             {getLocalized(subtitle, t("faq.subtitle"))}
           </p>
+          {showPageLink && (
+            <Link
+              href="/faq"
+              className="mt-4 inline-flex text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+            >
+              {t("faq.view_all")}
+            </Link>
+          )}
         </div>
 
         <div>

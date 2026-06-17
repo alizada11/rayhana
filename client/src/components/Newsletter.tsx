@@ -37,25 +37,21 @@ export function Newsletter() {
   };
 
   return (
-    <section className="py-20 relative overflow-hidden bg-primary/5 dark:bg-primary/15">
+    <section className="py-20 relative overflow-hidden bg-muted/40 dark:bg-background">
       {/* Background decoration */}
-      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-primary/30 dark:via-primary/25 to-transparent" />
+      <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-border to-transparent" />
 
       <div className="container mx-auto px-4">
-        <div className="max-w-4xl mx-auto bg-white dark:bg-stone-900 rounded-3xl p-8 md:p-12 border border-primary/10 dark:border-primary/15 shadow-xl relative overflow-hidden">
-          {/* Decorative circles */}
-          <div className="absolute -top-24 -right-24 w-48 h-48 bg-primary/12 rounded-full blur-3xl" />
-          <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-primary/12 rounded-full blur-3xl" />
-
+        <div className="max-w-4xl mx-auto bg-card rounded-3xl p-8 md:p-12 border border-border shadow-xl shadow-black/5 dark:shadow-black/30 relative overflow-hidden">
           <div className="grid md:grid-cols-2 gap-8 items-center relative z-10">
             <div className="space-y-4 text-center md:text-start">
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 dark:bg-primary/25 text-primary dark:text-primary mb-2">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-primary/10 text-primary mb-2">
                 <Mail className="w-6 h-6" />
               </div>
-              <h2 className="font-serif text-2xl md:text-3xl font-bold text-primary dark:text-primary">
+              <h2 className="font-serif text-2xl md:text-3xl font-bold text-foreground">
                 {t("newsletter.title")}
               </h2>
-              <p className="text-stone-600 dark:text-stone-400">
+              <p className="text-muted-foreground">
                 {t("newsletter.subtitle")}
               </p>
             </div>
@@ -67,15 +63,15 @@ export function Newsletter() {
                     initial={{ opacity: 0, scale: 0.9 }}
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.9 }}
-                    className="bg-primary/10 dark:bg-primary/20 border border-primary/20 dark:border-primary/30 rounded-xl p-6 text-center"
+                    className="bg-primary/10 border border-primary/20 rounded-xl p-6 text-center"
                   >
-                    <div className="w-12 h-12 bg-primary/15 dark:bg-primary/30 rounded-full flex items-center justify-center mx-auto mb-3">
-                      <Check className="w-6 h-6 text-primary dark:text-primary" />
+                    <div className="w-12 h-12 bg-primary/15 rounded-full flex items-center justify-center mx-auto mb-3">
+                      <Check className="w-6 h-6 text-primary" />
                     </div>
-                    <h3 className="font-serif font-bold text-primary dark:text-primary mb-1">
+                    <h3 className="font-serif font-bold text-primary mb-1">
                       {t("newsletter.success_title")}
                     </h3>
-                    <p className="text-sm text-primary/80 dark:text-primary/80">
+                    <p className="text-sm text-foreground/80">
                       {t("newsletter.success_message")}
                     </p>
                   </motion.div>
@@ -95,10 +91,10 @@ export function Newsletter() {
                         onChange={e => setEmail(e.target.value)}
                         required
                         className={`
-                                h-14 rounded-full bg-stone-50 dark:bg-stone-800
-                                border-stone-200 dark:border-stone-700
+                                h-14 rounded-full bg-background
+                                border-border
                                 focus:border-primary focus:ring-primary
-                                text-base
+                                text-base text-foreground placeholder:text-muted-foreground
                                 ${isRTL ? "pr-6 pl-16" : "pl-6 pr-16"}
                               `}
                       />
@@ -127,7 +123,7 @@ export function Newsletter() {
                       </Button>
                     </div>
 
-                    <p className="text-xs text-stone-500 dark:text-stone-400 text-center md:text-start px-2">
+                    <p className="text-xs text-muted-foreground text-center md:text-start px-2">
                       {t("newsletter.disclaimer")}
                     </p>
                   </motion.form>

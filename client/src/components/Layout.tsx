@@ -1,6 +1,6 @@
 import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
-import { Link, useLocation } from "wouter";
+import { Link, useLocation, useSearch } from "wouter";
 import { Menu, X, Globe, Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
@@ -8,6 +8,11 @@ import { useContent } from "@/hooks/useContent";
 import { useTheme } from "@/contexts/ThemeContext";
 import { cn } from "@/lib/utils";
 import i18nInstance from "@/lib/i18n";
+import {
+  type SupportedLocale,
+  normalizeLocale,
+  withLocalePath,
+} from "@/lib/locales";
 
 interface LayoutProps {
   children: ReactNode;
@@ -18,18 +23,17 @@ type NavItem = { href: string; label: LocalizedLabel };
 
 export default function Layout({ children }: LayoutProps) {
   const { t, i18n } = useTranslation();
-  const [location] = useLocation();
+  const [location, navigate] = useLocation();
+  const search = useSearch();
   const isHome = location === "/";
   const { data: settingsContent } = useContent("settings");
   const [footerLogoBroken, setFooterLogoBroken] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(!isHome);
   const { theme, setTheme } = useTheme();
-  const langCode = (i18n.language || i18n.resolvedLanguage || "en").split(
-    "-"
-  )[0];
+  const langCode = normalizeLocale(i18n.language || i18n.resolvedLanguage);
   const isRTL = ["fa", "ps"].includes(langCode);
-  const currentLang = langCode as "en" | "fa" | "ps";
+  const currentLang = langCode;
 
   const apiBase = import.meta.env.VITE_API_URL?.replace(/\/api$/, "") || "";
   const resolveAsset = (url?: string) => {
@@ -144,7 +148,7 @@ gtag('config', '${gaMeasurementId}');`;
     return () => window.removeEventListener("error", handler, true);
   }, [customFallback, defaultImgFallback]);
 
-  const languages = [
+  const languages: Array<{ code: SupportedLocale; name: string; dir: string }> = [
     { code: "en", name: "English", dir: "ltr" },
     { code: "fa", name: "فارسی", dir: "rtl" },
     { code: "ps", name: "پښتو", dir: "rtl" },
@@ -152,7 +156,7 @@ gtag('config', '${gaMeasurementId}');`;
 
   const [showLangMenu, setShowLangMenu] = useState(false);
 
-  const changeLanguage = (newLang: string) => {
+  const changeLanguage = (newLang: SupportedLocale) => {
     const inst =
       i18n && typeof i18n.changeLanguage === "function" ? i18n : i18nInstance;
     inst.changeLanguage(newLang);
@@ -161,6 +165,8 @@ gtag('config', '${gaMeasurementId}');`;
     } catch {
       /* ignore storage errors */
     }
+    const targetPath = withLocalePath(location, newLang);
+    navigate(`~${targetPath}${search ? `?${search}` : ""}`);
     setShowLangMenu(false);
   };
 

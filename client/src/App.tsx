@@ -1,12 +1,15 @@
 import { Suspense, lazy } from "react";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Redirect, Route, Router as WouterRouter, Switch } from "wouter";
+import { useEffect } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
 import { ThemeProvider } from "./contexts/ThemeContext";
 import useAuthReq from "./hooks/useAuthReq";
 import useUserSync from "./hooks/useUserSync";
 import { ConfirmProvider } from "./components/ConfirmProvider";
 import FullPageLoader from "./components/FullPageLoader";
+import i18n from "./lib/i18n";
+import { type SupportedLocale } from "./lib/locales";
 
 import Layout from "./components/Layout";
 const LazyToaster = lazy(() =>
@@ -20,6 +23,7 @@ const Products = lazy(() => import("./pages/Products"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
 const Terms = lazy(() => import("./pages/Terms"));
+const FAQPage = lazy(() => import("./pages/FAQPage"));
 const HelpCenter = lazy(() => import("./pages/HelpCenter"));
 const HelpPage = lazy(() => import("./pages/HelpPage"));
 const Privacy = lazy(() => import("./pages/Privacy"));
@@ -42,7 +46,7 @@ function GuestDashboardRoute() {
   );
 }
 
-function AppRoutes() {
+function PublicRoutes() {
   return (
     <Suspense fallback={<FullPageLoader />}>
       <Switch>
@@ -84,6 +88,11 @@ function AppRoutes() {
         <Route path="/terms">
           <Layout>
             <Terms />
+          </Layout>
+        </Route>
+        <Route path="/faq">
+          <Layout>
+            <FAQPage />
           </Layout>
         </Route>
         <Route path="/privacy">
@@ -142,6 +151,37 @@ function AppRoutes() {
           <Layout>
             <NotFound />
           </Layout>
+        </Route>
+      </Switch>
+    </Suspense>
+  );
+}
+
+function LocalizedPublicRoutes({ locale }: { locale: SupportedLocale }) {
+  useEffect(() => {
+    if (i18n.language?.split("-")[0] !== locale) {
+      i18n.changeLanguage(locale);
+    }
+  }, [locale]);
+
+  return <PublicRoutes />;
+}
+
+function AppRoutes() {
+  return (
+    <Suspense fallback={<FullPageLoader />}>
+      <Switch>
+        <Route path="/en" nest>
+          <LocalizedPublicRoutes locale="en" />
+        </Route>
+        <Route path="/fa" nest>
+          <LocalizedPublicRoutes locale="fa" />
+        </Route>
+        <Route path="/ps" nest>
+          <LocalizedPublicRoutes locale="ps" />
+        </Route>
+        <Route>
+          <PublicRoutes />
         </Route>
       </Switch>
     </Suspense>

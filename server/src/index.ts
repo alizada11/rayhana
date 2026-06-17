@@ -32,7 +32,7 @@ import dashboardRoutes from "./routes/dashboardRoutes";
 import authRoutes from "./routes/authRoutes";
 import homepageRoutes from "./routes/homepageRoutes";
 import { db } from "./db";
-import { blogPosts, products } from "./db/schema";
+import { blogPosts } from "./db/schema";
 import { desc, eq } from "drizzle-orm";
 import * as queries from "./db/queries";
 
@@ -197,6 +197,7 @@ app.get("/sitemap.xml", async (_req, res) => {
       ""
     );
 
+    const locales = ["en", "fa", "ps"] as const;
     const staticUrls = [
       "",
       "/blog",
@@ -204,6 +205,7 @@ app.get("/sitemap.xml", async (_req, res) => {
       "/about",
       "/contact",
       "/gallery",
+      "/faq",
       "/privacy",
       "/terms",
       "/help",
@@ -219,30 +221,35 @@ app.get("/sitemap.xml", async (_req, res) => {
       .where(eq(blogPosts.status, "published"))
       .orderBy(desc(blogPosts.publishedAt));
 
-    const productList = await db
-      .select({
-        id: products.id,
-        updatedAt: products.updatedAt,
-        createdAt: products.createdAt,
-      })
-      .from(products)
-      .orderBy(desc(products.createdAt));
-
     type UrlEntry = {
       loc: string;
+      path: string;
+      locale: (typeof locales)[number];
       changefreq: string;
       priority: string;
       lastmod?: string;
     };
 
+    const localizedPath = (path: string, locale: (typeof locales)[number]) =>
+      `/${locale}${path}`;
+
+    const expandLocales = (
+      path: string,
+      details: Omit<UrlEntry, "loc" | "path" | "locale">
+    ): UrlEntry[] =>
+      locales.map(locale => ({
+        ...details,
+        path,
+        locale,
+        loc: `${base}${localizedPath(path, locale)}`,
+      }));
+
     const urls: UrlEntry[] = [
-      ...staticUrls.map(path => ({
-        loc: `${base}${path}`,
+      ...staticUrls.flatMap(path => expandLocales(path, {
         changefreq: "weekly",
         priority: path === "" ? "1.0" : "0.6",
       })),
-      ...blogList.map(post => ({
-        loc: `${base}/blog/${post.slug}`,
+      ...blogList.flatMap(post => expandLocales(`/blog/${post.slug}`, {
         lastmod: (
           post.updatedAt ||
           post.publishedAt ||
@@ -250,12 +257,6 @@ app.get("/sitemap.xml", async (_req, res) => {
         ).toISOString(),
         changefreq: "weekly",
         priority: "0.7",
-      })),
-      ...productList.map(p => ({
-        loc: `${base}/products/${p.id}`,
-        lastmod: (p.updatedAt || p.createdAt || new Date()).toISOString(),
-        changefreq: "monthly",
-        priority: "0.6",
       })),
     ];
 
@@ -268,11 +269,20 @@ app.get("/sitemap.xml", async (_req, res) => {
         .replace(/'/g, "&apos;");
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9" xmlns:xhtml="http://www.w3.org/1999/xhtml">
 ${urls
   .map(
     u =>
-      `<url><loc>${escapeXml(u.loc)}</loc>${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}<changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
+      `<url><loc>${escapeXml(u.loc)}</loc>${locales
+        .map(
+          locale =>
+            `<xhtml:link rel="alternate" hreflang="${locale}" href="${escapeXml(
+              `${base}${localizedPath(u.path, locale)}`
+            )}" />`
+        )
+        .join("")}<xhtml:link rel="alternate" hreflang="x-default" href="${escapeXml(
+        `${base}${localizedPath(u.path, "en")}`
+      )}" />${u.lastmod ? `<lastmod>${u.lastmod}</lastmod>` : ""}<changefreq>${u.changefreq}</changefreq><priority>${u.priority}</priority></url>`
   )
   .join("")}
 </urlset>`;
@@ -290,6 +300,8 @@ type SsrRenderResult = {
   head: {
     title: string;
     tags: string;
+    lang?: string;
+    dir?: string;
   };
 };
 
@@ -327,6 +339,10 @@ function injectSsrIntoTemplate(template: string, result: SsrRenderResult) {
   );
 
   return template
+    .replace(
+      /<html\b[^>]*>/,
+      `<html lang="${result.head.lang || "en"}" dir="${result.head.dir || "ltr"}">`
+    )
     .replace(/<title>[\s\S]*?<\/title>/, `<title>${result.head.title}</title>`)
     .replace("</head>", `    ${result.head.tags}\n  </head>`)
     .replace(

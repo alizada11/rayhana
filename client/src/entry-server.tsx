@@ -4,7 +4,14 @@ import { PassThrough } from "node:stream";
 import type React from "react";
 import Root from "./Root";
 import { createAppQueryClient } from "./queryClient";
-import "./lib/i18n";
+import i18n from "./lib/i18n";
+import {
+  SUPPORTED_LOCALES,
+  localeDirection,
+  normalizeLocale,
+  stripLocaleFromPath,
+  withLocalePath,
+} from "./lib/locales";
 
 type RenderOptions = {
   apiOrigin: string;
@@ -15,10 +22,14 @@ type RenderOptions = {
 type HeadTags = {
   title: string;
   tags: string;
+  lang: string;
+  dir: string;
 };
 
 export async function render(url: string, options: RenderOptions) {
   const requestUrl = new URL(url, options.baseUrl || options.apiOrigin);
+  const locale = getRequestLocale(requestUrl.pathname);
+  await i18n.changeLanguage(locale);
   const queryClient = createAppQueryClient();
 
   await prefetchPublicRoute(queryClient, requestUrl, options);
@@ -70,7 +81,8 @@ async function prefetchPublicRoute(
     prefetch(["content", "contact"], "/content/contact"),
   ]);
 
-  const path = requestUrl.pathname.replace(/\/+$/, "") || "/";
+  const rawPath = requestUrl.pathname.replace(/\/+$/, "") || "/";
+  const path = stripLocaleFromPath(rawPath).path;
   const blogPostMatch = path.match(/^\/blog\/([^/]+)$/);
   const helpArticleMatch = path.match(/^\/help\/([^/]+)$/);
 
@@ -114,6 +126,11 @@ async function prefetchPublicRoute(
     return;
   }
 
+  if (path === "/faq") {
+    await prefetch(["content", "faq"], "/content/faq");
+    return;
+  }
+
   if (path === "/help" || helpArticleMatch) {
     await prefetch(["content", "help"], "/content/help");
   }
@@ -150,21 +167,28 @@ function buildHeadTags(
   requestUrl: URL,
   baseUrl: string
 ): HeadTags {
-  const path = requestUrl.pathname.replace(/\/+$/, "") || "/";
+  const rawPath = requestUrl.pathname.replace(/\/+$/, "") || "/";
+  const { locale: pathLocale, path: unlocalizedPath } =
+    stripLocaleFromPath(rawPath);
+  const lang = normalizeLocale(pathLocale);
+  const local = (value: any) => localized(value, lang);
   const seoContent = queryClient.getQueryData<any>(["content", "seo"])?.data;
   const homepage = queryClient.getQueryData<any>(["homepage"]);
-  const pageKey = getPageKey(path);
+  const pageKey = getPageKey(unlocalizedPath);
   const pageSeo = getPageSeo(seoContent, pageKey);
-  const defaultTitle = localized(seoContent?.defaultTitle);
-  const defaultDescription = localized(seoContent?.defaultDescription);
-  const canonical = `${baseUrl.replace(/\/+$/, "")}${requestUrl.pathname}`;
+  const defaultTitle = local(seoContent?.defaultTitle);
+  const defaultDescription = local(seoContent?.defaultDescription);
+  const canonical = `${baseUrl.replace(/\/+$/, "")}${withLocalePath(
+    unlocalizedPath,
+    lang
+  )}`;
 
   let title =
-    localized(pageSeo?.title) ||
+    local(pageSeo?.title) ||
     defaultTitle ||
     "Rayhana Kitchen Appliance";
   let description =
-    localized(pageSeo?.description) ||
+    local(pageSeo?.description) ||
     defaultDescription ||
     "Cookware and stories inspired by authentic Afghan cooking.";
   let image = pageSeo?.image || seoContent?.defaultImage || "/images/logo.png";
@@ -172,33 +196,33 @@ function buildHeadTags(
   let publishedTime = "";
   let modifiedTime = "";
 
-  if (path === "/" && homepage) {
+  if (unlocalizedPath === "/" && homepage) {
     title =
-      localized(homepage.seo?.title) ||
-      localized(homepage.home?.hero?.title) ||
+      local(homepage.seo?.title) ||
+      local(homepage.home?.hero?.title) ||
       title;
     description =
-      localized(homepage.seo?.description) ||
-      localized(homepage.home?.hero?.subtitle) ||
+      local(homepage.seo?.description) ||
+      local(homepage.home?.hero?.subtitle) ||
       description;
     image = homepage.seo?.image_url || homepage.home?.images?.featuredProduct || image;
   }
 
-  if (path === "/blog") {
-    title = localized(pageSeo?.title) || "Rayhana Blog";
+  if (unlocalizedPath === "/blog") {
+    title = local(pageSeo?.title) || "Rayhana Blog";
     description =
-      localized(pageSeo?.description) ||
+      local(pageSeo?.description) ||
       "Stories, recipes, and tips from the Rayhana kitchen.";
   }
 
-  const blogPostMatch = path.match(/^\/blog\/([^/]+)$/);
+  const blogPostMatch = unlocalizedPath.match(/^\/blog\/([^/]+)$/);
   if (blogPostMatch?.[1]) {
     const post = queryClient.getQueryData<any>(["blog", blogPostMatch[1]]);
     if (post) {
-      const content = localized(post.content);
-      title = localized(post.title) || title;
+      const content = local(post.content);
+      title = local(post.title) || title;
       description =
-        localized(post.excerpt) || stripHtml(content).slice(0, 160) || description;
+        local(post.excerpt) || stripHtml(content).slice(0, 160) || description;
       image = post.imageUrl || image;
       type = "article";
       publishedTime = post.publishedAt || post.createdAt || "";
@@ -206,57 +230,67 @@ function buildHeadTags(
     }
   }
 
-  if (path === "/about") {
+  if (unlocalizedPath === "/about") {
     const data = queryClient.getQueryData<any>(["content", "about"])?.data;
-    title = stripHtml(localized(data?.hero?.title) || title);
-    description = stripHtml(localized(data?.hero?.subtitle) || description);
+    title = stripHtml(local(data?.hero?.title) || title);
+    description = stripHtml(local(data?.hero?.subtitle) || description);
     image = data?.images?.story || image;
   }
 
-  if (path === "/contact") {
+  if (unlocalizedPath === "/contact") {
     const data = queryClient.getQueryData<any>(["content", "contact"])?.data;
-    title = localized(data?.hero?.title) || "Contact Rayhana";
+    title = local(data?.hero?.title) || "Contact Rayhana";
     description =
-      localized(data?.hero?.subtitle) ||
+      local(data?.hero?.subtitle) ||
       "Get in touch for support, partnerships, or questions.";
   }
 
-  if (path === "/products") {
-    title = localized(pageSeo?.title) || "Shop Rayhana Products";
+  if (unlocalizedPath === "/products") {
+    title = local(pageSeo?.title) || "Shop Rayhana Products";
     description =
-      localized(pageSeo?.description) ||
+      local(pageSeo?.description) ||
       "Cookware and tools crafted for authentic Afghan cooking.";
   }
 
-  if (path === "/gallery") {
-    title = localized(pageSeo?.title) || "Customer Gallery";
+  if (unlocalizedPath === "/gallery") {
+    title = local(pageSeo?.title) || "Customer Gallery";
     description =
-      localized(pageSeo?.description) ||
+      local(pageSeo?.description) ||
       "See dishes from our community and share your own.";
   }
 
-  if (path === "/privacy" || path === "/terms") {
-    const key = path.slice(1);
+  if (unlocalizedPath === "/privacy" || unlocalizedPath === "/terms") {
+    const key = unlocalizedPath.slice(1);
     const data = queryClient.getQueryData<any>(["content", key])?.data;
-    title = localized(data?.title) || title;
-    description = stripHtml(localized(data?.intro) || description).slice(0, 180);
+    title = local(data?.title) || title;
+    description = stripHtml(local(data?.intro) || description).slice(0, 180);
   }
 
-  if (path === "/help" || path.startsWith("/help/")) {
+  if (unlocalizedPath === "/faq") {
+    const data = queryClient.getQueryData<any>(["content", "faq"])?.data;
+    title = local(data?.title) || local(pageSeo?.title) || "Frequently Asked Questions";
+    description =
+      stripHtml(local(data?.subtitle) || local(pageSeo?.description) || description).slice(
+        0,
+        180
+      );
+  }
+
+  if (unlocalizedPath === "/help" || unlocalizedPath.startsWith("/help/")) {
     const data = queryClient.getQueryData<any>(["content", "help"])?.data;
     const articles = Array.isArray(data?.articles) ? data.articles : [];
-    const slug = path.match(/^\/help\/([^/]+)$/)?.[1];
+    const slug = unlocalizedPath.match(/^\/help\/([^/]+)$/)?.[1];
     const article = slug
       ? articles.find((item: any) => item.slug === slug)
       : null;
     title =
-      localized(article?.title) ||
-      localized(data?.center?.title) ||
+      local(article?.title) ||
+      local(data?.center?.title) ||
       "Help Center";
     description =
-      localized(article?.description) ||
-      localized(article?.intro) ||
-      localized(data?.center?.subtitle) ||
+      local(article?.description) ||
+      local(article?.intro) ||
+      local(data?.center?.subtitle) ||
       "Find quick answers or browse detailed help articles.";
     description = stripHtml(description);
   }
@@ -282,6 +316,27 @@ function buildHeadTags(
     `<meta name="twitter:title" content="${escapedTitle}" />`,
     `<meta name="twitter:description" content="${escapedDescription}" />`,
     `<meta name="twitter:image" content="${escapedImage}" />`,
+    ...buildJsonLd({
+      baseUrl,
+      description,
+      image: absoluteImage,
+      lang,
+      modifiedTime,
+      publishedTime,
+      siteName: seoContent?.siteName || "Rayhana",
+      title,
+      type,
+      url: canonical,
+    }).map(jsonLdScript),
+    ...SUPPORTED_LOCALES.map(locale => {
+      const href = escapeHtml(
+        `${baseUrl.replace(/\/+$/, "")}${withLocalePath(unlocalizedPath, locale)}`
+      );
+      return `<link rel="alternate" hreflang="${locale}" href="${href}" />`;
+    }),
+    `<link rel="alternate" hreflang="x-default" href="${escapeHtml(
+      `${baseUrl.replace(/\/+$/, "")}${withLocalePath(unlocalizedPath, "en")}`
+    )}" />`,
     twitterHandle
       ? `<meta name="twitter:site" content="@${escapeHtml(twitterHandle)}" />`
       : "",
@@ -298,7 +353,84 @@ function buildHeadTags(
   return {
     title: escapedTitle,
     tags,
+    lang,
+    dir: localeDirection(lang),
   };
+}
+
+function getRequestLocale(pathname: string) {
+  return normalizeLocale(stripLocaleFromPath(pathname).locale);
+}
+
+function buildJsonLd({
+  baseUrl,
+  description,
+  image,
+  lang,
+  modifiedTime,
+  publishedTime,
+  siteName,
+  title,
+  type,
+  url,
+}: {
+  baseUrl: string;
+  description: string;
+  image: string;
+  lang: string;
+  modifiedTime?: string;
+  publishedTime?: string;
+  siteName: string;
+  title: string;
+  type: string;
+  url: string;
+}) {
+  const siteUrl = baseUrl.replace(/\/+$/, "");
+  return [
+    {
+      "@context": "https://schema.org",
+      "@type": "Organization",
+      name: siteName,
+      url: siteUrl,
+      logo: image || `${siteUrl}/images/logo.png`,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "WebSite",
+      name: siteName,
+      url: siteUrl,
+      inLanguage: lang,
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": type === "article" ? "Article" : "WebPage",
+      headline: title,
+      name: title,
+      description,
+      url,
+      image,
+      inLanguage: lang,
+      ...(type === "article"
+        ? {
+            datePublished: publishedTime,
+            dateModified: modifiedTime || publishedTime,
+            publisher: {
+              "@type": "Organization",
+              name: siteName,
+              logo: {
+                "@type": "ImageObject",
+                url: image || `${siteUrl}/images/logo.png`,
+              },
+            },
+          }
+        : {}),
+    },
+  ];
+}
+
+function jsonLdScript(data: unknown) {
+  const json = JSON.stringify(data).replace(/</g, "\\u003c");
+  return `<script type="application/ld+json">${json}</script>`;
 }
 
 function getPageKey(path: string) {
