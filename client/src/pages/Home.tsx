@@ -587,6 +587,7 @@ export default function Home() {
                   items={(homepage?.faq as any)?.items}
                   title={(homepage?.faq as any)?.title}
                   subtitle={(homepage?.faq as any)?.subtitle}
+                  maxItems={6}
                 />
               </Suspense>
             </ErrorBoundary>

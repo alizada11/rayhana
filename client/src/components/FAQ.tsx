@@ -15,11 +15,13 @@ export default function FAQ({
   title,
   subtitle,
   showPageLink = true,
+  maxItems,
 }: {
   items?: FAQItem[];
   title?: any;
   subtitle?: any;
   showPageLink?: boolean;
+  maxItems?: number;
 }) {
   const { t, i18n } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
@@ -45,6 +47,7 @@ export default function FAQ({
     { id: "q3", question: toPlainText(t("faq.q3")), answer: toSafeHtml(t("faq.a3")) },
     { id: "q4", question: toPlainText(t("faq.q4")), answer: toSafeHtml(t("faq.a4")) },
   ];
+  const visibleQuestions = maxItems ? questions.slice(0, maxItems) : questions;
 
   return (
     <section className="py-20 bg-muted/30">
@@ -68,7 +71,7 @@ export default function FAQ({
 
         <div>
           <Accordion type="single" collapsible className="w-full space-y-4">
-            {questions.map((item: Question, index: number) => (
+            {visibleQuestions.map((item: Question, index: number) => (
               <AccordionItem
                 key={item.id}
                 value={item.id}
