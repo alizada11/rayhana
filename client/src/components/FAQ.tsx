@@ -6,7 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { stripHtml } from "@/lib/safeHtml";
+import { decodeHtml, sanitizeHtml, stripHtml } from "@/lib/safeHtml";
 
 type FAQItem = { id?: string; question: any; answer: any };
 
@@ -28,20 +28,22 @@ export default function FAQ({
     obj?.[currentLang] || obj?.en || fallback;
   const toPlainText = (value?: string) =>
     typeof value === "string" ? stripHtml(value) : "";
+  const toSafeHtml = (value?: string) =>
+    typeof value === "string" ? sanitizeHtml(decodeHtml(value)) : "";
 
   type Question = { id: string; question: string; answer: string };
 
   const fromContent = items?.map((item, index): Question => ({
     id: item?.id || `q${index + 1}`,
     question: toPlainText(getLocalized(item?.question, t(`faq.q${index + 1}`))),
-    answer: toPlainText(getLocalized(item?.answer, t(`faq.a${index + 1}`))),
+    answer: toSafeHtml(getLocalized(item?.answer, t(`faq.a${index + 1}`))),
   }));
 
   const questions: Question[] = fromContent ?? [
-    { id: "q1", question: toPlainText(t("faq.q1")), answer: toPlainText(t("faq.a1")) },
-    { id: "q2", question: toPlainText(t("faq.q2")), answer: toPlainText(t("faq.a2")) },
-    { id: "q3", question: toPlainText(t("faq.q3")), answer: toPlainText(t("faq.a3")) },
-    { id: "q4", question: toPlainText(t("faq.q4")), answer: toPlainText(t("faq.a4")) },
+    { id: "q1", question: toPlainText(t("faq.q1")), answer: toSafeHtml(t("faq.a1")) },
+    { id: "q2", question: toPlainText(t("faq.q2")), answer: toSafeHtml(t("faq.a2")) },
+    { id: "q3", question: toPlainText(t("faq.q3")), answer: toSafeHtml(t("faq.a3")) },
+    { id: "q4", question: toPlainText(t("faq.q4")), answer: toSafeHtml(t("faq.a4")) },
   ];
 
   return (
@@ -76,7 +78,10 @@ export default function FAQ({
                   {item.question}
                 </AccordionTrigger>
                 <AccordionContent className="text-muted-foreground leading-relaxed pb-4">
-                  {item.answer}
+                  <div
+                    className="prose prose-sm max-w-none text-muted-foreground prose-ol:list-decimal prose-ul:list-disc prose-li:my-1"
+                    dangerouslySetInnerHTML={{ __html: item.answer }}
+                  />
                 </AccordionContent>
               </AccordionItem>
             ))}
