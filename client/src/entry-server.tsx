@@ -193,15 +193,10 @@ function buildHeadTags(
   let modifiedTime = "";
 
   if (unlocalizedPath === "/" && homepage) {
-    title =
-      local(homepage.seo?.title) ||
-      local(homepage.home?.hero?.title) ||
-      title;
-    description =
-      local(homepage.seo?.description) ||
-      local(homepage.home?.hero?.subtitle) ||
-      description;
-    image = homepage.seo?.image_url || homepage.home?.images?.featuredProduct || image;
+    image =
+      homepage.seo?.image_url ||
+      homepage.home?.images?.featuredProduct ||
+      image;
   }
 
   if (unlocalizedPath === "/blog") {
@@ -241,8 +236,7 @@ function buildHeadTags(
 
   if (unlocalizedPath === "/products") {
     title = "Shop Rayhana Products";
-    description =
-      "Cookware and tools crafted for authentic Afghan cooking.";
+    description = "Cookware and tools crafted for authentic Afghan cooking.";
   }
 
   if (unlocalizedPath === "/gallery") {
@@ -260,11 +254,7 @@ function buildHeadTags(
   if (unlocalizedPath === "/faq") {
     const data = queryClient.getQueryData<any>(["content", "faq"])?.data;
     title = local(data?.title) || "Frequently Asked Questions";
-    description =
-      stripHtml(local(data?.subtitle) || description).slice(
-        0,
-        180
-      );
+    description = stripHtml(local(data?.subtitle) || description).slice(0, 180);
   }
 
   if (unlocalizedPath === "/help" || unlocalizedPath.startsWith("/help/")) {
@@ -275,9 +265,7 @@ function buildHeadTags(
       ? articles.find((item: any) => item.slug === slug)
       : null;
     title =
-      local(article?.title) ||
-      local(data?.center?.title) ||
-      "Help Center";
+      local(article?.title) || local(data?.center?.title) || "Help Center";
     description =
       local(article?.description) ||
       local(article?.intro) ||
@@ -296,7 +284,10 @@ function buildHeadTags(
   const escapedCanonical = escapeHtml(canonical);
   const escapedImage = escapeHtml(absoluteImage);
   const siteName = escapeHtml(seoContent?.siteName || "Rayhana");
-  const twitterHandle = String(seoContent?.twitterHandle || "").replace(/^@/, "");
+  const twitterHandle = String(seoContent?.twitterHandle || "").replace(
+    /^@/,
+    ""
+  );
 
   const tags = [
     `<meta name="description" content="${escapedDescription}" />`,
@@ -440,7 +431,10 @@ function getPageKey(path: string) {
 function getPageSeo(seo: any, key: string) {
   const pages = Array.isArray(seo?.pages)
     ? seo.pages.reduce((acc: Record<string, any>, item: any) => {
-        if (item?.key) acc[item.key] = item;
+        if (item?.key) {
+          acc[item.key] = item;
+          acc[String(item.key).toLowerCase()] = item;
+        }
         return acc;
       }, {})
     : seo?.pages || {};

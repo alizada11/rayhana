@@ -2,13 +2,19 @@ import { Link, useRoute } from "wouter";
 import { useContent } from "@/hooks/useContent";
 import { useTranslation } from "react-i18next";
 import SeoTags from "@/components/SeoTags";
-import { decodeHtml, sanitizeHtml } from "@/lib/safeHtml";
+import {
+  addHeadingFont,
+  decodeHtml,
+  sanitizeHtml,
+  stripHtml,
+} from "@/lib/safeHtml";
 
 export default function HelpPage() {
   const [match, params] = useRoute("/help/:slug");
   const { data } = useContent("help");
   const { i18n, t } = useTranslation();
   const currentLang = i18n.language as "en" | "fa" | "ps";
+  const isRTL = ["fa", "ps"].includes(currentLang);
   const contactEmail = data?.data?.center?.contactEmail || "info@rayhana.com";
 
   if (!match || !params?.slug) return null;
@@ -16,7 +22,10 @@ export default function HelpPage() {
   const getLocalized = (obj: any, fallback: string) =>
     obj?.[currentLang] || obj?.en || fallback;
 
-  const cleanHtml = (value: string) => sanitizeHtml(decodeHtml(value));
+  const cleanHtml = (value: string) =>
+    addHeadingFont(sanitizeHtml(decodeHtml(value)));
+  const hasHtmlContent = (value: string) =>
+    stripHtml(decodeHtml(value)).length > 0;
 
   const articles = Array.isArray(data?.data?.articles)
     ? data?.data?.articles
@@ -47,17 +56,21 @@ export default function HelpPage() {
     );
   }
 
+  const articleIntro = getLocalized(article.intro, "");
+  const articleSteps = getLocalized(article.steps, "");
+  const articleTips = getLocalized(article.tips, "");
+  const hasSteps = hasHtmlContent(articleSteps);
+  const hasTips = hasHtmlContent(articleTips);
+
   return (
     <div className="min-h-screen bg-background py-16">
       <SeoTags
         pageKey="help-article"
         title={getLocalized(article.title, "Help Article")}
-        description={
-          getLocalized(
-            article.description,
-            getLocalized(article.intro, "Help article")
-          )
-        }
+        description={getLocalized(
+          article.description,
+          articleIntro || "Help article"
+        )}
         url={`${import.meta.env.VITE_BASE_URL || ""}/help/${article.slug}`}
       />
       <div className="container mx-auto px-4 max-w-4xl">
@@ -79,42 +92,52 @@ export default function HelpPage() {
         <div className="mt-8 bg-card border rounded-2xl p-6">
           {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
           <div
-            className="text-foreground prose prose-sm max-w-none"
+            className={`text-foreground prose prose-sm max-w-none ${
+              isRTL ? "prose-headings:font-serif" : ""
+            }`}
             dangerouslySetInnerHTML={{
-              __html: cleanHtml(getLocalized(article.intro, "")),
+              __html: cleanHtml(articleIntro),
             }}
           />
         </div>
 
-        <div className="mt-8 space-y-6">
-          <section className="bg-card border rounded-2xl p-6">
-            <h2 className="font-serif text-xl font-semibold text-foreground">
-              {t("help.stepByStep", "Step-by-step")}
-            </h2>
-            {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
-            <div
-              className="mt-3 text-muted-foreground prose prose-sm max-w-none
-             prose-ul:list-disc prose-ul:pl-6
-             prose-li:my-1"
-              dangerouslySetInnerHTML={{
-                __html: cleanHtml(getLocalized(article.steps, "")),
-              }}
-            />
-          </section>
+        {(hasSteps || hasTips) && (
+          <div className="mt-8 space-y-6">
+            {hasSteps && (
+              <section className="bg-card border rounded-2xl p-6">
+                <h2 className="font-serif text-xl font-semibold text-foreground">
+                  {t("help.stepByStep", "Step-by-step")}
+                </h2>
+                {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
+                <div
+                  className={`mt-3 text-muted-foreground prose prose-sm max-w-none
+               prose-ul:list-disc prose-ul:pl-6
+               prose-li:my-1 ${isRTL ? "prose-headings:font-serif" : ""}`}
+                  dangerouslySetInnerHTML={{
+                    __html: cleanHtml(articleSteps),
+                  }}
+                />
+              </section>
+            )}
 
-          <section className="bg-card border rounded-2xl p-6">
-            <h2 className="font-serif text-xl font-semibold text-foreground">
-              {t("help.tips", "Tips")}
-            </h2>
-            {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
-            <div
-              className="mt-3 text-muted-foreground prose prose-sm max-w-none"
-              dangerouslySetInnerHTML={{
-                __html: cleanHtml(getLocalized(article.tips, "")),
-              }}
-            />
-          </section>
-        </div>
+            {hasTips && (
+              <section className="bg-card border rounded-2xl p-6">
+                <h2 className="font-serif text-xl font-semibold text-foreground">
+                  {t("help.tips", "Tips")}
+                </h2>
+                {/* biome-ignore -- lint/security/noDangerouslySetInnerHtml */}
+                <div
+                  className={`mt-3 text-muted-foreground prose prose-sm max-w-none ${
+                    isRTL ? "prose-headings:font-serif" : ""
+                  }`}
+                  dangerouslySetInnerHTML={{
+                    __html: cleanHtml(articleTips),
+                  }}
+                />
+              </section>
+            )}
+          </div>
+        )}
 
         <div className="mt-10 text-sm text-muted-foreground">
           {t("help.needHelpEmail", "Still need help? Email")}{" "}

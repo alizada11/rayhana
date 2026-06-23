@@ -313,11 +313,11 @@ export default function Home() {
   const seoTitle =
     getOptionalLocalized(homeSeo.title) ||
     getOptionalLocalized((seo as any).defaultTitle) ||
-    heroTitle;
+    "Rayhana Kitchen Appliance";
   const seoDescription =
     getOptionalLocalized(homeSeo.description) ||
     getOptionalLocalized((seo as any).defaultDescription) ||
-    heroSubtitle;
+    "Cookware and stories inspired by authentic Afghan cooking.";
   const seoImage = homeSeo.image || (seo as any).defaultImage || featuredImage;
 
   return (
