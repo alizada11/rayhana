@@ -12,6 +12,7 @@ import DashboardContactMessages from "@/pages/DashboardContactMessages";
 import DashboardNewsletter from "@/pages/DashboardNewsletter";
 import DashboardUsers from "@/pages/DashboardUsers";
 import DashboardPreLaunchReservations from "@/pages/DashboardPreLaunchReservations";
+import DashboardWorldCupCampaign from "@/pages/DashboardWorldCupCampaign";
 import { useAuth } from "@/lib/auth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useRef } from "react";
@@ -61,6 +62,10 @@ export default function DashboardShell() {
         <Route
           path="/dashboard/pre-launch-reservations"
           component={DashboardPreLaunchReservations}
+        />
+        <Route
+          path="/dashboard/world-cup-campaign"
+          component={DashboardWorldCupCampaign}
         />
         <Route path="/dashboard/blogs" component={DashboardBlogs} />
         <Route path="/dashboard/comments" component={DashboardBlogComments} />

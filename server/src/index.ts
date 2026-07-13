@@ -31,6 +31,7 @@ import preLaunchReservationRoutes from "./routes/preLaunchReservationRoutes";
 import dashboardRoutes from "./routes/dashboardRoutes";
 import authRoutes from "./routes/authRoutes";
 import homepageRoutes from "./routes/homepageRoutes";
+import worldCupCampaignRoutes from "./routes/worldCupCampaignRoutes";
 import { db } from "./db";
 import { blogPosts } from "./db/schema";
 import { desc, eq } from "drizzle-orm";
@@ -157,6 +158,7 @@ app.use("/api/media", mediaRoutes);
 app.use("/api/contact", contactRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/pre-launch-reservations", preLaunchReservationRoutes);
+app.use("/api/world-cup-campaign", worldCupCampaignRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
 
@@ -205,6 +207,8 @@ app.get("/sitemap.xml", async (_req, res) => {
       "/about",
       "/contact",
       "/gallery",
+      "/world-cup-prediction",
+      "/world-cup-prediction/terms",
       "/faq",
       "/privacy",
       "/terms",

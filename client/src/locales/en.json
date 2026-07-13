@@ -573,5 +573,286 @@
     "success": "Comment submitted successfully!",
     "pending_approval": "Submitted for review. Visible after approval.",
     "comment_submit_failed": "Failed to submit comment."
+  },
+  "world_cup": {
+    "dir": "ltr",
+    "locale": "en-US",
+    "brand": "Rayhana",
+    "brand_subtitle": "RAYHANA COOKWARE",
+    "nav": {
+      "prizes": "Prizes",
+      "how": "How it works",
+      "final": "Final prediction",
+      "terms": "Terms",
+      "predict": "Submit prediction"
+    },
+    "hero": {
+      "eyebrow": "Rayhana Special Contest",
+      "title": "Predict the Champion",
+      "description": "Predict the two semi-final results and then the final match for a chance to win one of 26 Rayhana prizes: heritage Qabili pots or 26% discount codes for Shopino24 and Amazon.",
+      "cta": "Join now",
+      "how": "How do I enter?",
+      "deadline": "Prediction deadline: July 14, 2026, 18:55 GMT",
+      "badge": "First prize",
+      "badge_strong": "Size 12 pot",
+      "pills": [
+        "Qabili pot",
+        "Size 12"
+      ],
+      "marquee": [
+        "France",
+        "Spain",
+        "Semi-final",
+        "England",
+        "Argentina"
+      ]
+    },
+    "countdown": {
+      "days": "Days",
+      "hours": "Hours",
+      "minutes": "Minutes",
+      "seconds": "Seconds",
+      "ended": "Prediction registration has ended."
+    },
+    "prizes": {
+      "kicker": "World Cup 2026 with 26 prizes",
+      "title": "26 chances for golden predictions",
+      "description": "Three Qabili pots for the top three ranks, plus 23 discount codes for Shopino24 Afghanistan and Amazon stores.",
+      "cards": [
+        {
+          "rank": "First place",
+          "title": "Rayhana Qabili Pot",
+          "description": "Rayhana Qabili pot in size 12",
+          "badge": "Size 12"
+        },
+        {
+          "rank": "Second place",
+          "title": "Rayhana Qabili Pot",
+          "description": "Rayhana Qabili pot in size 9",
+          "badge": "Size 9"
+        },
+        {
+          "rank": "Third place",
+          "title": "Rayhana Qabili Pot",
+          "description": "Rayhana Qabili pot in size 7",
+          "badge": "Size 7"
+        }
+      ],
+      "discount_title": "23 discount codes of 26%",
+      "discount_desc": "For Shopino24 Afghanistan and Amazon stores in the United States, Canada, and Australia.",
+      "markets": [
+        "Afghanistan",
+        "United States",
+        "Canada",
+        "Australia"
+      ],
+      "terms_kicker": "Know before using",
+      "terms_title": "26% discount code conditions",
+      "terms_desc": "Each winner receives a one-time code for a specific market. Code details, market, and validity date will be written in the prize email.",
+      "market_shopino_title": "Shopino24 Afghanistan",
+      "market_shopino_desc": "The code is only usable at Shopino24 Afghanistan for eligible products and supported delivery addresses.",
+      "market_amazon_title": "Amazon US, Canada, or Australia",
+      "market_amazon_desc": "The code is only usable in the Amazon market named in the winner email and cannot be transferred between markets.",
+      "rules": [
+        "Discount applies to eligible product value and does not cover shipping, tax, duties, gift cards, or restricted items.",
+        "Each code is single-use, has no cash value, is not transferable or sellable, and combines with other offers only if checkout allows it.",
+        "The code must be used before the expiry date written in the prize email. Technical issues must be reported before expiry.",
+        "For cancelled or returned orders, refunds follow the amount actually paid and the store rules; discount value is not cash."
+      ],
+      "footer_note": "The selected market cannot be changed after code issue.",
+      "full_terms": "View full code terms"
+    },
+    "how": {
+      "kicker": "Simple and transparent",
+      "title": "Three steps to an exciting prediction",
+      "steps": [
+        [
+          "01",
+          "Enter your details",
+          "Register your name, email, and country of residence."
+        ],
+        [
+          "02",
+          "Predict both matches",
+          "Choose the 90-minute score and the advancing team."
+        ],
+        [
+          "03",
+          "Finalize your prediction",
+          "Accept the terms and receive your confirmation."
+        ]
+      ]
+    },
+    "stats": {
+      "kicker": "Prediction pulse",
+      "title": "Which teams are people choosing?",
+      "description": "Percentages are calculated from real submitted predictions and refresh every 30 seconds.",
+      "total_live": "Live and growing",
+      "total_label": "participants so far",
+      "total_note": "Each valid prediction is counted once",
+      "loading": "Loading live stats...",
+      "error": "Live stats are not available right now.",
+      "empty": "No prediction has been submitted yet; yours can be first.",
+      "advancing": "Advancing team",
+      "match_one": "First semi-final",
+      "match_two": "Second semi-final",
+      "choices": "{{count}} choices"
+    },
+    "final": {
+      "kicker": "Second campaign stage",
+      "title": "Predict the final match",
+      "description": "After the two finalists are known, registered participants can predict the final score using their email and reference code.",
+      "reminder_title": "Keep your reference code",
+      "reminder_desc": "This code appears after your semi-final prediction and protects your entry.",
+      "loading": "Loading final-stage status...",
+      "unavailable": "Final-stage status is not available right now.",
+      "open": "Prediction is open",
+      "team_a": "Team one",
+      "team_b": "Team two",
+      "final": "Final",
+      "deadline": "Deadline: {{date}}",
+      "champion_question": "Which team becomes champion?",
+      "email": "Registered email",
+      "reference": "10-character reference code",
+      "submit": "Submit final prediction",
+      "submitting": "Submitting...",
+      "success": "Final prediction for {{name}} was submitted successfully.",
+      "closed_title": "Final prediction is closed",
+      "closed_desc": "Results and winners will appear here after admin approval.",
+      "soon_title": "Final prediction will open soon",
+      "soon_desc": "When the finalists are confirmed, team names and the form will appear here.",
+      "result_label": "Final result",
+      "champion": "Champion"
+    },
+    "prediction": {
+      "kicker": "Your turn",
+      "title": "Guess the finalists correctly",
+      "description": "For each match, choose both the 90-minute score and the team that ultimately advances to the final.",
+      "trust_title": "Secure registration",
+      "trust_desc": "Only one prediction is accepted per email.",
+      "step_contact": "Your details",
+      "step_prediction": "Match predictions",
+      "contact_step": "Step one",
+      "contact_title": "About you",
+      "contact_desc": "This information is only used to identify and contact winners.",
+      "full_name": "Full name",
+      "full_name_ph": "e.g. Farzana Ahmadi",
+      "email": "Email address",
+      "email_ph": "name@example.com",
+      "country": "Country of residence",
+      "country_ph": "Search country name",
+      "continue": "Continue to predictions",
+      "match_step": "Step two",
+      "match_title": "Semi-final predictions",
+      "match_desc": "The 90-minute score can be a draw; select the advancing team separately.",
+      "match_note": "90-minute result",
+      "advance_question": "Which team advances to the final?",
+      "terms": "I have read and accept the contest terms and conditions.",
+      "terms_link": "View terms",
+      "back": "Back",
+      "submit": "Submit final prediction",
+      "submitting": "Submitting...",
+      "required": "Please complete your name, a valid email, and country of residence.",
+      "terms_required": "You must accept the terms to submit your prediction.",
+      "closed": "Prediction registration has ended.",
+      "success_label": "Your prediction was submitted",
+      "success_title": "Good luck!",
+      "success_desc": "Your registration number is #{{id}}. Campaign results will be shared by email.",
+      "reference_label": "Final-stage reference code",
+      "reference_hint": "Save this code; you will need it with your email for the final prediction.",
+      "copy_share": "Copy share text",
+      "copied": "Share text copied.",
+      "reset": "Back to page"
+    },
+    "winners": {
+      "kicker": "Transparent draw",
+      "title": "Published winners",
+      "description": "Names are partially hidden for privacy. Only admin-approved published draws appear here.",
+      "loading": "Loading draw results...",
+      "error": "Draw results are not available right now.",
+      "empty_title": "No result has been published yet",
+      "empty_desc": "After the draw is executed and approved by admin, winners will appear here.",
+      "draw": "Draw {{id}}",
+      "position": "#{{position}}"
+    },
+    "fields": {
+      "france": "France",
+      "spain": "Spain",
+      "england": "England",
+      "argentina": "Argentina"
+    },
+    "footer": {
+      "tagline": "Authentic cooking for today’s homes.",
+      "rights": "© 2026 Rayhana. All rights reserved.",
+      "disclaimer": "This campaign is not affiliated with or sponsored by FIFA or Amazon."
+    },
+    "share": {
+      "line1": "My prediction in the Rayhana contest:",
+      "line4": "Submit your prediction too!"
+    },
+    "errors": {
+      "final_closed": "Final prediction is not open right now.",
+      "invalid_reference": "Email or reference code is not correct."
+    }
+  },
+  "world_cup_terms": {
+    "meta_title": "World Cup Prediction Terms | Rayhana",
+    "kicker": "Campaign terms",
+    "title": "World Cup Prediction Terms",
+    "subtitle": "Please read these terms before submitting your Rayhana World Cup 2026 prediction.",
+    "back": "Back to prediction page",
+    "updated": "Updated July 13, 2026",
+    "summary_title": "Quick summary",
+    "summary": "One valid prediction is accepted per email. Winners are selected according to campaign rules, availability, and Rayhana verification.",
+    "sections": [
+      {
+        "title": "Eligibility",
+        "body": "The campaign is open to participants who submit accurate contact information and are legally able to receive prizes in their country of residence. Rayhana may reject incomplete, duplicate, abusive, or suspicious entries."
+      },
+      {
+        "title": "How to Enter",
+        "body": "Participants must submit their full name, email address, country of residence, the predicted 90-minute scores for both semi-finals, and the teams they believe will advance. Participants must accept these terms before submitting."
+      },
+      {
+        "title": "One Entry per Email",
+        "body": "Only one semi-final prediction may be submitted per email address. If multiple entries appear to belong to the same participant, Rayhana may keep only the earliest valid entry or disqualify all related entries."
+      },
+      {
+        "title": "Campaign Deadline",
+        "body": "Semi-final predictions must be submitted before July 14, 2026 at 18:55 GMT. Rayhana systems determine the final submission time. Late submissions will not be accepted."
+      },
+      {
+        "title": "Final Prediction Stage",
+        "body": "Participants who successfully submit a semi-final prediction receive a reference code. After finalists are confirmed, eligible participants may use the same email and reference code to submit a final match prediction while the final stage is open."
+      },
+      {
+        "title": "Prizes",
+        "body": "The planned prizes are one Rayhana Qabili pot size 12 for first place, one size 9 pot for second place, one size 7 pot for third place, and 23 discount codes of 26% for eligible Shopino24 Afghanistan or Amazon markets. Prize details may be adjusted if availability, shipping, legal, or platform restrictions require it."
+      },
+      {
+        "title": "Discount Codes",
+        "body": "Discount codes are one-time use, have no cash value, cannot be sold or transferred, and apply only to the market specified in the winner email. Shipping, tax, customs, restricted items, gift cards, and non-eligible products are not covered unless explicitly stated."
+      },
+      {
+        "title": "Winner Selection and Verification",
+        "body": "Rayhana may determine winners based on correct predictions, published campaign criteria, or a documented draw among eligible participants. Winners may be required to verify their identity, email, country, and delivery eligibility before a prize is issued."
+      },
+      {
+        "title": "Public Winner Display",
+        "body": "If winner results are published, Rayhana may show partially masked names, country, prize position, and draw information for transparency while protecting participant privacy."
+      },
+      {
+        "title": "No Affiliation",
+        "body": "This campaign is organized by Rayhana and is not affiliated with, endorsed by, sponsored by, or administered by FIFA, the World Cup, Amazon, or Shopino24 unless explicitly stated in a separate written agreement."
+      },
+      {
+        "title": "Changes and Cancellation",
+        "body": "Rayhana may update campaign details, pause submissions, correct errors, cancel fraudulent entries, or cancel the campaign if technical, legal, supply, or operational issues make continuation impractical."
+      },
+      {
+        "title": "Contact",
+        "body": "Questions about the campaign can be sent through the Rayhana contact page or to the official Rayhana support email listed on the website."
+      }
+    ]
   }
 }

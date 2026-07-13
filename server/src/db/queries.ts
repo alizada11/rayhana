@@ -1,5 +1,7 @@
 import { db } from "./index";
+import { createHash, createHmac, randomBytes } from "crypto";
 import { eq, and, sql, desc, lt, or, gte, lte } from "drizzle-orm";
+import { ENV } from "../config/env";
 import {
   users,
   authSessions,
@@ -18,6 +20,11 @@ import {
   galleryLikes,
   contactMessages,
   newsletterSubscriptions,
+  worldCupCampaignSettings,
+  worldCupFinalPredictions,
+  worldCupLotteryDraws,
+  worldCupLotteryWinners,
+  worldCupPredictions,
   type NewUser,
   type NewAuthSession,
   type NewPasswordResetToken,
@@ -34,6 +41,8 @@ import {
   type NewGalleryLike,
   type NewContactMessage,
   type NewNewsletterSubscription,
+  type NewWorldCupPrediction,
+  type NewWorldCupCampaignSettings,
 } from "./schema";
 
 // USER QUERIES
@@ -683,6 +692,339 @@ export const deletePreLaunchReservation = async (id: string) => {
     .where(eq(preLaunchReservations.id, id))
     .returning();
   return reservation;
+};
+
+// WORLD CUP CAMPAIGN
+export const WORLD_CUP_CAMPAIGN_DEADLINE = new Date(
+  "2026-07-14T18:55:00.000Z"
+);
+
+export type WorldCupWinnerStatus =
+  | "PENDING"
+  | "FIRST"
+  | "SECOND"
+  | "THIRD"
+  | "DISCOUNT"
+  | "NOT_WINNER";
+export type WorldCupFinalStatus =
+  | "COMING_SOON"
+  | "OPEN"
+  | "CLOSED"
+  | "RESULTS";
+export type WorldCupFinalChampion = "TEAM_A" | "TEAM_B";
+export type WorldCupLotteryCriterion =
+  | "ALL_VALID"
+  | "CORRECT_ONLY"
+  | "NON_PRIZE";
+
+const getCampaignSecret = () =>
+  process.env.WORLD_CUP_CAMPAIGN_SECRET ||
+  ENV.DATABASE_URL ||
+  "rayhana-world-cup-campaign";
+
+export const makeWorldCupPredictionReferenceCode = (prediction: {
+  id: string;
+  email: string;
+}) =>
+  createHmac("sha256", getCampaignSecret())
+    .update(`${prediction.id}:${prediction.email.toLowerCase()}`)
+    .digest("hex")
+    .slice(0, 10)
+    .toUpperCase();
+
+export const createWorldCupPrediction = async (
+  data: NewWorldCupPrediction
+) => {
+  const [prediction] = await db.insert(worldCupPredictions).values(data).returning();
+  return prediction;
+};
+
+export const getWorldCupPredictionByEmail = async (email: string) => {
+  return db.query.worldCupPredictions.findFirst({
+    where: eq(worldCupPredictions.email, email),
+  });
+};
+
+export const listWorldCupPredictions = async () => {
+  return db
+    .select()
+    .from(worldCupPredictions)
+    .orderBy(desc(worldCupPredictions.createdAt));
+};
+
+export const listWorldCupPredictionChoices = async () => {
+  return db
+    .select({
+      franceSpainAdvances: worldCupPredictions.franceSpainAdvances,
+      englandArgentinaAdvances: worldCupPredictions.englandArgentinaAdvances,
+    })
+    .from(worldCupPredictions);
+};
+
+export const updateWorldCupPredictionWinnerStatus = async (
+  id: string,
+  winnerStatus: WorldCupWinnerStatus
+) => {
+  const [prediction] = await db
+    .update(worldCupPredictions)
+    .set({ winnerStatus })
+    .where(eq(worldCupPredictions.id, id))
+    .returning();
+  return prediction;
+};
+
+export const deleteAllWorldCupPredictions = async () => {
+  const deleted = await db.delete(worldCupPredictions).returning({
+    id: worldCupPredictions.id,
+  });
+  return { deletedCount: deleted.length };
+};
+
+export const getWorldCupCampaignSettings = async () => {
+  return db.query.worldCupCampaignSettings.findFirst({
+    where: eq(worldCupCampaignSettings.id, 1),
+  });
+};
+
+export const saveWorldCupCampaignSettings = async (
+  data: Omit<NewWorldCupCampaignSettings, "id" | "createdAt" | "updatedAt">
+) => {
+  const [settings] = await db
+    .insert(worldCupCampaignSettings)
+    .values({ id: 1, ...data })
+    .onConflictDoUpdate({
+      target: worldCupCampaignSettings.id,
+      set: data,
+    })
+    .returning();
+  return settings;
+};
+
+export const submitWorldCupFinalPrediction = async (input: {
+  email: string;
+  referenceCode: string;
+  teamAScore: number;
+  teamBScore: number;
+  champion: WorldCupFinalChampion;
+}) => {
+  const settings = await getWorldCupCampaignSettings();
+  if (!settings || settings.finalStatus !== "OPEN") {
+    throw new Error("FINAL_NOT_OPEN");
+  }
+  if (settings.finalDeadline && settings.finalDeadline.getTime() <= Date.now()) {
+    throw new Error("FINAL_CLOSED");
+  }
+
+  const participant = await getWorldCupPredictionByEmail(
+    input.email.toLowerCase()
+  );
+  if (
+    !participant ||
+    makeWorldCupPredictionReferenceCode(participant) !==
+      input.referenceCode.trim().toUpperCase()
+  ) {
+    throw new Error("INVALID_REFERENCE");
+  }
+
+  const [finalPrediction] = await db
+    .insert(worldCupFinalPredictions)
+    .values({
+      predictionId: participant.id,
+      teamAScore: input.teamAScore,
+      teamBScore: input.teamBScore,
+      champion: input.champion,
+    })
+    .onConflictDoUpdate({
+      target: worldCupFinalPredictions.predictionId,
+      set: {
+        teamAScore: input.teamAScore,
+        teamBScore: input.teamBScore,
+        champion: input.champion,
+      },
+    })
+    .returning();
+
+  return {
+    success: true as const,
+    participantName: participant.fullName,
+    finalPrediction,
+  };
+};
+
+export const listWorldCupFinalPredictions = async () => {
+  return db
+    .select({
+      id: worldCupFinalPredictions.id,
+      predictionId: worldCupFinalPredictions.predictionId,
+      fullName: worldCupPredictions.fullName,
+      email: worldCupPredictions.email,
+      teamAScore: worldCupFinalPredictions.teamAScore,
+      teamBScore: worldCupFinalPredictions.teamBScore,
+      champion: worldCupFinalPredictions.champion,
+      createdAt: worldCupFinalPredictions.createdAt,
+    })
+    .from(worldCupFinalPredictions)
+    .innerJoin(
+      worldCupPredictions,
+      eq(worldCupFinalPredictions.predictionId, worldCupPredictions.id)
+    )
+    .orderBy(desc(worldCupFinalPredictions.createdAt));
+};
+
+export const getWorldCupEligibleLotteryPool = async (
+  criterion: WorldCupLotteryCriterion
+) => {
+  const participants = await db
+    .select()
+    .from(worldCupPredictions)
+    .orderBy(worldCupPredictions.createdAt);
+
+  if (criterion === "ALL_VALID") return participants;
+  if (criterion === "NON_PRIZE") {
+    return participants.filter(
+      item => !["FIRST", "SECOND", "THIRD"].includes(item.winnerStatus)
+    );
+  }
+
+  const settings = await getWorldCupCampaignSettings();
+  if (
+    !settings ||
+    settings.finalStatus !== "RESULTS" ||
+    settings.finalResultAScore == null ||
+    settings.finalResultBScore == null ||
+    !settings.finalChampion
+  ) {
+    return [];
+  }
+
+  const finals = await db.select().from(worldCupFinalPredictions);
+  const correctIds = new Set(
+    finals
+      .filter(
+        item =>
+          item.teamAScore === settings.finalResultAScore &&
+          item.teamBScore === settings.finalResultBScore &&
+          item.champion === settings.finalChampion
+      )
+      .map(item => item.predictionId)
+  );
+  return participants.filter(item => correctIds.has(item.id));
+};
+
+export const executeWorldCupLotteryDraw = async (input: {
+  criterion: WorldCupLotteryCriterion;
+  winnerCount: number;
+  executedBy: string;
+}) => {
+  const pool = await getWorldCupEligibleLotteryPool(input.criterion);
+  if (pool.length === 0) throw new Error("NO_ELIGIBLE_PARTICIPANTS");
+  if (input.winnerCount > pool.length) throw new Error("WINNER_COUNT_TOO_HIGH");
+
+  const eligibleIds = pool.map(item => item.id).sort();
+  const eligibleSnapshot = JSON.stringify(eligibleIds);
+  const auditSeed = randomBytes(32).toString("hex");
+  const selected = eligibleIds
+    .map(id => ({
+      id,
+      rank: createHash("sha256").update(`${auditSeed}:${id}`).digest("hex"),
+    }))
+    .sort((a, b) => a.rank.localeCompare(b.rank))
+    .slice(0, input.winnerCount);
+  const auditHash = createHash("sha256")
+    .update(
+      `${input.criterion}|${input.winnerCount}|${eligibleSnapshot}|${auditSeed}`
+    )
+    .digest("hex");
+
+  return db.transaction(async tx => {
+    const [draw] = await tx
+      .insert(worldCupLotteryDraws)
+      .values({
+        criterion: input.criterion,
+        winnerCount: input.winnerCount,
+        eligibleCount: eligibleIds.length,
+        eligibleSnapshot,
+        auditSeed,
+        auditHash,
+        executedBy: input.executedBy,
+      })
+      .returning();
+
+    await tx.insert(worldCupLotteryWinners).values(
+      selected.map((winner, index) => ({
+        drawId: draw.id,
+        predictionId: winner.id,
+        position: index + 1,
+      }))
+    );
+
+    return { drawId: draw.id, eligibleCount: eligibleIds.length, auditHash };
+  });
+};
+
+export const listWorldCupLotteryDraws = async () => {
+  const draws = await db
+    .select()
+    .from(worldCupLotteryDraws)
+    .orderBy(desc(worldCupLotteryDraws.executedAt));
+
+  return Promise.all(
+    draws.map(async draw => ({
+      ...draw,
+      winners: await db
+        .select({
+          position: worldCupLotteryWinners.position,
+          predictionId: worldCupPredictions.id,
+          fullName: worldCupPredictions.fullName,
+          email: worldCupPredictions.email,
+          country: worldCupPredictions.country,
+        })
+        .from(worldCupLotteryWinners)
+        .innerJoin(
+          worldCupPredictions,
+          eq(worldCupLotteryWinners.predictionId, worldCupPredictions.id)
+        )
+        .where(eq(worldCupLotteryWinners.drawId, draw.id))
+        .orderBy(worldCupLotteryWinners.position),
+    }))
+  );
+};
+
+export const publishWorldCupLotteryDraw = async (
+  drawId: string,
+  published: boolean
+) => {
+  const [draw] = await db
+    .update(worldCupLotteryDraws)
+    .set({ published })
+    .where(eq(worldCupLotteryDraws.id, drawId))
+    .returning();
+  return draw;
+};
+
+const maskCampaignName = (name: string) => {
+  const trimmed = name.trim();
+  if (trimmed.length <= 2) return `${trimmed[0] ?? "*"}**`;
+  return `${trimmed.slice(0, 1)}${"*".repeat(
+    Math.max(2, trimmed.length - 2)
+  )}${trimmed.slice(-1)}`;
+};
+
+export const getPublicWorldCupLotteryWinners = async () => {
+  const settings = await getWorldCupCampaignSettings();
+  if (!settings?.publicWinnersVisible) return [];
+  const draws = await listWorldCupLotteryDraws();
+  return draws
+    .filter(draw => draw.published)
+    .map(draw => ({
+      id: draw.id,
+      executedAt: draw.executedAt,
+      winners: draw.winners.map(winner => ({
+        position: winner.position,
+        name: maskCampaignName(winner.fullName),
+        country: winner.country,
+      })),
+    }));
 };
 
 // COMMENT QUERIES

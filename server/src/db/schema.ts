@@ -25,6 +25,36 @@ export const preLaunchReservationStatusEnum = pgEnum(
   "pre_launch_reservation_status",
   ["pending", "contacted", "completed"]
 );
+export const worldCupSemiFinalOneTeamEnum = pgEnum(
+  "world_cup_semi_final_one_team",
+  ["FRANCE", "SPAIN"]
+);
+export const worldCupSemiFinalTwoTeamEnum = pgEnum(
+  "world_cup_semi_final_two_team",
+  ["ENGLAND", "ARGENTINA"]
+);
+export const worldCupWinnerStatusEnum = pgEnum("world_cup_winner_status", [
+  "PENDING",
+  "FIRST",
+  "SECOND",
+  "THIRD",
+  "DISCOUNT",
+  "NOT_WINNER",
+]);
+export const worldCupFinalStatusEnum = pgEnum("world_cup_final_status", [
+  "COMING_SOON",
+  "OPEN",
+  "CLOSED",
+  "RESULTS",
+]);
+export const worldCupFinalChampionEnum = pgEnum("world_cup_final_champion", [
+  "TEAM_A",
+  "TEAM_B",
+]);
+export const worldCupLotteryCriterionEnum = pgEnum(
+  "world_cup_lottery_criterion",
+  ["ALL_VALID", "CORRECT_ONLY", "NON_PRIZE"]
+);
 
 export const newsletterSubscriptions = pgTable("newsletter_subscriptions", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -165,6 +195,114 @@ export const preLaunchReservations = pgTable(
     ).on(table.email, table.productId, table.productSize),
   })
 );
+
+export const worldCupPredictions = pgTable(
+  "world_cup_predictions",
+  {
+    id: uuid("id").defaultRandom().primaryKey(),
+    fullName: text("full_name").notNull(),
+    email: text("email").notNull(),
+    country: text("country").notNull(),
+    franceSpainAdvances:
+      worldCupSemiFinalOneTeamEnum("france_spain_advances").notNull(),
+    franceSpainFranceScore: integer("france_spain_france_score").notNull(),
+    franceSpainSpainScore: integer("france_spain_spain_score").notNull(),
+    englandArgentinaAdvances:
+      worldCupSemiFinalTwoTeamEnum("england_argentina_advances").notNull(),
+    englandArgentinaEnglandScore: integer(
+      "england_argentina_england_score"
+    ).notNull(),
+    englandArgentinaArgentinaScore: integer(
+      "england_argentina_argentina_score"
+    ).notNull(),
+    winnerStatus: worldCupWinnerStatusEnum("winner_status")
+      .notNull()
+      .default("PENDING"),
+    acceptedTermsAt: timestamp("accepted_terms_at", { mode: "date" })
+      .notNull()
+      .defaultNow(),
+    createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+    updatedAt: timestamp("updated_at", { mode: "date" })
+      .notNull()
+      .defaultNow()
+      .$onUpdate(() => new Date()),
+  },
+  table => ({
+    emailUnique: uniqueIndex("world_cup_predictions_email_unique").on(
+      table.email
+    ),
+  })
+);
+
+export const worldCupCampaignSettings = pgTable("world_cup_campaign_settings", {
+  id: integer("id").primaryKey().default(1),
+  finalTeamA: text("final_team_a"),
+  finalTeamB: text("final_team_b"),
+  finalDeadline: timestamp("final_deadline", { mode: "date" }),
+  finalStatus: worldCupFinalStatusEnum("final_status")
+    .notNull()
+    .default("COMING_SOON"),
+  finalResultAScore: integer("final_result_a_score"),
+  finalResultBScore: integer("final_result_b_score"),
+  finalChampion: worldCupFinalChampionEnum("final_champion"),
+  publicWinnersVisible: boolean("public_winners_visible")
+    .notNull()
+    .default(false),
+  updatedBy: text("updated_by").references(() => users.id, {
+    onDelete: "set null",
+  }),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+});
+
+export const worldCupFinalPredictions = pgTable("world_cup_final_predictions", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  predictionId: uuid("prediction_id")
+    .notNull()
+    .references(() => worldCupPredictions.id, { onDelete: "cascade" }),
+  teamAScore: integer("team_a_score").notNull(),
+  teamBScore: integer("team_b_score").notNull(),
+  champion: worldCupFinalChampionEnum("champion").notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+  updatedAt: timestamp("updated_at", { mode: "date" })
+    .notNull()
+    .defaultNow()
+    .$onUpdate(() => new Date()),
+}, table => ({
+  predictionUnique: uniqueIndex("world_cup_final_prediction_unique").on(
+    table.predictionId
+  ),
+}));
+
+export const worldCupLotteryDraws = pgTable("world_cup_lottery_draws", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  criterion: worldCupLotteryCriterionEnum("criterion").notNull(),
+  winnerCount: integer("winner_count").notNull(),
+  eligibleCount: integer("eligible_count").notNull(),
+  eligibleSnapshot: text("eligible_snapshot").notNull(),
+  auditSeed: text("audit_seed").notNull(),
+  auditHash: text("audit_hash").notNull(),
+  executedBy: text("executed_by")
+    .notNull()
+    .references(() => users.id, { onDelete: "restrict" }),
+  published: boolean("published").notNull().default(false),
+  executedAt: timestamp("executed_at", { mode: "date" }).notNull().defaultNow(),
+});
+
+export const worldCupLotteryWinners = pgTable("world_cup_lottery_winners", {
+  id: uuid("id").defaultRandom().primaryKey(),
+  drawId: uuid("draw_id")
+    .notNull()
+    .references(() => worldCupLotteryDraws.id, { onDelete: "cascade" }),
+  predictionId: uuid("prediction_id")
+    .notNull()
+    .references(() => worldCupPredictions.id, { onDelete: "cascade" }),
+  position: integer("position").notNull(),
+  createdAt: timestamp("created_at", { mode: "date" }).notNull().defaultNow(),
+});
 
 export const productReviews = pgTable("product_reviews", {
   id: uuid("id").defaultRandom().primaryKey(),
@@ -431,6 +569,22 @@ export type Product = typeof products.$inferSelect;
 export type NewProduct = typeof products.$inferInsert;
 export type PreLaunchReservation = typeof preLaunchReservations.$inferSelect;
 export type NewPreLaunchReservation = typeof preLaunchReservations.$inferInsert;
+export type WorldCupPrediction = typeof worldCupPredictions.$inferSelect;
+export type NewWorldCupPrediction = typeof worldCupPredictions.$inferInsert;
+export type WorldCupCampaignSettings =
+  typeof worldCupCampaignSettings.$inferSelect;
+export type NewWorldCupCampaignSettings =
+  typeof worldCupCampaignSettings.$inferInsert;
+export type WorldCupFinalPrediction =
+  typeof worldCupFinalPredictions.$inferSelect;
+export type NewWorldCupFinalPrediction =
+  typeof worldCupFinalPredictions.$inferInsert;
+export type WorldCupLotteryDraw = typeof worldCupLotteryDraws.$inferSelect;
+export type NewWorldCupLotteryDraw = typeof worldCupLotteryDraws.$inferInsert;
+export type WorldCupLotteryWinner =
+  typeof worldCupLotteryWinners.$inferSelect;
+export type NewWorldCupLotteryWinner =
+  typeof worldCupLotteryWinners.$inferInsert;
 export type ProductReview = typeof productReviews.$inferSelect;
 export type NewProductReview = typeof productReviews.$inferInsert;
 
