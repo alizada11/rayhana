@@ -18,6 +18,7 @@ import {
   Sun,
   Moon,
   ClipboardList,
+  Trophy,
 } from "lucide-react";
 import { useState } from "react";
 import { useTheme } from "@/contexts/ThemeContext";
@@ -65,6 +66,11 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
       path: "/dashboard/pre-launch-reservations",
       label: "Reservations",
       Icon: ClipboardList,
+    },
+    {
+      path: "/dashboard/world-cup-campaign",
+      label: "World Cup",
+      Icon: Trophy,
     },
     { path: "/dashboard/gallery", label: "Gallery", Icon: GalleryHorizontal },
     { path: "/dashboard/newsletter", label: "Newsletter", Icon: Mails },

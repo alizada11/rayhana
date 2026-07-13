@@ -771,6 +771,278 @@ export const deletePreLaunchReservationAdmin = async (id: string) => {
   const { data } = await api.delete(`/pre-launch-reservations/admin/${id}`);
   return data as PreLaunchReservation;
 };
+
+// ---------- WORLD CUP CAMPAIGN API ----------
+export type CountryCode = string;
+export type SemiFinalOneTeam = "FRANCE" | "SPAIN";
+export type SemiFinalTwoTeam = "ENGLAND" | "ARGENTINA";
+export type WorldCupWinnerStatus =
+  | "PENDING"
+  | "FIRST"
+  | "SECOND"
+  | "THIRD"
+  | "DISCOUNT"
+  | "NOT_WINNER";
+export type WorldCupFinalStatus =
+  | "COMING_SOON"
+  | "OPEN"
+  | "CLOSED"
+  | "RESULTS";
+export type WorldCupFinalChampion = "TEAM_A" | "TEAM_B";
+export type WorldCupLotteryCriterion =
+  | "ALL_VALID"
+  | "CORRECT_ONLY"
+  | "NON_PRIZE";
+
+export interface WorldCupPredictionPayload {
+  fullName: string;
+  email: string;
+  country: CountryCode;
+  franceSpainAdvances: SemiFinalOneTeam;
+  franceSpainFranceScore: number;
+  franceSpainSpainScore: number;
+  englandArgentinaAdvances: SemiFinalTwoTeam;
+  englandArgentinaEnglandScore: number;
+  englandArgentinaArgentinaScore: number;
+  termsAccepted: true;
+}
+
+export interface WorldCupPrediction extends WorldCupPredictionPayload {
+  id: string;
+  winnerStatus: WorldCupWinnerStatus;
+  acceptedTermsAt: string;
+  createdAt: string;
+  updatedAt: string;
+  referenceCode?: string;
+}
+
+export interface WorldCupStatus {
+  deadline: number;
+  isOpen: boolean;
+}
+
+export interface WorldCupLiveStats {
+  totalPredictions: number;
+  matchups: Array<{
+    id: string;
+    teams: Array<{
+      code: string;
+      label: string;
+      count: number;
+      percentage: number;
+    }>;
+  }>;
+}
+
+export interface WorldCupFinalStage {
+  teamA: string | null;
+  teamB: string | null;
+  deadline: number | null;
+  status: WorldCupFinalStatus;
+  result: {
+    teamAScore: number | null;
+    teamBScore: number | null;
+    champion: WorldCupFinalChampion | null;
+  } | null;
+}
+
+export interface WorldCupCampaignSettings {
+  id: number;
+  finalTeamA: string | null;
+  finalTeamB: string | null;
+  finalDeadline: string | null;
+  finalStatus: WorldCupFinalStatus;
+  finalResultAScore: number | null;
+  finalResultBScore: number | null;
+  finalChampion: WorldCupFinalChampion | null;
+  publicWinnersVisible: boolean;
+  updatedBy?: string | null;
+  createdAt?: string;
+  updatedAt?: string;
+}
+
+export interface WorldCupFinalPredictionPayload {
+  email: string;
+  referenceCode: string;
+  teamAScore: number;
+  teamBScore: number;
+  champion: WorldCupFinalChampion;
+}
+
+export interface WorldCupFinalPrediction {
+  id: string;
+  predictionId: string;
+  fullName: string;
+  email: string;
+  teamAScore: number;
+  teamBScore: number;
+  champion: WorldCupFinalChampion;
+  createdAt: string;
+}
+
+export interface WorldCupLotteryDraw {
+  id: string;
+  criterion: WorldCupLotteryCriterion;
+  winnerCount: number;
+  eligibleCount: number;
+  eligibleSnapshot: string;
+  auditSeed: string;
+  auditHash: string;
+  executedBy: string;
+  published: boolean;
+  executedAt: string;
+  winners: Array<{
+    position: number;
+    predictionId: string;
+    fullName: string;
+    email: string;
+    country: string;
+  }>;
+}
+
+export interface PublicWorldCupWinners {
+  id: string;
+  executedAt: string;
+  winners: Array<{ position: number; name: string; country: string }>;
+}
+
+export const getWorldCupStatus = async () => {
+  const { data } = await api.get("/world-cup-campaign/status");
+  return data as WorldCupStatus;
+};
+
+export const getWorldCupLiveStats = async () => {
+  const { data } = await api.get("/world-cup-campaign/live-stats");
+  return data as WorldCupLiveStats;
+};
+
+export const submitWorldCupPrediction = async (
+  payload: WorldCupPredictionPayload
+) => {
+  const { data } = await api.post("/world-cup-campaign/predictions", payload);
+  return data as {
+    success: true;
+    registrationId: string;
+    referenceCode: string;
+  };
+};
+
+export const getWorldCupFinalStage = async () => {
+  const { data } = await api.get("/world-cup-campaign/final-stage");
+  return data as WorldCupFinalStage;
+};
+
+export const submitWorldCupFinalPrediction = async (
+  payload: WorldCupFinalPredictionPayload
+) => {
+  const { data } = await api.post(
+    "/world-cup-campaign/final-predictions",
+    payload
+  );
+  return data as { success: true; participantName: string };
+};
+
+export const getPublicWorldCupWinners = async () => {
+  const { data } = await api.get("/world-cup-campaign/public-winners");
+  return data as PublicWorldCupWinners[];
+};
+
+export const getWorldCupPredictionsAdmin = async () => {
+  const { data } = await api.get("/world-cup-campaign/admin/predictions");
+  return data as WorldCupPrediction[];
+};
+
+export const updateWorldCupWinnerStatusAdmin = async ({
+  id,
+  winnerStatus,
+}: {
+  id: string;
+  winnerStatus: WorldCupWinnerStatus;
+}) => {
+  const { data } = await api.patch(
+    `/world-cup-campaign/admin/predictions/${id}/winner-status`,
+    { winnerStatus }
+  );
+  return data as WorldCupPrediction;
+};
+
+export const deleteAllWorldCupPredictionsAdmin = async (payload: {
+  confirmation: "I'm sure";
+}) => {
+  const { data } = await api.delete("/world-cup-campaign/admin/predictions", {
+    data: payload,
+  });
+  return data as { deletedCount: number };
+};
+
+export const getWorldCupFinalSettingsAdmin = async () => {
+  const { data } = await api.get("/world-cup-campaign/admin/final-settings");
+  return data as WorldCupCampaignSettings | null;
+};
+
+export const updateWorldCupFinalSettingsAdmin = async (payload: {
+  finalTeamA: string | null;
+  finalTeamB: string | null;
+  finalDeadline: number | null;
+  finalStatus: WorldCupFinalStatus;
+  finalResultAScore: number | null;
+  finalResultBScore: number | null;
+  finalChampion: WorldCupFinalChampion | null;
+  publicWinnersVisible: boolean;
+}) => {
+  const { data } = await api.put(
+    "/world-cup-campaign/admin/final-settings",
+    payload
+  );
+  return data as WorldCupCampaignSettings;
+};
+
+export const getWorldCupFinalPredictionsAdmin = async () => {
+  const { data } = await api.get(
+    "/world-cup-campaign/admin/final-predictions"
+  );
+  return data as WorldCupFinalPrediction[];
+};
+
+export const getWorldCupLotteryEligibilityAdmin = async (
+  criterion: WorldCupLotteryCriterion
+) => {
+  const { data } = await api.get(
+    `/world-cup-campaign/admin/lottery-eligibility?criterion=${criterion}`
+  );
+  return data as { count: number };
+};
+
+export const executeWorldCupLotteryAdmin = async (payload: {
+  criterion: WorldCupLotteryCriterion;
+  winnerCount: number;
+  confirmation: "اجرای قطعی";
+}) => {
+  const { data } = await api.post(
+    "/world-cup-campaign/admin/lottery-draws",
+    payload
+  );
+  return data as { drawId: string; eligibleCount: number; auditHash: string };
+};
+
+export const getWorldCupLotteryDrawsAdmin = async () => {
+  const { data } = await api.get("/world-cup-campaign/admin/lottery-draws");
+  return data as WorldCupLotteryDraw[];
+};
+
+export const publishWorldCupLotteryAdmin = async ({
+  id,
+  published,
+}: {
+  id: string;
+  published: boolean;
+}) => {
+  const { data } = await api.patch(
+    `/world-cup-campaign/admin/lottery-draws/${id}/publish`,
+    { published }
+  );
+  return data as WorldCupLotteryDraw;
+};
 export interface MediaAsset {
   id: string;
   url: string;

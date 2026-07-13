@@ -30,6 +30,8 @@ const Privacy = lazy(() => import("./pages/Privacy"));
 const LoginPage = lazy(() => import("./pages/LoginPage"));
 const GuestDashboard = lazy(() => import("./pages/GuestDashboard"));
 const Gallery = lazy(() => import("./pages/Gallery"));
+const WorldCupPrediction = lazy(() => import("./pages/WorldCupPrediction"));
+const WorldCupTerms = lazy(() => import("./pages/WorldCupTerms"));
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -103,6 +105,16 @@ function PublicRoutes() {
         <Route path="/gallery">
           <Layout>
             <Gallery />
+          </Layout>
+        </Route>
+        <Route path="/world-cup-prediction">
+          <Layout>
+            <WorldCupPrediction />
+          </Layout>
+        </Route>
+        <Route path="/world-cup-prediction/terms">
+          <Layout>
+            <WorldCupTerms />
           </Layout>
         </Route>
         <Route path="/reset-password">
