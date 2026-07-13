@@ -744,9 +744,8 @@
       "continue": "Continue to predictions",
       "match_step": "Step two",
       "match_title": "Semi-final predictions",
-      "match_desc": "The 90-minute score can be a draw; select the advancing team separately.",
+      "match_desc": "Enter the semi-final score; the team with more goals advances.",
       "match_note": "90-minute result",
-      "advance_question": "Which team advances to the final?",
       "terms": "I have read and accept the contest terms and conditions.",
       "terms_link": "View terms",
       "back": "Back",
@@ -762,6 +761,10 @@
       "reference_hint": "Save this code; you will need it with your email for the final prediction.",
       "copy_share": "Copy share text",
       "copied": "Share text copied.",
+      "copy_done": "Share text and reference code copied.",
+      "share_done": "Share sheet opened.",
+      "copy_failed": "Copy failed. Please copy the reference code manually.",
+      "no_draw": "Scores cannot be equal; the team with more goals advances.",
       "reset": "Back to page"
     },
     "winners": {

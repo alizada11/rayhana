@@ -60,6 +60,104 @@ const teamLabels = {
   ARGENTINA: "آرژانتین",
 } as const;
 
+type TeamCode = keyof typeof teamLabels;
+
+const teamOptions = Object.entries(teamLabels).map(([code, label]) => ({
+  code: code as TeamCode,
+  label,
+}));
+
+const getTeamCodeFromLabel = (value: string) =>
+  teamOptions.find(option => option.label === value || option.code === value)
+    ?.code ?? null;
+
+const getTeamSemiFinal = (value: string) => {
+  const team = getTeamCodeFromLabel(value);
+  if (team === "FRANCE" || team === "SPAIN") return "first";
+  if (team === "ENGLAND" || team === "ARGENTINA") return "second";
+  return null;
+};
+
+const getSemiFinalWinnersFromFinalTeams = (
+  teamA: string,
+  teamB: string
+) => {
+  const finalists = [getTeamCodeFromLabel(teamA), getTeamCodeFromLabel(teamB)];
+  return {
+    first: finalists.find(team => team === "FRANCE" || team === "SPAIN"),
+    second: finalists.find(
+      team => team === "ENGLAND" || team === "ARGENTINA"
+    ),
+  };
+};
+
+type ScoreLineVariant = "success" | "danger" | "neutral";
+
+const scoreLineClasses: Record<ScoreLineVariant, string> = {
+  success: "border-emerald-200 bg-emerald-50 text-emerald-800 dark:border-emerald-900/60 dark:bg-emerald-950/40 dark:text-emerald-200",
+  danger: "border-destructive/20 bg-destructive/10 text-destructive dark:border-destructive/30 dark:bg-destructive/15",
+  neutral: "border-border bg-muted text-foreground",
+};
+
+function ScoreLine({
+  team,
+  score,
+  variant,
+}: {
+  team: string;
+  score: number;
+  variant: ScoreLineVariant;
+}) {
+  return (
+    <div
+      className={`flex items-center justify-between gap-3 rounded-md border px-2 py-1 ${scoreLineClasses[variant]}`}
+    >
+      <span>{team}</span>
+      <strong dir="ltr">{score}</strong>
+    </div>
+  );
+}
+
+function MatchScore<T extends string>({
+  firstTeam,
+  firstLabel,
+  firstScore,
+  secondTeam,
+  secondLabel,
+  secondScore,
+  winnerTeam,
+}: {
+  firstTeam: T;
+  firstLabel: string;
+  firstScore: number;
+  secondTeam: T;
+  secondLabel: string;
+  secondScore: number;
+  winnerTeam?: T;
+}) {
+  const firstVariant = winnerTeam
+    ? firstTeam === winnerTeam
+      ? "success"
+      : "danger"
+    : "neutral";
+  const secondVariant = winnerTeam
+    ? secondTeam === winnerTeam
+      ? "success"
+      : "danger"
+    : "neutral";
+
+  return (
+    <div className="min-w-32 space-y-1 text-sm">
+      <ScoreLine team={firstLabel} score={firstScore} variant={firstVariant} />
+      <ScoreLine
+        team={secondLabel}
+        score={secondScore}
+        variant={secondVariant}
+      />
+    </div>
+  );
+}
+
 const winnerLabels: Record<WorldCupWinnerStatus, string> = {
   PENDING: "در انتظار",
   FIRST: "رتبه اول",
@@ -79,7 +177,7 @@ const finalStatusLabels: Record<WorldCupFinalStatus, string> = {
 const criterionLabels: Record<WorldCupLotteryCriterion, string> = {
   ALL_VALID: "همه ثبت‌های معتبر",
   NON_PRIZE: "افراد بدون جایزه اصلی",
-  CORRECT_ONLY: "فقط پیش‌بینی‌های درست فینال",
+  CORRECT_ONLY: "نیمه‌نهایی و قهرمان فینال درست",
 };
 
 const formatDate = (value?: string | number | null) =>
@@ -106,8 +204,9 @@ export default function DashboardWorldCupCampaign() {
     useState<WorldCupFinalStatus>("COMING_SOON");
   const [finalResultAScore, setFinalResultAScore] = useState("");
   const [finalResultBScore, setFinalResultBScore] = useState("");
-  const [finalChampion, setFinalChampion] =
-    useState<WorldCupFinalChampion | "">("");
+  const [finalChampion, setFinalChampion] = useState<
+    WorldCupFinalChampion | ""
+  >("");
   const [publicWinnersVisible, setPublicWinnersVisible] = useState(false);
   const [criterion, setCriterion] =
     useState<WorldCupLotteryCriterion>("ALL_VALID");
@@ -130,8 +229,10 @@ export default function DashboardWorldCupCampaign() {
   useEffect(() => {
     const data = finalSettings.data;
     if (!data) return;
-    setFinalTeamA(data.finalTeamA ?? "");
-    setFinalTeamB(data.finalTeamB ?? "");
+    const teamACode = getTeamCodeFromLabel(data.finalTeamA ?? "");
+    const teamBCode = getTeamCodeFromLabel(data.finalTeamB ?? "");
+    setFinalTeamA(teamACode ? teamLabels[teamACode] : data.finalTeamA ?? "");
+    setFinalTeamB(teamBCode ? teamLabels[teamBCode] : data.finalTeamB ?? "");
     setFinalDeadline(toLocalDateTimeInput(data.finalDeadline));
     setFinalStatus(data.finalStatus);
     setFinalResultAScore(
@@ -158,6 +259,31 @@ export default function DashboardWorldCupCampaign() {
   const winnerCount = items.filter(
     item => !["PENDING", "NOT_WINNER"].includes(item.winnerStatus)
   ).length;
+  const finalSemiWinners = getSemiFinalWinnersFromFinalTeams(
+    finalTeamA,
+    finalTeamB
+  );
+  const finalChampionLabel =
+    finalChampion === "TEAM_A"
+      ? finalTeamA || "تیم نخست"
+      : finalChampion === "TEAM_B"
+        ? finalTeamB || "تیم دوم"
+        : "ثبت نشده";
+  const requestedWinnerCount = Number(drawCount);
+  const lotteryEligibleCount = eligibility.data?.count ?? 0;
+  const drawCountValid =
+    Number.isInteger(requestedWinnerCount) && requestedWinnerCount >= 1;
+  const lotteryDisabledReason = eligibility.isLoading
+    ? "در حال محاسبه واجدان شرایط..."
+    : !drawCountValid
+      ? "تعداد برندگان معتبر نیست."
+      : lotteryEligibleCount === 0
+        ? "برای این معیار هنوز فرد واجد شرایط وجود ندارد."
+        : requestedWinnerCount > lotteryEligibleCount
+          ? "تعداد برندگان از واجدان شرایط بیشتر است."
+          : confirmation !== "اجرای قطعی"
+            ? "برای اجرا، عبارت تأیید را دقیق وارد کنید."
+            : "";
 
   const exportCsv = () => {
     if (!items.length) {
@@ -229,9 +355,20 @@ export default function DashboardWorldCupCampaign() {
   };
 
   const runLottery = () => {
-    const count = Number(drawCount);
-    if (!Number.isInteger(count) || count < 1) {
+    if (eligibility.isLoading) {
+      toast.info("در حال محاسبه واجدان شرایط...");
+      return;
+    }
+    if (!drawCountValid) {
       toast.error("تعداد برندگان معتبر نیست.");
+      return;
+    }
+    if (lotteryEligibleCount === 0) {
+      toast.error("برای این معیار هنوز فرد واجد شرایط وجود ندارد.");
+      return;
+    }
+    if (requestedWinnerCount > lotteryEligibleCount) {
+      toast.error("تعداد برندگان از واجدان شرایط بیشتر است.");
       return;
     }
     if (confirmation !== "اجرای قطعی") {
@@ -239,10 +376,16 @@ export default function DashboardWorldCupCampaign() {
       return;
     }
     executeLottery.mutate(
-      { criterion, winnerCount: count, confirmation: "اجرای قطعی" },
+      {
+        criterion,
+        winnerCount: requestedWinnerCount,
+        confirmation: "اجرای قطعی",
+      },
       {
         onSuccess: result => {
-          toast.success(`قرعه‌کشی با شناسه ${result.drawId.slice(0, 8)} ثبت شد.`);
+          toast.success(
+            `قرعه‌کشی با شناسه ${result.drawId.slice(0, 8)} ثبت شد.`
+          );
           setConfirmation("");
         },
         onError: error => toast.error(error.message),
@@ -273,7 +416,9 @@ export default function DashboardWorldCupCampaign() {
       <div className="flex flex-col gap-4 rounded-xl border bg-card p-6 md:flex-row md:items-center md:justify-between">
         <div>
           <p className="text-sm text-muted-foreground">World Cup Campaign</p>
-          <h1 className="text-2xl font-serif font-bold">مدیریت مسابقه پیش‌بینی ریحانه</h1>
+          <h1 className="text-2xl font-serif font-bold">
+            مدیریت مسابقه پیش‌بینی ریحانه
+          </h1>
           <p className="mt-1 text-sm text-muted-foreground">
             ثبت‌ها، مرحله فینال و قرعه‌کشی را از همین بخش مدیریت کنید.
           </p>
@@ -284,12 +429,14 @@ export default function DashboardWorldCupCampaign() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-4">
-        {([
-          ["کل شرکت‌کنندگان", items.length, Users],
-          ["برندگان تعیین‌شده", winnerCount, Trophy],
-          ["پیش‌بینی فینال", finalPredictions.data?.length ?? 0, ShieldCheck],
-          ["قرعه‌کشی‌ها", lotteryDraws.data?.length ?? 0, Gift],
-        ] as Array<[string, number, LucideIcon]>).map(([label, value, Icon]) => (
+        {(
+          [
+            ["کل شرکت‌کنندگان", items.length, Users],
+            ["برندگان تعیین‌شده", winnerCount, Trophy],
+            ["پیش‌بینی فینال", finalPredictions.data?.length ?? 0, ShieldCheck],
+            ["قرعه‌کشی‌ها", lotteryDraws.data?.length ?? 0, Gift],
+          ] as Array<[string, number, LucideIcon]>
+        ).map(([label, value, Icon]) => (
           <div key={String(label)} className="rounded-lg border bg-card p-4">
             <Icon className="mb-3 h-5 w-5 text-primary" />
             <p className="text-xs text-muted-foreground">{label as string}</p>
@@ -309,9 +456,12 @@ export default function DashboardWorldCupCampaign() {
           <div className="rounded-lg border bg-card">
             <div className="flex flex-col gap-3 border-b p-4 md:flex-row md:items-center md:justify-between">
               <div>
-                <h2 className="font-semibold">پیش‌بینی‌های نیمه‌نهایی</h2>
+                <h2 className="font-serif font-semibold">
+                  پیش‌بینی‌های نیمه‌نهایی
+                </h2>
                 <p className="text-sm text-muted-foreground">
-                  وضعیت ثبت: {status.data?.isOpen ? "باز" : "بسته"}، مهلت {formatDate(status.data?.deadline)}
+                  وضعیت ثبت: {status.data?.isOpen ? "باز" : "بسته"}، مهلت{" "}
+                  {formatDate(status.data?.deadline)}
                 </p>
               </div>
               <div className="relative max-w-sm">
@@ -331,9 +481,9 @@ export default function DashboardWorldCupCampaign() {
                     <TableHead>شرکت‌کننده</TableHead>
                     <TableHead>کشور</TableHead>
                     <TableHead>کد مرجع</TableHead>
-                    <TableHead>فرانسه - اسپانیا</TableHead>
+                    <TableHead>نتیجه فرانسه / اسپانیا</TableHead>
                     <TableHead>صعود</TableHead>
-                    <TableHead>انگلستان - آرژانتین</TableHead>
+                    <TableHead>نتیجه انگلستان / آرژانتین</TableHead>
                     <TableHead>صعود</TableHead>
                     <TableHead>وضعیت</TableHead>
                   </TableRow>
@@ -344,7 +494,10 @@ export default function DashboardWorldCupCampaign() {
                       <TableCell>
                         <div className="min-w-44">
                           <strong>{item.fullName}</strong>
-                          <small dir="ltr" className="block text-muted-foreground">
+                          <small
+                            dir="ltr"
+                            className="block text-muted-foreground"
+                          >
                             {item.email}
                           </small>
                         </div>
@@ -352,13 +505,33 @@ export default function DashboardWorldCupCampaign() {
                       <TableCell>{getCountryLabel(item.country)}</TableCell>
                       <TableCell dir="ltr">{item.referenceCode}</TableCell>
                       <TableCell>
-                        {item.franceSpainFranceScore} - {item.franceSpainSpainScore}
+                        <MatchScore
+                          firstTeam="FRANCE"
+                          firstLabel={teamLabels.FRANCE}
+                          firstScore={item.franceSpainFranceScore}
+                          secondTeam="SPAIN"
+                          secondLabel={teamLabels.SPAIN}
+                          secondScore={item.franceSpainSpainScore}
+                          winnerTeam={item.franceSpainAdvances}
+                        />
                       </TableCell>
-                      <TableCell>{teamLabels[item.franceSpainAdvances]}</TableCell>
                       <TableCell>
-                        {item.englandArgentinaEnglandScore} - {item.englandArgentinaArgentinaScore}
+                        {teamLabels[item.franceSpainAdvances]}
                       </TableCell>
-                      <TableCell>{teamLabels[item.englandArgentinaAdvances]}</TableCell>
+                      <TableCell>
+                        <MatchScore
+                          firstTeam="ENGLAND"
+                          firstLabel={teamLabels.ENGLAND}
+                          firstScore={item.englandArgentinaEnglandScore}
+                          secondTeam="ARGENTINA"
+                          secondLabel={teamLabels.ARGENTINA}
+                          secondScore={item.englandArgentinaArgentinaScore}
+                          winnerTeam={item.englandArgentinaAdvances}
+                        />
+                      </TableCell>
+                      <TableCell>
+                        {teamLabels[item.englandArgentinaAdvances]}
+                      </TableCell>
                       <TableCell>
                         <Select
                           value={item.winnerStatus}
@@ -378,11 +551,13 @@ export default function DashboardWorldCupCampaign() {
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            {Object.entries(winnerLabels).map(([value, label]) => (
-                              <SelectItem key={value} value={value}>
-                                {label}
-                              </SelectItem>
-                            ))}
+                            {Object.entries(winnerLabels).map(
+                              ([value, label]) => (
+                                <SelectItem key={value} value={value}>
+                                  {label}
+                                </SelectItem>
+                              )
+                            )}
                           </SelectContent>
                         </Select>
                       </TableCell>
@@ -390,7 +565,10 @@ export default function DashboardWorldCupCampaign() {
                   ))}
                   {!filtered.length && (
                     <TableRow>
-                      <TableCell colSpan={8} className="py-10 text-center text-muted-foreground">
+                      <TableCell
+                        colSpan={8}
+                        className="py-10 text-center text-muted-foreground"
+                      >
                         هنوز موردی برای نمایش وجود ندارد.
                       </TableCell>
                     </TableRow>
@@ -405,10 +583,13 @@ export default function DashboardWorldCupCampaign() {
               <div className="flex gap-3">
                 <AlertTriangle className="mt-1 h-5 w-5 shrink-0 text-destructive" />
                 <div>
-                  <h2 className="font-semibold text-destructive">حذف همه پیش‌بینی‌ها</h2>
+                  <h2 className="font-serif font-semibold text-destructive">
+                    حذف همه پیش‌بینی‌ها
+                  </h2>
                   <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-                    فقط ثبت‌های پیش‌بینی جام جهانی حذف می‌شوند. برای فعال شدن دکمه،
-                    عبارت <strong dir="ltr">I'm sure</strong> را دقیق وارد کنید.
+                    فقط ثبت‌های پیش‌بینی جام جهانی حذف می‌شوند. برای فعال شدن
+                    دکمه، عبارت <strong dir="ltr">I'm sure</strong> را دقیق وارد
+                    کنید.
                   </p>
                 </div>
               </div>
@@ -441,84 +622,220 @@ export default function DashboardWorldCupCampaign() {
             <section className="rounded-lg border bg-card p-5">
               <div className="mb-5 flex items-center gap-2">
                 <Settings2 className="h-5 w-5 text-primary" />
-                <h2 className="font-semibold">تنظیمات مرحله فینال</h2>
+                <h2 className="font-serif font-semibold">
+                  تنظیمات مرحله فینال
+                </h2>
               </div>
               <div className="grid gap-4 md:grid-cols-2">
                 <div className="grid gap-2">
                   <Label htmlFor="final-team-a">تیم نخست</Label>
-                  <Input id="final-team-a" value={finalTeamA} onChange={event => setFinalTeamA(event.target.value)} />
-                </div>
-                <div className="grid gap-2">
-                  <Label htmlFor="final-team-b">تیم دوم</Label>
-                  <Input id="final-team-b" value={finalTeamB} onChange={event => setFinalTeamB(event.target.value)} />
-                </div>
-                <div className="grid gap-2 md:col-span-2">
-                  <Label htmlFor="final-deadline">مهلت ثبت</Label>
-                  <Input id="final-deadline" dir="ltr" type="datetime-local" value={finalDeadline} onChange={event => setFinalDeadline(event.target.value)} />
-                </div>
-                <div className="grid gap-2 md:col-span-2">
-                  <Label>وضعیت عمومی</Label>
-                  <Select value={finalStatus} onValueChange={value => setFinalStatus(value as WorldCupFinalStatus)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={finalTeamA}
+                    onValueChange={value => {
+                      setFinalTeamA(value);
+                      if (
+                        value === finalTeamB ||
+                        getTeamSemiFinal(value) === getTeamSemiFinal(finalTeamB)
+                      ) {
+                        setFinalTeamB("");
+                      }
+                    }}
+                  >
+                    <SelectTrigger id="final-team-a">
+                      <SelectValue placeholder="تیم نخست را انتخاب کنید" />
+                    </SelectTrigger>
                     <SelectContent>
-                      {Object.entries(finalStatusLabels).map(([value, label]) => (
-                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                      {teamOptions.map(option => (
+                        <SelectItem
+                          key={option.code}
+                          value={option.label}
+                          disabled={
+                            option.label === finalTeamB ||
+                            Boolean(
+                              finalTeamB &&
+                                getTeamSemiFinal(option.label) ===
+                                  getTeamSemiFinal(finalTeamB)
+                            )
+                          }
+                        >
+                          {option.label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
                 </div>
-                {finalStatus === "RESULTS" && (
-                  <>
-                    <div className="grid gap-2">
-                      <Label>نتیجه تیم نخست</Label>
-                      <Input type="number" min={0} max={30} value={finalResultAScore} onChange={event => setFinalResultAScore(event.target.value)} />
-                    </div>
-                    <div className="grid gap-2">
-                      <Label>نتیجه تیم دوم</Label>
-                      <Input type="number" min={0} max={30} value={finalResultBScore} onChange={event => setFinalResultBScore(event.target.value)} />
-                    </div>
-                    <div className="grid gap-2 md:col-span-2">
-                      <Label>قهرمان</Label>
-                      <Select value={finalChampion || undefined} onValueChange={value => setFinalChampion(value as WorldCupFinalChampion)}>
-                        <SelectTrigger><SelectValue placeholder="قهرمان را انتخاب کنید" /></SelectTrigger>
-                        <SelectContent>
-                          <SelectItem value="TEAM_A">{finalTeamA || "تیم نخست"}</SelectItem>
-                          <SelectItem value="TEAM_B">{finalTeamB || "تیم دوم"}</SelectItem>
-                        </SelectContent>
-                      </Select>
-                    </div>
-                  </>
-                )}
+                <div className="grid gap-2">
+                  <Label htmlFor="final-team-b">تیم دوم</Label>
+                  <Select
+                    value={finalTeamB}
+                    onValueChange={value => {
+                      setFinalTeamB(value);
+                      if (
+                        value === finalTeamA ||
+                        getTeamSemiFinal(value) === getTeamSemiFinal(finalTeamA)
+                      ) {
+                        setFinalTeamA("");
+                      }
+                    }}
+                  >
+                    <SelectTrigger id="final-team-b">
+                      <SelectValue placeholder="تیم دوم را انتخاب کنید" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {teamOptions.map(option => (
+                        <SelectItem
+                          key={option.code}
+                          value={option.label}
+                          disabled={
+                            option.label === finalTeamA ||
+                            Boolean(
+                              finalTeamA &&
+                                getTeamSemiFinal(option.label) ===
+                                  getTeamSemiFinal(finalTeamA)
+                            )
+                          }
+                        >
+                          {option.label}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2 md:col-span-2">
+                  <Label htmlFor="final-deadline">مهلت ثبت</Label>
+                  <Input
+                    id="final-deadline"
+                    dir="ltr"
+                    type="datetime-local"
+                    value={finalDeadline}
+                    onChange={event => setFinalDeadline(event.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2 md:col-span-2">
+                  <Label>وضعیت عمومی</Label>
+                  <Select
+                    value={finalStatus}
+                    onValueChange={value =>
+                      setFinalStatus(value as WorldCupFinalStatus)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {Object.entries(finalStatusLabels).map(
+                        ([value, label]) => (
+                          <SelectItem key={value} value={value}>
+                            {label}
+                          </SelectItem>
+                        )
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+                <div className="grid gap-2">
+                  <Label>نتیجه تیم نخست</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={30}
+                    value={finalResultAScore}
+                    disabled={finalStatus !== "RESULTS"}
+                    onChange={event => setFinalResultAScore(event.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2">
+                  <Label>نتیجه تیم دوم</Label>
+                  <Input
+                    type="number"
+                    min={0}
+                    max={30}
+                    value={finalResultBScore}
+                    disabled={finalStatus !== "RESULTS"}
+                    onChange={event => setFinalResultBScore(event.target.value)}
+                  />
+                </div>
+                <div className="grid gap-2 md:col-span-2">
+                  <Label>قهرمان</Label>
+                  <Select
+                    value={finalChampion || undefined}
+                    disabled={finalStatus !== "RESULTS"}
+                    onValueChange={value =>
+                      setFinalChampion(value as WorldCupFinalChampion)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue placeholder="قهرمان را انتخاب کنید" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="TEAM_A">
+                        {finalTeamA || "تیم نخست"}
+                      </SelectItem>
+                      <SelectItem value="TEAM_B">
+                        {finalTeamB || "تیم دوم"}
+                      </SelectItem>
+                    </SelectContent>
+                  </Select>
+                  <p className="text-xs text-muted-foreground">
+                    نتیجه و قهرمان وقتی فعال می‌شود که وضعیت روی «نمایش نتیجه»
+                    باشد.
+                  </p>
+                </div>
               </div>
               <div className="my-5 flex items-center justify-between rounded-lg bg-muted p-4">
                 <div>
                   <strong className="text-sm">نمایش عمومی برندگان</strong>
-                  <p className="text-xs text-muted-foreground">فقط قرعه‌کشی‌های منتشرشده نشان داده می‌شوند.</p>
+                  <p className="text-xs text-muted-foreground">
+                    فقط قرعه‌کشی‌های منتشرشده نشان داده می‌شوند.
+                  </p>
                 </div>
-                <Switch checked={publicWinnersVisible} onCheckedChange={setPublicWinnersVisible} />
+                <Switch
+                  checked={publicWinnersVisible}
+                  onCheckedChange={setPublicWinnersVisible}
+                />
               </div>
-              <Button onClick={saveFinal} disabled={saveFinalSettings.isPending}>
-                {saveFinalSettings.isPending ? "در حال ذخیره..." : "ذخیره تنظیمات"}
+              <Button
+                onClick={saveFinal}
+                disabled={saveFinalSettings.isPending}
+              >
+                {saveFinalSettings.isPending
+                  ? "در حال ذخیره..."
+                  : "ذخیره تنظیمات"}
               </Button>
             </section>
 
             <section className="rounded-lg border bg-card p-5">
               <div className="mb-4 flex items-center justify-between">
-                <h2 className="font-semibold">پیش‌بینی‌های فینال</h2>
+                <h2 className="font-serif font-semibold">پیش‌بینی‌های فینال</h2>
                 <Badge>{finalPredictions.data?.length ?? 0}</Badge>
               </div>
               <div className="grid gap-2">
                 {(finalPredictions.data ?? []).map(item => (
-                  <div key={item.id} className="rounded-lg bg-muted p-3 text-sm">
+                  <div
+                    key={item.id}
+                    className="rounded-lg bg-muted p-3 text-sm"
+                  >
                     <strong>{item.fullName}</strong>
-                    <span className="mx-2 text-muted-foreground" dir="ltr">{item.email}</span>
-                    <div className="mt-1">
-                      {item.teamAScore} - {item.teamBScore}، قهرمان: {item.champion === "TEAM_A" ? finalTeamA || "تیم نخست" : finalTeamB || "تیم دوم"}
+                    <span className="mx-2 text-muted-foreground" dir="ltr">
+                      {item.email}
+                    </span>
+                    <div className="mt-3">
+                      <MatchScore
+                        firstTeam="TEAM_A"
+                        firstLabel={finalTeamA || "تیم نخست"}
+                        firstScore={item.teamAScore}
+                        secondTeam="TEAM_B"
+                        secondLabel={finalTeamB || "تیم دوم"}
+                        secondScore={item.teamBScore}
+                        winnerTeam={item.champion}
+                      />
                     </div>
                   </div>
                 ))}
                 {!finalPredictions.data?.length && (
-                  <p className="py-8 text-center text-sm text-muted-foreground">هنوز پیش‌بینی فینالی ثبت نشده است.</p>
+                  <p className="py-8 text-center text-sm text-muted-foreground">
+                    هنوز پیش‌بینی فینالی ثبت نشده است.
+                  </p>
                 )}
               </div>
             </section>
@@ -528,39 +845,112 @@ export default function DashboardWorldCupCampaign() {
         <TabsContent value="lottery">
           <div className="grid gap-4 lg:grid-cols-[0.7fr_1.3fr]">
             <section className="rounded-lg border bg-card p-5">
-              <h2 className="mb-5 font-semibold">اجرای قرعه‌کشی</h2>
+              <h2 className="font-serif mb-5 font-semibold">اجرای قرعه‌کشی</h2>
               <div className="grid gap-4">
                 <div className="grid gap-2">
                   <Label>معیار واجدان شرایط</Label>
-                  <Select value={criterion} onValueChange={value => setCriterion(value as WorldCupLotteryCriterion)}>
-                    <SelectTrigger><SelectValue /></SelectTrigger>
+                  <Select
+                    value={criterion}
+                    onValueChange={value =>
+                      setCriterion(value as WorldCupLotteryCriterion)
+                    }
+                  >
+                    <SelectTrigger>
+                      <SelectValue />
+                    </SelectTrigger>
                     <SelectContent>
                       {Object.entries(criterionLabels).map(([value, label]) => (
-                        <SelectItem key={value} value={value}>{label}</SelectItem>
+                        <SelectItem key={value} value={value}>
+                          {label}
+                        </SelectItem>
                       ))}
                     </SelectContent>
                   </Select>
+                  {criterion === "CORRECT_ONLY" && (
+                    <p className="text-xs text-muted-foreground">
+                      کاربر باید هر دو صعودکننده نیمه‌نهایی و قهرمان فینال را
+                      درست پیش‌بینی کرده باشد.
+                    </p>
+                  )}
                 </div>
+                {criterion === "CORRECT_ONLY" && (
+                  <div className="rounded-lg border bg-muted/60 p-4 text-sm">
+                    <div className="grid gap-2">
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-muted-foreground">فینال</span>
+                        <strong>
+                          {finalTeamA || "تیم نخست"} /{" "}
+                          {finalTeamB || "تیم دوم"}
+                        </strong>
+                      </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-muted-foreground">قهرمان</span>
+                        <strong>{finalChampionLabel}</strong>
+                      </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-muted-foreground">
+                          صعودکنندگان درست
+                        </span>
+                        <strong>
+                          {finalSemiWinners.first
+                            ? teamLabels[finalSemiWinners.first]
+                            : "نامشخص"}{" "}
+                          /{" "}
+                          {finalSemiWinners.second
+                            ? teamLabels[finalSemiWinners.second]
+                            : "نامشخص"}
+                        </strong>
+                      </div>
+                    </div>
+                  </div>
+                )}
                 <div className="grid gap-2">
                   <Label>تعداد برندگان</Label>
-                  <Input type="number" min={1} max={100} value={drawCount} onChange={event => setDrawCount(event.target.value)} />
+                  <Input
+                    type="number"
+                    min={1}
+                    max={100}
+                    value={drawCount}
+                    onChange={event => setDrawCount(event.target.value)}
+                  />
                 </div>
                 <div className="rounded-lg bg-muted p-4 text-center">
-                  <span className="text-xs text-muted-foreground">واجد شرایط</span>
-                  <strong className="block text-2xl">{eligibility.data?.count ?? 0}</strong>
+                  <span className="text-xs text-muted-foreground">
+                    واجد شرایط
+                  </span>
+                  <strong className="block text-2xl">
+                    {eligibility.data?.count ?? 0}
+                  </strong>
                 </div>
                 <div className="grid gap-2">
                   <Label>برای تأیید بنویسید: اجرای قطعی</Label>
-                  <Input value={confirmation} onChange={event => setConfirmation(event.target.value)} />
+                  <Input
+                    value={confirmation}
+                    onChange={event => setConfirmation(event.target.value)}
+                  />
                 </div>
-                <Button onClick={runLottery} disabled={executeLottery.isPending}>
-                  {executeLottery.isPending ? "در حال اجرا..." : "اجرای قرعه‌کشی"}
+                <Button
+                  onClick={runLottery}
+                  disabled={
+                    executeLottery.isPending || Boolean(lotteryDisabledReason)
+                  }
+                >
+                  {executeLottery.isPending
+                    ? "در حال اجرا..."
+                    : "اجرای قرعه‌کشی"}
                 </Button>
+                {lotteryDisabledReason && (
+                  <p className="text-xs text-muted-foreground">
+                    {lotteryDisabledReason}
+                  </p>
+                )}
               </div>
             </section>
 
             <section className="rounded-lg border bg-card p-5">
-              <h2 className="mb-5 font-semibold">تاریخچه قرعه‌کشی</h2>
+              <h2 className="font-serif mb-5 font-semibold">
+                تاریخچه قرعه‌کشی
+              </h2>
               <div className="grid gap-3">
                 {(lotteryDraws.data ?? []).map(draw => (
                   <article key={draw.id} className="rounded-lg border p-4">
@@ -568,9 +958,15 @@ export default function DashboardWorldCupCampaign() {
                       <div>
                         <strong>اجرای {draw.id.slice(0, 8)}</strong>
                         <p className="text-xs text-muted-foreground">
-                          {criterionLabels[draw.criterion]}، {draw.winnerCount} برنده از {draw.eligibleCount} نفر
+                          {criterionLabels[draw.criterion]}، {draw.winnerCount}{" "}
+                          برنده از {draw.eligibleCount} نفر
                         </p>
-                        <small dir="ltr" className="block text-muted-foreground">{draw.auditHash}</small>
+                        <small
+                          dir="ltr"
+                          className="block text-muted-foreground"
+                        >
+                          {draw.auditHash}
+                        </small>
                       </div>
                       <div className="flex items-center gap-3">
                         <span className="text-sm">انتشار عمومی</span>
@@ -587,7 +983,10 @@ export default function DashboardWorldCupCampaign() {
                     </div>
                     <div className="mt-3 flex flex-wrap gap-2">
                       {draw.winners.map(winner => (
-                        <Badge key={`${draw.id}-${winner.position}`} variant="secondary">
+                        <Badge
+                          key={`${draw.id}-${winner.position}`}
+                          variant="secondary"
+                        >
                           #{winner.position} {winner.fullName}
                         </Badge>
                       ))}
@@ -595,7 +994,9 @@ export default function DashboardWorldCupCampaign() {
                   </article>
                 ))}
                 {!lotteryDraws.data?.length && (
-                  <p className="py-8 text-center text-sm text-muted-foreground">هنوز قرعه‌کشی اجرا نشده است.</p>
+                  <p className="py-8 text-center text-sm text-muted-foreground">
+                    هنوز قرعه‌کشی اجرا نشده است.
+                  </p>
                 )}
               </div>
             </section>

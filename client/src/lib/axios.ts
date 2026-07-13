@@ -7,4 +7,20 @@ const api = axios.create({
   xsrfHeaderName: "x-csrf-token",
 });
 
+api.interceptors.response.use(
+  response => response,
+  error => {
+    const message =
+      error.response?.data?.error ||
+      error.response?.data?.message ||
+      error.message;
+
+    if (message) {
+      error.message = message;
+    }
+
+    return Promise.reject(error);
+  }
+);
+
 export default api;

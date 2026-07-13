@@ -68,6 +68,16 @@ const initialForm: PredictionForm = {
   termsAccepted: false,
 };
 
+function getScoreWinner<T extends string>(
+  scoreOne: number,
+  scoreTwo: number,
+  teamOne: T,
+  teamTwo: T
+) {
+  if (scoreOne === scoreTwo) return null;
+  return scoreOne > scoreTwo ? teamOne : teamTwo;
+}
+
 function useCountdown(target: number) {
   const [now, setNow] = useState(() => Date.now());
   useEffect(() => {
@@ -244,26 +254,18 @@ function MatchCard({
   index,
   teamOne,
   teamTwo,
-  teamOneCode,
-  teamTwoCode,
   scoreOne,
   scoreTwo,
-  selected,
   onScoreOne,
   onScoreTwo,
-  onSelect,
 }: {
   index: string;
   teamOne: string;
   teamTwo: string;
-  teamOneCode: string;
-  teamTwoCode: string;
   scoreOne: number;
   scoreTwo: number;
-  selected: string;
   onScoreOne: (value: number) => void;
   onScoreTwo: (value: number) => void;
-  onSelect: (team: string) => void;
 }) {
   const { t } = useTranslation();
   return (
@@ -279,29 +281,6 @@ function MatchCard({
         <span className="wc-versus">-</span>
         <ScoreInput label={teamTwo} value={scoreTwo} onChange={onScoreTwo} />
       </div>
-      <fieldset>
-        <legend>{t("world_cup.prediction.advance_question")}</legend>
-        <div className="wc-team-options">
-          {[
-            [teamOne, teamOneCode],
-            [teamTwo, teamTwoCode],
-          ].map(([name, code]) => (
-            <button
-              key={code}
-              aria-pressed={selected === code}
-              className={cn(
-                "wc-team-option",
-                selected === code && "wc-team-option-selected"
-              )}
-              type="button"
-              onClick={() => onSelect(code)}
-            >
-              {name}
-              {selected === code && <Check size={17} />}
-            </button>
-          ))}
-        </div>
-      </fieldset>
     </section>
   );
 }
@@ -714,6 +693,7 @@ export default function WorldCupPrediction() {
   const [error, setError] = useState("");
   const [registrationId, setRegistrationId] = useState("");
   const [referenceCode, setReferenceCode] = useState("");
+  const [copyFeedback, setCopyFeedback] = useState("");
   const status = useWorldCupStatus();
   const submit = useSubmitWorldCupPrediction();
   const countdown = useCountdown(WORLD_CUP_CAMPAIGN_DEADLINE_MS);
@@ -777,19 +757,76 @@ export default function WorldCupPrediction() {
     setStep(2);
   };
 
-  const shareText = useMemo(
-    () =>
-      [
-        t("world_cup.share.line1"),
-        `${teams.FRANCE} ${form.franceSpainFranceScore}-${form.franceSpainSpainScore} ${teams.SPAIN}; ${teams[form.franceSpainAdvances]}`,
-        `${teams.ENGLAND} ${form.englandArgentinaEnglandScore}-${form.englandArgentinaArgentinaScore} ${teams.ARGENTINA}; ${teams[form.englandArgentinaAdvances]}`,
-        t("world_cup.share.line4"),
-        typeof window === "undefined"
-          ? "https://www.rayhana.com/world-cup-prediction"
-          : window.location.href,
-      ].join("\n"),
-    [form, t, teams]
-  );
+  const shareText = useMemo(() => {
+    const franceSpainWinner = getScoreWinner(
+      form.franceSpainFranceScore,
+      form.franceSpainSpainScore,
+      "FRANCE",
+      "SPAIN"
+    );
+    const englandArgentinaWinner = getScoreWinner(
+      form.englandArgentinaEnglandScore,
+      form.englandArgentinaArgentinaScore,
+      "ENGLAND",
+      "ARGENTINA"
+    );
+
+    return [
+      t("world_cup.share.line1"),
+      `${teams.FRANCE} ${form.franceSpainFranceScore}-${form.franceSpainSpainScore} ${teams.SPAIN}; ${franceSpainWinner ? teams[franceSpainWinner] : "-"}`,
+      `${teams.ENGLAND} ${form.englandArgentinaEnglandScore}-${form.englandArgentinaArgentinaScore} ${teams.ARGENTINA}; ${englandArgentinaWinner ? teams[englandArgentinaWinner] : "-"}`,
+      referenceCode
+        ? `${t("world_cup.prediction.reference_label")}: ${referenceCode}`
+        : "",
+      t("world_cup.share.line4"),
+      typeof window === "undefined"
+        ? "https://www.rayhana.com/world-cup-prediction"
+        : window.location.href,
+    ]
+      .filter(Boolean)
+      .join("\n");
+  }, [form, referenceCode, t, teams]);
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      if (navigator.clipboard?.writeText) {
+        await navigator.clipboard.writeText(text);
+        return true;
+      }
+    } catch {
+      // Fall through to the textarea fallback below.
+    }
+    const textarea = document.createElement("textarea");
+    textarea.value = text;
+    textarea.setAttribute("readonly", "");
+    textarea.style.position = "fixed";
+    textarea.style.opacity = "0";
+    document.body.appendChild(textarea);
+    textarea.select();
+    const copied = document.execCommand("copy");
+    document.body.removeChild(textarea);
+    return copied;
+  };
+
+  const handleCopyShare = async () => {
+    const text = shareText;
+    if (navigator.share) {
+      try {
+        await navigator.share({ text });
+        setCopyFeedback(t("world_cup.prediction.share_done"));
+        return;
+      } catch {
+        // Fall back to copy when sharing is cancelled or unavailable.
+      }
+    }
+
+    const copied = await copyToClipboard(text);
+    setCopyFeedback(
+      copied
+        ? t("world_cup.prediction.copy_done")
+        : t("world_cup.prediction.copy_failed")
+    );
+  };
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
@@ -803,8 +840,31 @@ export default function WorldCupPrediction() {
     }
     if (!form.country) return;
 
+    const franceSpainAdvances = getScoreWinner(
+      form.franceSpainFranceScore,
+      form.franceSpainSpainScore,
+      "FRANCE",
+      "SPAIN"
+    );
+    const englandArgentinaAdvances = getScoreWinner(
+      form.englandArgentinaEnglandScore,
+      form.englandArgentinaArgentinaScore,
+      "ENGLAND",
+      "ARGENTINA"
+    );
+    if (!franceSpainAdvances || !englandArgentinaAdvances) {
+      setError(t("world_cup.prediction.no_draw"));
+      return;
+    }
+
     submit.mutate(
-      { ...form, country: form.country, termsAccepted: true },
+      {
+        ...form,
+        country: form.country,
+        franceSpainAdvances,
+        englandArgentinaAdvances,
+        termsAccepted: true,
+      },
       {
         onSuccess: result => {
           setRegistrationId(result.registrationId);
@@ -1043,10 +1103,13 @@ export default function WorldCupPrediction() {
                   <Button
                     type="button"
                     variant="outline"
-                    onClick={() => navigator.clipboard?.writeText(shareText)}
+                    onClick={handleCopyShare}
                   >
                     {t("world_cup.prediction.copy_share")}
                   </Button>
+                  {copyFeedback && (
+                    <small className="wc-final-success">{copyFeedback}</small>
+                  )}
                   <Button
                     className="wc-success-back"
                     variant="ghost"
@@ -1162,48 +1225,35 @@ export default function WorldCupPrediction() {
                     <div className="wc-form-step">
                       <div className="wc-form-title">
                         <span>{t("world_cup.prediction.match_step")}</span>
-                        <h3>{t("world_cup.prediction.match_title")}</h3>
+                        <h3 className="font-serif">
+                          {t("world_cup.prediction.match_title")}
+                        </h3>
                         <p>{t("world_cup.prediction.match_desc")}</p>
                       </div>
                       <MatchCard
                         index={t("world_cup.stats.match_one")}
                         teamOne={teams.FRANCE}
                         teamTwo={teams.SPAIN}
-                        teamOneCode="FRANCE"
-                        teamTwoCode="SPAIN"
                         scoreOne={form.franceSpainFranceScore}
                         scoreTwo={form.franceSpainSpainScore}
-                        selected={form.franceSpainAdvances}
                         onScoreOne={value =>
                           patch("franceSpainFranceScore", value)
                         }
                         onScoreTwo={value =>
                           patch("franceSpainSpainScore", value)
                         }
-                        onSelect={value =>
-                          patch("franceSpainAdvances", value as FranceSpainTeam)
-                        }
                       />
                       <MatchCard
                         index={t("world_cup.stats.match_two")}
                         teamOne={teams.ENGLAND}
                         teamTwo={teams.ARGENTINA}
-                        teamOneCode="ENGLAND"
-                        teamTwoCode="ARGENTINA"
                         scoreOne={form.englandArgentinaEnglandScore}
                         scoreTwo={form.englandArgentinaArgentinaScore}
-                        selected={form.englandArgentinaAdvances}
                         onScoreOne={value =>
                           patch("englandArgentinaEnglandScore", value)
                         }
                         onScoreTwo={value =>
                           patch("englandArgentinaArgentinaScore", value)
-                        }
-                        onSelect={value =>
-                          patch(
-                            "englandArgentinaAdvances",
-                            value as EnglandArgentinaTeam
-                          )
                         }
                       />
                       <div className="wc-terms-check">
