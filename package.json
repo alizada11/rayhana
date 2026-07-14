@@ -4,7 +4,7 @@
   "type": "module",
   "license": "MIT",
   "scripts": {
-    "dev": "vite --host",
+    "dev": "vite --host --port 3000 --strictPort",
     "build": "pnpm install --frozen-lockfile --prod=false && pnpm --dir server install --frozen-lockfile --prod=false && vite build && vite build --ssr src/entry-server.tsx --outDir ../dist/server && esbuild server/src/index.ts --platform=node --bundle --format=cjs --external:argon2 --outdir=dist --out-extension:.js=.cjs",
     "start": "cross-env NODE_ENV=production NODE_PATH=./server/node_modules node dist/index.cjs",
     "db:push": "pnpm --dir server db:push",

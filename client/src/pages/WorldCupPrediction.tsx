@@ -61,19 +61,13 @@ type PredictionForm = {
   termsAccepted: boolean;
 };
 
-const lockedFirstMatchDefaults = {
-  franceSpainAdvances: "FRANCE" as FranceSpainTeam,
-  franceSpainFranceScore: 1,
-  franceSpainSpainScore: 0,
-};
-
 const initialForm: PredictionForm = {
   fullName: "",
   email: "",
   country: "",
-  franceSpainAdvances: lockedFirstMatchDefaults.franceSpainAdvances,
-  franceSpainFranceScore: lockedFirstMatchDefaults.franceSpainFranceScore,
-  franceSpainSpainScore: lockedFirstMatchDefaults.franceSpainSpainScore,
+  franceSpainAdvances: "FRANCE",
+  franceSpainFranceScore: 0,
+  franceSpainSpainScore: 0,
   englandArgentinaAdvances: "ENGLAND",
   englandArgentinaEnglandScore: 0,
   englandArgentinaArgentinaScore: 0,
@@ -993,7 +987,11 @@ export default function WorldCupPrediction() {
     }
 
     const firstMatchValues = firstMatchClosed
-      ? lockedFirstMatchDefaults
+      ? {
+          franceSpainAdvances: null,
+          franceSpainFranceScore: null,
+          franceSpainSpainScore: null,
+        }
       : {
           franceSpainAdvances: franceSpainAdvances as FranceSpainTeam,
           franceSpainFranceScore: form.franceSpainFranceScore,

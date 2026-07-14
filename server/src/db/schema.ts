@@ -203,10 +203,11 @@ export const worldCupPredictions = pgTable(
     fullName: text("full_name").notNull(),
     email: text("email").notNull(),
     country: text("country").notNull(),
-    franceSpainAdvances:
-      worldCupSemiFinalOneTeamEnum("france_spain_advances").notNull(),
-    franceSpainFranceScore: integer("france_spain_france_score").notNull(),
-    franceSpainSpainScore: integer("france_spain_spain_score").notNull(),
+    franceSpainAdvances: worldCupSemiFinalOneTeamEnum(
+      "france_spain_advances"
+    ),
+    franceSpainFranceScore: integer("france_spain_france_score"),
+    franceSpainSpainScore: integer("france_spain_spain_score"),
     englandArgentinaAdvances:
       worldCupSemiFinalTwoTeamEnum("england_argentina_advances").notNull(),
     englandArgentinaEnglandScore: integer(
