@@ -907,6 +907,7 @@ export const getWorldCupEligibleLotteryPool = async (
   const participants = await db
     .select()
     .from(worldCupPredictions)
+    .where(lt(worldCupPredictions.createdAt, WORLD_CUP_FIRST_MATCH_DEADLINE))
     .orderBy(worldCupPredictions.createdAt);
 
   if (criterion === "ALL_VALID") return participants;

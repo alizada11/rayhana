@@ -303,6 +303,7 @@ export default function DashboardWorldCupCampaign() {
     const header = [
       "نام",
       "ایمیل",
+      "تاریخ ثبت",
       "کد مرجع",
       "کشور",
       "فرانسه",
@@ -316,6 +317,7 @@ export default function DashboardWorldCupCampaign() {
     const rows = items.map(item => [
       item.fullName,
       item.email,
+      formatDate(item.createdAt),
       item.referenceCode ?? "",
       getCountryLabel(item.country),
       item.franceSpainFranceScore ?? "",
@@ -510,6 +512,7 @@ export default function DashboardWorldCupCampaign() {
                   <TableRow>
                     <TableHead>شرکت‌کننده</TableHead>
                     <TableHead>کشور</TableHead>
+                    <TableHead>تاریخ ثبت</TableHead>
                     <TableHead>کد مرجع</TableHead>
                     <TableHead>نتیجه فرانسه / اسپانیا</TableHead>
                     <TableHead>صعود</TableHead>
@@ -533,6 +536,9 @@ export default function DashboardWorldCupCampaign() {
                         </div>
                       </TableCell>
                       <TableCell>{getCountryLabel(item.country)}</TableCell>
+                      <TableCell dir="ltr" className="whitespace-nowrap">
+                        {formatDate(item.createdAt)}
+                      </TableCell>
                       <TableCell dir="ltr">{item.referenceCode}</TableCell>
                       <TableCell>
                         <MatchScore
@@ -598,7 +604,7 @@ export default function DashboardWorldCupCampaign() {
                   {!filtered.length && (
                     <TableRow>
                       <TableCell
-                        colSpan={8}
+                        colSpan={9}
                         className="py-10 text-center text-muted-foreground"
                       >
                         هنوز موردی برای نمایش وجود ندارد.
