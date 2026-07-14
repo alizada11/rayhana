@@ -1,5 +1,9 @@
-export const WORLD_CUP_CAMPAIGN_DEADLINE_MS = Date.parse(
+export const WORLD_CUP_FIRST_MATCH_DEADLINE_MS = Date.parse(
   "2026-07-14T18:55:00.000Z"
+);
+
+export const WORLD_CUP_CAMPAIGN_DEADLINE_MS = Date.parse(
+  "2026-07-15T18:55:00.000Z"
 );
 
 export const WORLD_CUP_WINNER_LABELS = {
@@ -10,4 +14,3 @@ export const WORLD_CUP_WINNER_LABELS = {
   DISCOUNT: "برنده کد ۲۶٪",
   NOT_WINNER: "برنده نشده",
 } as const;
-

@@ -50,9 +50,12 @@ function isMissingWorldCupTable(error: unknown) {
 }
 
 export const status = async (_req: Request, res: Response) => {
+  const now = Date.now();
   res.json({
+    firstMatchDeadline: queries.WORLD_CUP_FIRST_MATCH_DEADLINE.getTime(),
     deadline: queries.WORLD_CUP_CAMPAIGN_DEADLINE.getTime(),
-    isOpen: Date.now() < queries.WORLD_CUP_CAMPAIGN_DEADLINE.getTime(),
+    isFirstMatchOpen: now < queries.WORLD_CUP_FIRST_MATCH_DEADLINE.getTime(),
+    isOpen: now < queries.WORLD_CUP_CAMPAIGN_DEADLINE.getTime(),
   });
 };
 
@@ -105,6 +108,16 @@ export const submit = async (req: Request, res: Response) => {
   }
   if (Date.now() >= queries.WORLD_CUP_CAMPAIGN_DEADLINE.getTime()) {
     return res.status(403).json({ error: "مهلت ثبت پیش‌بینی پایان یافته است." });
+  }
+  if (
+    Date.now() >= queries.WORLD_CUP_FIRST_MATCH_DEADLINE.getTime() &&
+    (parsed.data.franceSpainAdvances !== "FRANCE" ||
+      parsed.data.franceSpainFranceScore !== 1 ||
+      parsed.data.franceSpainSpainScore !== 0)
+  ) {
+    return res
+      .status(403)
+      .json({ error: "مهلت ثبت پیش‌بینی نیمه‌نهایی اول پایان یافته است." });
   }
 
   const email = parsed.data.email.toLowerCase();

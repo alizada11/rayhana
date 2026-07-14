@@ -16,7 +16,10 @@ import {
   getCountryLabel,
   type CountryCode,
 } from "@shared/countries";
-import { WORLD_CUP_CAMPAIGN_DEADLINE_MS } from "@shared/worldCupCampaign";
+import {
+  WORLD_CUP_CAMPAIGN_DEADLINE_MS,
+  WORLD_CUP_FIRST_MATCH_DEADLINE_MS,
+} from "@shared/worldCupCampaign";
 import {
   ArrowLeft,
   ArrowRight,
@@ -28,6 +31,8 @@ import {
   LockKeyhole,
   Mail,
   Medal,
+  Minus,
+  Plus,
   Search,
   ShieldCheck,
   Sparkles,
@@ -55,13 +60,19 @@ type PredictionForm = {
   termsAccepted: boolean;
 };
 
+const lockedFirstMatchDefaults = {
+  franceSpainAdvances: "FRANCE" as FranceSpainTeam,
+  franceSpainFranceScore: 1,
+  franceSpainSpainScore: 0,
+};
+
 const initialForm: PredictionForm = {
   fullName: "",
   email: "",
   country: "",
-  franceSpainAdvances: "FRANCE",
-  franceSpainFranceScore: 0,
-  franceSpainSpainScore: 0,
+  franceSpainAdvances: lockedFirstMatchDefaults.franceSpainAdvances,
+  franceSpainFranceScore: lockedFirstMatchDefaults.franceSpainFranceScore,
+  franceSpainSpainScore: lockedFirstMatchDefaults.franceSpainSpainScore,
   englandArgentinaAdvances: "ENGLAND",
   englandArgentinaEnglandScore: 0,
   englandArgentinaArgentinaScore: 0,
@@ -172,31 +183,111 @@ function CountrySelect({
   value: CountryCode | "";
   onChange: (value: CountryCode | "") => void;
 }) {
-  const { t } = useTranslation();
+  const { t, i18n } = useTranslation();
   const [query, setQuery] = useState(value ? getCountryLabel(value) : "");
+  const lang = i18n.language?.split("-")[0] || "en";
+  const englishDisplayNames = useMemo(
+    () =>
+      new Intl.DisplayNames(["en"], {
+        type: "region",
+      }),
+    []
+  );
+  const persianDisplayNames = useMemo(
+    () =>
+      new Intl.DisplayNames(["fa"], {
+        type: "region",
+      }),
+    []
+  );
+  const pashtoDisplayNames = useMemo(
+    () =>
+      new Intl.DisplayNames(["ps"], {
+        type: "region",
+      }),
+    []
+  );
+  const countrySearchItems = useMemo(
+    () =>
+      COUNTRIES.map(([code, label]) => {
+        const englishLabel = englishDisplayNames.of(code) ?? code;
+        const persianLabel = persianDisplayNames.of(code) ?? label;
+        const pashtoLabel = pashtoDisplayNames.of(code) ?? label;
+        const displayLabel =
+          lang === "ps"
+            ? pashtoLabel
+            : lang === "fa"
+              ? persianLabel
+              : englishLabel;
+
+        return {
+          code,
+          displayLabel,
+          searchLabels: Array.from(
+            new Set([
+              englishLabel,
+              persianLabel,
+              pashtoLabel,
+              label,
+              code === "DE" ? "جرمنی" : "",
+              code === "DE" ? "جرمني" : "",
+              code === "DE" ? "Germany" : "",
+              code === "DE" ? "آلمان" : "",
+            ].filter(Boolean))
+          ),
+        };
+      }),
+    [englishDisplayNames, lang, pashtoDisplayNames, persianDisplayNames]
+  );
+  const normalizeCountrySearch = (text: string) =>
+    text
+      .trim()
+      .normalize("NFKC")
+      .toLocaleLowerCase()
+      .replace(/ي/g, "ی")
+      .replace(/ك/g, "ک")
+      .replace(/\u200c/g, "");
   const filtered = useMemo(() => {
-    const normalized = query.trim().toLocaleLowerCase("fa");
-    if (!normalized) return COUNTRIES;
-    return COUNTRIES.filter(
-      ([code, label]) =>
-        label.toLocaleLowerCase("fa").includes(normalized) ||
-        code.toLowerCase().includes(normalized)
-    );
-  }, [query]);
+    const normalized = normalizeCountrySearch(query);
+    if (!normalized) return countrySearchItems;
+    return countrySearchItems
+      .filter(({ searchLabels }) =>
+        searchLabels.some(label =>
+          normalizeCountrySearch(label).includes(normalized)
+        )
+      )
+      .sort((a, b) => {
+        const aStarts = a.searchLabels.some(label =>
+          normalizeCountrySearch(label).startsWith(normalized)
+        );
+        const bStarts = b.searchLabels.some(label =>
+          normalizeCountrySearch(label).startsWith(normalized)
+        );
+        if (aStarts !== bStarts) return aStarts ? -1 : 1;
+        return a.displayLabel.localeCompare(b.displayLabel, lang);
+      });
+  }, [countrySearchItems, query]);
 
   useEffect(() => {
-    if (value) setQuery(getCountryLabel(value));
-  }, [value]);
+    if (!value) return;
+    const selected = countrySearchItems.find(item => item.code === value);
+    if (selected) setQuery(selected.displayLabel);
+  }, [countrySearchItems, value]);
 
   const update = (text: string) => {
     setQuery(text);
-    const normalized = text.trim().toLocaleLowerCase("fa");
-    const match = COUNTRIES.find(
-      ([code, label]) =>
-        label.toLocaleLowerCase("fa") === normalized ||
-        code.toLowerCase() === normalized
+    const normalized = normalizeCountrySearch(text);
+    const match = countrySearchItems.find(
+      ({ searchLabels }) =>
+        normalized.length > 2 &&
+        searchLabels.some(label => normalizeCountrySearch(label) === normalized)
     );
-    onChange(match?.[0] ?? "");
+    onChange(match?.code ?? "");
+  };
+
+  const chooseCountry = (code: CountryCode, displayLabel: string) => {
+    setQuery(displayLabel);
+    onChange(code);
   };
 
   return (
@@ -204,21 +295,31 @@ function CountrySelect({
       <Search aria-hidden="true" size={18} />
       <Input
         id={id}
-        list={`${id}-options`}
         autoComplete="country-name"
         placeholder={t("world_cup.prediction.country_ph")}
         required
         role="combobox"
+        aria-autocomplete="list"
+        aria-expanded={Boolean(query && filtered.length && !value)}
+        aria-controls={`${id}-options`}
         value={query}
         onChange={event => update(event.target.value)}
       />
-      <datalist id={`${id}-options`}>
-        {filtered.map(([code, label]) => (
-          <option key={code} value={label}>
-            {code}
-          </option>
-        ))}
-      </datalist>
+      {query && filtered.length > 0 && !value && (
+        <div className="wc-country-options" id={`${id}-options`} role="listbox">
+          {filtered.slice(0, 8).map(({ code, displayLabel, searchLabels }) => (
+            <button
+              key={code}
+              onClick={() => chooseCountry(code, displayLabel)}
+              role="option"
+              type="button"
+            >
+              <span>{displayLabel}</span>
+              <small>{searchLabels.slice(0, 3).join(" / ")}</small>
+            </button>
+          ))}
+        </div>
+      )}
     </div>
   );
 }
@@ -227,25 +328,41 @@ function ScoreInput({
   label,
   value,
   onChange,
+  disabled = false,
+  max = 20,
 }: {
   label: string;
   value: number;
   onChange: (value: number) => void;
+  disabled?: boolean;
+  max?: number;
 }) {
+  const changeScore = (nextValue: number) => {
+    onChange(Math.min(max, Math.max(0, nextValue)));
+  };
+
   return (
     <label className="wc-score-box">
       <span>{label}</span>
-      <Input
-        className="wc-score-input"
-        inputMode="numeric"
-        min={0}
-        max={20}
-        type="number"
-        value={value}
-        onChange={event =>
-          onChange(Math.min(20, Math.max(0, Number(event.target.value))))
-        }
-      />
+      <span className="wc-score-stepper">
+        <button
+          aria-label={`${label} -1`}
+          disabled={disabled || value <= 0}
+          onClick={() => changeScore(value - 1)}
+          type="button"
+        >
+          <Minus size={16} />
+        </button>
+        <output aria-live="polite">{value}</output>
+        <button
+          aria-label={`${label} +1`}
+          disabled={disabled || value >= max}
+          onClick={() => changeScore(value + 1)}
+          type="button"
+        >
+          <Plus size={16} />
+        </button>
+      </span>
     </label>
   );
 }
@@ -258,6 +375,7 @@ function MatchCard({
   scoreTwo,
   onScoreOne,
   onScoreTwo,
+  disabled = false,
 }: {
   index: string;
   teamOne: string;
@@ -266,10 +384,13 @@ function MatchCard({
   scoreTwo: number;
   onScoreOne: (value: number) => void;
   onScoreTwo: (value: number) => void;
+  disabled?: boolean;
 }) {
   const { t } = useTranslation();
   return (
-    <section className="wc-match-card">
+    <section
+      className={cn("wc-match-card", disabled && "wc-match-card-disabled")}
+    >
       <div className="wc-match-header">
         <span>{index}</span>
         <span className="wc-match-note">
@@ -277,9 +398,19 @@ function MatchCard({
         </span>
       </div>
       <div className="wc-score-row">
-        <ScoreInput label={teamOne} value={scoreOne} onChange={onScoreOne} />
+        <ScoreInput
+          disabled={disabled}
+          label={teamOne}
+          value={scoreOne}
+          onChange={onScoreOne}
+        />
         <span className="wc-versus">-</span>
-        <ScoreInput label={teamTwo} value={scoreTwo} onChange={onScoreTwo} />
+        <ScoreInput
+          disabled={disabled}
+          label={teamTwo}
+          value={scoreTwo}
+          onChange={onScoreTwo}
+        />
       </div>
     </section>
   );
@@ -485,41 +616,19 @@ function FinalStage({ locale }: { locale: string }) {
                   </p>
                 )}
                 <div className="wc-final-score-fields">
-                  <div>
-                    <Label className="py-2" htmlFor="final-team-a-score">
-                      {data.teamA}
-                    </Label>
-                    <Input
-                      id="final-team-a-score"
-                      type="number"
-                      min={0}
-                      max={30}
-                      value={teamAScore}
-                      onChange={event =>
-                        setTeamAScore(
-                          Math.min(30, Math.max(0, Number(event.target.value)))
-                        )
-                      }
-                    />
-                  </div>
+                  <ScoreInput
+                    label={data.teamA ?? ""}
+                    max={30}
+                    value={teamAScore}
+                    onChange={setTeamAScore}
+                  />
                   <span aria-hidden="true">-</span>
-                  <div>
-                    <Label className="py-2" htmlFor="final-team-b-score">
-                      {data.teamB}
-                    </Label>
-                    <Input
-                      id="final-team-b-score"
-                      type="number"
-                      min={0}
-                      max={30}
-                      value={teamBScore}
-                      onChange={event =>
-                        setTeamBScore(
-                          Math.min(30, Math.max(0, Number(event.target.value)))
-                        )
-                      }
-                    />
-                  </div>
+                  <ScoreInput
+                    label={data.teamB ?? ""}
+                    max={30}
+                    value={teamBScore}
+                    onChange={setTeamBScore}
+                  />
                 </div>
                 <fieldset className="wc-final-champion-options">
                   <legend>{t("world_cup.final.champion_question")}</legend>
@@ -697,6 +806,7 @@ export default function WorldCupPrediction() {
   const status = useWorldCupStatus();
   const submit = useSubmitWorldCupPrediction();
   const countdown = useCountdown(WORLD_CUP_CAMPAIGN_DEADLINE_MS);
+  const firstMatchCountdown = useCountdown(WORLD_CUP_FIRST_MATCH_DEADLINE_MS);
   const lang = i18n.language?.split("-")[0] || "en";
   const termsHref = ["en", "fa", "ps"].includes(lang)
     ? `~/${lang}/world-cup-prediction/terms`
@@ -711,6 +821,8 @@ export default function WorldCupPrediction() {
     ARGENTINA: t("world_cup.fields.argentina"),
   };
   const registrationClosed = countdown.expired || status.data?.isOpen === false;
+  const firstMatchClosed =
+    firstMatchCountdown.expired || status.data?.isFirstMatchOpen === false;
   const prizes = asArray<{
     rank: string;
     title: string;
@@ -852,16 +964,24 @@ export default function WorldCupPrediction() {
       "ENGLAND",
       "ARGENTINA"
     );
-    if (!franceSpainAdvances || !englandArgentinaAdvances) {
+    if ((!firstMatchClosed && !franceSpainAdvances) || !englandArgentinaAdvances) {
       setError(t("world_cup.prediction.no_draw"));
       return;
     }
+
+    const firstMatchValues = firstMatchClosed
+      ? lockedFirstMatchDefaults
+      : {
+          franceSpainAdvances: franceSpainAdvances as FranceSpainTeam,
+          franceSpainFranceScore: form.franceSpainFranceScore,
+          franceSpainSpainScore: form.franceSpainSpainScore,
+        };
 
     submit.mutate(
       {
         ...form,
         country: form.country,
-        franceSpainAdvances,
+        ...firstMatchValues,
         englandArgentinaAdvances,
         termsAccepted: true,
       },
@@ -1236,6 +1356,7 @@ export default function WorldCupPrediction() {
                         teamTwo={teams.SPAIN}
                         scoreOne={form.franceSpainFranceScore}
                         scoreTwo={form.franceSpainSpainScore}
+                        disabled={firstMatchClosed}
                         onScoreOne={value =>
                           patch("franceSpainFranceScore", value)
                         }

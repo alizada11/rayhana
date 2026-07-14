@@ -695,9 +695,8 @@ export const deletePreLaunchReservation = async (id: string) => {
 };
 
 // WORLD CUP CAMPAIGN
-export const WORLD_CUP_CAMPAIGN_DEADLINE = new Date(
-  "2026-07-14T18:55:00.000Z"
-);
+export const WORLD_CUP_FIRST_MATCH_DEADLINE = new Date("2026-07-14T18:55:00.000Z");
+export const WORLD_CUP_CAMPAIGN_DEADLINE = new Date("2026-07-15T18:55:00.000Z");
 
 export type WorldCupWinnerStatus =
   | "PENDING"
@@ -706,11 +705,7 @@ export type WorldCupWinnerStatus =
   | "THIRD"
   | "DISCOUNT"
   | "NOT_WINNER";
-export type WorldCupFinalStatus =
-  | "COMING_SOON"
-  | "OPEN"
-  | "CLOSED"
-  | "RESULTS";
+export type WorldCupFinalStatus = "COMING_SOON" | "OPEN" | "CLOSED" | "RESULTS";
 export type WorldCupFinalChampion = "TEAM_A" | "TEAM_B";
 export type WorldCupLotteryCriterion =
   | "ALL_VALID"
@@ -732,10 +727,11 @@ export const makeWorldCupPredictionReferenceCode = (prediction: {
     .slice(0, 10)
     .toUpperCase();
 
-export const createWorldCupPrediction = async (
-  data: NewWorldCupPrediction
-) => {
-  const [prediction] = await db.insert(worldCupPredictions).values(data).returning();
+export const createWorldCupPrediction = async (data: NewWorldCupPrediction) => {
+  const [prediction] = await db
+    .insert(worldCupPredictions)
+    .values(data)
+    .returning();
   return prediction;
 };
 
@@ -811,7 +807,10 @@ export const submitWorldCupFinalPrediction = async (input: {
   if (!settings || settings.finalStatus !== "OPEN") {
     throw new Error("FINAL_NOT_OPEN");
   }
-  if (settings.finalDeadline && settings.finalDeadline.getTime() <= Date.now()) {
+  if (
+    settings.finalDeadline &&
+    settings.finalDeadline.getTime() <= Date.now()
+  ) {
     throw new Error("FINAL_CLOSED");
   }
 
@@ -873,9 +872,7 @@ export const listWorldCupFinalPredictions = async () => {
 
 type WorldCupSemiFinalOneTeam = "FRANCE" | "SPAIN";
 type WorldCupSemiFinalTwoTeam = "ENGLAND" | "ARGENTINA";
-type WorldCupTeamCode =
-  | WorldCupSemiFinalOneTeam
-  | WorldCupSemiFinalTwoTeam;
+type WorldCupTeamCode = WorldCupSemiFinalOneTeam | WorldCupSemiFinalTwoTeam;
 
 const teamNameAliases: Record<WorldCupTeamCode, string[]> = {
   FRANCE: ["france", "فرانسه"],
@@ -945,10 +942,7 @@ export const getWorldCupEligibleLotteryPool = async (
   const finals = await db.select().from(worldCupFinalPredictions);
   const correctIds = new Set(
     finals
-      .filter(
-        item =>
-          item.champion === settings.finalChampion
-      )
+      .filter(item => item.champion === settings.finalChampion)
       .map(item => item.predictionId)
   );
   return participants.filter(

@@ -589,23 +589,14 @@
     "hero": {
       "eyebrow": "Rayhana Special Contest",
       "title": "Predict the Champion",
-      "description": "Predict the two semi-final results and then the final match for a chance to win one of 26 Rayhana prizes: heritage Qabili pots or 26% discount codes for Shopino24 and Amazon.",
+      "description": "Predict the two semi-final and final results and then the final match for a chance to win one of 26 Rayhana prizes: heritage Qabili pots or 26% discount codes for Shopino24 and Amazon.",
       "cta": "Join now",
       "how": "How do I enter?",
-      "deadline": "Prediction deadline: July 14, 2026, 18:55 GMT",
+      "deadline": "Prediction deadline: July 15, 2026, 18:55 GMT",
       "badge": "First prize",
       "badge_strong": "Size 12 pot",
-      "pills": [
-        "Qabili pot",
-        "Size 12"
-      ],
-      "marquee": [
-        "France",
-        "Spain",
-        "Semi-final",
-        "England",
-        "Argentina"
-      ]
+      "pills": ["Qabili pot", "Size 12"],
+      "marquee": ["France", "Spain", "Semi-final", "England", "Argentina"]
     },
     "countdown": {
       "days": "Days",
@@ -640,12 +631,7 @@
       ],
       "discount_title": "23 discount codes of 26%",
       "discount_desc": "For Shopino24 Afghanistan and Amazon stores in the United States, Canada, and Australia.",
-      "markets": [
-        "Afghanistan",
-        "United States",
-        "Canada",
-        "Australia"
-      ],
+      "markets": ["Afghanistan", "United States", "Canada", "Australia"],
       "terms_kicker": "Know before using",
       "terms_title": "26% discount code conditions",
       "terms_desc": "Each winner receives a one-time code for a specific market. Code details, market, and validity date will be written in the prize email.",
@@ -822,7 +808,7 @@
       },
       {
         "title": "Campaign Deadline",
-        "body": "Semi-final predictions must be submitted before July 14, 2026 at 18:55 GMT. Rayhana systems determine the final submission time. Late submissions will not be accepted."
+        "body": "Semi-final predictions must be submitted before July 15, 2026 at 18:55 GMT. Rayhana systems determine the final submission time. Late submissions will not be accepted."
       },
       {
         "title": "Final Prediction Stage",

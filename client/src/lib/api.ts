@@ -817,7 +817,9 @@ export interface WorldCupPrediction extends WorldCupPredictionPayload {
 }
 
 export interface WorldCupStatus {
+  firstMatchDeadline?: number;
   deadline: number;
+  isFirstMatchOpen?: boolean;
   isOpen: boolean;
 }
 
