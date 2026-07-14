@@ -922,7 +922,13 @@ export const getWorldCupEligibleLotteryPool = async (
     settings.finalStatus !== "RESULTS" ||
     !settings.finalTeamA ||
     !settings.finalTeamB ||
-    !settings.finalChampion
+    !settings.finalChampion ||
+    settings.semiFinalFranceScore == null ||
+    settings.semiFinalSpainScore == null ||
+    settings.semiFinalEnglandScore == null ||
+    settings.semiFinalArgentinaScore == null ||
+    settings.finalResultAScore == null ||
+    settings.finalResultBScore == null
   ) {
     return [];
   }
@@ -942,13 +948,22 @@ export const getWorldCupEligibleLotteryPool = async (
   const finals = await db.select().from(worldCupFinalPredictions);
   const correctIds = new Set(
     finals
-      .filter(item => item.champion === settings.finalChampion)
+      .filter(
+        item =>
+          item.champion === settings.finalChampion &&
+          item.teamAScore === settings.finalResultAScore &&
+          item.teamBScore === settings.finalResultBScore
+      )
       .map(item => item.predictionId)
   );
   return participants.filter(
     item =>
       item.franceSpainAdvances === semifinalOneWinner &&
       item.englandArgentinaAdvances === semifinalTwoWinner &&
+      item.franceSpainFranceScore === settings.semiFinalFranceScore &&
+      item.franceSpainSpainScore === settings.semiFinalSpainScore &&
+      item.englandArgentinaEnglandScore === settings.semiFinalEnglandScore &&
+      item.englandArgentinaArgentinaScore === settings.semiFinalArgentinaScore &&
       correctIds.has(item.id)
   );
 };

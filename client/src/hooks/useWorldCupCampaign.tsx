@@ -11,6 +11,7 @@ import {
   getWorldCupPredictionsAdmin,
   getWorldCupStatus,
   publishWorldCupLotteryAdmin,
+  recoverWorldCupReferenceCode,
   submitWorldCupFinalPrediction,
   submitWorldCupPrediction,
   updateWorldCupFinalSettingsAdmin,
@@ -66,6 +67,11 @@ export const useSubmitWorldCupFinalPrediction = () => {
     },
   });
 };
+
+export const useRecoverWorldCupReferenceCode = () =>
+  useMutation({
+    mutationFn: recoverWorldCupReferenceCode,
+  });
 
 export const usePublicWorldCupWinners = () =>
   useQuery({

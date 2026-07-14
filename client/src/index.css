@@ -975,6 +975,21 @@ html[dir="rtl"] {
   background: #e8f5df;
   color: #43682f;
 }
+.wc-reference-recover {
+  width: fit-content;
+  margin-top: 8px;
+  color: var(--primary);
+  font-size: 12px;
+  font-weight: 800;
+  text-align: start;
+}
+.wc-reference-recover:hover:not(:disabled) {
+  text-decoration: underline;
+}
+.wc-reference-recover:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+}
 .wc-form-error {
   background: #fff0ef;
   color: #a12622;
@@ -1417,6 +1432,9 @@ html[dir="rtl"] {
 .dark .wc-final-success {
   background: color-mix(in srgb, #3f7f32 28%, transparent);
   color: #d9f7cf;
+}
+.dark .wc-reference-recover {
+  color: color-mix(in srgb, var(--primary) 75%, white);
 }
 .dark .wc-how-section,
 .dark .wc-final-stage-section {

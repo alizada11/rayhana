@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useSearch } from "wouter";
-import { Menu, X, Globe, Moon, Sun } from "lucide-react";
+import { Goal, Menu, X, Globe, Moon, Sun } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useContent } from "@/hooks/useContent";
@@ -148,11 +148,12 @@ gtag('config', '${gaMeasurementId}');`;
     return () => window.removeEventListener("error", handler, true);
   }, [customFallback, defaultImgFallback]);
 
-  const languages: Array<{ code: SupportedLocale; name: string; dir: string }> = [
-    { code: "en", name: "English", dir: "ltr" },
-    { code: "fa", name: "فارسی", dir: "rtl" },
-    { code: "ps", name: "پښتو", dir: "rtl" },
-  ];
+  const languages: Array<{ code: SupportedLocale; name: string; dir: string }> =
+    [
+      { code: "en", name: "English", dir: "ltr" },
+      { code: "fa", name: "فارسی", dir: "rtl" },
+      { code: "ps", name: "پښتو", dir: "rtl" },
+    ];
 
   const [showLangMenu, setShowLangMenu] = useState(false);
 
@@ -233,6 +234,7 @@ gtag('config', '${gaMeasurementId}');`;
     if (typeof label === "string") return label;
     return label?.[currentLang] || label?.en || "";
   };
+  const worldCupHref = `~${withLocalePath("/world-cup-prediction", currentLang)}`;
 
   return (
     <div
@@ -305,15 +307,26 @@ gtag('config', '${gaMeasurementId}');`;
           </nav>
 
           {/* Actions */}
-          <div className="flex items-center gap-2">
+          <div className="flex h-10 items-center gap-2">
+            <Link
+              href={worldCupHref}
+              className={cn(
+                "hidden h-10 lg:inline-flex items-center gap-2 rounded-full border px-3.5 text-xs font-black leading-none shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl",
+                isHome && !isScrolled
+                  ? "border-white/35 bg-white/20 text-white shadow-black/20 backdrop-blur-md hover:bg-white/30"
+                  : "border-primary/25 bg-gradient-to-r from-primary via-amber-600 to-primary text-primary-foreground shadow-primary/20 hover:brightness-105"
+              )}
+            >
+              <Goal className="h-4 w-4" aria-hidden="true" />
+              <span>{t("nav.worldCupHook")}</span>
+            </Link>
             <div className="relative">
               <Button
                 variant="ghost"
-                size="icon"
                 onClick={() => setShowLangMenu(!showLangMenu)}
                 title="Change Language"
                 className={cn(
-                  "relative",
+                  "h-10 min-w-10 gap-1.5 rounded-full border border-[#d5d2ca] px-2.5",
                   isHome && !isScrolled
                     ? "text-white hover:text-white/90 hover:bg-white/15"
                     : "text-foreground hover:bg-muted/60"
@@ -323,7 +336,7 @@ gtag('config', '${gaMeasurementId}');`;
                 <span
                   aria-hidden="true"
                   className={cn(
-                    "absolute -bottom-1.5 -right-1.5 min-w-[1.4rem] px-1 h-5 rounded-full text-[10px] font-semibold tracking-tight flex items-center justify-center border shadow-sm",
+                    "inline-flex h-5 min-w-6 items-center justify-center rounded-full border px-1.5 text-[10px] font-bold leading-none tracking-tight shadow-sm",
                     isHome && !isScrolled
                       ? "bg-white/90 text-primary border-white/60"
                       : "bg-primary text-primary-foreground border-primary/70"
@@ -362,6 +375,7 @@ gtag('config', '${gaMeasurementId}');`;
               onClick={toggleTheme}
               title="Toggle Theme"
               className={cn(
+                "h-10 w-10 rounded-full",
                 isHome && !isScrolled
                   ? "text-white hover:text-white/90 hover:bg-white/15"
                   : "text-foreground hover:bg-muted/60"
@@ -380,7 +394,7 @@ gtag('config', '${gaMeasurementId}');`;
               variant="ghost"
               size="icon"
               className={cn(
-                "md:hidden",
+                "h-10 w-10 rounded-full md:hidden",
                 isHome && !isScrolled
                   ? "text-white hover:text-white/90 hover:bg-white/15"
                   : "text-foreground hover:bg-muted/60"
@@ -402,6 +416,14 @@ gtag('config', '${gaMeasurementId}');`;
         {isMenuOpen && (
           <div className="md:hidden border-t bg-background">
             <div className="container py-4 flex flex-col gap-4">
+              <Link
+                href={worldCupHref}
+                className="flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-gradient-to-r from-primary via-amber-600 to-primary px-4 py-3 text-sm font-black text-primary-foreground shadow-lg shadow-primary/20"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                <Goal className="h-5 w-5" aria-hidden="true" />
+                <span>{t("nav.worldCupHook")}</span>
+              </Link>
               {navItems.map(item => (
                 <Link
                   key={item.href}

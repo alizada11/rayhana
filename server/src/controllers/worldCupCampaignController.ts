@@ -2,6 +2,8 @@ import type { Request, Response } from "express";
 import { z } from "zod";
 import { getAuth } from "../lib/auth";
 import * as queries from "../db/queries";
+import { ENV } from "../config/env";
+import { sendContactEmail } from "../utils/mailer";
 
 const predictionSchema = z.object({
   fullName: z.string().trim().min(2).max(180),
@@ -47,6 +49,53 @@ function isMissingWorldCupTable(error: unknown) {
     "code" in error &&
     (error as { code?: unknown }).code === "42P01"
   );
+}
+
+const escapeHtml = (value: unknown) =>
+  String(value ?? "")
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+
+const campaignFromEmail =
+  ENV.SMTP_FROM_EMAIL || ENV.SMTP_USER || "no-reply@rayhana.com";
+
+async function sendReferenceCodeEmail(prediction: {
+  fullName: string;
+  email: string;
+  referenceCode: string;
+}) {
+  await sendContactEmail({
+    to: prediction.email,
+    from: campaignFromEmail,
+    subject: "Your Rayhana World Cup reference code",
+    html: `
+      <p>Hello ${escapeHtml(prediction.fullName)},</p>
+      <p>Your Rayhana World Cup final-stage reference code is:</p>
+      <p style="font-size:24px;font-weight:800;letter-spacing:3px;">${escapeHtml(prediction.referenceCode)}</p>
+      <p>Use this code with your registered email to submit your final prediction.</p>
+    `,
+  });
+}
+
+async function sendLotteryWinnerEmail(winner: {
+  position: number;
+  fullName: string;
+  email: string;
+}) {
+  await sendContactEmail({
+    to: winner.email,
+    from: campaignFromEmail,
+    subject: "You won in the Rayhana World Cup campaign",
+    html: `
+      <p>Hello ${escapeHtml(winner.fullName)},</p>
+      <p>Congratulations. Your entry was selected in the Rayhana World Cup campaign draw.</p>
+      <p><strong>Winner position:</strong> #${escapeHtml(winner.position)}</p>
+      <p>Our team will contact you with prize and verification details.</p>
+    `,
+  });
 }
 
 export const status = async (_req: Request, res: Response) => {
@@ -198,6 +247,9 @@ export const submitFinal = async (req: Request, res: Response) => {
   if (!parsed.success) {
     return res.status(400).json({ error: parsed.error.issues[0]?.message });
   }
+  if (parsed.data.teamAScore === parsed.data.teamBScore) {
+    return res.status(400).json({ error: "نتیجه مساوی پذیرفته نیست." });
+  }
 
   try {
     const result = await queries.submitWorldCupFinalPrediction({
@@ -217,6 +269,27 @@ export const submitFinal = async (req: Request, res: Response) => {
     }
     throw error;
   }
+};
+
+export const recoverReferenceCode = async (req: Request, res: Response) => {
+  const parsed = z
+    .object({ email: z.string().trim().email().max(320) })
+    .safeParse(req.body || {});
+  if (!parsed.success) {
+    return res.status(400).json({ error: parsed.error.issues[0]?.message });
+  }
+
+  const email = parsed.data.email.toLowerCase();
+  const prediction = await queries.getWorldCupPredictionByEmail(email);
+  if (prediction) {
+    await sendReferenceCodeEmail({
+      fullName: prediction.fullName,
+      email: prediction.email,
+      referenceCode: queries.makeWorldCupPredictionReferenceCode(prediction),
+    });
+  }
+
+  res.json({ success: true });
 };
 
 export const publicLotteryWinners = async (_req: Request, res: Response) => {
@@ -285,6 +358,10 @@ export const updateFinalSettings = async (req: Request, res: Response) => {
       finalTeamB: z.string().trim().max(120).nullable(),
       finalDeadline: z.number().int().positive().nullable(),
       finalStatus: finalStatusSchema,
+      semiFinalFranceScore: z.number().int().min(0).max(20).nullable(),
+      semiFinalSpainScore: z.number().int().min(0).max(20).nullable(),
+      semiFinalEnglandScore: z.number().int().min(0).max(20).nullable(),
+      semiFinalArgentinaScore: z.number().int().min(0).max(20).nullable(),
       finalResultAScore: z.number().int().min(0).max(30).nullable(),
       finalResultBScore: z.number().int().min(0).max(30).nullable(),
       finalChampion: finalChampionSchema.nullable(),
@@ -311,12 +388,24 @@ export const updateFinalSettings = async (req: Request, res: Response) => {
   }
   if (
     input.finalStatus === "RESULTS" &&
-    (input.finalResultAScore == null ||
+    (input.semiFinalFranceScore == null ||
+      input.semiFinalSpainScore == null ||
+      input.semiFinalEnglandScore == null ||
+      input.semiFinalArgentinaScore == null ||
+      input.finalResultAScore == null ||
       input.finalResultBScore == null ||
       !input.finalChampion)
   ) {
     return res.status(400).json({
-      error: "برای نمایش نتایج، امتیاز هر دو تیم و قهرمان را ثبت کنید.",
+      error: "برای نمایش نتایج، امتیاز نیمه‌نهایی‌ها، امتیاز فینال و قهرمان را ثبت کنید.",
+    });
+  }
+  if (
+    input.finalStatus === "RESULTS" &&
+    input.finalResultAScore === input.finalResultBScore
+  ) {
+    return res.status(400).json({
+      error: "نتیجه فینال نمی‌تواند مساوی باشد.",
     });
   }
 
@@ -362,7 +451,15 @@ export const executeLottery = async (req: Request, res: Response) => {
       winnerCount: parsed.data.winnerCount,
       executedBy: userId,
     });
-    res.status(201).json(result);
+    const draws = await queries.listWorldCupLotteryDraws();
+    const draw = draws.find(item => item.id === result.drawId);
+    const emailResults = await Promise.allSettled(
+      (draw?.winners ?? []).map(winner => sendLotteryWinnerEmail(winner))
+    );
+    const winnerEmailCount = emailResults.filter(
+      item => item.status === "fulfilled"
+    ).length;
+    res.status(201).json({ ...result, winnerEmailCount });
   } catch (error) {
     const message = error instanceof Error ? error.message : "";
     if (message === "NO_ELIGIBLE_PARTICIPANTS") {

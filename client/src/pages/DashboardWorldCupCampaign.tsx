@@ -78,19 +78,6 @@ const getTeamSemiFinal = (value: string) => {
   return null;
 };
 
-const getSemiFinalWinnersFromFinalTeams = (
-  teamA: string,
-  teamB: string
-) => {
-  const finalists = [getTeamCodeFromLabel(teamA), getTeamCodeFromLabel(teamB)];
-  return {
-    first: finalists.find(team => team === "FRANCE" || team === "SPAIN"),
-    second: finalists.find(
-      team => team === "ENGLAND" || team === "ARGENTINA"
-    ),
-  };
-};
-
 type ScoreLineVariant = "success" | "danger" | "neutral";
 
 const scoreLineClasses: Record<ScoreLineVariant, string> = {
@@ -177,7 +164,7 @@ const finalStatusLabels: Record<WorldCupFinalStatus, string> = {
 const criterionLabels: Record<WorldCupLotteryCriterion, string> = {
   ALL_VALID: "همه ثبت‌های معتبر",
   NON_PRIZE: "افراد بدون جایزه اصلی",
-  CORRECT_ONLY: "نیمه‌نهایی و قهرمان فینال درست",
+  CORRECT_ONLY: "امتیازهای دقیق نیمه‌نهایی و فینال",
 };
 
 const formatDate = (value?: string | number | null) =>
@@ -202,6 +189,10 @@ export default function DashboardWorldCupCampaign() {
   const [finalDeadline, setFinalDeadline] = useState("");
   const [finalStatus, setFinalStatus] =
     useState<WorldCupFinalStatus>("COMING_SOON");
+  const [semiFinalFranceScore, setSemiFinalFranceScore] = useState("");
+  const [semiFinalSpainScore, setSemiFinalSpainScore] = useState("");
+  const [semiFinalEnglandScore, setSemiFinalEnglandScore] = useState("");
+  const [semiFinalArgentinaScore, setSemiFinalArgentinaScore] = useState("");
   const [finalResultAScore, setFinalResultAScore] = useState("");
   const [finalResultBScore, setFinalResultBScore] = useState("");
   const [finalChampion, setFinalChampion] = useState<
@@ -235,6 +226,22 @@ export default function DashboardWorldCupCampaign() {
     setFinalTeamB(teamBCode ? teamLabels[teamBCode] : data.finalTeamB ?? "");
     setFinalDeadline(toLocalDateTimeInput(data.finalDeadline));
     setFinalStatus(data.finalStatus);
+    setSemiFinalFranceScore(
+      data.semiFinalFranceScore == null ? "" : String(data.semiFinalFranceScore)
+    );
+    setSemiFinalSpainScore(
+      data.semiFinalSpainScore == null ? "" : String(data.semiFinalSpainScore)
+    );
+    setSemiFinalEnglandScore(
+      data.semiFinalEnglandScore == null
+        ? ""
+        : String(data.semiFinalEnglandScore)
+    );
+    setSemiFinalArgentinaScore(
+      data.semiFinalArgentinaScore == null
+        ? ""
+        : String(data.semiFinalArgentinaScore)
+    );
     setFinalResultAScore(
       data.finalResultAScore == null ? "" : String(data.finalResultAScore)
     );
@@ -259,16 +266,19 @@ export default function DashboardWorldCupCampaign() {
   const winnerCount = items.filter(
     item => !["PENDING", "NOT_WINNER"].includes(item.winnerStatus)
   ).length;
-  const finalSemiWinners = getSemiFinalWinnersFromFinalTeams(
-    finalTeamA,
-    finalTeamB
-  );
   const finalChampionLabel =
-    finalChampion === "TEAM_A"
-      ? finalTeamA || "تیم نخست"
-      : finalChampion === "TEAM_B"
-        ? finalTeamB || "تیم دوم"
-        : "ثبت نشده";
+    finalStatus === "RESULTS" &&
+    finalResultAScore !== "" &&
+    finalResultBScore !== "" &&
+    Number(finalResultAScore) !== Number(finalResultBScore)
+      ? Number(finalResultAScore) > Number(finalResultBScore)
+        ? finalTeamA || "تیم نخست"
+        : finalTeamB || "تیم دوم"
+      : finalChampion === "TEAM_A"
+        ? finalTeamA || "تیم نخست"
+        : finalChampion === "TEAM_B"
+          ? finalTeamB || "تیم دوم"
+          : "ثبت نشده";
   const requestedWinnerCount = Number(drawCount);
   const lotteryEligibleCount = eligibility.data?.count ?? 0;
   const drawCountValid =
@@ -334,17 +344,37 @@ export default function DashboardWorldCupCampaign() {
   };
 
   const saveFinal = () => {
+    const inferredFinalChampion =
+      finalStatus === "RESULTS" &&
+      finalResultAScore !== "" &&
+      finalResultBScore !== "" &&
+      Number(finalResultAScore) !== Number(finalResultBScore)
+        ? Number(finalResultAScore) > Number(finalResultBScore)
+          ? "TEAM_A"
+          : "TEAM_B"
+        : null;
+
     saveFinalSettings.mutate(
       {
         finalTeamA: finalTeamA.trim() || null,
         finalTeamB: finalTeamB.trim() || null,
         finalDeadline: finalDeadline ? new Date(finalDeadline).getTime() : null,
         finalStatus,
+        semiFinalFranceScore:
+          semiFinalFranceScore === "" ? null : Number(semiFinalFranceScore),
+        semiFinalSpainScore:
+          semiFinalSpainScore === "" ? null : Number(semiFinalSpainScore),
+        semiFinalEnglandScore:
+          semiFinalEnglandScore === "" ? null : Number(semiFinalEnglandScore),
+        semiFinalArgentinaScore:
+          semiFinalArgentinaScore === ""
+            ? null
+            : Number(semiFinalArgentinaScore),
         finalResultAScore:
           finalResultAScore === "" ? null : Number(finalResultAScore),
         finalResultBScore:
           finalResultBScore === "" ? null : Number(finalResultBScore),
-        finalChampion: finalChampion || null,
+        finalChampion: inferredFinalChampion,
         publicWinnersVisible,
       },
       {
@@ -733,6 +763,69 @@ export default function DashboardWorldCupCampaign() {
                     </SelectContent>
                   </Select>
                 </div>
+                <div className="rounded-lg border bg-muted/40 p-4 md:col-span-2">
+                  <div className="mb-3">
+                    <strong className="text-sm">نتیجه واقعی نیمه‌نهایی‌ها</strong>
+                    <p className="text-xs text-muted-foreground">
+                      برای معیار «امتیازهای دقیق»، کاربر باید همین تعداد گل‌ها
+                      را برای هر دو بازی پیش‌بینی کرده باشد.
+                    </p>
+                  </div>
+                  <div className="grid gap-3 md:grid-cols-4">
+                    <div className="grid gap-2">
+                      <Label>فرانسه</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        max={20}
+                        value={semiFinalFranceScore}
+                        disabled={finalStatus !== "RESULTS"}
+                        onChange={event =>
+                          setSemiFinalFranceScore(event.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label>اسپانیا</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        max={20}
+                        value={semiFinalSpainScore}
+                        disabled={finalStatus !== "RESULTS"}
+                        onChange={event =>
+                          setSemiFinalSpainScore(event.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label>انگلستان</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        max={20}
+                        value={semiFinalEnglandScore}
+                        disabled={finalStatus !== "RESULTS"}
+                        onChange={event =>
+                          setSemiFinalEnglandScore(event.target.value)
+                        }
+                      />
+                    </div>
+                    <div className="grid gap-2">
+                      <Label>آرژانتین</Label>
+                      <Input
+                        type="number"
+                        min={0}
+                        max={20}
+                        value={semiFinalArgentinaScore}
+                        disabled={finalStatus !== "RESULTS"}
+                        onChange={event =>
+                          setSemiFinalArgentinaScore(event.target.value)
+                        }
+                      />
+                    </div>
+                  </div>
+                </div>
                 <div className="grid gap-2">
                   <Label>نتیجه تیم نخست</Label>
                   <Input
@@ -757,28 +850,11 @@ export default function DashboardWorldCupCampaign() {
                 </div>
                 <div className="grid gap-2 md:col-span-2">
                   <Label>قهرمان</Label>
-                  <Select
-                    value={finalChampion || undefined}
-                    disabled={finalStatus !== "RESULTS"}
-                    onValueChange={value =>
-                      setFinalChampion(value as WorldCupFinalChampion)
-                    }
-                  >
-                    <SelectTrigger>
-                      <SelectValue placeholder="قهرمان را انتخاب کنید" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="TEAM_A">
-                        {finalTeamA || "تیم نخست"}
-                      </SelectItem>
-                      <SelectItem value="TEAM_B">
-                        {finalTeamB || "تیم دوم"}
-                      </SelectItem>
-                    </SelectContent>
-                  </Select>
+                  <div className="rounded-lg border bg-muted/60 p-3 text-sm font-semibold">
+                    {finalChampionLabel}
+                  </div>
                   <p className="text-xs text-muted-foreground">
-                    نتیجه و قهرمان وقتی فعال می‌شود که وضعیت روی «نمایش نتیجه»
-                    باشد.
+                    قهرمان به‌صورت خودکار از روی گل‌های فینال تعیین می‌شود.
                   </p>
                 </div>
               </div>
@@ -868,8 +944,8 @@ export default function DashboardWorldCupCampaign() {
                   </Select>
                   {criterion === "CORRECT_ONLY" && (
                     <p className="text-xs text-muted-foreground">
-                      کاربر باید هر دو صعودکننده نیمه‌نهایی و قهرمان فینال را
-                      درست پیش‌بینی کرده باشد.
+                      کاربر باید امتیاز دقیق هر دو نیمه‌نهایی، امتیاز دقیق
+                      فینال و قهرمان فینال را درست پیش‌بینی کرده باشد.
                     </p>
                   )}
                 </div>
@@ -889,16 +965,24 @@ export default function DashboardWorldCupCampaign() {
                       </div>
                       <div className="flex items-center justify-between gap-3">
                         <span className="text-muted-foreground">
-                          صعودکنندگان درست
+                          نتیجه نیمه‌نهایی‌ها
                         </span>
                         <strong>
-                          {finalSemiWinners.first
-                            ? teamLabels[finalSemiWinners.first]
-                            : "نامشخص"}{" "}
-                          /{" "}
-                          {finalSemiWinners.second
-                            ? teamLabels[finalSemiWinners.second]
-                            : "نامشخص"}
+                          فرانسه {semiFinalFranceScore || "؟"} -{" "}
+                          {semiFinalSpainScore || "؟"} اسپانیا / انگلستان{" "}
+                          {semiFinalEnglandScore || "؟"} -{" "}
+                          {semiFinalArgentinaScore || "؟"} آرژانتین
+                        </strong>
+                      </div>
+                      <div className="flex items-center justify-between gap-3">
+                        <span className="text-muted-foreground">
+                          نتیجه فینال
+                        </span>
+                        <strong>
+                          {finalTeamA || "تیم نخست"}{" "}
+                          {finalResultAScore || "؟"} -{" "}
+                          {finalResultBScore || "؟"}{" "}
+                          {finalTeamB || "تیم دوم"}
                         </strong>
                       </div>
                     </div>

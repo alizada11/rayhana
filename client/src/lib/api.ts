@@ -854,6 +854,10 @@ export interface WorldCupCampaignSettings {
   finalTeamB: string | null;
   finalDeadline: string | null;
   finalStatus: WorldCupFinalStatus;
+  semiFinalFranceScore: number | null;
+  semiFinalSpainScore: number | null;
+  semiFinalEnglandScore: number | null;
+  semiFinalArgentinaScore: number | null;
   finalResultAScore: number | null;
   finalResultBScore: number | null;
   finalChampion: WorldCupFinalChampion | null;
@@ -944,6 +948,16 @@ export const submitWorldCupFinalPrediction = async (
   return data as { success: true; participantName: string };
 };
 
+export const recoverWorldCupReferenceCode = async (payload: {
+  email: string;
+}) => {
+  const { data } = await api.post(
+    "/world-cup-campaign/reference-code",
+    payload
+  );
+  return data as { success: true };
+};
+
 export const getPublicWorldCupWinners = async () => {
   const { data } = await api.get("/world-cup-campaign/public-winners");
   return data as PublicWorldCupWinners[];
@@ -987,6 +1001,10 @@ export const updateWorldCupFinalSettingsAdmin = async (payload: {
   finalTeamB: string | null;
   finalDeadline: number | null;
   finalStatus: WorldCupFinalStatus;
+  semiFinalFranceScore: number | null;
+  semiFinalSpainScore: number | null;
+  semiFinalEnglandScore: number | null;
+  semiFinalArgentinaScore: number | null;
   finalResultAScore: number | null;
   finalResultBScore: number | null;
   finalChampion: WorldCupFinalChampion | null;
@@ -1024,7 +1042,12 @@ export const executeWorldCupLotteryAdmin = async (payload: {
     "/world-cup-campaign/admin/lottery-draws",
     payload
   );
-  return data as { drawId: string; eligibleCount: number; auditHash: string };
+  return data as {
+    drawId: string;
+    eligibleCount: number;
+    auditHash: string;
+    winnerEmailCount?: number;
+  };
 };
 
 export const getWorldCupLotteryDrawsAdmin = async () => {

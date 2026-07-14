@@ -10,6 +10,8 @@ router.get("/live-stats", controller.liveStats);
 router.post("/predictions", controller.submit);
 router.get("/final-stage", controller.finalStage);
 router.post("/final-predictions", controller.submitFinal);
+router.post("/reference-code", controller.recoverReferenceCode);
+router.post("/reference-code/recover", controller.recoverReferenceCode);
 router.get("/public-winners", controller.publicLotteryWinners);
 
 router.get("/admin/predictions", requireAuth(), requireAdmin, controller.adminList);

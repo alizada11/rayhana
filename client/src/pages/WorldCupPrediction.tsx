@@ -4,6 +4,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
   usePublicWorldCupWinners,
+  useRecoverWorldCupReferenceCode,
   useSubmitWorldCupFinalPrediction,
   useSubmitWorldCupPrediction,
   useWorldCupFinalStage,
@@ -536,25 +537,30 @@ function FinalStage({ locale }: { locale: string }) {
   const stage = useWorldCupFinalStage();
   const publicDraws = usePublicWorldCupWinners();
   const submit = useSubmitWorldCupFinalPrediction();
+  const recoverReference = useRecoverWorldCupReferenceCode();
   const [email, setEmail] = useState("");
   const [referenceCode, setReferenceCode] = useState("");
   const [teamAScore, setTeamAScore] = useState(0);
   const [teamBScore, setTeamBScore] = useState(0);
-  const [champion, setChampion] = useState<FinalChampion>("TEAM_A");
   const [message, setMessage] = useState("");
+  const [referenceMessage, setReferenceMessage] = useState("");
   const data = stage.data;
   const configured = Boolean(data?.teamA && data?.teamB);
 
   const handleSubmit = (event: FormEvent) => {
     event.preventDefault();
     setMessage("");
+    if (teamAScore === teamBScore) {
+      setMessage(t("world_cup.final.no_draw"));
+      return;
+    }
     submit.mutate(
       {
         email,
         referenceCode: referenceCode.trim().toUpperCase(),
         teamAScore,
         teamBScore,
-        champion,
+        champion: teamAScore > teamBScore ? "TEAM_A" : "TEAM_B",
       },
       {
         onSuccess: result =>
@@ -562,6 +568,21 @@ function FinalStage({ locale }: { locale: string }) {
             t("world_cup.final.success", { name: result.participantName })
           ),
         onError: error => setMessage(error.message),
+      }
+    );
+  };
+
+  const handleRecoverReference = () => {
+    setReferenceMessage("");
+    if (!email.trim()) {
+      setReferenceMessage(t("world_cup.final.recover_email_required"));
+      return;
+    }
+    recoverReference.mutate(
+      { email },
+      {
+        onSuccess: () => setReferenceMessage(t("world_cup.final.recover_sent")),
+        onError: error => setReferenceMessage(error.message),
       }
     );
   };
@@ -630,25 +651,6 @@ function FinalStage({ locale }: { locale: string }) {
                     onChange={setTeamBScore}
                   />
                 </div>
-                <fieldset className="wc-final-champion-options">
-                  <legend>{t("world_cup.final.champion_question")}</legend>
-                  <div>
-                    <button
-                      type="button"
-                      className={champion === "TEAM_A" ? "selected" : ""}
-                      onClick={() => setChampion("TEAM_A")}
-                    >
-                      <Crown size={17} /> {data.teamA}
-                    </button>
-                    <button
-                      type="button"
-                      className={champion === "TEAM_B" ? "selected" : ""}
-                      onClick={() => setChampion("TEAM_B")}
-                    >
-                      <Crown size={17} /> {data.teamB}
-                    </button>
-                  </div>
-                </fieldset>
                 <div className="wc-final-identity-fields">
                   <div>
                     <Label className="py-2" htmlFor="final-email">
@@ -680,8 +682,29 @@ function FinalStage({ locale }: { locale: string }) {
                       }
                       placeholder="XXXXXXXXXX"
                     />
+                    <button
+                      className="wc-reference-recover"
+                      disabled={recoverReference.isPending}
+                      onClick={handleRecoverReference}
+                      type="button"
+                    >
+                      {recoverReference.isPending
+                        ? t("world_cup.final.recover_sending")
+                        : t("world_cup.final.recover_reference")}
+                    </button>
                   </div>
                 </div>
+                {referenceMessage && (
+                  <p
+                    className={
+                      recoverReference.isError
+                        ? "wc-form-error"
+                        : "wc-final-success"
+                    }
+                  >
+                    {referenceMessage}
+                  </p>
+                )}
                 {message && (
                   <p
                     className={

@@ -242,6 +242,10 @@ export const worldCupCampaignSettings = pgTable("world_cup_campaign_settings", {
   finalStatus: worldCupFinalStatusEnum("final_status")
     .notNull()
     .default("COMING_SOON"),
+  semiFinalFranceScore: integer("semi_final_france_score"),
+  semiFinalSpainScore: integer("semi_final_spain_score"),
+  semiFinalEnglandScore: integer("semi_final_england_score"),
+  semiFinalArgentinaScore: integer("semi_final_argentina_score"),
   finalResultAScore: integer("final_result_a_score"),
   finalResultBScore: integer("final_result_b_score"),
   finalChampion: worldCupFinalChampionEnum("final_champion"),

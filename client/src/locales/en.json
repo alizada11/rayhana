@@ -5,6 +5,7 @@
     "about": "About Us",
     "blog": "Blog & Recipes",
     "contact": "Contact",
+    "worldCupHook": "Predict & Win",
     "quickLinks": "Quick Links"
   },
   "not_found": {
@@ -700,6 +701,11 @@
       "champion_question": "Which team becomes champion?",
       "email": "Registered email",
       "reference": "10-character reference code",
+      "recover_reference": "Forgot code? Email it to me",
+      "recover_sending": "Sending code...",
+      "recover_sent": "If this email has a semi-final prediction, the reference code has been sent.",
+      "recover_email_required": "Enter your registered email first.",
+      "no_draw": "Final scores cannot be equal; the higher score determines the champion.",
       "submit": "Submit final prediction",
       "submitting": "Submitting...",
       "success": "Final prediction for {{name}} was submitted successfully.",
