@@ -12,9 +12,9 @@ const predictionSchema = z.object({
     .string()
     .trim()
     .regex(/^[A-Z]{2}$/, "Selected country is not valid"),
-  franceSpainAdvances: z.enum(["FRANCE", "SPAIN"]),
-  franceSpainFranceScore: z.number().int().min(0).max(20),
-  franceSpainSpainScore: z.number().int().min(0).max(20),
+  franceSpainAdvances: z.enum(["FRANCE", "SPAIN"]).nullable(),
+  franceSpainFranceScore: z.number().int().min(0).max(20).nullable(),
+  franceSpainSpainScore: z.number().int().min(0).max(20).nullable(),
   englandArgentinaAdvances: z.enum(["ENGLAND", "ARGENTINA"]),
   englandArgentinaEnglandScore: z.number().int().min(0).max(20),
   englandArgentinaArgentinaScore: z.number().int().min(0).max(20),
@@ -120,14 +120,22 @@ export const liveStats = async (_req: Request, res: Response) => {
     choices = [];
   }
   const totalPredictions = choices.length;
-  const percentage = (count: number) =>
-    totalPredictions === 0 ? 0 : Math.round((count / totalPredictions) * 100);
-  const france = choices.filter(item => item.franceSpainAdvances === "FRANCE").length;
-  const spain = totalPredictions - france;
+  const firstMatchChoices = choices.filter(item => item.franceSpainAdvances);
+  const secondMatchChoices = choices.filter(item => item.englandArgentinaAdvances);
+  const percentage = (count: number, total: number) =>
+    total === 0 ? 0 : Math.round((count / total) * 100);
+  const france = firstMatchChoices.filter(
+    item => item.franceSpainAdvances === "FRANCE"
+  ).length;
+  const spain = firstMatchChoices.filter(
+    item => item.franceSpainAdvances === "SPAIN"
+  ).length;
   const england = choices.filter(
     item => item.englandArgentinaAdvances === "ENGLAND"
   ).length;
-  const argentina = totalPredictions - england;
+  const argentina = secondMatchChoices.filter(
+    item => item.englandArgentinaAdvances === "ARGENTINA"
+  ).length;
 
   res.json({
     totalPredictions,
@@ -135,15 +143,15 @@ export const liveStats = async (_req: Request, res: Response) => {
       {
         id: "france-spain",
         teams: [
-          { code: "FRANCE", label: "فرانسه", count: france, percentage: percentage(france) },
-          { code: "SPAIN", label: "اسپانیا", count: spain, percentage: percentage(spain) },
+          { code: "FRANCE", label: "فرانسه", count: france, percentage: percentage(france, firstMatchChoices.length) },
+          { code: "SPAIN", label: "اسپانیا", count: spain, percentage: percentage(spain, firstMatchChoices.length) },
         ],
       },
       {
         id: "england-argentina",
         teams: [
-          { code: "ENGLAND", label: "انگلستان", count: england, percentage: percentage(england) },
-          { code: "ARGENTINA", label: "آرژانتین", count: argentina, percentage: percentage(argentina) },
+          { code: "ENGLAND", label: "انگلستان", count: england, percentage: percentage(england, secondMatchChoices.length) },
+          { code: "ARGENTINA", label: "آرژانتین", count: argentina, percentage: percentage(argentina, secondMatchChoices.length) },
         ],
       },
     ],
@@ -158,15 +166,26 @@ export const submit = async (req: Request, res: Response) => {
   if (Date.now() >= queries.WORLD_CUP_CAMPAIGN_DEADLINE.getTime()) {
     return res.status(403).json({ error: "مهلت ثبت پیش‌بینی پایان یافته است." });
   }
-  if (
-    Date.now() >= queries.WORLD_CUP_FIRST_MATCH_DEADLINE.getTime() &&
-    (parsed.data.franceSpainAdvances !== "FRANCE" ||
-      parsed.data.franceSpainFranceScore !== 1 ||
-      parsed.data.franceSpainSpainScore !== 0)
+  const firstMatchClosed =
+    Date.now() >= queries.WORLD_CUP_FIRST_MATCH_DEADLINE.getTime();
+  if (firstMatchClosed) {
+    if (
+      parsed.data.franceSpainAdvances !== null ||
+      parsed.data.franceSpainFranceScore !== null ||
+      parsed.data.franceSpainSpainScore !== null
+    ) {
+      return res
+        .status(403)
+        .json({ error: "مهلت ثبت پیش‌بینی نیمه‌نهایی اول پایان یافته است." });
+    }
+  } else if (
+    parsed.data.franceSpainAdvances === null ||
+    parsed.data.franceSpainFranceScore === null ||
+    parsed.data.franceSpainSpainScore === null
   ) {
-    return res
-      .status(403)
-      .json({ error: "مهلت ثبت پیش‌بینی نیمه‌نهایی اول پایان یافته است." });
+    return res.status(400).json({
+      error: "پیش‌بینی نیمه‌نهایی اول کامل نیست.",
+    });
   }
 
   const email = parsed.data.email.toLowerCase();

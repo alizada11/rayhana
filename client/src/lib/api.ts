@@ -798,9 +798,9 @@ export interface WorldCupPredictionPayload {
   fullName: string;
   email: string;
   country: CountryCode;
-  franceSpainAdvances: SemiFinalOneTeam;
-  franceSpainFranceScore: number;
-  franceSpainSpainScore: number;
+  franceSpainAdvances: SemiFinalOneTeam | null;
+  franceSpainFranceScore: number | null;
+  franceSpainSpainScore: number | null;
   englandArgentinaAdvances: SemiFinalTwoTeam;
   englandArgentinaEnglandScore: number;
   englandArgentinaArgentinaScore: number;

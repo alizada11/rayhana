@@ -80,6 +80,11 @@ for (const origin of allowedOrigins) {
   try {
     const url = new URL(origin);
     const host = url.host;
+    if (url.hostname === "localhost") {
+      expandedOrigins.add(`${url.protocol}//127.0.0.1${url.port ? `:${url.port}` : ""}`);
+    } else if (url.hostname === "127.0.0.1") {
+      expandedOrigins.add(`${url.protocol}//localhost${url.port ? `:${url.port}` : ""}`);
+    }
     if (host.startsWith("www.")) {
       expandedOrigins.add(`${url.protocol}//${host.replace(/^www\\./, "")}`);
     } else {

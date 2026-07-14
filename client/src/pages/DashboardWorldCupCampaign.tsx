@@ -92,7 +92,7 @@ function ScoreLine({
   variant,
 }: {
   team: string;
-  score: number;
+  score: number | null;
   variant: ScoreLineVariant;
 }) {
   return (
@@ -100,7 +100,7 @@ function ScoreLine({
       className={`flex items-center justify-between gap-3 rounded-md border px-2 py-1 ${scoreLineClasses[variant]}`}
     >
       <span>{team}</span>
-      <strong dir="ltr">{score}</strong>
+      <strong dir="ltr">{score ?? "—"}</strong>
     </div>
   );
 }
@@ -116,11 +116,11 @@ function MatchScore<T extends string>({
 }: {
   firstTeam: T;
   firstLabel: string;
-  firstScore: number;
+  firstScore: number | null;
   secondTeam: T;
   secondLabel: string;
-  secondScore: number;
-  winnerTeam?: T;
+  secondScore: number | null;
+  winnerTeam?: T | null;
 }) {
   const firstVariant = winnerTeam
     ? firstTeam === winnerTeam
@@ -318,9 +318,9 @@ export default function DashboardWorldCupCampaign() {
       item.email,
       item.referenceCode ?? "",
       getCountryLabel(item.country),
-      item.franceSpainFranceScore,
-      item.franceSpainSpainScore,
-      teamLabels[item.franceSpainAdvances],
+      item.franceSpainFranceScore ?? "",
+      item.franceSpainSpainScore ?? "",
+      item.franceSpainAdvances ? teamLabels[item.franceSpainAdvances] : "",
       item.englandArgentinaEnglandScore,
       item.englandArgentinaArgentinaScore,
       teamLabels[item.englandArgentinaAdvances],
@@ -546,7 +546,9 @@ export default function DashboardWorldCupCampaign() {
                         />
                       </TableCell>
                       <TableCell>
-                        {teamLabels[item.franceSpainAdvances]}
+                        {item.franceSpainAdvances
+                          ? teamLabels[item.franceSpainAdvances]
+                          : "—"}
                       </TableCell>
                       <TableCell>
                         <MatchScore
