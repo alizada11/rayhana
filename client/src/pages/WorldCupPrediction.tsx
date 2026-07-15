@@ -219,16 +219,18 @@ function CountrySelect({
           code,
           displayLabel,
           searchLabels: Array.from(
-            new Set([
-              englishLabel,
-              persianLabel,
-              pashtoLabel,
-              label,
-              code === "DE" ? "جرمنی" : "",
-              code === "DE" ? "جرمني" : "",
-              code === "DE" ? "Germany" : "",
-              code === "DE" ? "آلمان" : "",
-            ].filter(Boolean))
+            new Set(
+              [
+                englishLabel,
+                persianLabel,
+                pashtoLabel,
+                label,
+                code === "DE" ? "جرمنی" : "",
+                code === "DE" ? "جرمني" : "",
+                code === "DE" ? "Germany" : "",
+                code === "DE" ? "آلمان" : "",
+              ].filter(Boolean)
+            )
           ),
         };
       }),
@@ -981,7 +983,10 @@ export default function WorldCupPrediction() {
       "ENGLAND",
       "ARGENTINA"
     );
-    if ((!firstMatchClosed && !franceSpainAdvances) || !englandArgentinaAdvances) {
+    if (
+      (!firstMatchClosed && !franceSpainAdvances) ||
+      !englandArgentinaAdvances
+    ) {
       setError(t("world_cup.prediction.no_draw"));
       return;
     }
@@ -1204,7 +1209,7 @@ export default function WorldCupPrediction() {
         <LiveStats />
         <FinalStage locale={locale} />
 
-        <section className="wc-prediction-section" id="prediction">
+        <section className="hidden wc-prediction-section" id="prediction">
           <div className="wc-campaign-container wc-form-layout">
             <aside className="wc-form-aside">
               <span className="wc-eyebrow">
