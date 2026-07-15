@@ -840,11 +840,40 @@ html[dir="rtl"] {
   grid-template-columns: 1fr 1fr;
   gap: 18px;
 }
+.wc-stats-grid-with-final {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  align-items: flex-end;
+  margin-top: 3rem;
+}
 .wc-stats-card {
   padding: 25px;
   border: 1px solid rgba(255, 255, 255, 0.12);
   border-radius: 22px;
   background: rgba(255, 255, 255, 0.06);
+}
+.wc-stats-grid-with-final .wc-stats-card-first-match {
+  order: 1;
+}
+.wc-stats-grid-with-final .wc-stats-card-final {
+  order: 2;
+  transform: translateY(-10px);
+}
+.wc-stats-grid-with-final .wc-stats-card-second-match {
+  order: 3;
+}
+.wc-stats-card-final {
+  border-color: rgba(240, 202, 121, 0.42);
+  background:
+    linear-gradient(
+      145deg,
+      rgba(255, 255, 255, 0.13),
+      rgba(255, 255, 255, 0.06)
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(240, 202, 121, 0.18),
+      transparent 38%
+    );
 }
 .wc-stats-card-title,
 .wc-team-stat-meta {
@@ -865,6 +894,23 @@ html[dir="rtl"] {
   display: block;
   height: 100%;
   background: linear-gradient(90deg, #c88e32, #f0ca79);
+}
+.wc-final-live-total-parent {
+  width: 100%;
+  text-align: center;
+  margin-bottom: 10px;
+}
+.wc-final-live-total {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  width: fit-content;
+  padding: 8px 11px;
+  border-radius: 999px;
+  background: rgba(240, 202, 121, 0.14);
+  color: #fff3d6;
+  font-size: 12px;
+  font-weight: 800;
 }
 .wc-stats-status {
   min-height: 185px;
@@ -900,8 +946,16 @@ html[dir="rtl"] {
   position: relative;
   overflow: hidden;
   background:
-    linear-gradient(145deg, rgba(255, 248, 235, 0.98), rgba(255, 255, 255, 0.94)),
-    radial-gradient(circle at top right, rgba(219, 169, 77, 0.24), transparent 32%);
+    linear-gradient(
+      145deg,
+      rgba(255, 248, 235, 0.98),
+      rgba(255, 255, 255, 0.94)
+    ),
+    radial-gradient(
+      circle at top right,
+      rgba(219, 169, 77, 0.24),
+      transparent 32%
+    );
 }
 .wc-final-stage-card::before {
   content: "";
@@ -1587,8 +1641,16 @@ html[dir="rtl"] {
 }
 .dark .wc-final-stage-card {
   background:
-    linear-gradient(145deg, var(--wc-surface), color-mix(in srgb, var(--wc-surface) 88%, var(--primary))),
-    radial-gradient(circle at top right, color-mix(in srgb, var(--primary) 22%, transparent), transparent 34%);
+    linear-gradient(
+      145deg,
+      var(--wc-surface),
+      color-mix(in srgb, var(--wc-surface) 88%, var(--primary))
+    ),
+    radial-gradient(
+      circle at top right,
+      color-mix(in srgb, var(--primary) 22%, transparent),
+      transparent 34%
+    );
 }
 .dark .wc-final-card-top {
   border-color: var(--wc-border);
@@ -1785,6 +1847,9 @@ html[dir="rtl"] {
   }
   .wc-stats-heading {
     grid-template-columns: 1fr;
+  }
+  .wc-stats-grid-with-final .wc-stats-card-final {
+    transform: none;
   }
 }
 @media (max-width: 620px) {

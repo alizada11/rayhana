@@ -182,6 +182,29 @@ const toLocalDateTimeInput = (value?: string | number | null) => {
   return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
 };
 
+const downloadCsv = (
+  filename: string,
+  rows: Array<Array<string | number | null>>
+) => {
+  const csv =
+    "\uFEFF" +
+    rows
+      .map(row =>
+        row
+          .map(cell => `"${String(cell ?? "").replaceAll('"', '""')}"`)
+          .join(",")
+      )
+      .join("\n");
+  const url = URL.createObjectURL(
+    new Blob([csv], { type: "text/csv;charset=utf-8" })
+  );
+  const anchor = document.createElement("a");
+  anchor.href = url;
+  anchor.download = filename;
+  anchor.click();
+  URL.revokeObjectURL(url);
+};
+
 export default function DashboardWorldCupCampaign() {
   const [search, setSearch] = useState("");
   const [finalTeamA, setFinalTeamA] = useState("");
@@ -328,21 +351,38 @@ export default function DashboardWorldCupCampaign() {
       teamLabels[item.englandArgentinaAdvances],
       winnerLabels[item.winnerStatus],
     ]);
-    const csv =
-      "\uFEFF" +
-      [header, ...rows]
-        .map(row =>
-          row.map(cell => `"${String(cell).replaceAll('"', '""')}"`).join(",")
-        )
-        .join("\n");
-    const url = URL.createObjectURL(
-      new Blob([csv], { type: "text/csv;charset=utf-8" })
-    );
-    const anchor = document.createElement("a");
-    anchor.href = url;
-    anchor.download = "rayhana-world-cup-predictions.csv";
-    anchor.click();
-    URL.revokeObjectURL(url);
+    downloadCsv("rayhana-world-cup-predictions.csv", [header, ...rows]);
+  };
+
+  const exportFinalPredictionsCsv = () => {
+    const finalItems = finalPredictions.data ?? [];
+    if (!finalItems.length) {
+      toast.info("هنوز پیش‌بینی فینالی برای دریافت وجود ندارد.");
+      return;
+    }
+    const teamALabel = finalTeamA || "تیم نخست";
+    const teamBLabel = finalTeamB || "تیم دوم";
+    const header = [
+      "نام",
+      "ایمیل",
+      "تاریخ ثبت",
+      "تیم نخست",
+      "امتیاز تیم نخست",
+      "تیم دوم",
+      "امتیاز تیم دوم",
+      "قهرمان",
+    ];
+    const rows = finalItems.map(item => [
+      item.fullName,
+      item.email,
+      formatDate(item.createdAt),
+      teamALabel,
+      item.teamAScore,
+      teamBLabel,
+      item.teamBScore,
+      item.champion === "TEAM_A" ? teamALabel : teamBLabel,
+    ]);
+    downloadCsv("rayhana-world-cup-final-predictions.csv", [header, ...rows]);
   };
 
   const saveFinal = () => {
@@ -889,9 +929,18 @@ export default function DashboardWorldCupCampaign() {
             </section>
 
             <section className="rounded-lg border bg-card p-5">
-              <div className="mb-4 flex items-center justify-between">
+              <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
                 <h2 className="font-serif font-semibold">پیش‌بینی‌های فینال</h2>
-                <Badge>{finalPredictions.data?.length ?? 0}</Badge>
+                <div className="flex items-center gap-2">
+                  <Badge>{finalPredictions.data?.length ?? 0}</Badge>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={exportFinalPredictionsCsv}
+                  >
+                    <Download className="h-4 w-4" /> دریافت CSV فینال
+                  </Button>
+                </div>
               </div>
               <div className="grid gap-2">
                 {(finalPredictions.data ?? []).map(item => (

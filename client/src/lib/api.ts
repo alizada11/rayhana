@@ -825,6 +825,15 @@ export interface WorldCupStatus {
 
 export interface WorldCupLiveStats {
   totalPredictions: number;
+  finalGame: {
+    totalPredictions: number;
+    teams: Array<{
+      code: string;
+      label: string;
+      count: number;
+      percentage: number;
+    }>;
+  } | null;
   matchups: Array<{
     id: string;
     teams: Array<{

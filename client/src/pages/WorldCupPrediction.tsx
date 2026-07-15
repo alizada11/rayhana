@@ -485,12 +485,26 @@ function LiveStats() {
           <div className="wc-stats-status wc-stats-error">
             {t("world_cup.stats.error")}
           </div>
-        ) : !stats.data?.totalPredictions ? (
+        ) : !stats.data?.totalPredictions &&
+          !stats.data?.finalGame?.totalPredictions ? (
           <div className="wc-stats-status">{t("world_cup.stats.empty")}</div>
         ) : (
-          <div className="wc-stats-grid">
+          <div
+            className={cn(
+              "wc-stats-grid",
+              stats.data.finalGame && "wc-stats-grid-with-final"
+            )}
+          >
             {stats.data.matchups.map((matchup, index) => (
-              <article className="wc-stats-card" key={matchup.id}>
+              <article
+                className={cn(
+                  "wc-stats-card",
+                  index === 0
+                    ? "wc-stats-card-first-match"
+                    : "wc-stats-card-second-match"
+                )}
+                key={matchup.id}
+              >
                 <div className="wc-stats-card-title">
                   <span>
                     {index === 0
@@ -521,6 +535,42 @@ function LiveStats() {
                 ))}
               </article>
             ))}
+            {stats.data.finalGame && (
+              <article className="wc-stats-card wc-stats-card-final">
+                <div className="wc-final-live-total-parent">
+                  <div className="wc-final-live-total">
+                    <Trophy aria-hidden="true" size={16} />
+                    {t("world_cup.stats.final_total", {
+                      count: stats.data.finalGame.totalPredictions,
+                    })}
+                  </div>
+                </div>
+                <div className="wc-stats-card-title">
+                  <span>{t("world_cup.stats.final_game")}</span>
+                  <small>{t("world_cup.stats.champion")}</small>
+                </div>
+                {stats.data.finalGame.teams.map(team => (
+                  <div className="wc-team-stat" key={team.code}>
+                    <div className="wc-team-stat-meta">
+                      <span>{team.label}</span>
+                      <strong>{team.percentage}%</strong>
+                    </div>
+                    <div
+                      className="wc-stat-track"
+                      role="progressbar"
+                      aria-valuemin={0}
+                      aria-valuemax={100}
+                      aria-valuenow={team.percentage}
+                    >
+                      <span style={{ width: `${team.percentage}%` }} />
+                    </div>
+                    <small>
+                      {t("world_cup.stats.choices", { count: team.count })}
+                    </small>
+                  </div>
+                ))}
+              </article>
+            )}
           </div>
         )}
       </div>
@@ -1132,10 +1182,6 @@ export default function WorldCupPrediction() {
             <span>{marquee[0]}</span>
             <i>x</i>
             <span>{marquee[1]}</span>
-            <b>{marquee[2]}</b>
-            <span>{marquee[3]}</span>
-            <i>x</i>
-            <span>{marquee[4]}</span>
           </div>
         </section>
 
@@ -1408,20 +1454,6 @@ export default function WorldCupPrediction() {
                         </h3>
                         <p>{t("world_cup.prediction.match_desc")}</p>
                       </div>
-                      <MatchCard
-                        index={t("world_cup.stats.match_one")}
-                        teamOne={teams.FRANCE}
-                        teamTwo={teams.SPAIN}
-                        scoreOne={form.franceSpainFranceScore}
-                        scoreTwo={form.franceSpainSpainScore}
-                        disabled={firstMatchClosed}
-                        onScoreOne={value =>
-                          patch("franceSpainFranceScore", value)
-                        }
-                        onScoreTwo={value =>
-                          patch("franceSpainSpainScore", value)
-                        }
-                      />
                       <MatchCard
                         index={t("world_cup.stats.match_two")}
                         teamOne={teams.ENGLAND}

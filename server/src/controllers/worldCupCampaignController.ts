@@ -110,16 +110,23 @@ export const status = async (_req: Request, res: Response) => {
 
 export const liveStats = async (_req: Request, res: Response) => {
   let choices: Awaited<ReturnType<typeof queries.listWorldCupPredictionChoices>>;
+  let finalPredictions: Awaited<ReturnType<typeof queries.listWorldCupFinalPredictions>>;
+  let settings: Awaited<ReturnType<typeof queries.getWorldCupCampaignSettings>>;
   try {
     choices = await queries.listWorldCupPredictionChoices();
+    finalPredictions = await queries.listWorldCupFinalPredictions();
+    settings = await queries.getWorldCupCampaignSettings();
   } catch (error) {
     if (!isMissingWorldCupTable(error)) throw error;
     console.warn(
       "[world-cup-campaign] tables are missing; returning empty live stats"
     );
     choices = [];
+    finalPredictions = [];
+    settings = undefined;
   }
   const totalPredictions = choices.length;
+  const totalFinalPredictions = finalPredictions.length;
   const firstMatchChoices = choices.filter(item => item.franceSpainAdvances);
   const secondMatchChoices = choices.filter(item => item.englandArgentinaAdvances);
   const percentage = (count: number, total: number) =>
@@ -136,9 +143,35 @@ export const liveStats = async (_req: Request, res: Response) => {
   const argentina = secondMatchChoices.filter(
     item => item.englandArgentinaAdvances === "ARGENTINA"
   ).length;
+  const finalTeamA = finalPredictions.filter(
+    item => item.champion === "TEAM_A"
+  ).length;
+  const finalTeamB = finalPredictions.filter(
+    item => item.champion === "TEAM_B"
+  ).length;
 
   res.json({
     totalPredictions,
+    finalGame:
+      settings?.finalTeamA && settings?.finalTeamB
+        ? {
+            totalPredictions: totalFinalPredictions,
+            teams: [
+              {
+                code: "TEAM_A",
+                label: settings.finalTeamA,
+                count: finalTeamA,
+                percentage: percentage(finalTeamA, totalFinalPredictions),
+              },
+              {
+                code: "TEAM_B",
+                label: settings.finalTeamB,
+                count: finalTeamB,
+                percentage: percentage(finalTeamB, totalFinalPredictions),
+              },
+            ],
+          }
+        : null,
     matchups: [
       {
         id: "france-spain",

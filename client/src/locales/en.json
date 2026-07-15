@@ -590,14 +590,14 @@
     "hero": {
       "eyebrow": "Rayhana Special Contest",
       "title": "Predict the Champion",
-      "description": "Predict the two semi-final and final results and then the final match for a chance to win one of 26 Rayhana prizes: heritage Qabili pots or 26% discount codes for Shopino24 and Amazon.",
+      "description": "Predict the final match result for a chance to win one of 26 Rayhana prizes: heritage Qabili pots or 26% discount codes for Shopino24 and Amazon.",
       "cta": "Join now",
       "how": "Final match",
       "deadline": "Final match countdown: July 19, 2026, 19:00 GMT",
       "badge": "First prize",
       "badge_strong": "Size 12 pot",
       "pills": ["Qabili pot", "Size 12"],
-      "marquee": ["France", "Spain", "Semi-final", "England", "Argentina"]
+      "marquee": ["Spain", "Argentina"]
     },
     "countdown": {
       "days": "Days",
@@ -683,6 +683,9 @@
       "advancing": "Advancing team",
       "match_one": "First semi-final",
       "match_two": "Second semi-final",
+      "final_game": "Final game",
+      "champion": "Champion picks",
+      "final_total": "{{count}} final predictions",
       "choices": "{{count}} choices"
     },
     "final": {
@@ -718,12 +721,12 @@
     },
     "prediction": {
       "kicker": "Your turn",
-      "title": "Guess the finalists correctly",
-      "description": "For each match, choose both the 90-minute score and the team that ultimately advances to the final.",
+      "title": "Predict the final game",
+      "description": "Choose the final game score and the team you think will become champion.",
       "trust_title": "Secure registration",
       "trust_desc": "Only one prediction is accepted per email.",
       "step_contact": "Your details",
-      "step_prediction": "Match predictions",
+      "step_prediction": "Game prediction",
       "contact_step": "Step one",
       "contact_title": "About you",
       "contact_desc": "This information is only used to identify and contact winners.",
@@ -733,10 +736,10 @@
       "email_ph": "name@example.com",
       "country": "Country of residence",
       "country_ph": "Search country name",
-      "continue": "Continue to predictions",
+      "continue": "Continue to prediction",
       "match_step": "Step two",
-      "match_title": "Semi-final predictions",
-      "match_desc": "Enter the semi-final score; the team with more goals advances.",
+      "match_title": "Final game prediction",
+      "match_desc": "Enter the final game score; the team with more goals becomes champion.",
       "match_note": "90-minute result",
       "terms": "I have read and accept the contest terms and conditions.",
       "terms_link": "View terms",
