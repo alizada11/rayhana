@@ -610,42 +610,49 @@ function FinalStage({ locale }: { locale: string }) {
               </div>
             ) : data?.status === "OPEN" && configured ? (
               <form className="wc-final-public-form" onSubmit={handleSubmit}>
-                <div className="wc-final-open-label">
-                  <i aria-hidden="true" /> {t("world_cup.final.open")}
+                <div className="wc-final-card-top">
+                  <div className="wc-final-open-label">
+                    <i aria-hidden="true" /> {t("world_cup.final.open")}
+                  </div>
+                  {data.deadline && (
+                    <span className="wc-final-card-deadline">
+                      <Clock3 aria-hidden="true" size={16} />
+                      {formatCampaignDate(data.deadline, locale)}
+                    </span>
+                  )}
                 </div>
                 <div className="wc-final-teams">
                   <div>
                     <span>{t("world_cup.final.team_a")}</span>
                     <strong>&nbsp;{data.teamA}</strong>
                   </div>
-                  <b>{t("world_cup.final.final")}</b>
+                  <b>
+                    <Trophy aria-hidden="true" size={18} />
+                    {t("world_cup.final.final")}
+                  </b>
                   <div>
                     <span>{t("world_cup.final.team_b")}</span>
                     <strong>&nbsp;{data.teamB}</strong>
                   </div>
                 </div>
-                {data.deadline && (
-                  <p className="wc-final-deadline">
-                    <Clock3 aria-hidden="true" size={17} />
-                    {t("world_cup.final.deadline", {
-                      date: formatCampaignDate(data.deadline, locale),
-                    })}
-                  </p>
-                )}
-                <div className="wc-final-score-fields">
-                  <ScoreInput
-                    label={data.teamA ?? ""}
-                    max={30}
-                    value={teamAScore}
-                    onChange={setTeamAScore}
-                  />
-                  <span aria-hidden="true">-</span>
-                  <ScoreInput
-                    label={data.teamB ?? ""}
-                    max={30}
-                    value={teamBScore}
-                    onChange={setTeamBScore}
-                  />
+
+                <div className="wc-final-score-panel">
+                  <span>{t("world_cup.final.result_label")}</span>
+                  <div className="wc-final-score-fields">
+                    <ScoreInput
+                      label={data.teamA ?? ""}
+                      max={30}
+                      value={teamAScore}
+                      onChange={setTeamAScore}
+                    />
+                    <span aria-hidden="true">-</span>
+                    <ScoreInput
+                      label={data.teamB ?? ""}
+                      max={30}
+                      value={teamBScore}
+                      onChange={setTeamBScore}
+                    />
+                  </div>
                 </div>
                 <div className="wc-final-identity-fields">
                   <div>
@@ -723,24 +730,49 @@ function FinalStage({ locale }: { locale: string }) {
               </form>
             ) : data?.status === "RESULTS" && configured && data.result ? (
               <div className="wc-final-result-state">
-                <span>
-                  <Crown size={19} /> {t("world_cup.final.result_label")}
+                <div className="wc-final-result-crown">
+                  <Crown size={28} />
+                </div>
+                <span className="wc-final-result-kicker">
+                  {t("world_cup.final.result_label")}
                 </span>
-                <h3>
-                  {data.teamA}{" "}
+                <div className="wc-final-result-board">
+                  <div
+                    className={cn(
+                      "wc-final-result-team",
+                      data.result.champion === "TEAM_A" && "winner"
+                    )}
+                  >
+                    <small>{t("world_cup.final.team_a")}</small>
+                    <strong>{data.teamA}</strong>
+                    <b>{data.result.teamAScore}</b>
+                  </div>
+                  <div className="wc-final-result-score">
+                    <Trophy size={20} />
+                    <span>
+                      {data.result.teamAScore} - {data.result.teamBScore}
+                    </span>
+                    <small>{t("world_cup.final.final")}</small>
+                  </div>
+                  <div
+                    className={cn(
+                      "wc-final-result-team",
+                      data.result.champion === "TEAM_B" && "winner"
+                    )}
+                  >
+                    <small>{t("world_cup.final.team_b")}</small>
+                    <strong>{data.teamB}</strong>
+                    <b>{data.result.teamBScore}</b>
+                  </div>
+                </div>
+                <div className="wc-final-champion-ribbon">
+                  <span>{t("world_cup.final.champion")}</span>
                   <strong>
-                    {data.result.teamAScore} - {data.result.teamBScore}
-                  </strong>{" "}
-                  {data.teamB}
-                </h3>
-                <p>
-                  {t("world_cup.final.champion")}:{" "}
-                  <b>
                     {data.result.champion === "TEAM_A"
                       ? data.teamA
                       : data.teamB}
-                  </b>
-                </p>
+                  </strong>
+                </div>
               </div>
             ) : data?.status === "CLOSED" ? (
               <div className="wc-final-stage-status">
@@ -1062,7 +1094,7 @@ export default function WorldCupPrediction() {
                     <DirectionArrow dir={dir} size={19} />
                   </a>
                 </Button>
-                <a className="wc-text-link" href="#how-it-works">
+                <a className="wc-text-link" href="#final-stage">
                   {t("world_cup.hero.how")}{" "}
                   <DirectionArrow dir={dir} size={18} />
                 </a>

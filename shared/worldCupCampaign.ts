@@ -3,7 +3,7 @@ export const WORLD_CUP_FIRST_MATCH_DEADLINE_MS = Date.parse(
 );
 
 export const WORLD_CUP_CAMPAIGN_DEADLINE_MS = Date.parse(
-  "2026-07-15T18:55:00.000Z"
+  "2026-07-19T19:00:00.000Z"
 );
 
 export const WORLD_CUP_WINNER_LABELS = {
