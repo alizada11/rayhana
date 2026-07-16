@@ -878,10 +878,12 @@ export interface WorldCupCampaignSettings {
 
 export interface WorldCupFinalPredictionPayload {
   email: string;
-  referenceCode: string;
+  referenceCode?: string | null;
   teamAScore: number;
   teamBScore: number;
   champion: WorldCupFinalChampion;
+  fullName?: string;
+  country?: string;
 }
 
 export interface WorldCupFinalPrediction {

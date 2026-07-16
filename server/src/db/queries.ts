@@ -798,7 +798,9 @@ export const saveWorldCupCampaignSettings = async (
 
 export const submitWorldCupFinalPrediction = async (input: {
   email: string;
-  referenceCode: string;
+  referenceCode?: string | null;
+  fullName?: string | null;
+  country?: string | null;
   teamAScore: number;
   teamBScore: number;
   champion: WorldCupFinalChampion;
@@ -814,15 +816,50 @@ export const submitWorldCupFinalPrediction = async (input: {
     throw new Error("FINAL_CLOSED");
   }
 
-  const participant = await getWorldCupPredictionByEmail(
-    input.email.toLowerCase()
-  );
-  if (
-    !participant ||
-    makeWorldCupPredictionReferenceCode(participant) !==
-      input.referenceCode.trim().toUpperCase()
-  ) {
-    throw new Error("INVALID_REFERENCE");
+  let participant = await getWorldCupPredictionByEmail(input.email.toLowerCase());
+  const hasReferenceCode = Boolean(input.referenceCode?.trim());
+  if (hasReferenceCode) {
+    if (
+      !participant ||
+      makeWorldCupPredictionReferenceCode(participant) !==
+        input.referenceCode!.trim().toUpperCase()
+    ) {
+      throw new Error("INVALID_REFERENCE");
+    }
+  } else {
+    if (!participant) {
+      if (!input.fullName?.trim() || !input.country?.trim()) {
+        throw new Error("MISSING_PARTICIPANT_INFO");
+      }
+
+      const [createdParticipant] = await db
+        .insert(worldCupPredictions)
+        .values({
+          fullName: input.fullName.trim(),
+          email: input.email.toLowerCase(),
+          country: input.country.trim().toUpperCase(),
+          franceSpainAdvances: null,
+          franceSpainFranceScore: null,
+          franceSpainSpainScore: null,
+          englandArgentinaAdvances: "ENGLAND",
+          englandArgentinaEnglandScore: 0,
+          englandArgentinaArgentinaScore: 0,
+        })
+        .returning();
+
+      if (!createdParticipant) {
+        throw new Error("MISSING_PARTICIPANT_INFO");
+      }
+      participant = createdParticipant;
+    }
+  }
+
+  const existingFinalPrediction = await db.query.worldCupFinalPredictions.findFirst({
+    where: eq(worldCupFinalPredictions.predictionId, participant.id),
+    columns: { id: true },
+  });
+  if (existingFinalPrediction) {
+    throw new Error("FINAL_ALREADY_SUBMITTED");
   }
 
   const [finalPrediction] = await db
@@ -832,14 +869,6 @@ export const submitWorldCupFinalPrediction = async (input: {
       teamAScore: input.teamAScore,
       teamBScore: input.teamBScore,
       champion: input.champion,
-    })
-    .onConflictDoUpdate({
-      target: worldCupFinalPredictions.predictionId,
-      set: {
-        teamAScore: input.teamAScore,
-        teamBScore: input.teamBScore,
-        champion: input.champion,
-      },
     })
     .returning();
 

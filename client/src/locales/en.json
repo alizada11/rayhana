@@ -704,6 +704,8 @@
       "champion_question": "Which team becomes champion?",
       "email": "Registered email",
       "reference": "10-character reference code",
+      "no_reference_code": "Don't have a reference code?",
+      "reference_required": "Please enter your reference code, or provide your name and country if you do not have one.",
       "recover_reference": "Forgot code? Email it to me",
       "recover_sending": "Sending code...",
       "recover_sent": "If this email has a semi-final prediction, the reference code has been sent.",

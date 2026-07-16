@@ -584,8 +584,11 @@ function FinalStage({ locale }: { locale: string }) {
   const publicDraws = usePublicWorldCupWinners();
   const submit = useSubmitWorldCupFinalPrediction();
   const recoverReference = useRecoverWorldCupReferenceCode();
+  const [missingReferenceCode, setMissingReferenceCode] = useState(false);
   const [email, setEmail] = useState("");
   const [referenceCode, setReferenceCode] = useState("");
+  const [fullName, setFullName] = useState("");
+  const [country, setCountry] = useState<CountryCode | "">("");
   const [teamAScore, setTeamAScore] = useState(0);
   const [teamBScore, setTeamBScore] = useState(0);
   const [message, setMessage] = useState("");
@@ -600,10 +603,23 @@ function FinalStage({ locale }: { locale: string }) {
       setMessage(t("world_cup.final.no_draw"));
       return;
     }
+    if (missingReferenceCode) {
+      if (!fullName.trim() || !country) {
+        setMessage(t("world_cup.final.reference_required"));
+        return;
+      }
+    } else if (!referenceCode.trim()) {
+      setMessage(t("world_cup.final.reference_required"));
+      return;
+    }
     submit.mutate(
       {
         email,
-        referenceCode: referenceCode.trim().toUpperCase(),
+        referenceCode: missingReferenceCode
+          ? ""
+          : referenceCode.trim().toUpperCase(),
+        fullName: missingReferenceCode ? fullName.trim() : undefined,
+        country: missingReferenceCode ? country : undefined,
         teamAScore,
         teamBScore,
         champion: teamAScore > teamBScore ? "TEAM_A" : "TEAM_B",
@@ -719,32 +735,72 @@ function FinalStage({ locale }: { locale: string }) {
                       placeholder="name@example.com"
                     />
                   </div>
-                  <div>
-                    <Label className="py-2" htmlFor="final-reference">
-                      {t("world_cup.final.reference")}
-                    </Label>
-                    <Input
-                      id="final-reference"
-                      dir="ltr"
-                      minLength={10}
-                      maxLength={10}
-                      required
-                      value={referenceCode}
-                      onChange={event =>
-                        setReferenceCode(event.target.value.toUpperCase())
+                  {missingReferenceCode ? (
+                    <>
+                      <div>
+                        <Label className="py-2" htmlFor="final-full-name">
+                          {t("world_cup.prediction.full_name")}
+                        </Label>
+                        <Input
+                          id="final-full-name"
+                          autoComplete="name"
+                          required
+                          value={fullName}
+                          onChange={event => setFullName(event.target.value)}
+                          placeholder={t("world_cup.prediction.full_name_ph")}
+                        />
+                      </div>
+                      <div>
+                        <Label className="py-2" htmlFor="final-country">
+                          {t("world_cup.prediction.country")}
+                        </Label>
+                        <CountrySelect
+                          id="final-country"
+                          value={country}
+                          onChange={setCountry}
+                        />
+                      </div>
+                    </>
+                  ) : (
+                    <div>
+                      <Label className="py-2" htmlFor="final-reference">
+                        {t("world_cup.final.reference")}
+                      </Label>
+                      <Input
+                        id="final-reference"
+                        dir="ltr"
+                        minLength={10}
+                        maxLength={10}
+                        required
+                        value={referenceCode}
+                        onChange={event =>
+                          setReferenceCode(event.target.value.toUpperCase())
+                        }
+                        placeholder="XXXXXXXXXX"
+                      />
+                      <button
+                        className="wc-reference-recover"
+                        disabled={recoverReference.isPending}
+                        onClick={handleRecoverReference}
+                        type="button"
+                      >
+                        {recoverReference.isPending
+                          ? t("world_cup.final.recover_sending")
+                          : t("world_cup.final.recover_reference")}
+                      </button>
+                    </div>
+                  )}
+                  <div className="flex items-center gap-2 wc-final-reference-toggle">
+                    <Checkbox
+                      id="final-missing-reference"
+                      checked={missingReferenceCode}
+                      onCheckedChange={checked =>
+                        setMissingReferenceCode(checked === true)
                       }
-                      placeholder="XXXXXXXXXX"
                     />
-                    <button
-                      className="wc-reference-recover"
-                      disabled={recoverReference.isPending}
-                      onClick={handleRecoverReference}
-                      type="button"
-                    >
-                      {recoverReference.isPending
-                        ? t("world_cup.final.recover_sending")
-                        : t("world_cup.final.recover_reference")}
-                    </button>
+                    <Label htmlFor="final-missing-reference">
+                      {t("world_cup.final.no_reference_code")}
+                    </Label>
                   </div>
                 </div>
                 {referenceMessage && (
@@ -1139,7 +1195,7 @@ export default function WorldCupPrediction() {
               <p>{t("world_cup.hero.description")}</p>
               <div className="wc-hero-actions">
                 <Button asChild size="lg" className="wc-gold-button">
-                  <a href="#prediction">
+                  <a href="#final-stage">
                     {t("world_cup.hero.cta")}{" "}
                     <DirectionArrow dir={dir} size={19} />
                   </a>
@@ -1168,7 +1224,7 @@ export default function WorldCupPrediction() {
                 </span>
               </div>
               <img
-                src="/images/rayhana-post.png"
+                src="/images/rayhana-pot.png"
                 alt={t("world_cup.hero.badge_strong")}
               />
               <div className="wc-size-pills">

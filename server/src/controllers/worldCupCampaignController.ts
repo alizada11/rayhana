@@ -290,7 +290,9 @@ export const submitFinal = async (req: Request, res: Response) => {
   const parsed = z
     .object({
       email: z.string().trim().email().max(320),
-      referenceCode: z.string().trim().length(10),
+      referenceCode: z.string().trim().max(10).optional(),
+      fullName: z.string().trim().max(180).optional(),
+      country: z.string().trim().max(64).optional(),
       teamAScore: z.number().int().min(0).max(30),
       teamBScore: z.number().int().min(0).max(30),
       champion: finalChampionSchema,
@@ -307,6 +309,9 @@ export const submitFinal = async (req: Request, res: Response) => {
     const result = await queries.submitWorldCupFinalPrediction({
       ...parsed.data,
       email: parsed.data.email.toLowerCase(),
+      referenceCode: parsed.data.referenceCode ?? null,
+      fullName: parsed.data.fullName?.trim() ?? null,
+      country: parsed.data.country ?? null,
     });
     res.status(201).json(result);
   } catch (error) {
@@ -318,6 +323,26 @@ export const submitFinal = async (req: Request, res: Response) => {
     }
     if (message === "INVALID_REFERENCE") {
       return res.status(401).json({ error: "ایمیل یا کد مرجع درست نیست." });
+    }
+    if (message === "FINAL_ALREADY_SUBMITTED") {
+      return res.status(409).json({
+        error: "برای این ایمیل یک پیش‌بینی فینال قبلاً ثبت شده است.",
+      });
+    }
+    if (
+      typeof error === "object" &&
+      error !== null &&
+      "code" in error &&
+      (error as { code?: unknown }).code === "23505"
+    ) {
+      return res.status(409).json({
+        error: "برای این ایمیل یک پیش‌بینی فینال قبلاً ثبت شده است.",
+      });
+    }
+    if (message === "MISSING_PARTICIPANT_INFO") {
+      return res.status(400).json({
+        error: "برای ثبت بدون کد مرجع، نام و کشور لازم است.",
+      });
     }
     throw error;
   }
