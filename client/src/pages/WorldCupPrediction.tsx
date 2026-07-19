@@ -651,7 +651,7 @@ function FinalStage({ locale }: { locale: string }) {
 
   return (
     <>
-      <section className="wc-final-stage-section" id="final-stage">
+      <section className="hidden wc-final-stage-section" id="final-stage">
         <div className="wc-campaign-container wc-final-stage-shell">
           <div className="wc-final-stage-intro">
             <span className="wc-section-kicker">
