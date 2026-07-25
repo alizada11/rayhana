@@ -308,18 +308,6 @@ gtag('config', '${gaMeasurementId}');`;
 
           {/* Actions */}
           <div className="flex h-10 items-center gap-2">
-            <Link
-              href={worldCupHref}
-              className={cn(
-                "hidden h-10 lg:inline-flex items-center gap-2 rounded-full border px-3.5 text-xs font-black leading-none shadow-lg transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl",
-                isHome && !isScrolled
-                  ? "border-white/35 bg-white/20 text-white shadow-black/20 backdrop-blur-md hover:bg-white/30"
-                  : "border-primary/25 bg-gradient-to-r from-primary via-amber-600 to-primary text-primary-foreground shadow-primary/20 hover:brightness-105"
-              )}
-            >
-              <Goal className="h-4 w-4" aria-hidden="true" />
-              <span>{t("nav.worldCupHook")}</span>
-            </Link>
             <div className="relative">
               <Button
                 variant="ghost"
@@ -416,14 +404,6 @@ gtag('config', '${gaMeasurementId}');`;
         {isMenuOpen && (
           <div className="md:hidden border-t bg-background">
             <div className="container py-4 flex flex-col gap-4">
-              <Link
-                href={worldCupHref}
-                className="flex items-center justify-center gap-2 rounded-xl border border-primary/25 bg-gradient-to-r from-primary via-amber-600 to-primary px-4 py-3 text-sm font-black text-primary-foreground shadow-lg shadow-primary/20"
-                onClick={() => setIsMenuOpen(false)}
-              >
-                <Goal className="h-5 w-5" aria-hidden="true" />
-                <span>{t("nav.worldCupHook")}</span>
-              </Link>
               {navItems.map(item => (
                 <Link
                   key={item.href}
