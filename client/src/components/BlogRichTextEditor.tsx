@@ -11,6 +11,7 @@ import {
   List,
   ListOrdered,
   Heading2,
+  Heading3,
   Link as LinkIcon,
   Image as ImageIcon,
   AlignLeft,
@@ -280,6 +281,20 @@ export default function BlogRichTextEditor({
           title="Heading"
         >
           <Heading2 className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={() =>
+            editor.chain().focus().toggleHeading({ level: 3 }).run()
+          }
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("heading", { level: 3 })
+              ? "bg-card text-primary"
+              : "text-muted-foreground"
+          }`}
+          title="Heading 3"
+        >
+          <Heading3 className="w-4 h-4" />
         </button>
         <button
           type="button"
