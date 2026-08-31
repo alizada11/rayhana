@@ -14,7 +14,12 @@ import { motion } from "framer-motion";
 import { useBlogBySlug } from "@/hooks/useBlogs";
 import SeoTags from "@/components/SeoTags";
 import { useState } from "react";
-import { addHeadingFont, decodeHtml, sanitizeHtml } from "@/lib/safeHtml";
+import {
+  addHeadingFont,
+  allowBlogTables,
+  decodeHtml,
+  sanitizeHtml,
+} from "@/lib/safeHtml";
 
 export default function BlogPost() {
   const { t, i18n } = useTranslation();
@@ -67,39 +72,50 @@ export default function BlogPost() {
   const title = post.title?.[currentLang] || post.title?.en || "";
   const content = post.content?.[currentLang] || post.content?.en || "";
   const sanitizedContent = addHeadingFont(
-    sanitizeHtml(cleanHtml(content), {
-      ALLOWED_TAGS: [
-        "h1",
-        "h2",
-        "h3",
-        "h4",
-        "h5",
-        "h6",
-        "p",
-        "br",
-        "strong",
-        "em",
-        "u",
-        "ul",
-        "ol",
-        "li",
-        "blockquote",
-        "a",
-        "img",
-        "span",
-        "div",
-      ],
-      ALLOWED_ATTR: [
-        "href",
-        "target",
-        "rel",
-        "class",
-        "src",
-        "alt",
-        "title",
-        "style",
-      ],
-    })
+    allowBlogTables(
+      sanitizeHtml(cleanHtml(content), {
+        ALLOWED_TAGS: [
+          "h1",
+          "h2",
+          "h3",
+          "h4",
+          "h5",
+          "h6",
+          "p",
+          "br",
+          "strong",
+          "em",
+          "u",
+          "ul",
+          "ol",
+          "li",
+          "blockquote",
+          "a",
+          "img",
+          "span",
+          "div",
+          "table",
+          "thead",
+          "tbody",
+          "tfoot",
+          "tr",
+          "th",
+          "td",
+        ],
+        ALLOWED_ATTR: [
+          "href",
+          "target",
+          "rel",
+          "class",
+          "src",
+          "alt",
+          "title",
+          "style",
+          "colspan",
+          "rowspan",
+        ],
+      })
+    )
   );
   const shareUrl =
     typeof window !== "undefined"

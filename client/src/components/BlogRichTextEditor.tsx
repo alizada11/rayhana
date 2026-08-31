@@ -4,6 +4,10 @@ import StarterKit from "@tiptap/starter-kit";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
 import Image from "@tiptap/extension-image";
+import Table from "@tiptap/extension-table";
+import TableRow from "@tiptap/extension-table-row";
+import TableHeader from "@tiptap/extension-table-header";
+import TableCell from "@tiptap/extension-table-cell";
 import {
   Bold,
   Italic,
@@ -14,6 +18,9 @@ import {
   Heading3,
   Link as LinkIcon,
   Image as ImageIcon,
+  Table2,
+  Rows3,
+  Columns3,
   AlignLeft,
   AlignCenter,
   AlignRight,
@@ -57,6 +64,14 @@ export default function BlogRichTextEditor({
           };
         },
       }).configure({ inline: false, allowBase64: false }),
+      Table.configure({
+        resizable: true,
+        lastColumnResizable: false,
+        allowTableNodeSelection: true,
+      }),
+      TableRow,
+      TableHeader,
+      TableCell,
       Placeholder.configure({
         placeholder: placeholder || "Write your story...",
       }),
@@ -228,6 +243,22 @@ export default function BlogRichTextEditor({
     }
   };
 
+  const insertTable = () => {
+    editor.chain().focus().insertTable({ rows: 3, cols: 3, withHeaderRow: true }).run();
+  };
+
+  const addRowAfter = () => {
+    editor.chain().focus().addRowAfter().run();
+  };
+
+  const addColumnAfter = () => {
+    editor.chain().focus().addColumnAfter().run();
+  };
+
+  const deleteTable = () => {
+    editor.chain().focus().deleteTable().run();
+  };
+
   return (
     <div className="space-y-2">
       <div className="flex flex-wrap gap-1 rounded-lg border border-border bg-muted/60 px-2 py-2 dark:bg-muted/30">
@@ -344,6 +375,54 @@ export default function BlogRichTextEditor({
           disabled={isUploading}
         >
           <ImageIcon className="w-4 h-4" />
+        </button>
+        <div className="w-px bg-border mx-1" />
+        <button
+          type="button"
+          onClick={insertTable}
+          className="p-2 rounded-md text-muted-foreground hover:bg-muted/80 dark:hover:bg-muted/40"
+          title="Insert Table"
+        >
+          <Table2 className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={addRowAfter}
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("table")
+              ? "text-muted-foreground"
+              : "text-muted-foreground/40"
+          }`}
+          title="Add Row"
+          disabled={!editor.isActive("table")}
+        >
+          <Rows3 className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={addColumnAfter}
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("table")
+              ? "text-muted-foreground"
+              : "text-muted-foreground/40"
+          }`}
+          title="Add Column"
+          disabled={!editor.isActive("table")}
+        >
+          <Columns3 className="w-4 h-4" />
+        </button>
+        <button
+          type="button"
+          onClick={deleteTable}
+          className={`p-2 rounded-md hover:bg-muted/80 dark:hover:bg-muted/40 ${
+            editor.isActive("table")
+              ? "text-muted-foreground"
+              : "text-muted-foreground/40"
+          }`}
+          title="Delete Table"
+          disabled={!editor.isActive("table")}
+        >
+          <span className="text-xs font-semibold">Del</span>
         </button>
         <div className="w-px bg-border mx-1" />
         <button

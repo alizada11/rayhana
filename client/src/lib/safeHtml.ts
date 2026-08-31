@@ -58,3 +58,19 @@ export function addHeadingFont(html: string) {
   });
   return doc.body?.innerHTML || "";
 }
+
+export function allowBlogTables(html: string) {
+  if (typeof DOMParser === "undefined") return html || "";
+
+  const doc = new DOMParser().parseFromString(html || "", "text/html");
+  doc.body?.querySelectorAll("table").forEach(table => {
+    table.classList.add("w-full", "border-collapse", "my-6");
+  });
+  doc.body?.querySelectorAll("th").forEach(cell => {
+    cell.classList.add("border", "px-3", "py-2", "text-left", "font-semibold");
+  });
+  doc.body?.querySelectorAll("td").forEach(cell => {
+    cell.classList.add("border", "px-3", "py-2");
+  });
+  return doc.body?.innerHTML || "";
+}
