@@ -114,7 +114,8 @@ export default function BlogPost() {
           "colspan",
           "rowspan",
         ],
-      })
+      }),
+      isRTL
     )
   );
   const shareUrl =
@@ -268,14 +269,15 @@ export default function BlogPost() {
               prose-headings:font-serif prose-h1:text-4xl prose-h2:text-3xl prose-h3:text-2xl prose-h4:text-xl
               prose-h2:font-serif
               prose-headings:mt-8 prose-headings:mb-3
-              prose-p:text-base prose-p:leading-8 prose-p:mt-3 prose-p:mb-5
+              prose-p:text-base prose-p:leading-8 prose-p:mt-3 prose-p:mb-5 prose-p:text-justify
               prose-li:leading-8 prose-li:mt-2 prose-li:mb-2
+              prose-th:font-poppins prose-th:font-semibold
               prose-img:rounded-2xl prose-img:shadow-md prose-img:border prose-img:border-border prose-img:my-6
               prose-blockquote:border-l-4 prose-blockquote:border-primary/50 prose-blockquote:bg-muted/30 prose-blockquote:px-4 prose-blockquote:py-3 prose-blockquote:rounded-lg prose-blockquote:my-6
               prose-ul:list-disc prose-ol:list-decimal prose-ul:pl-6 prose-ol:pl-6 prose-ul:my-4 prose-ol:my-4
               prose-table:shadow-sm prose-table:border prose-td:border prose-th:border prose-table:my-6
               prose-a:text-primary hover:prose-a:text-primary/80
-              ${isRTL ? "rtl prose-headings:font-serif" : ""}`}
+              ${isRTL ? "rtl prose-headings:font-serif prose-th:font-vazir" : ""}`}
             dangerouslySetInnerHTML={{ __html: sanitizedContent }}
           />
           <div className="mt-16 pt-8 border-t border-border">

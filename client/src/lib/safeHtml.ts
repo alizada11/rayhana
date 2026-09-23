@@ -59,18 +59,29 @@ export function addHeadingFont(html: string) {
   return doc.body?.innerHTML || "";
 }
 
-export function allowBlogTables(html: string) {
+export function allowBlogTables(html: string, isRTL = false) {
   if (typeof DOMParser === "undefined") return html || "";
 
   const doc = new DOMParser().parseFromString(html || "", "text/html");
   doc.body?.querySelectorAll("table").forEach(table => {
-    table.classList.add("w-full", "border-collapse", "my-6");
+    table.classList.add(
+      "w-full",
+      "border-collapse",
+      "my-6",
+      isRTL ? "font-vazir" : "font-poppins"
+    );
   });
   doc.body?.querySelectorAll("th").forEach(cell => {
-    cell.classList.add("border", "px-3", "py-2", "text-left", "font-semibold");
+    cell.classList.add(
+      "border",
+      "px-3",
+      "py-2",
+      "font-semibold",
+      isRTL ? "text-right" : "text-left"
+    );
   });
   doc.body?.querySelectorAll("td").forEach(cell => {
-    cell.classList.add("border", "px-3", "py-2");
+    cell.classList.add("border", "px-3", "py-2", isRTL ? "text-right" : "text-left");
   });
   return doc.body?.innerHTML || "";
 }

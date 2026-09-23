@@ -22,6 +22,24 @@ interface CommentsProps {
   postId: string;
 }
 
+function CommentBody({
+  content,
+  className,
+}: {
+  content?: string;
+  className: string;
+}) {
+  const paragraphs = (content ?? "").split(/\r?\n+/).filter(Boolean);
+
+  return (
+    <div className={`space-y-3 ${className}`}>
+      {paragraphs.map((paragraph, index) => (
+        <p key={index}>{paragraph}</p>
+      ))}
+    </div>
+  );
+}
+
 export default function Comments({ postId }: CommentsProps) {
   const { t, i18n } = useTranslation();
   const isRTL = ["fa", "ps"].includes(i18n.language);
@@ -343,9 +361,10 @@ export default function Comments({ postId }: CommentsProps) {
                             </div>
                           </div>
                         ) : (
-                          <p className="text-sm text-muted-foreground leading-relaxed">
-                            {comment.content}
-                          </p>
+                          <CommentBody
+                            content={comment.content}
+                            className="text-sm text-muted-foreground leading-relaxed"
+                          />
                         )}
 
                         <div className="flex flex-col gap-2">
@@ -442,9 +461,10 @@ export default function Comments({ postId }: CommentsProps) {
                                     : ""}
                                 </div>
                               </div>
-                              <p className="text-sm text-foreground/90 leading-6">
-                                {child.content}
-                              </p>
+                              <CommentBody
+                                content={child.content}
+                                className="text-sm text-foreground/90 leading-6"
+                              />
                             </div>
                           ))}
                         </div>
