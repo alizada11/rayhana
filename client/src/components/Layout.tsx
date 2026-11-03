@@ -1,7 +1,7 @@
 import { ReactNode, useMemo } from "react";
 import { useTranslation } from "react-i18next";
 import { Link, useLocation, useSearch } from "wouter";
-import { Goal, Menu, X, Globe, Moon, Sun } from "lucide-react";
+import { Goal, Menu, X, Globe, Moon, Sun, ArrowRight } from "lucide-react";
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { useContent } from "@/hooks/useContent";
@@ -11,6 +11,7 @@ import i18nInstance from "@/lib/i18n";
 import {
   type SupportedLocale,
   normalizeLocale,
+  stripLocaleFromPath,
   withLocalePath,
 } from "@/lib/locales";
 
@@ -26,6 +27,7 @@ export default function Layout({ children }: LayoutProps) {
   const [location, navigate] = useLocation();
   const search = useSearch();
   const isHome = location === "/";
+  const isBlackFriday = stripLocaleFromPath(location).path === "/black-friday";
   const { data: settingsContent } = useContent("settings");
   const [footerLogoBroken, setFooterLogoBroken] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -235,6 +237,11 @@ gtag('config', '${gaMeasurementId}');`;
     return label?.[currentLang] || label?.en || "";
   };
   const worldCupHref = `~${withLocalePath("/world-cup-prediction", currentLang)}`;
+  const blackFridayBanner = {
+    en: { message: "Black Friday · Up to 20% off", link: "Shop now" },
+    fa: { message: "جمعه سیاه · تا ۲۰٪ تخفیف", link: "مشاهده پیشنهاد" },
+    ps: { message: "توره جمعه · تر ۲۰٪ تخفیف", link: "وړاندیز وګورئ" },
+  }[currentLang];
 
   return (
     <div
@@ -243,16 +250,48 @@ gtag('config', '${gaMeasurementId}');`;
         isRTL ? "font-vazir" : "font-poppins"
       )}
     >
+      <div
+        className={cn(
+          "relative z-[60] border-b",
+          isBlackFriday
+            ? "border-white/10 bg-[#171717] text-white"
+            : "border-primary/20 bg-primary text-primary-foreground"
+        )}
+      >
+        <div className="container flex h-10 items-center justify-center gap-3 px-3 text-xs font-medium sm:text-sm">
+          <span className="whitespace-nowrap">{blackFridayBanner.message}</span>
+          <Link
+            href="/black-friday"
+            className={cn(
+              "inline-flex shrink-0 items-center gap-1 whitespace-nowrap font-semibold transition-colors",
+              isBlackFriday
+                ? "text-[#ff6971] hover:text-white"
+                : "underline underline-offset-2 hover:opacity-80"
+            )}
+          >
+            {blackFridayBanner.link}
+            <ArrowRight
+              aria-hidden="true"
+              className={cn("h-3.5 w-3.5", isRTL && "rotate-180")}
+            />
+          </Link>
+        </div>
+      </div>
+
       {/* Header */}
       <header
         className={cn(
-          isHome && !isScrolled
-            ? "absolute top-0 translate-y-2"
+          isBlackFriday
+            ? "sticky top-0 translate-y-0 delay-150"
+            : isHome && !isScrolled
+            ? "absolute top-10 translate-y-2"
             : "sticky top-0 translate-y-0 delay-150",
           "z-50 w-full transition-[transform,background-color,border-color,box-shadow] duration-300 ease-out will-change-transform",
-          isHome && !isScrolled
-            ? "bg-transparent border-b-transparent shadow-none"
-            : "border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/50 shadow-sm"
+          isBlackFriday
+            ? "border-b border-white/10 bg-[#0d0d0d]/90 text-[#f5efe0] shadow-sm backdrop-blur-md"
+            : isHome && !isScrolled
+              ? "bg-transparent border-b-transparent shadow-none"
+              : "border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/50 shadow-sm"
         )}
       >
         <div className="container flex h-16 items-center justify-between">
@@ -261,7 +300,11 @@ gtag('config', '${gaMeasurementId}');`;
             href="/"
             className={cn(
               "flex items-center gap-2 font-serif text-2xl font-bold",
-              isHome && !isScrolled ? "text-white" : "text-primary"
+              isBlackFriday
+                ? "text-[#f5efe0]"
+                : isHome && !isScrolled
+                  ? "text-white"
+                  : "text-primary"
             )}
           >
             {headerLogoUrl ? (
@@ -292,13 +335,17 @@ gtag('config', '${gaMeasurementId}');`;
                 href={item.href}
                 className={cn(
                   "text-sm font-medium transition-colors",
-                  isHome && !isScrolled
+                  isBlackFriday
+                    ? "text-[#f5efe0] hover:text-white"
+                    : isHome && !isScrolled
                     ? "text-white hover:text-white/80"
                     : "text-foreground hover:text-primary",
                   location === item.href &&
-                    (isHome && !isScrolled
-                      ? "text-white font-bold"
-                      : "text-primary font-bold")
+                    (isBlackFriday
+                      ? "text-primary font-bold"
+                      : isHome && !isScrolled
+                        ? "text-white font-bold"
+                        : "text-primary font-bold")
                 )}
               >
                 {getLocalizedLabel(item.label)}
@@ -315,7 +362,9 @@ gtag('config', '${gaMeasurementId}');`;
                 title="Change Language"
                 className={cn(
                   "h-10 min-w-10 gap-1.5 rounded-full border border-[#d5d2ca] px-2.5",
-                  isHome && !isScrolled
+                  isBlackFriday
+                    ? "border-white/20 text-[#f5efe0] hover:bg-white/10 hover:text-white"
+                    : isHome && !isScrolled
                     ? "text-white hover:text-white/90 hover:bg-white/15"
                     : "text-foreground hover:bg-muted/60"
                 )}
@@ -336,14 +385,20 @@ gtag('config', '${gaMeasurementId}');`;
 
               {showLangMenu && (
                 <div
-                  className={`absolute top-full ${isRTL ? "left-0" : "right-0"} mt-2 w-40 bg-card border rounded-lg shadow-lg py-2 z-50`}
+                  className={cn(
+                    `absolute top-full ${isRTL ? "left-0" : "right-0"} z-50 mt-2 w-40 rounded-lg border py-2 shadow-lg`,
+                    isBlackFriday
+                      ? "border-white/10 bg-[#171717] text-[#f5efe0]"
+                      : "bg-card"
+                  )}
                 >
                   {languages.map(lang => (
                     <button
                       key={lang.code}
                       onClick={() => changeLanguage(lang.code)}
                       className={cn(
-                        "w-full text-left px-4 py-2 text-sm hover:bg-muted transition-colors flex items-center justify-between",
+                        "flex w-full items-center justify-between px-4 py-2 text-left text-sm transition-colors",
+                        isBlackFriday ? "hover:bg-white/10" : "hover:bg-muted",
                         langCode === lang.code &&
                           "text-primary font-bold bg-primary/5"
                       )}
@@ -364,7 +419,9 @@ gtag('config', '${gaMeasurementId}');`;
               title="Toggle Theme"
               className={cn(
                 "h-10 w-10 rounded-full",
-                isHome && !isScrolled
+                  isBlackFriday
+                    ? "text-[#f5efe0] hover:bg-white/10 hover:text-white"
+                    : isHome && !isScrolled
                   ? "text-white hover:text-white/90 hover:bg-white/15"
                   : "text-foreground hover:bg-muted/60"
               )}
@@ -383,7 +440,9 @@ gtag('config', '${gaMeasurementId}');`;
               size="icon"
               className={cn(
                 "h-10 w-10 rounded-full md:hidden",
-                isHome && !isScrolled
+                isBlackFriday
+                  ? "text-[#f5efe0] hover:bg-white/10 hover:text-white"
+                  : isHome && !isScrolled
                   ? "text-white hover:text-white/90 hover:bg-white/15"
                   : "text-foreground hover:bg-muted/60"
               )}
@@ -402,17 +461,29 @@ gtag('config', '${gaMeasurementId}');`;
 
         {/* Mobile Navigation */}
         {isMenuOpen && (
-          <div className="md:hidden border-t bg-background">
+          <div
+            className={cn(
+              "border-t md:hidden",
+              isBlackFriday
+                ? "border-white/10 bg-[#171717]"
+                : "bg-background"
+            )}
+          >
             <div className="container py-4 flex flex-col gap-4">
               {navItems.map(item => (
                 <Link
                   key={item.href}
                   href={item.href}
                   className={cn(
-                    "text-sm font-medium transition-colors hover:text-primary p-2 rounded-md hover:bg-muted",
+                    "rounded-md p-2 text-sm font-medium transition-colors hover:text-primary",
+                    isBlackFriday ? "hover:bg-white/10" : "hover:bg-muted",
                     location === item.href
-                      ? "text-primary bg-muted"
-                      : "text-foreground"
+                      ? isBlackFriday
+                        ? "bg-white/10 text-primary"
+                        : "bg-muted text-primary"
+                      : isBlackFriday
+                        ? "text-[#f5efe0]"
+                        : "text-foreground"
                   )}
                   onClick={() => setIsMenuOpen(false)}
                 >
@@ -428,7 +499,14 @@ gtag('config', '${gaMeasurementId}');`;
       <main className="flex-1">{children}</main>
 
       {/* Footer */}
-      <footer className="border-t bg-muted/60 site-footer">
+      <footer
+        className={cn(
+          "border-t site-footer",
+          isBlackFriday
+            ? "border-white/10 bg-[#0d0d0d] text-[#f5efe0]"
+            : "bg-muted/60"
+        )}
+      >
         <div className="container py-8 md:py-12">
           <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
             <div className="md:col-span-2">
@@ -448,20 +526,25 @@ gtag('config', '${gaMeasurementId}');`;
                   <span>RAYHANA</span>
                 )}
               </h3>
-              <p className="text-foreground/80 max-w-xs">
+              <p
+                className={cn(
+                  "max-w-xs",
+                  isBlackFriday ? "text-white/70" : "text-foreground/80"
+                )}
+              >
                 {t("hero.subtitle")}
               </p>
             </div>
             <div>
-              <h4 className="font-serif font-bold mb-4">
+              <h4 className={cn("mb-4 font-serif font-bold", isBlackFriday && "text-[#f5efe0]")}>
                 {t("nav.quickLinks")}
               </h4>
-              <ul className="space-y-2 text-sm text-foreground">
+              <ul className={cn("space-y-2 text-sm", isBlackFriday ? "text-white/80" : "text-foreground")}>
                 {footerLinks.map((item: any, idx: number) => (
                   <li key={`${item.href}-${idx}`}>
                     <Link
                       href={item.href}
-                      className="hover:text-primary transition-colors"
+                      className="transition-colors hover:text-primary"
                     >
                       {getLocalizedLabel(item.label)}
                     </Link>
@@ -470,11 +553,11 @@ gtag('config', '${gaMeasurementId}');`;
               </ul>
             </div>
             <div className={isRTL ? "text-right" : "text-left"}>
-              <h4 className="font-serif font-bold mb-4">
+              <h4 className={cn("mb-4 font-serif font-bold", isBlackFriday && "text-[#f5efe0]")}>
                 {t("contact.title")}
               </h4>
 
-              <ul className="space-y-2 text-sm text-foreground">
+              <ul className={cn("space-y-2 text-sm", isBlackFriday ? "text-white/80" : "text-foreground")}>
                 <li>{contactInfo.email}</li>
 
                 {/* Phone: LTR content, RTL position */}
@@ -500,7 +583,14 @@ gtag('config', '${gaMeasurementId}');`;
               </ul>
             </div>
           </div>
-          <div className="border-t mt-8 pt-8 text-center text-sm text-foreground/80">
+          <div
+            className={cn(
+              "mt-8 border-t pt-8 text-center text-sm",
+              isBlackFriday
+                ? "border-white/10 text-white/70"
+                : "text-foreground/80"
+            )}
+          >
             {t("footer.rights")}
           </div>
         </div>

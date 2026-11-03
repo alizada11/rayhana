@@ -1,4 +1,5 @@
 import { Suspense, lazy } from "react";
+import BlackFridayPage from "./pages/BlackFridayPage";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { Redirect, Route, Router as WouterRouter, Switch } from "wouter";
 import { useEffect } from "react";
@@ -32,6 +33,7 @@ const GuestDashboard = lazy(() => import("./pages/GuestDashboard"));
 const Gallery = lazy(() => import("./pages/Gallery"));
 const WorldCupPrediction = lazy(() => import("./pages/WorldCupPrediction"));
 const WorldCupTerms = lazy(() => import("./pages/WorldCupTerms"));
+
 const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const VerifyEmail = lazy(() => import("./pages/VerifyEmail"));
 const Profile = lazy(() => import("./pages/Profile"));
@@ -53,6 +55,12 @@ function PublicRoutes() {
     <Suspense fallback={<FullPageLoader />}>
       <Switch>
         {/* Public site */}
+        <Route path="/black-friday">
+          <Layout>
+            <BlackFridayPage />
+          </Layout>
+        </Route>
+
         <Route path="/">
           <Layout>
             <Home />
