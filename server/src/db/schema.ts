@@ -1,6 +1,7 @@
 // import { pgTable, text,jsonb, timestamp, uuid } from "drizzle-orm/pg-core";
 import {
   boolean,
+  check,
   integer,
   jsonb,
   pgTable,
@@ -11,7 +12,7 @@ import {
   uuid,
   foreignKey,
 } from "drizzle-orm/pg-core";
-import { relations } from "drizzle-orm";
+import { relations, sql } from "drizzle-orm";
 
 export const userRoleEnum = pgEnum("user_role", ["admin", "guest"]);
 export const galleryStatusEnum = pgEnum("gallery_status", [
@@ -281,6 +282,43 @@ export const worldCupFinalPredictions = pgTable("world_cup_final_predictions", {
     table.predictionId
   ),
 }));
+
+export const anonymousCommunityResponses = pgTable(
+  "anonymous_community_responses",
+  {
+    id: uuid("id").primaryKey(),
+    memory: text("memory").notNull(),
+    safety: boolean("safety").notNull(),
+    recipe: text("recipe").notNull(),
+    vote: text("vote").notNull(),
+    pattern: text("pattern"),
+    submittedAt: timestamp("submitted_at", { mode: "date" })
+      .notNull()
+      .defaultNow(),
+  },
+  table => ({
+    memoryCheck: check(
+      "anonymous_community_responses_memory_check",
+      sql`${table.memory} in ('qabili', 'rice', 'other', 'skip')`
+    ),
+    safetyCheck: check(
+      "anonymous_community_responses_safety_check",
+      sql`${table.safety} = true`
+    ),
+    recipeCheck: check(
+      "anonymous_community_responses_recipe_check",
+      sql`${table.recipe} in ('qabili', 'rice', 'suggestion')`
+    ),
+    voteCheck: check(
+      "anonymous_community_responses_vote_check",
+      sql`${table.vote} in ('yes', 'no', 'unsure')`
+    ),
+    patternCheck: check(
+      "anonymous_community_responses_pattern_check",
+      sql`${table.pattern} is null or ${table.pattern} in ('simple', 'carpet')`
+    ),
+  })
+);
 
 export const worldCupLotteryDraws = pgTable("world_cup_lottery_draws", {
   id: uuid("id").defaultRandom().primaryKey(),

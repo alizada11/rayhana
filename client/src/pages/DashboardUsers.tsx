@@ -21,6 +21,7 @@ import {
 import { useConfirm } from "@/components/ConfirmProvider";
 import { toast } from "sonner";
 import {
+  Download,
   Edit,
   Loader2,
   Search,
@@ -30,7 +31,8 @@ import {
   Trash2,
   User2,
 } from "lucide-react";
-import type { AdminUser, UserRole } from "@/lib/api";
+import { getUsersAdmin, type AdminUser, type UserRole } from "@/lib/api";
+import { downloadCsv } from "@/lib/csv";
 
 type EditForm = {
   name: string;
@@ -61,6 +63,7 @@ export default function DashboardUsers() {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [roleFilter, setRoleFilter] = useState<"all" | UserRole>("all");
+  const [isExporting, setIsExporting] = useState(false);
 
   const {
     data,
@@ -85,6 +88,35 @@ export default function DashboardUsers() {
 
   const updateMutation = useUpdateUserAdmin();
   const deleteMutation = useDeleteUserAdmin();
+
+  const exportUsers = async () => {
+    setIsExporting(true);
+    try {
+      const rows: AdminUser[] = [];
+      let cursor: string | null = null;
+      do {
+        const page = await getUsersAdmin({
+          search: debouncedSearch || undefined,
+          role: roleFilter,
+          cursor,
+          limit: 100,
+        });
+        rows.push(...page.items);
+        cursor = page.nextCursor;
+      } while (cursor);
+
+      downloadCsv(
+        `users-${new Date().toISOString().slice(0, 10)}.csv`,
+        ["Name", "Email", "Role", "Gallery submissions", "Gallery likes", "Blog posts", "Blog comments", "Products", "Media files", "Created at"],
+        rows.map(user => [user.name || "Unnamed user", user.email, user.role, user.stats.gallerySubmissions, user.stats.galleryLikes, user.stats.blogPosts, user.stats.blogComments, user.stats.products, user.stats.mediaAssets, user.createdAt])
+      );
+      toast.success(`Exported ${rows.length} user${rows.length === 1 ? "" : "s"}`);
+    } catch {
+      toast.error("Could not export users");
+    } finally {
+      setIsExporting(false);
+    }
+  };
 
   const [editingUser, setEditingUser] = useState<AdminUser | null>(null);
   const [editOpen, setEditOpen] = useState(false);
@@ -202,6 +234,10 @@ This cannot be undone.`;
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <Button variant="outline" onClick={exportUsers} disabled={isExporting}>
+            {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+            Download CSV
+          </Button>
           <Button
             variant="outline"
             onClick={() => refetch()}

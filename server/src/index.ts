@@ -32,6 +32,7 @@ import dashboardRoutes from "./routes/dashboardRoutes";
 import authRoutes from "./routes/authRoutes";
 import homepageRoutes from "./routes/homepageRoutes";
 import worldCupCampaignRoutes from "./routes/worldCupCampaignRoutes";
+import communityRoutes from "./routes/communityRoutes";
 import { db } from "./db";
 import { blogPosts } from "./db/schema";
 import { desc, eq } from "drizzle-orm";
@@ -164,6 +165,7 @@ app.use("/api/contact", contactRoutes);
 app.use("/api/newsletter", newsletterRoutes);
 app.use("/api/pre-launch-reservations", preLaunchReservationRoutes);
 app.use("/api/world-cup-campaign", worldCupCampaignRoutes);
+app.use("/api/community", communityRoutes);
 app.use("/api/dashboard", dashboardRoutes);
 app.use("/api/auth", authRoutes);
 

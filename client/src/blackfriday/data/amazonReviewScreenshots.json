@@ -1,0 +1,57 @@
+[
+  {
+    "id": "screenshot-fereydun-2026-10-10",
+    "displayName": "Fereydun Mohammadi",
+    "reviewedAt": "2026-10-10",
+    "originalTitle": "Very satisfied",
+    "originalText": "Yes I love it and very easy to cook with",
+    "excerpt": "Yes I love it and very easy to cook with",
+    "variant": "Color: Red | Size: 7.4 Quarts",
+    "score": 5,
+    "evidenceFile": "amazon_us_reviews_1.png"
+  },
+  {
+    "id": "screenshot-paul-2026-09-24",
+    "displayName": "Paul S",
+    "reviewedAt": "2026-09-24",
+    "originalTitle": "Very Good Quality Pot/Kazan!!!",
+    "originalText": "Parboiled rice Plov. Amazing quality Pilaf Pot.",
+    "excerpt": "Parboiled rice Plov. Amazing quality Pilaf Pot.",
+    "variant": "Color: Gray | Size: 7.4 Quarts",
+    "score": 5,
+    "evidenceFile": "amazon_us_reviews_1.png"
+  },
+  {
+    "id": "screenshot-najafi-2026-06-01",
+    "displayName": "Mohammad javad Najafi",
+    "reviewedAt": "2026-06-01",
+    "originalTitle": "Wide Heavy Duty Pot for Everyday Cooking",
+    "originalText": "This non-stick pot is well made and feels durable. The non-stick surface works very well and makes cooking and cleaning easy.\n\nIt distributes heat evenly, so food cooks consistently without hot spots. The handles are sturdy and comfortable, and the pot feels stable during use.\n\nOverall, it’s great value for everyday cooking and a reliable kitchen item.",
+    "excerpt": "This non-stick pot is well made and feels durable. The non-stick surface works very well and makes cooking and cleaning easy.",
+    "variant": "Color: Red | Size: 12.7 Quarts",
+    "score": 5,
+    "evidenceFile": "amazon_us_reviews_2.png"
+  },
+  {
+    "id": "screenshot-hamid-2026-06-18",
+    "displayName": "hamid",
+    "reviewedAt": "2026-06-18",
+    "originalTitle": "Beautiful colors",
+    "originalText": "Really good product, I am totally satisfied.\n\nFrom long time I am looking pot for qabuli even little bit expensive for shipping charges to Paris.",
+    "excerpt": "Really good product, I am totally satisfied.\n\nFrom long time I am looking pot for qabuli even little bit expensive for shipping charges to Paris.",
+    "variant": "Color: Red | Size: 9.5 Quarts",
+    "score": 5,
+    "evidenceFile": "amazon_us_reviews_2.png"
+  },
+  {
+    "id": "screenshot-abdullah-2026-03-19",
+    "displayName": "Abdullah",
+    "reviewedAt": "2026-03-19",
+    "originalTitle": "Great Quality & great packaging for safe delivery",
+    "originalText": "This pot has truly exceeded my expectations! I'm particularly struck by its robust construction and the exceptionally effective non-stick surface, which makes cooking and cleanup an absolute breeze. Also great packaging that insures no damage on delivery.\n\nOverall, it is a high-quality, durable pot that worth the price. Highly recommended for anyone who enjoys traditional cooking!",
+    "excerpt": "Also great packaging that insures no damage on delivery.",
+    "variant": "Color: Red | Size: 7.4 Quarts",
+    "score": 5,
+    "evidenceFile": "amazon_us_reviews_2.png"
+  }
+]

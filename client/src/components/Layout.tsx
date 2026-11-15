@@ -33,6 +33,7 @@ export default function Layout({ children }: LayoutProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isScrolled, setIsScrolled] = useState(!isHome);
   const { theme, setTheme } = useTheme();
+  const isBlackFridayDark = isBlackFriday && theme === "dark";
   const langCode = normalizeLocale(i18n.language || i18n.resolvedLanguage);
   const isRTL = ["fa", "ps"].includes(langCode);
   const currentLang = langCode;
@@ -253,9 +254,11 @@ gtag('config', '${gaMeasurementId}');`;
       <div
         className={cn(
           "relative z-[60] border-b",
-          isBlackFriday
+          isBlackFridayDark
             ? "border-white/10 bg-[#171717] text-white"
-            : "border-primary/20 bg-primary text-primary-foreground"
+            : isBlackFriday
+              ? "border-[#de1020]/15 bg-[#fff8f5] text-foreground"
+              : "border-primary/20 bg-primary text-primary-foreground"
         )}
       >
         <div className="container flex h-10 items-center justify-center gap-3 px-3 text-xs font-medium sm:text-sm">
@@ -264,8 +267,10 @@ gtag('config', '${gaMeasurementId}');`;
             href="/black-friday"
             className={cn(
               "inline-flex shrink-0 items-center gap-1 whitespace-nowrap font-semibold transition-colors",
-              isBlackFriday
+              isBlackFridayDark
                 ? "text-[#ff6971] hover:text-white"
+                : isBlackFriday
+                  ? "text-primary hover:opacity-80"
                 : "underline underline-offset-2 hover:opacity-80"
             )}
           >
@@ -287,8 +292,10 @@ gtag('config', '${gaMeasurementId}');`;
             ? "absolute top-10 translate-y-2"
             : "sticky top-0 translate-y-0 delay-150",
           "z-50 w-full transition-[transform,background-color,border-color,box-shadow] duration-300 ease-out will-change-transform",
-          isBlackFriday
+          isBlackFridayDark
             ? "border-b border-white/10 bg-[#0d0d0d]/90 text-[#f5efe0] shadow-sm backdrop-blur-md"
+            : isBlackFriday
+              ? "border-b border-border bg-background/90 text-foreground shadow-sm backdrop-blur-md"
             : isHome && !isScrolled
               ? "bg-transparent border-b-transparent shadow-none"
               : "border-b bg-background/70 backdrop-blur-md supports-[backdrop-filter]:bg-background/50 shadow-sm"
@@ -300,7 +307,7 @@ gtag('config', '${gaMeasurementId}');`;
             href="/"
             className={cn(
               "flex items-center gap-2 font-serif text-2xl font-bold",
-              isBlackFriday
+              isBlackFridayDark
                 ? "text-[#f5efe0]"
                 : isHome && !isScrolled
                   ? "text-white"
@@ -335,8 +342,10 @@ gtag('config', '${gaMeasurementId}');`;
                 href={item.href}
                 className={cn(
                   "text-sm font-medium transition-colors",
-                  isBlackFriday
+                  isBlackFridayDark
                     ? "text-[#f5efe0] hover:text-white"
+                    : isBlackFriday
+                      ? "text-foreground hover:text-primary"
                     : isHome && !isScrolled
                     ? "text-white hover:text-white/80"
                     : "text-foreground hover:text-primary",
@@ -362,8 +371,10 @@ gtag('config', '${gaMeasurementId}');`;
                 title="Change Language"
                 className={cn(
                   "h-10 min-w-10 gap-1.5 rounded-full border border-[#d5d2ca] px-2.5",
-                  isBlackFriday
+                  isBlackFridayDark
                     ? "border-white/20 text-[#f5efe0] hover:bg-white/10 hover:text-white"
+                    : isBlackFriday
+                      ? "border-border text-foreground hover:bg-muted/60"
                     : isHome && !isScrolled
                     ? "text-white hover:text-white/90 hover:bg-white/15"
                     : "text-foreground hover:bg-muted/60"
@@ -387,8 +398,10 @@ gtag('config', '${gaMeasurementId}');`;
                 <div
                   className={cn(
                     `absolute top-full ${isRTL ? "left-0" : "right-0"} z-50 mt-2 w-40 rounded-lg border py-2 shadow-lg`,
-                    isBlackFriday
+                    isBlackFridayDark
                       ? "border-white/10 bg-[#171717] text-[#f5efe0]"
+                      : isBlackFriday
+                        ? "border-border bg-card text-foreground"
                       : "bg-card"
                   )}
                 >
@@ -398,7 +411,7 @@ gtag('config', '${gaMeasurementId}');`;
                       onClick={() => changeLanguage(lang.code)}
                       className={cn(
                         "flex w-full items-center justify-between px-4 py-2 text-left text-sm transition-colors",
-                        isBlackFriday ? "hover:bg-white/10" : "hover:bg-muted",
+                        isBlackFridayDark ? "hover:bg-white/10" : "hover:bg-muted",
                         langCode === lang.code &&
                           "text-primary font-bold bg-primary/5"
                       )}
@@ -419,8 +432,10 @@ gtag('config', '${gaMeasurementId}');`;
               title="Toggle Theme"
               className={cn(
                 "h-10 w-10 rounded-full",
-                  isBlackFriday
+                  isBlackFridayDark
                     ? "text-[#f5efe0] hover:bg-white/10 hover:text-white"
+                    : isBlackFriday
+                      ? "text-foreground hover:bg-muted/60"
                     : isHome && !isScrolled
                   ? "text-white hover:text-white/90 hover:bg-white/15"
                   : "text-foreground hover:bg-muted/60"
@@ -440,8 +455,10 @@ gtag('config', '${gaMeasurementId}');`;
               size="icon"
               className={cn(
                 "h-10 w-10 rounded-full md:hidden",
-                isBlackFriday
+                isBlackFridayDark
                   ? "text-[#f5efe0] hover:bg-white/10 hover:text-white"
+                  : isBlackFriday
+                    ? "text-foreground hover:bg-muted/60"
                   : isHome && !isScrolled
                   ? "text-white hover:text-white/90 hover:bg-white/15"
                   : "text-foreground hover:bg-muted/60"
@@ -464,8 +481,10 @@ gtag('config', '${gaMeasurementId}');`;
           <div
             className={cn(
               "border-t md:hidden",
-              isBlackFriday
+              isBlackFridayDark
                 ? "border-white/10 bg-[#171717]"
+                : isBlackFriday
+                  ? "border-border bg-background"
                 : "bg-background"
             )}
           >
@@ -476,13 +495,15 @@ gtag('config', '${gaMeasurementId}');`;
                   href={item.href}
                   className={cn(
                     "rounded-md p-2 text-sm font-medium transition-colors hover:text-primary",
-                    isBlackFriday ? "hover:bg-white/10" : "hover:bg-muted",
+                    isBlackFridayDark ? "hover:bg-white/10" : "hover:bg-muted",
                     location === item.href
-                      ? isBlackFriday
+                      ? isBlackFridayDark
                         ? "bg-white/10 text-primary"
                         : "bg-muted text-primary"
                       : isBlackFriday
-                        ? "text-[#f5efe0]"
+                        ? isBlackFridayDark
+                          ? "text-[#f5efe0]"
+                          : "text-foreground"
                         : "text-foreground"
                   )}
                   onClick={() => setIsMenuOpen(false)}
@@ -502,8 +523,10 @@ gtag('config', '${gaMeasurementId}');`;
       <footer
         className={cn(
           "border-t site-footer",
-          isBlackFriday
+          isBlackFridayDark
             ? "border-white/10 bg-[#0d0d0d] text-[#f5efe0]"
+            : isBlackFriday
+              ? "border-border bg-muted/60 text-foreground"
             : "bg-muted/60"
         )}
       >
@@ -529,17 +552,17 @@ gtag('config', '${gaMeasurementId}');`;
               <p
                 className={cn(
                   "max-w-xs",
-                  isBlackFriday ? "text-white/70" : "text-foreground/80"
+                  isBlackFridayDark ? "text-white/70" : "text-foreground/80"
                 )}
               >
                 {t("hero.subtitle")}
               </p>
             </div>
             <div>
-              <h4 className={cn("mb-4 font-serif font-bold", isBlackFriday && "text-[#f5efe0]")}>
+              <h4 className={cn("mb-4 font-serif font-bold", isBlackFridayDark && "text-[#f5efe0]")}>
                 {t("nav.quickLinks")}
               </h4>
-              <ul className={cn("space-y-2 text-sm", isBlackFriday ? "text-white/80" : "text-foreground")}>
+              <ul className={cn("space-y-2 text-sm", isBlackFridayDark ? "text-white/80" : "text-foreground")}>
                 {footerLinks.map((item: any, idx: number) => (
                   <li key={`${item.href}-${idx}`}>
                     <Link
@@ -553,11 +576,11 @@ gtag('config', '${gaMeasurementId}');`;
               </ul>
             </div>
             <div className={isRTL ? "text-right" : "text-left"}>
-              <h4 className={cn("mb-4 font-serif font-bold", isBlackFriday && "text-[#f5efe0]")}>
+              <h4 className={cn("mb-4 font-serif font-bold", isBlackFridayDark && "text-[#f5efe0]")}>
                 {t("contact.title")}
               </h4>
 
-              <ul className={cn("space-y-2 text-sm", isBlackFriday ? "text-white/80" : "text-foreground")}>
+              <ul className={cn("space-y-2 text-sm", isBlackFridayDark ? "text-white/80" : "text-foreground")}>
                 <li>{contactInfo.email}</li>
 
                 {/* Phone: LTR content, RTL position */}
@@ -586,7 +609,7 @@ gtag('config', '${gaMeasurementId}');`;
           <div
             className={cn(
               "mt-8 border-t pt-8 text-center text-sm",
-              isBlackFriday
+              isBlackFridayDark
                 ? "border-white/10 text-white/70"
                 : "text-foreground/80"
             )}

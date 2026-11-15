@@ -84,10 +84,11 @@ export default function DashboardContactMessages() {
           {messages.map(msg => (
             <div
               key={msg.id}
-              className="relative border rounded-xl p-4 bg-card shadow-sm"
+              dir={isRTL ? "rtl" : "ltr"}
+              className="border rounded-xl p-4 bg-card shadow-sm"
             >
               <div className="flex items-start justify-between gap-4">
-                <div className="space-y-2">
+                <div className="min-w-0 flex-1 space-y-2">
                   <div className="flex items-center gap-3">
                     <h3 className="font-serif text-lg font-semibold text-foreground">
                       {msg.name}
@@ -116,11 +117,9 @@ export default function DashboardContactMessages() {
                     {format(new Date(msg.createdAt), "MMM d, yyyy h:mm a")}
                   </div>
                 </div>
-                <div
-                  className={`absolute ${isRTL ? "left-3" : "right-3"} top-3 flex flex-col gap-2`}
-                >
+                <div className="flex shrink-0 items-center gap-2">
                   <Button
-                    size="sm"
+                    size="icon"
                     variant={msg.status === "resolved" ? "outline" : "default"}
                     aria-label={
                       msg.status === "resolved"
@@ -155,7 +154,7 @@ export default function DashboardContactMessages() {
                     )}
                   </Button>
                   <Button
-                    size="sm"
+                    size="icon"
                     variant="destructive"
                     aria-label="Delete message"
                     title="Delete message"

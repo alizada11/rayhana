@@ -29,8 +29,10 @@ import type {
   PreLaunchReservationPayload,
   PreLaunchReservationStatus,
 } from "@/lib/api";
+import { getPreLaunchReservationsAdmin } from "@/lib/api";
+import { downloadCsv } from "@/lib/csv";
 import { format } from "date-fns";
-import { Edit, Loader2, Plus, RefreshCcw, Search, Trash2 } from "lucide-react";
+import { Download, Edit, Loader2, Plus, RefreshCcw, Search, Trash2 } from "lucide-react";
 import { useEffect, useMemo, useState } from "react";
 import { toast } from "sonner";
 
@@ -77,6 +79,7 @@ export default function DashboardPreLaunchReservations() {
   const [editing, setEditing] = useState<PreLaunchReservation | null>(null);
   const [form, setForm] = useState<FormState>(emptyForm);
   const [directActionHandled, setDirectActionHandled] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
 
   const confirm = useConfirm();
   const productsQuery = useProducts();
@@ -104,6 +107,37 @@ export default function DashboardPreLaunchReservations() {
     if (typeof title === "string") return title;
     const localized = title as Record<string, string>;
     return localized.en || Object.values(localized)[0] || "Rayhana product";
+  };
+
+  const exportReservations = async () => {
+    setIsExporting(true);
+    try {
+      const rows: PreLaunchReservation[] = [];
+      let cursor: string | null = null;
+      do {
+        const page = await getPreLaunchReservationsAdmin({
+          product: filters.product || undefined,
+          region: filters.region || undefined,
+          status: filters.status,
+          search: filters.search.trim() || undefined,
+          cursor,
+          limit: 200,
+        });
+        rows.push(...page.items);
+        cursor = page.nextCursor;
+      } while (cursor);
+
+      downloadCsv(
+        `pre-launch-reservations-${new Date().toISOString().slice(0, 10)}.csv`,
+        ["Name", "Email", "WhatsApp", "Product", "Size", "Region", "Status", "Created at"],
+        rows.map(item => [item.fullName, item.email, item.whatsapp, localizeTitle(item.product?.title), item.productSize, item.region, item.status, item.createdAt])
+      );
+      toast.success(`Exported ${rows.length} reservation${rows.length === 1 ? "" : "s"}`);
+    } catch {
+      toast.error("Could not export reservations");
+    } finally {
+      setIsExporting(false);
+    }
   };
 
   useEffect(() => {
@@ -237,6 +271,10 @@ export default function DashboardPreLaunchReservations() {
           </p>
         </div>
         <div className="flex gap-2">
+          <Button variant="outline" onClick={exportReservations} disabled={isExporting}>
+            {isExporting ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : <Download className="mr-2 h-4 w-4" />}
+            Download CSV
+          </Button>
           <Button
             variant="outline"
             onClick={() => query.refetch()}

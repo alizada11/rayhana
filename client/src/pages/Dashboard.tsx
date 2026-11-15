@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   Mail,
   Users,
+  Utensils,
 } from "lucide-react";
 import { useDashboardStats } from "@/hooks/useDashboardStats";
 
@@ -16,6 +17,7 @@ export default function Dashboard() {
     { href: "/dashboard/newsletter", label: "Newsletter", icon: Mail },
     { href: "/dashboard/gallery", label: "Gallery", icon: LayoutDashboard },
     { href: "/dashboard/users", label: "Users", icon: Users },
+    { href: "/dashboard/rayhana-table", label: "Rayhana Table", icon: Utensils },
   ];
 
   const { data: stats, isLoading } = useDashboardStats();

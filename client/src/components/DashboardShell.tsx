@@ -13,6 +13,7 @@ import DashboardNewsletter from "@/pages/DashboardNewsletter";
 import DashboardUsers from "@/pages/DashboardUsers";
 import DashboardPreLaunchReservations from "@/pages/DashboardPreLaunchReservations";
 import DashboardWorldCupCampaign from "@/pages/DashboardWorldCupCampaign";
+import DashboardCommunityResponses from "@/pages/DashboardCommunityResponses";
 import { useAuth } from "@/lib/auth";
 import { useUserRole } from "@/hooks/useUserRole";
 import { useRef } from "react";
@@ -66,6 +67,10 @@ export default function DashboardShell() {
         <Route
           path="/dashboard/world-cup-campaign"
           component={DashboardWorldCupCampaign}
+        />
+        <Route
+          path="/dashboard/rayhana-table"
+          component={DashboardCommunityResponses}
         />
         <Route path="/dashboard/blogs" component={DashboardBlogs} />
         <Route path="/dashboard/comments" component={DashboardBlogComments} />
