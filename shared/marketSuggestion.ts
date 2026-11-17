@@ -1,4 +1,4 @@
-export type SuggestedMarket = "US" | "CA" | "AU" | "DE";
+export type SuggestedMarket = "US" | "CA" | "AU" | "DE" | "UK" | "AF";
 export type LocationSource = "edge" | "ip" | "timezone" | "unknown";
 export type MarketSuggestion = {
   countryCode: string | null;
@@ -67,6 +67,8 @@ export function marketForCountry(
   country: string | null | undefined
 ): SuggestedMarket | null {
   const code = country?.trim().toUpperCase();
+  if (code === "GB") return "UK";
+  if (code === "AF") return "AF";
   if (code === "CA") return "CA";
   if (code === "US" || code === "PR" || code === "VI" || code === "MX")
     return "US";
@@ -154,6 +156,7 @@ export function countryFromTimezone(
   if (timezone.startsWith("Australia/")) return "AU";
   if (timezone === "Pacific/Auckland" || timezone === "Pacific/Chatham")
     return "NZ";
+  if (timezone === "Asia/Kabul") return "AF";
   const europeanZones: Record<string, string> = {
     Berlin: "DE",
     Busingen: "DE",

@@ -4,7 +4,7 @@ const en = {
   eyebrow: "YOUR DISH. YOUR VOICE. OUR TABLE.",
   title: "Rayhana Table",
   intro:
-    "There is room for you here. Bring the food you love and the view that is yours: choose a dish for a gathering, take a useful kitchen tip with you and have your say on what might come next. Four little steps, at your own pace. A different opinion is just as welcome.",
+    "There is room for you here. Bring your favorite food and point of view to the table: choose a favorite dish for a gathering, take away a practical kitchen tip, and tell us what you think about the next idea. Four small steps, at your own pace and in your own way; a different opinion is just as welcome.",
   coverNote: "No account, purchase or photo needed.",
   join: "Take my place & save progress",
   browse: "Explore the four steps",
@@ -162,7 +162,7 @@ const fa: Copy = {
   eyebrow: "غذای شما، صدای شما، دسترخوان ما",
   title: "دسترخوان ریحانه",
   intro:
-    "اینجا برای شما هم جا هست. غذای دلخواه و نظر خودتان را به دسترخوان بیاورید: برای یک دورهمی غذا انتخاب کنید، نکته‌ای کاربردی برای آشپزخانه با خود ببرید و دربارهٔ ایدهٔ بعدی بگویید چه فکر می‌کنید. چهار قدم کوچک، با وقت و سلیقهٔ خودتان؛ نظر متفاوت هم به همان اندازه عزیز است.",
+    "اینجا برای شما هم جا هست. غذای دلخواه و نظر خودتان را به دسترخوان بیاورید: برای یک دورهمی، غذای محبوبتان را انتخاب کنید، نکته‌ای کاربردی برای آشپزخانه با خود ببرید و دربارهٔ ایدهٔ بعدی بگویید چه فکر می‌کنید. چهار قدم کوچک، با وقت و سلیقهٔ خودتان؛ نظر متفاوت هم به همان اندازه عزیز است.",
   coverNote: "بدون نیاز به حساب کاربری، خرید یا عکس.",
   join: "سهم می‌گیرم و پیشرفتم را ذخیره می‌کنم",
   browse: "دیدن چهار قدم",
@@ -299,7 +299,7 @@ const ps: Copy = {
   eyebrow: "ستاسو خواړه، ستاسو غږ، زموږ دسترخوان",
   title: "د ریحانې دسترخوان",
   intro:
-    "دلته ستاسو لپاره هم ځای شته. خپل د خوښې خواړه او خپل نظر دسترخوان ته راوړئ: د ګډې ډوډۍ خواړه وټاکئ، د پخلنځي یوه ګټوره لار له ځان سره یوسئ او د راتلونکې مفکورې په اړه خپله خبره وکړئ. څلور کوچني ګامونه، په خپل وخت او خوښه؛ بېل نظر هم همدومره د قدر وړ دی.",
+    "دلته ستاسو لپاره هم ځای شته. خپل د خوښې خواړه او نظر مو دسترخوان ته راوړئ: د یوې مېلمستیا لپاره خپل د خوښې خواړه وټاکئ، د پخلنځي یوه ګټوره لار درسره یوسئ او د بلې مفکورې په اړه خپل نظر راسره شریک کړئ. څلور واړه کوچني ګامونه، په خپل وخت او خوښه؛ بېل نظر هم همدومره د هرکلي وړ دی.",
   coverNote: "حساب، پېرود یا عکس ته اړتیا نشته.",
   join: "ګډون کوم او پرمختګ ساتم",
   browse: "څلور ګامونه وګورئ",

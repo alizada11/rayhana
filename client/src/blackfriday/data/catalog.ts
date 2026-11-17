@@ -1,6 +1,6 @@
 export type Language = "fa" | "ps" | "en";
 export type ProductId = "pot" | "mandoline";
-export type MarketId = "US" | "CA" | "AU" | "DE";
+export type MarketId = "US" | "CA" | "AU" | "DE" | "UK" | "AF";
 
 export const languages: {
   id: Language;
@@ -18,6 +18,7 @@ export const markets: {
   domain: string;
   currency: string;
   mark: string;
+  retailer: "amazon" | "shopino24";
 }[] = [
   {
     id: "US",
@@ -25,6 +26,7 @@ export const markets: {
     domain: "amazon.com",
     currency: "USD",
     mark: "US",
+    retailer: "amazon",
   },
   {
     id: "CA",
@@ -32,6 +34,7 @@ export const markets: {
     domain: "amazon.ca",
     currency: "CAD",
     mark: "CA",
+    retailer: "amazon",
   },
   {
     id: "AU",
@@ -39,6 +42,7 @@ export const markets: {
     domain: "amazon.com.au",
     currency: "AUD",
     mark: "AU",
+    retailer: "amazon",
   },
   {
     id: "DE",
@@ -46,6 +50,23 @@ export const markets: {
     domain: "amazon.de",
     currency: "EUR",
     mark: "DE",
+    retailer: "amazon",
+  },
+  {
+    id: "UK",
+    country: { fa: "بریتانیا", ps: "بریتانیا", en: "United Kingdom" },
+    domain: "amazon.co.uk",
+    currency: "GBP",
+    mark: "UK",
+    retailer: "amazon",
+  },
+  {
+    id: "AF",
+    country: { fa: "افغانستان", ps: "افغانستان", en: "Afghanistan" },
+    domain: "shopino24.com",
+    currency: "USD",
+    mark: "AF",
+    retailer: "shopino24",
   },
 ];
 
@@ -76,6 +97,14 @@ export const listings: Partial<
       url: "https://www.amazon.de/dp/B0GDWR2TND",
       verified: true,
     },
+    UK: {
+      url: "https://www.amazon.co.uk/dp/B0GDWXN2ZK",
+      verified: true,
+    },
+    AF: {
+      url: "https://shopino24.com/products/dyg-kably-ryhanh",
+      verified: true,
+    },
   },
 };
 
@@ -103,22 +132,22 @@ export function getPurchaseUrl(
 export const media = {
   logo: "/images/logo.png",
   potHero: "/images/rayhana-pot-cutout.webp",
-  potDetail: "/images/catalogue-red-pot.jpg",
+  potDetail: "/images/rayhana-pot-cutout.webp",
   offerPots: {
     1: {
-      src: "/images/black-friday-pot-single.jpg",
-      width: 2000,
-      height: 2000,
+      src: "/images/black-friday-pot-single-cutout.webp",
+      width: 1850,
+      height: 1275,
     },
     2: {
-      src: "/images/black-friday-pots-pair.webp",
-      width: 2048,
-      height: 1292,
+      src: "/images/black-friday-pots-pair-cutout.webp",
+      width: 1983,
+      height: 909,
     },
     3: {
-      src: "/images/black-friday-pots-trio.webp",
-      width: 2048,
-      height: 966,
+      src: "/images/black-friday-pots-trio-cutout.webp",
+      width: 2020,
+      height: 691,
     },
   },
   potStory: "/images/rayhana-memory-table.png",
@@ -131,7 +160,7 @@ export const media = {
   ],
   demo: "/videos/mandoline-demo.mp4",
   demoPoster: "/images/mandoline-product.jpg",
-  potDemo: "/images/hero-video.mp4",
+  potDemo: "/videos/Videos2026-11-03_110720_071.mp4",
   potDemoPoster: "/images/hero-poster.jpg",
 };
 

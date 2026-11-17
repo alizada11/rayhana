@@ -70,7 +70,7 @@ export default function BrandStory({
               {c.signature}
             </p>
             <a
-              href="https://www.rayhana.com/en/about"
+              href={`https://www.rayhana.com/${language}/about`}
               target="_blank"
               rel="noopener noreferrer"
               className="bs-source"

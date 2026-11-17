@@ -65,7 +65,7 @@ export function MarketSelect({
           </option>
           {markets.map(m => (
             <option key={m.id} value={m.id}>
-              {marketFlagEmoji(m.id)} {copy.marketAmazon} {m.country[language]}{" "}
+              {marketFlagEmoji(m.id)} {m.retailer === "amazon" ? copy.marketAmazon : copy.marketShopino24} {m.country[language]}{" "}
               · {m.domain}
             </option>
           ))}
@@ -264,7 +264,9 @@ export default function BuyingDialog({
                 ? offer.sellerAction
                 : selected
                   ? formatLocationTemplate(
-                      locationCopy[language].amazon,
+                      selected.retailer === "amazon"
+                        ? locationCopy[language].amazon
+                        : locationCopy[language].shopino24,
                       selected.country[language]
                     )
                   : copy.continueAmazon}

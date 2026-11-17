@@ -9,18 +9,18 @@ export const brandStoryCopy = {
     chapters: [
       {
         label: "خاطرهٔ خانه",
-        title: "غذایی که قصه دارد.",
+        title: "غذایی که داستان خودش را دارد.",
         body: "یک دیگ قابلی می‌تواند آغاز یک گفت‌وگو باشد؛ از اینکه چه کسی آن را می‌پخت، تا اینکه امروز چه کسانی دور دسترخوان می‌نشینند. هر خانه، قصهٔ خودش را دارد.",
       },
       {
         label: "آشپزخانهٔ امروز",
         title: "سنتی که با ما می‌آید.",
-        body: "دیگ قابلی ریحانه با الهام از پخت‌وپز افغانی، برای آشپزخانه‌های امروز معرفی شده است. گنجایش و ویژگی‌ها را می‌بینید، روش مراقبت را می‌خوانید و برای پخت‌وپز خودتان انتخاب می‌کنید.",
+        body: "دیگ قابلی ریحانه با الهام از پخت‌وپز افغانی، برای آشپزخانه‌های امروز معرفی شده است. سایز و ویژگی‌های آن را می‌بینید، روش مراقبت آن را می‌خوانید و برای پخت‌وپز خودتان انتخاب می‌کنید.",
       },
       {
         label: "جای شما",
         title: "دسترخوان، با همراهی شما.",
-        body: "کدام غذا شما را دور هم جمع می‌کند؟ در دسترخوان ریحانه انتخابش کنید، به دستور غذای بعدی رأی بدهید و دربارهٔ ایدهٔ محصول بعدی نظر بگویید. برای سهم‌گرفتن، خرید لازم نیست.",
+        body: "کدام غذا شما را دور هم جمع می‌کند؟ در دسترخوان ریحانه انتخابش کنید، به دستور غذای بعدی رأی بدهید و دربارهٔ ایدهٔ محصول بعدی نظر خود را بگویید. برای سهم‌گرفتن، خرید لازم نیست.",
       },
     ],
     action: "در دسترخوان ریحانه سهم می‌گیرم",
@@ -37,13 +37,13 @@ export const brandStoryCopy = {
     chapters: [
       {
         label: "A memory of home",
-        title: "A dish with a story.",
+        title: "A dish with its own story.",
         body: "A pot of qabili can start a conversation: who used to cook it, and who shares it with us today. Every home has its own story.",
       },
       {
         label: "A kitchen today",
         title: "Tradition that comes with us.",
-        body: "Inspired by Afghan cooking, the Rayhana Qabili Pot is introduced for modern kitchens. Explore the sizes and features, read the care guidance and choose for the way you cook.",
+        body: "Inspired by Afghan cooking, the Rayhana Qabili Pot was introduced for today’s kitchens. Explore its capacity and features, read how to care for it, and choose the right pot for your cooking.",
       },
       {
         label: "Your place here",
@@ -65,13 +65,13 @@ export const brandStoryCopy = {
     chapters: [
       {
         label: "د کور خاطره",
-        title: "خواړه چې کیسه لري.",
+        title: "هغه خواړه چې خپله کیسه لري.",
         body: "د قابلي پلو یو دیګ د خبرو پیل کېدای شي؛ څوک به یې پخاوه او نن یې له چا سره خورو؟ هر کور خپله کیسه لري.",
       },
       {
         label: "نننی پخلنځی",
         title: "دود چې راسره راځي.",
-        body: "د افغاني پخلي له دود څخه الهام اخیستی د ریحانې قابلي دیګ د نننیو پخلنځیو لپاره معرفي شوی. اندازې او ځانګړنې وګورئ، د ساتنې لارښود ولولئ او د خپل پخلي لپاره انتخاب وکړئ.",
+        body: "د افغاني پخلي له دود څخه په الهام، د ریحانې قابلي دیګ د نننیو پخلنځیو لپاره وړاندې شوی. د هغه ظرفیت او ځانګړنې وګورئ، د ساتنې طریقه یې ولولئ او د خپل پخلي لپاره مناسب دیګ وټاکئ.",
       },
       {
         label: "ستاسو ځای",

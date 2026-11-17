@@ -481,6 +481,7 @@
   }
   .campaign-site .tm-rating {
     padding: 24px;
+    position: static;
   }
   .campaign-site .tm-intro {
     margin-bottom: 28px;
@@ -691,6 +692,9 @@
   border-radius: 16px;
   border-top-color: var(--red);
   box-shadow: var(--shadow-sm);
+  position: sticky;
+  top: 100px;
+  align-self: start;
 }
 .campaign-site .tm-quote {
   background: var(--surface);

@@ -51,7 +51,6 @@ export default function Community({
   const [busy, setBusy] = useState<Action["kind"] | null>(null);
   const busyRef = useRef(false);
   const [notice, setNotice] = useState<Notice>(null);
-  const [missingStorage, setMissingStorage] = useState(false);
   const [memory, setMemory] = useState<CommunityState["memory"]>(null);
   const [safety, setSafety] = useState<"intact" | "damaged" | null>(null);
   const [recipe, setRecipe] = useState<CommunityState["recipe"]>(null);
@@ -78,7 +77,6 @@ export default function Community({
       operation();
       return true;
     } catch {
-      setMissingStorage(true);
       return false;
     }
   }
@@ -180,7 +178,7 @@ export default function Community({
           }
           setStep(Math.min(index + 1, 3));
           const journeyComplete = result.state.points === 100;
-          setOpened(!journeyComplete);
+          setOpened(true);
           if (journeyComplete)
             requestAnimationFrame(() => completionHeading.current?.focus());
         }
@@ -226,7 +224,7 @@ export default function Community({
         void perform({ kind: "restore" });
       }
     } catch {
-      setMissingStorage(true);
+      /* Private browser drafts are optional; server participation remains available. */
     }
     return () => {
       mounted.current = false;
@@ -236,8 +234,10 @@ export default function Community({
   }, []);
 
   useEffect(() => {
-    if (opened) heading.current?.focus();
-  }, [opened, step]);
+    if (opened) {
+      (state?.points === 100 ? completionHeading.current : heading.current)?.focus();
+    }
+  }, [opened, step, state?.points]);
   useEffect(() => {
     if (deleteOpen) deleteCancel.current?.focus();
   }, [deleteOpen]);
@@ -293,6 +293,7 @@ export default function Community({
   }
   const completed = done(state);
   const points = state?.points ?? 0;
+  const journeyComplete = points === 100;
   const tier = communityBadgeLevel(points);
   const nextStep = completed.findIndex(value => !value);
   const savedFood =
@@ -393,7 +394,6 @@ export default function Community({
             <p className="rh-small">{c.privacy}</p>
             <p className="rh-small">{c.expiry}</p>
           </div>
-          {missingStorage && <p className="rh-notice">{c.missingStorage}</p>}
           {state?.memory && points < 100 && (
             <div className="rh-table-identity">
               <h3>{c.memorySavedTitle}</h3>
@@ -430,55 +430,89 @@ export default function Community({
                 dir={language === "en" ? "ltr" : "rtl"}
                 onOpenAutoFocus={event => {
                   event.preventDefault();
-                  requestAnimationFrame(() => heading.current?.focus());
+                  requestAnimationFrame(() =>
+                    (journeyComplete
+                      ? completionHeading.current
+                      : heading.current
+                    )?.focus()
+                  );
                 }}
               >
                 <header className="rh-dialog-header">
                   <div>
                     <p className="rh-eyebrow">{c.eyebrow}</p>
                     <Dialog.Title className="rh-dialog-title">
-                      {c.stepPreview}
+                      {journeyComplete ? c.badges[3] : c.stepPreview}
                     </Dialog.Title>
                     <Dialog.Description className="rh-dialog-description">
-                      {c.stepPoints.replace("{points}", number(25))}
+                      {journeyComplete
+                        ? c.journeyComplete
+                        : c.stepPoints.replace("{points}", number(25))}
                     </Dialog.Description>
                   </div>
                   <Dialog.Close className="rh-dialog-close" aria-label={c.close}>
                     <X size={20} aria-hidden="true" />
                   </Dialog.Close>
                 </header>
-                <div className="rh-dialog-progress" aria-hidden="true">
-                  <span style={{ width: `${((step + 1) / 4) * 100}%` }} />
-                </div>
-                <nav
-                  className="rh-step-nav"
-                  aria-label={c.stepPreview}
-                  aria-describedby={`${id}-steps-points`}
-                >
-                  {c.steps.map((label, index) => (
-                    <button
-                      key={index}
-                      id={`${id}-step-${index}`}
-                      type="button"
-                      disabled={!!busy}
-                      aria-current={step === index ? "step" : undefined}
-                      aria-controls={`${id}-panel-${index}`}
-                      onClick={() => navigate(index)}
+                {!journeyComplete && (
+                  <>
+                    <div className="rh-dialog-progress" aria-hidden="true">
+                      <span style={{ width: `${((step + 1) / 4) * 100}%` }} />
+                    </div>
+                    <nav
+                      className="rh-step-nav"
+                      aria-label={c.stepPreview}
+                      aria-describedby={`${id}-steps-points`}
                     >
-                      <span>
-                        {number(index + 1).padStart(language === "en" ? 2 : 1, "0")}
-                      </span>
-                      <span>
-                        {label}
-                        {completed[index] && (
-                          <span className="sr-only"> · {c.completed}</span>
-                        )}
-                      </span>
-                      {completed[index] && <Check size={14} aria-hidden="true" />}
-                    </button>
-                  ))}
-                </nav>
+                      {c.steps.map((label, index) => (
+                        <button
+                          key={index}
+                          id={`${id}-step-${index}`}
+                          type="button"
+                          disabled={!!busy}
+                          aria-current={step === index ? "step" : undefined}
+                          aria-controls={`${id}-panel-${index}`}
+                          onClick={() => navigate(index)}
+                        >
+                          <span>
+                            {number(index + 1).padStart(language === "en" ? 2 : 1, "0")}
+                          </span>
+                          <span>
+                            {label}
+                            {completed[index] && (
+                              <span className="sr-only"> · {c.completed}</span>
+                            )}
+                          </span>
+                          {completed[index] && <Check size={14} aria-hidden="true" />}
+                        </button>
+                      ))}
+                    </nav>
+                  </>
+                )}
                 <div className="rh-journey-scroll">
+                  {journeyComplete ? (
+                    <div className="rh-complete rh-complete-modal">
+                      <p className="rh-eyebrow">
+                        {c.badges[3]} · {number(points)} {c.points}
+                      </p>
+                      <h3 ref={completionHeading} tabIndex={-1}>
+                        {savedFood
+                          ? c.thanksPersonalTitle.replace("{food}", savedFood)
+                          : c.thanksTitle}
+                      </h3>
+                      <p className="rh-recognition">{c.companionRecognition}</p>
+                      <p className="rh-small">{c.thanks}</p>
+                      <div className="rh-actions">
+                        <a className="rh-link" href="#story" onClick={() => setOpened(false)}>
+                          {c.story}
+                        </a>
+                        <a className="rh-link" href="#collection" onClick={() => setOpened(false)}>
+                          {c.products}
+                        </a>
+                      </div>
+                    </div>
+                  ) : (
+                    <>
                   <div
                     className={`rh-notice${isError ? " is-error" : ""}`}
                     role="status"
@@ -652,6 +686,8 @@ export default function Community({
                       )}
                     </div>
                   ))}
+                    </>
+                  )}
                 </div>
                 <div className="rh-dialog-footer">
                   {token && !deleteOpen && (
@@ -708,28 +744,6 @@ export default function Community({
               </Dialog.Content>
             </Dialog.Portal>
           </Dialog.Root>
-          {state?.points === 100 && (
-            <div className="rh-complete">
-              <p className="rh-eyebrow">
-                {c.badges[3]} · {number(points)} {c.points}
-              </p>
-              <h3 ref={completionHeading} tabIndex={-1}>
-                {savedFood
-                  ? c.thanksPersonalTitle.replace("{food}", savedFood)
-                  : c.thanksTitle}
-              </h3>
-              <p className="rh-recognition">{c.companionRecognition}</p>
-              <p className="rh-small">{c.thanks}</p>
-              <div className="rh-actions">
-                <a className="rh-link" href="#story">
-                  {c.story}
-                </a>
-                <a className="rh-link" href="#collection">
-                  {c.products}
-                </a>
-              </div>
-            </div>
-          )}
         </div>
         <aside className="rh-progress" aria-label={c.progress}>
           <p className="rh-progress-label">{c.progress}</p>

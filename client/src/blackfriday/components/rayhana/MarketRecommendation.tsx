@@ -48,7 +48,10 @@ export default function MarketRecommendation({
           </span>
           {selected && (
             <strong>
-              {formatLocationTemplate(c.amazon, selected.country[language])}
+              {formatLocationTemplate(
+                selected.retailer === "amazon" ? c.amazon : c.shopino24,
+                selected.country[language]
+              )}
               <small dir="ltr">{selected.domain}</small>
             </strong>
           )}

@@ -545,6 +545,18 @@
   background: var(--cream);
   border-inline-start: 4px solid #b88746;
 }
+.campaign-site .rh-journey-dialog .rh-complete-modal {
+  width: min(100%, 760px);
+  margin: 10px auto;
+  padding: clamp(24px, 4vw, 42px);
+  border-radius: 18px;
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+.campaign-site .rh-journey-dialog .rh-complete-modal h3:focus {
+  outline: 2px solid var(--red);
+  outline-offset: 5px;
+}
 .campaign-site .rh-complete .rh-eyebrow {
   margin-bottom: 12px;
 }

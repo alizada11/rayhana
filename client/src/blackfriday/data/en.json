@@ -30,7 +30,7 @@
   "marketChannel": "Amazon marketplace",
   "potEyebrow": "01 / COOKING FOR THE TABLE",
   "potTitle": "Qabili for guests.\nPilaf for tonight.",
-  "potBody": "The carrots and raisins are ready; the rice is waiting to steam. Choose a pot capacity for the amount you cook, whether it’s a family supper or a table with a few more guests.",
+  "potBody": "When the carrots and raisins are ready and it’s time for the rice to steam, the pot size should match the amount of food. Choose the right size for a family supper or a table with more guests.",
   "potName": "Rayhana Qabili Pilaf Pot",
   "potMaterialTitle": "Cast-aluminum body",
   "potMaterialBody": "Cast-aluminum body with a ceramic nonstick cooking surface.",
@@ -47,7 +47,7 @@
   "readGuide": "Product support",
   "mandolineEyebrow": "02 / PREP WITH COMPANY",
   "mandolineTitle": "Carrots for qabili.\nVegetables for the salad.",
-  "mandolineBody": "One person rinses the rice; another prepares the salad. Adjust the Rayhana slicer’s thickness or choose julienne strips to prepare vegetables for your recipe.",
+  "mandolineBody": "One person rinses the rice while the other prepares the salad. With the Rayhana slicer, adjust slice thickness or choose julienne cuts for your ingredients and recipe.",
   "mandolineName": "Rayhana Adjustable Mandoline Slicer",
   "slicingTitle": "Slices at your chosen thickness",
   "slicingBody": "Adjust the slicing thickness to suit your ingredient and recipe.",
@@ -76,7 +76,7 @@
   "faqItems": [
     {
       "q": "Where can I buy Rayhana?",
-      "a": "This page is prepared for the Amazon marketplaces in the United States, Canada, Australia and Germany. Choose the delivery country to view the relevant buying information. Check the seller’s listing for delivery to your exact address."
+      "a": "This page includes Amazon marketplaces in the United States, Canada, Australia, Germany and the United Kingdom, plus Shopino24 in Afghanistan. Choose the delivery country to see the relevant buying information. Check the seller’s listing for delivery to your exact address."
     },
     {
       "q": "Why was a country suggested, and can I change it?",
@@ -142,5 +142,6 @@
   "backToTop": "Back to top",
   "listingScopeNote": "This official Rayhana link opens the pot’s product page, not a preselected capacity or colour. Choose and confirm your exact model on Amazon.",
   "downloadPotGuide": "Read pot care guidance",
-  "marketAmazon": "Amazon"
+  "marketAmazon": "Amazon",
+  "marketShopino24": "Shopino24"
 }

@@ -3,7 +3,6 @@ import { ArrowRight } from "lucide-react";
 import { media, type Language, type MarketId } from "@/blackfriday/data/catalog";
 import {
   blackFridayCopy,
-  getOfferTier,
   offerStage,
   offerTemplate,
   offerTiers,
@@ -132,7 +131,6 @@ export default function BlackFridayOffers({
 }: BlackFridayOffersProps) {
   const headingId = useId();
   const c = blackFridayCopy[language];
-  const tier = getOfferTier(quantity) ?? offerTiers[0];
   // Unconfirmed market configuration always yields "planned", including SSR.
   // Advertised calendar dates alone do not imply a timezone or an active offer.
   const stage = offerStage(market, Date.now());
@@ -180,14 +178,6 @@ export default function BlackFridayOffers({
         />
         <p className="bf-image-note">{c.imageNote}</p>
         <div className="bf-action-row">
-          <div className="bf-selection-summary">
-            <p className="bf-summary">
-              {offerTemplate(c.summary, tier.quantity, tier.discount, language)}
-            </p>
-            {stage === "planned" && (
-              <p className="bf-disclaimer">{c.notApplied}</p>
-            )}
-          </div>
           <button className="bf-continue" type="button" onClick={onContinue}>
             <span>{c.action}</span>
             <ArrowRight size={19} aria-hidden="true" />

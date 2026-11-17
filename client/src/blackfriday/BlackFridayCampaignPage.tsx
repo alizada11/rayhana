@@ -12,6 +12,11 @@ import {
   Leaf,
   Mail,
   Play,
+  Pause,
+  Volume2,
+  VolumeX,
+  Maximize2,
+  Minimize2,
   Plus,
   ShieldCheck,
   SlidersHorizontal,
@@ -23,7 +28,6 @@ import {
 import * as Accordion from "@radix-ui/react-accordion";
 import { useTranslation } from "react-i18next";
 import BuyingDialog, { type Copy } from "@/blackfriday/components/rayhana/BuyingDialog";
-import VideoDialog from "@/blackfriday/components/rayhana/VideoDialog";
 import Community from "@/blackfriday/components/rayhana/Community";
 import MarketRecommendation from "@/blackfriday/components/rayhana/MarketRecommendation";
 import BlackFridayOffers from "@/blackfriday/components/rayhana/BlackFridayOffers";
@@ -35,7 +39,7 @@ import useMarketPreference from "@/blackfriday/hooks/useMarketPreference";
 import {
   formatLocationTemplate,
   locationCopy,
-  potAmazonLabel,
+  potStoreLabel,
 } from "@/blackfriday/data/locationCopy";
 import {
   formatCapacity,
@@ -58,6 +62,52 @@ import "./styles/community.css";
 import "./styles/integration.css";
 
 const dictionaries: Record<Language, Copy> = { en, fa, ps };
+const videoControlLabels: Record<Language, {
+  play: string;
+  pause: string;
+  mute: string;
+  unmute: string;
+  volume: string;
+  seek: string;
+  speed: string;
+  fullscreen: string;
+  exitFullscreen: string;
+}> = {
+  en: {
+    play: "Play video",
+    pause: "Pause video",
+    mute: "Mute video",
+    unmute: "Unmute video",
+    volume: "Volume",
+    seek: "Seek video",
+    speed: "Playback speed",
+    fullscreen: "Enter fullscreen",
+    exitFullscreen: "Exit fullscreen",
+  },
+  fa: {
+    play: "پخش ویدیو",
+    pause: "توقف ویدیو",
+    mute: "بی‌صدا کردن ویدیو",
+    unmute: "با صدا کردن ویدیو",
+    volume: "بلندی صدا",
+    seek: "جایگاه پخش ویدیو",
+    speed: "سرعت پخش",
+    fullscreen: "نمایش تمام‌صفحه",
+    exitFullscreen: "خروج از تمام‌صفحه",
+  },
+  ps: {
+    play: "ویډیو غږول",
+    pause: "ویډیو درول",
+    mute: "ویډیو بې‌غږه کول",
+    unmute: "د ویډیو غږ چالانول",
+    volume: "د غږ کچه",
+    seek: "د ویډیو د غږولو ځای",
+    speed: "د غږولو چټکتیا",
+    fullscreen: "بشپړه پرده",
+    exitFullscreen: "له بشپړې پردې وتل",
+  },
+};
+
 export default function BlackFridayCampaignPage() {
   const { i18n } = useTranslation();
   const activeLanguage = (i18n.resolvedLanguage || i18n.language || "en").split("-")[0];
@@ -68,11 +118,17 @@ export default function BlackFridayCampaignPage() {
   const [quantity, setQuantity] = useState<OfferQuantity>(1);
   const [product, setProduct] = useState<ProductId>("pot");
   const [purchaseOpen, setPurchaseOpen] = useState(false);
-  const [videoProduct, setVideoProduct] = useState<ProductId>("pot");
-  const [videoOpen, setVideoOpen] = useState(false);
   const [gallery, setGallery] = useState(0);
+  const mandolineVideoRef = useRef<HTMLVideoElement>(null);
+  const mandolinePlayerRef = useRef<HTMLDivElement>(null);
+  const [mandolineVideoActive, setMandolineVideoActive] = useState(false);
+  const [mandolineVideoPinned, setMandolineVideoPinned] = useState(false);
   const [sticky, setSticky] = useState(false);
   const [status, setStatus] = useState("");
+  const heroVideoRef = useRef<HTMLVideoElement>(null);
+  const heroPlayerRef = useRef<HTMLDivElement>(null);
+  const [heroVideoActive, setHeroVideoActive] = useState(false);
+  const [heroVideoPinned, setHeroVideoPinned] = useState(false);
   const campaignRoot = useRef<HTMLDivElement>(null);
   const copy = dictionaries[language];
   const c = campaignCopy[language];
@@ -82,8 +138,9 @@ export default function BlackFridayCampaignPage() {
   const country = markets.find(m => m.id === market);
   const alt = translatedAlt[language];
   const location = locationCopy[language];
+  const canPreviewMandoline = gallery === 0 && Boolean(media.demo);
   const potLink = getPurchaseUrl("pot", market, capacity);
-  const buyPotLabel = potAmazonLabel(
+  const buyPotLabel = potStoreLabel(
     language,
     market,
     country?.country[language],
@@ -91,7 +148,10 @@ export default function BlackFridayCampaignPage() {
   );
   const stickyBuyLabel =
     country && getPurchaseUrl(product, market, capacity)
-      ? formatLocationTemplate(location.amazon, country.country[language])
+      ? formatLocationTemplate(
+          country.retailer === "amazon" ? location.amazon : location.shopino24,
+          country.country[language]
+        )
       : location.generalBuy;
 
   useEffect(() => {
@@ -137,9 +197,63 @@ export default function BlackFridayCampaignPage() {
     setProduct(next);
     setPurchaseOpen(true);
   }
-  function openVideo(next: ProductId) {
-    setVideoProduct(next);
-    setVideoOpen(true);
+  function previewHeroVideo() {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    setHeroVideoActive(true);
+    video.muted = true;
+    void video.play().catch(() => setHeroVideoActive(false));
+  }
+
+  function pinHeroVideo() {
+    const video = heroVideoRef.current;
+    if (!video) return;
+    setHeroVideoPinned(true);
+    setHeroVideoActive(true);
+    video.muted = false;
+    void video.play().catch(() => {
+      video.muted = true;
+      void video.play().catch(() => setHeroVideoActive(false));
+    });
+  }
+
+  function stopHeroPreview() {
+    if (heroVideoPinned) return;
+    const video = heroVideoRef.current;
+    video?.pause();
+    if (video) video.currentTime = 0;
+    setHeroVideoActive(false);
+  }
+
+  function previewMandolineVideo() {
+    if (gallery !== 0) return;
+    const video = mandolineVideoRef.current;
+    if (!video) return;
+    setMandolineVideoActive(true);
+    video.muted = true;
+    void video.play().catch(() => setMandolineVideoActive(false));
+  }
+
+  function pinMandolineVideo() {
+    if (gallery !== 0) return;
+    const video = mandolineVideoRef.current;
+    if (!video) return;
+    setMandolineVideoPinned(true);
+    setMandolineVideoActive(true);
+    video.muted = false;
+    void video.play().catch(() => {
+      video.muted = true;
+      void video.play().catch(() => setMandolineVideoActive(false));
+    });
+  }
+
+  function stopMandolinePreview(force = false) {
+    if (mandolineVideoPinned && !force) return;
+    const video = mandolineVideoRef.current;
+    video?.pause();
+    if (video) video.currentTime = 0;
+    if (force) setMandolineVideoPinned(false);
+    setMandolineVideoActive(false);
   }
 
   return (
@@ -192,14 +306,59 @@ export default function BlackFridayCampaignPage() {
             />
           </div>
           <div className="hero-visual">
-            <div className="hero-arch">
+            <div
+              ref={heroPlayerRef}
+              className={`hero-arch ${heroVideoActive ? "is-video-active" : ""}`}
+              onMouseEnter={previewHeroVideo}
+              onMouseLeave={stopHeroPreview}
+            >
               <img
+                className="hero-product-image"
                 src={media.potHero}
                 alt={alt.pot}
-                fetchPriority="high"
-                decoding="async"
-                className="hero-product-image"
               />
+              <video
+                ref={heroVideoRef}
+                className="hero-product-video"
+                poster={media.potHero}
+                muted
+                playsInline
+                preload="none"
+                aria-label={c.potVideoAction}
+                onPause={() => {
+                  if (heroVideoRef.current?.ended) return;
+                  setHeroVideoPinned(false);
+                  setHeroVideoActive(false);
+                }}
+                onEnded={() => {
+                  if (heroVideoRef.current) heroVideoRef.current.currentTime = 0;
+                  setHeroVideoPinned(false);
+                  setHeroVideoActive(false);
+                }}
+              >
+                <source src={media.potDemo} type="video/mp4" />
+              </video>
+              <BrandedVideoControls
+                videoRef={heroVideoRef}
+                fullscreenTargetRef={heroPlayerRef}
+                label={c.potVideoAction}
+                controlLabels={videoControlLabels[language]}
+                className="hero-video-controls"
+                active={heroVideoActive}
+              />
+              {!heroVideoPinned && (
+                <button
+                  type="button"
+                  className="hero-video-trigger"
+                  aria-label={c.potVideoAction}
+                  onClick={pinHeroVideo}
+                >
+                  <span className="hero-video-play" aria-hidden="true">
+                    <Play size={21} fill="currentColor" />
+                  </span>
+                  <span className="sr-only">{c.potVideoAction}</span>
+                </button>
+              )}
                 <div className="hero-photo-caption">
                   <span>{copy.heroImageCaption}</span>
                   <ArrowUpRight size={19} />
@@ -210,42 +369,7 @@ export default function BlackFridayCampaignPage() {
               <span>RAYHANA</span>
               <small>ROOTS IN MODERN LIFE</small>
             </div>
-            <button
-              className="hero-cooking-peek"
-              onClick={() => openVideo("pot")}
-            >
-              <img src={media.potDemoPoster} alt="" width="150" height="100" />
-              <span className="hero-peek-play">
-                <Play size={16} fill="currentColor" />
-              </span>
-              <span>{c.potVideoAction}</span>
-            </button>
           </div>
-        </section>
-
-        <section className="spec-strip" aria-label={c.featureTitle}>
-          <div className="section-shell spec-strip-inner">
-            <div>
-              <span>{c.specCapacity}</span>
-              <strong>
-                {[7, 9, 12]
-                  .map(size => formatCapacity(size, language))
-                  .join(" / ")}{" "}
-                <small>{copy.litres}</small>
-              </strong>
-            </div>
-            <div>
-              <span>{c.specOven}</span>
-              <strong>
-                <bdi>{formatCapacity(180, language)}°C</bdi>
-              </strong>
-            </div>
-            <div>
-              <span>{c.specBody}</span>
-              <strong className="spec-material">{c.specBodyValue}</strong>
-            </div>
-          </div>
-          <p className="spec-source section-shell">{c.specNote}</p>
         </section>
 
         <BlackFridayOffers
@@ -274,7 +398,7 @@ export default function BlackFridayCampaignPage() {
           id="pot"
         >
           <div className="product-media pot-product-media">
-            <div className="product-photo">
+            <div className="product-photo" data-capacity={capacity}>
               <img
                 src={media.potDetail}
                 alt={alt.pot}
@@ -283,9 +407,25 @@ export default function BlackFridayCampaignPage() {
                 height="900"
               />
             </div>
-            <div className="image-note">
-              <Package size={19} />
-              <span>{copy.potLadle}</span>
+            <div className="capacity-picker">
+              <span className="field-heading">{copy.capacity}</span>
+              <div
+                className="size-buttons"
+                role="group"
+                aria-label={copy.capacity}
+              >
+                {[7, 9, 12].map(size => (
+                  <button
+                    key={size}
+                    aria-pressed={capacity === size}
+                    className={capacity === size ? "active" : ""}
+                    onClick={() => setCapacity(size)}
+                  >
+                    {formatCapacity(size, language)} <span>{copy.litres}</span>
+                  </button>
+                ))}
+              </div>
+              <p className="microcopy">{copy.capacityHint}</p>
             </div>
             <p className="pot-image-wordmark" aria-hidden="true">
               RAYHANA<span>THE HEART OF THE TABLE</span>
@@ -327,37 +467,6 @@ export default function BlackFridayCampaignPage() {
                 text={c.accessoriesBody}
               />
             </div>
-            <div className="capacity-picker">
-              <span className="field-heading">{copy.capacity}</span>
-              <div
-                className="size-buttons"
-                role="group"
-                aria-label={copy.capacity}
-              >
-                {[7, 9, 12].map(size => (
-                  <button
-                    key={size}
-                    aria-pressed={capacity === size}
-                    className={capacity === size ? "active" : ""}
-                    onClick={() => setCapacity(size)}
-                  >
-                    {formatCapacity(size, language)} <span>{copy.litres}</span>
-                  </button>
-                ))}
-              </div>
-              <p className="microcopy">{copy.capacityHint}</p>
-            </div>
-            <button
-              className="button primary product-buy"
-              onClick={() => openBuying("pot")}
-            >
-              {buyPotLabel}
-              <Arrow size={19} />
-            </button>
-            <p className="safety-note">
-              <ShieldCheck size={16} />
-              <span>{copy.potSafety}</span>
-            </p>
           </div>
         </section>
 
@@ -369,19 +478,14 @@ export default function BlackFridayCampaignPage() {
                 {c.qualityTitle}
               </h2>
               <p className="quality-intro">{c.qualityBody}</p>
-              <div className="proof-list">
-                {c.proofItems.map((item, index) => (
-                  <div className="proof-item" key={item.title}>
-                    <span className="proof-number">
-                      {formatCapacity(index + 1, language)}
-                    </span>
-                    <div>
-                      <h3>{item.title}</h3>
-                      <p>{item.text}</p>
-                    </div>
-                  </div>
-                ))}
-              </div>
+            </div>
+            <QualityVideo
+              src={media.potDemo}
+              poster={media.potDemoPoster}
+              label={c.potVideoLabel}
+              language={language}
+            />
+            <div className="quality-guide-row">
               <a
                 className="button outline quality-guide-download"
                 href="/files/rayhana-qabili-pot-user-guide.pdf"
@@ -393,27 +497,6 @@ export default function BlackFridayCampaignPage() {
                 {copy.downloadPotGuide}
                 <ArrowDownToLine size={15} />
               </a>
-            </div>
-            <div className="cooking-media">
-              <button className="cooking-card" onClick={() => openVideo("pot")}>
-                <img
-                  src={media.potDemoPoster}
-                  alt={c.potVideoLabel}
-                  loading="lazy"
-                  width="464"
-                  height="848"
-                />
-                <span className="cooking-caption">
-                  <span className="cooking-play">
-                    <Play size={25} fill="currentColor" />
-                  </span>
-                  <span>
-                    <strong>{c.potVideoLabel}</strong>
-                    <small>{c.potVideoAction}</small>
-                  </span>
-                  <ArrowUpRight size={22} />
-                </span>
-              </button>
             </div>
           </div>
         </section>
@@ -432,25 +515,6 @@ export default function BlackFridayCampaignPage() {
               preference={preference}
               onChange={() => openBuying("pot")}
             />
-            <div className="buy-capacity">
-              <span className="field-heading">{copy.capacity}</span>
-              <div
-                className="size-buttons"
-                role="group"
-                aria-label={copy.capacity}
-              >
-                {[7, 9, 12].map(size => (
-                  <button
-                    key={size}
-                    aria-pressed={capacity === size}
-                    className={capacity === size ? "active" : ""}
-                    onClick={() => setCapacity(size)}
-                  >
-                    {formatCapacity(size, language)} <span>{copy.litres}</span>
-                  </button>
-                ))}
-              </div>
-            </div>
             <div
               className="market-options"
               role="group"
@@ -465,7 +529,9 @@ export default function BlackFridayCampaignPage() {
                 >
                   <MarketFlag market={item.id} className="market-card-flag" />
                   <span className="market-name">
-                    {copy.marketAmazon} {item.country[language]}
+                    {item.retailer === "amazon"
+                      ? copy.marketAmazon
+                      : copy.marketShopino24} {item.country[language]}
                   </span>
                   <span className="amazon-label" dir="ltr">
                     {item.domain}
@@ -530,15 +596,6 @@ export default function BlackFridayCampaignPage() {
                   {copy.buyOptions}
                   <Arrow size={18} />
                 </button>
-                {media.demo && (
-                  <button
-                    className="button outline"
-                    onClick={() => openVideo("mandoline")}
-                  >
-                    <Play size={16} fill="currentColor" />
-                    {copy.watchDemo}
-                  </button>
-                )}
               </div>
               <p className="safety-note">
                 <ShieldCheck size={16} />
@@ -555,24 +612,74 @@ export default function BlackFridayCampaignPage() {
               </a>
             </div>
             <div className="mandoline-gallery">
-              <div className="gallery-main">
+              <div
+                ref={mandolinePlayerRef}
+                className={`gallery-main${canPreviewMandoline ? " is-video-trigger" : ""}${mandolineVideoActive ? " is-video-active" : ""}`}
+                role={canPreviewMandoline ? "group" : undefined}
+                tabIndex={canPreviewMandoline ? 0 : undefined}
+                aria-label={canPreviewMandoline ? copy.watchDemo : undefined}
+                onMouseEnter={previewMandolineVideo}
+                onMouseLeave={() => stopMandolinePreview()}
+                onFocus={event => {
+                  if (event.target === event.currentTarget) previewMandolineVideo();
+                }}
+                onBlur={event => {
+                  if (!event.currentTarget.contains(event.relatedTarget as Node | null)) {
+                    stopMandolinePreview();
+                  }
+                }}
+                onClick={canPreviewMandoline ? pinMandolineVideo : undefined}
+                onKeyDown={event => {
+                  if (
+                    event.target === event.currentTarget &&
+                    (event.key === "Enter" || event.key === " ")
+                  ) {
+                    event.preventDefault();
+                    pinMandolineVideo();
+                  }
+                  if (event.key === "Escape") stopMandolinePreview(true);
+                }}
+              >
                 <img
+                  className="gallery-main-image"
                   src={media.mandolineGallery[gallery]}
                   alt={alt.mandoline[gallery]}
                   width="900"
                   height="700"
                   loading="lazy"
                 />
-                {media.demo && (
-                  <button
-                    className="video-pill"
-                    onClick={() => openVideo("mandoline")}
-                  >
-                    <span className="play-circle">
-                      <Play size={13} fill="currentColor" />
-                    </span>
-                    {copy.watchDemo}
-                  </button>
+                {gallery === 0 && media.demo && (
+                  <>
+                    <video
+                      ref={mandolineVideoRef}
+                      className="gallery-main-video"
+                      poster={media.mandolineGallery[0]}
+                      playsInline
+                      preload="none"
+                      aria-label={copy.watchDemo}
+                      onPause={() => {
+                        if (mandolineVideoRef.current?.ended) return;
+                        if (mandolineVideoRef.current?.paused) {
+                          setMandolineVideoPinned(false);
+                          setMandolineVideoActive(false);
+                        }
+                      }}
+                      onEnded={() => {
+                        setMandolineVideoPinned(false);
+                        setMandolineVideoActive(false);
+                      }}
+                    >
+                      <source src={media.demo} type="video/mp4" />
+                    </video>
+                    <BrandedVideoControls
+                      videoRef={mandolineVideoRef}
+                      fullscreenTargetRef={mandolinePlayerRef}
+                      label={copy.watchDemo}
+                      controlLabels={videoControlLabels[language]}
+                      className="gallery-video-controls"
+                      active={mandolineVideoActive}
+                    />
+                  </>
                 )}
               </div>
               <div
@@ -584,7 +691,11 @@ export default function BlackFridayCampaignPage() {
                   <button
                     key={image}
                     className={gallery === index ? "active" : ""}
-                    onClick={() => setGallery(index)}
+                    onClick={() => {
+                      setMandolineVideoPinned(false);
+                      stopMandolinePreview(true);
+                      setGallery(index);
+                    }}
                     aria-pressed={gallery === index}
                     aria-label={`${copy.galleryLabel} ${formatCapacity(index + 1, language)}: ${alt.mandoline[index]}`}
                   >
@@ -714,14 +825,6 @@ export default function BlackFridayCampaignPage() {
         onQuantityChange={setQuantity}
         portalContainer={campaignRoot.current}
       />
-      <VideoDialog
-        open={videoOpen}
-        onOpenChange={setVideoOpen}
-        language={language}
-        copy={copy}
-        product={videoProduct}
-        portalContainer={campaignRoot.current}
-      />
     </div>
   );
 }
@@ -743,6 +846,286 @@ function Feature({
       <div>
         <h3>{title}</h3>
         <p>{text}</p>
+      </div>
+    </div>
+  );
+}
+
+function QualityVideo({
+  src,
+  poster,
+  label,
+  language,
+}: {
+  src: string;
+  poster: string;
+  label: string;
+  language: Language;
+}) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const playerRef = useRef<HTMLDivElement>(null);
+  const autoplayAttempted = useRef(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    let timer: number | undefined;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        const visible = entry.isIntersecting && entry.intersectionRatio >= 0.35;
+        if (
+          visible &&
+          !autoplayAttempted.current &&
+          timer === undefined
+        ) {
+          timer = window.setTimeout(() => {
+            timer = undefined;
+            if (autoplayAttempted.current) return;
+            autoplayAttempted.current = true;
+            video.muted = true;
+            void video.play().catch(() => {});
+          }, 2000);
+        } else if (!visible) {
+          if (timer !== undefined) {
+            window.clearTimeout(timer);
+            timer = undefined;
+          }
+          video.pause();
+        }
+      },
+      { threshold: [0, 0.35] },
+    );
+
+    observer.observe(video);
+    return () => {
+      observer.disconnect();
+      if (timer !== undefined) window.clearTimeout(timer);
+    };
+  }, []);
+
+  return (
+    <div ref={playerRef} className="quality-video-frame">
+      <video
+        ref={videoRef}
+        className="quality-video"
+        poster={poster}
+        playsInline
+        preload="metadata"
+        muted
+        aria-label={label}
+        onPlay={() => {
+          autoplayAttempted.current = true;
+        }}
+      >
+        <source src={src} type="video/mp4" />
+      </video>
+      <BrandedVideoControls
+        videoRef={videoRef}
+        fullscreenTargetRef={playerRef}
+        label={label}
+        controlLabels={videoControlLabels[language]}
+        className="quality-video-controls"
+        active
+      />
+    </div>
+  );
+}
+
+type VideoControlLabels = (typeof videoControlLabels)[Language];
+
+function BrandedVideoControls({
+  videoRef,
+  fullscreenTargetRef,
+  label,
+  controlLabels,
+  className,
+  active,
+}: {
+  videoRef: React.RefObject<HTMLVideoElement | null>;
+  fullscreenTargetRef: React.RefObject<HTMLElement | null>;
+  label: string;
+  controlLabels: VideoControlLabels;
+  className: string;
+  active: boolean;
+}) {
+  const [playing, setPlaying] = useState(false);
+  const [duration, setDuration] = useState(0);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const [muted, setMuted] = useState(false);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [fullscreen, setFullscreen] = useState(false);
+
+  useEffect(() => {
+    const video = videoRef.current;
+    if (!video) return;
+
+    const sync = () => {
+      setPlaying(!video.paused && !video.ended);
+      setDuration(Number.isFinite(video.duration) ? video.duration : 0);
+      setCurrentTime(video.currentTime || 0);
+      setVolume(video.volume);
+      setMuted(video.muted || video.volume === 0);
+      setPlaybackRate(video.playbackRate);
+    };
+    const events = [
+      "loadedmetadata",
+      "durationchange",
+      "timeupdate",
+      "play",
+      "pause",
+      "ended",
+      "volumechange",
+      "ratechange",
+    ];
+    events.forEach(name => video.addEventListener(name, sync));
+    sync();
+    return () => events.forEach(name => video.removeEventListener(name, sync));
+  }, [videoRef]);
+
+  useEffect(() => {
+    const syncFullscreen = () =>
+      setFullscreen(document.fullscreenElement === fullscreenTargetRef.current);
+    document.addEventListener("fullscreenchange", syncFullscreen);
+    return () => document.removeEventListener("fullscreenchange", syncFullscreen);
+  }, [fullscreenTargetRef]);
+
+  if (!active) return null;
+  const video = videoRef.current;
+  const progress = duration > 0 ? (currentTime / duration) * 100 : 0;
+  const rates = [1, 1.25, 1.5, 2];
+  const timeLabel = (seconds: number) => {
+    if (!Number.isFinite(seconds) || seconds < 0) return "0:00";
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60).toString().padStart(2, "0");
+    return `${mins}:${secs}`;
+  };
+  const togglePlay = () => {
+    const current = videoRef.current;
+    if (!current) return;
+    if (current.paused || current.ended) {
+      if (current.ended) current.currentTime = 0;
+      void current.play().catch(() => {});
+    } else {
+      current.pause();
+    }
+  };
+  const toggleMute = () => {
+    const current = videoRef.current;
+    if (!current) return;
+    if (current.muted || current.volume === 0) {
+      current.muted = false;
+      if (current.volume === 0) current.volume = 0.65;
+    } else {
+      current.muted = true;
+    }
+  };
+  const setRate = () => {
+    const current = videoRef.current;
+    if (!current) return;
+    const nextIndex = (rates.indexOf(current.playbackRate) + 1) % rates.length;
+    current.playbackRate = rates[nextIndex];
+  };
+  const toggleFullscreen = () => {
+    const container = fullscreenTargetRef.current;
+    if (!container) return;
+    if (document.fullscreenElement === container) {
+      void document.exitFullscreen().catch(() => {});
+    } else {
+      void container.requestFullscreen().catch(() => {});
+    }
+  };
+
+  return (
+    <div
+      className={`campaign-video-player ${className}`}
+      role="group"
+      aria-label={label}
+      dir="ltr"
+      onClick={event => event.stopPropagation()}
+    >
+      {!playing && (
+        <button
+          type="button"
+          className="campaign-video-center-play"
+          aria-label={controlLabels.play}
+          onClick={togglePlay}
+        >
+          <Play size={26} fill="currentColor" aria-hidden="true" />
+        </button>
+      )}
+      <div className="campaign-video-controlbar">
+        <button
+          type="button"
+          className="campaign-video-icon-button"
+          aria-label={playing ? controlLabels.pause : controlLabels.play}
+          title={playing ? controlLabels.pause : controlLabels.play}
+          onClick={togglePlay}
+        >
+          {playing ? <Pause size={18} /> : <Play size={18} fill="currentColor" />}
+        </button>
+        <span className="campaign-video-time" aria-live="off">
+          {timeLabel(currentTime)} <span>/</span> {timeLabel(duration)}
+        </span>
+        <input
+          className="campaign-video-seek"
+          type="range"
+          min={0}
+          max={duration || 0}
+          step={0.1}
+          value={Math.min(currentTime, duration || 0)}
+          style={{ "--video-progress": `${progress}%` } as React.CSSProperties}
+          aria-label={controlLabels.seek}
+          onChange={event => {
+            if (video) video.currentTime = Number(event.currentTarget.value);
+          }}
+        />
+        <button
+          type="button"
+          className="campaign-video-speed"
+          aria-label={`${controlLabels.speed}: ${playbackRate}×`}
+          title={controlLabels.speed}
+          onClick={setRate}
+        >
+          {playbackRate}×
+        </button>
+        <div className="campaign-video-volume">
+          <button
+            type="button"
+            className="campaign-video-icon-button"
+            aria-label={muted ? controlLabels.unmute : controlLabels.mute}
+            title={muted ? controlLabels.unmute : controlLabels.mute}
+            onClick={toggleMute}
+          >
+            {muted ? <VolumeX size={18} /> : <Volume2 size={18} />}
+          </button>
+          <input
+            className="campaign-video-volume-range"
+            type="range"
+            min={0}
+            max={1}
+            step={0.05}
+            value={muted ? 0 : volume}
+            style={{ "--video-volume": `${(muted ? 0 : volume) * 100}%` } as React.CSSProperties}
+            aria-label={controlLabels.volume}
+            onChange={event => {
+              if (!video) return;
+              const nextVolume = Number(event.currentTarget.value);
+              video.volume = nextVolume;
+              video.muted = nextVolume === 0;
+            }}
+          />
+        </div>
+        <button
+          type="button"
+          className="campaign-video-icon-button"
+          aria-label={fullscreen ? controlLabels.exitFullscreen : controlLabels.fullscreen}
+          title={fullscreen ? controlLabels.exitFullscreen : controlLabels.fullscreen}
+          onClick={toggleFullscreen}
+        >
+          {fullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+        </button>
       </div>
     </div>
   );

@@ -42,6 +42,20 @@ export const offerMarketActivation: Record<MarketId, OfferActivation> = {
     endsAt: null,
     method: null,
   },
+  UK: {
+    eligible: true,
+    confirmed: false,
+    startsAt: null,
+    endsAt: null,
+    method: null,
+  },
+  AF: {
+    eligible: true,
+    confirmed: false,
+    startsAt: null,
+    endsAt: null,
+    method: null,
+  },
 };
 
 export function getOfferTier(quantity: number) {
@@ -89,12 +103,12 @@ export const blackFridayCopy = {
     dates: "۲۷ تا ۳۰ نوامبر ۲۰۲۶ (۶ تا ۹ قوس ۱۴۰۵)",
     duration: "یک پیشنهاد چهارروزه",
     planned:
-      "برای تمام بازارهای آمازون ریحانه؛ روش استفاده از تخفیف و ساعت دقیق شروع و پایان به‌زودی اعلام می‌شود.",
+      "طرح تخفیف اعلام‌شدهٔ ریحانه؛ فروشگاه‌های شرکت‌کننده، روش استفاده و ساعت دقیق شروع و پایان به‌زودی اعلام می‌شود.",
     before: "کمپین هنوز شروع نشده است.",
     ended: "این آفر به پایان رسیده است.",
-    active: "شرایط آفر این بازار را در آمازون بررسی کنید.",
+    active: "شرایط آفر این فروشگاه را پیش از خرید بررسی کنید.",
     imageNote:
-      "عکس‌ها تعداد دیگ‌ها را نشان می‌دهند؛ رنگ و گنجایش هر دیگ را در آمازون انتخاب و موجودی‌اش را بررسی کنید.",
+      "عکس‌ها تعداد دیگ‌ها را نشان می‌دهند؛ رنگ و سایز هر دیگ را در فروشگاه انتخاب و موجودی‌اش را بررسی کنید.",
     quantity: "تعداد دیگ موردنظرتان",
     count: "{quantity} دیگ",
     percent: "{discount}٪ تخفیف",
@@ -113,10 +127,10 @@ export const blackFridayCopy = {
     notCart:
       "این انتخاب به سبد آمازون اضافه نشده است؛ تعداد و مدل را در آمازون تنظیم کنید.",
     notApplied:
-      "درصدها مربوط به طرح اعلام‌شدهٔ ریحانه‌اند؛ اعمال تخفیف در این بازار تأیید شده است.",
+      "این درصدها طرح اعلام‌شدهٔ ریحانه‌اند؛ جزئیات اجرا در هر فروشگاه هنوز تأیید نشده است.",
     knownOffers:
-      "طرح بلک‌فرایدی: ۱ دیگ ۱۰٪، ۲ دیگ ۱۵٪، ۳ دیگ ۲۰٪؛ شامل تمام بازارهای آمازون ریحانه؛ روش استفاده به‌زودی اعلام می‌شود.",
-    sellerAction: "دیدن محصول عادی در آمازون",
+      "طرح بلک‌فرایدی ریحانه: ۱ دیگ ۱۰٪، ۲ دیگ ۱۵٪، ۳ دیگ ۲۰٪؛ فروشگاه‌های شرکت‌کننده و روش استفاده به‌زودی اعلام می‌شوند.",
+    sellerAction: "دیدن محصول در فروشگاه",
     pendingAction: "پرسش دربارهٔ اجرای آفر",
     ordinaryListing:
       "این پیوند صفحهٔ عادی محصول است؛ تخفیف یا تعداد انتخابی را اعمال نمی‌کند.",
@@ -132,12 +146,12 @@ export const blackFridayCopy = {
     dates: "27–30 November 2026",
     duration: "A four-day offer",
     planned:
-      "All Rayhana Amazon marketplaces are included. Redemption steps and exact start/end times will be announced.",
+      "Rayhana’s announced discount plan is shown here. Participating stores, redemption steps and exact start/end times will be announced.",
     before: "The campaign has not started yet.",
     ended: "This offer has ended.",
-    active: "Check this marketplace’s offer conditions on Amazon.",
+    active: "Check this store’s offer conditions before buying.",
     imageNote:
-      "Photos illustrate the number of pots, not a fixed colour bundle. Choose the exact colours and sizes and check availability on Amazon.",
+      "Photos illustrate the number of pots, not a fixed colour bundle. Choose the exact colours and sizes and check availability with the store.",
     quantity: "How many pots are you considering?",
     count: "{quantity} {unit}",
     percent: "{discount}% off",
@@ -157,10 +171,10 @@ export const blackFridayCopy = {
     notCart:
       "This selection has not been added to an Amazon cart. Set the quantity and exact model on Amazon.",
     notApplied:
-      "These tiers are Rayhana’s announced offer plan. Discount redemption in this marketplace is confirmed.",
+      "These percentages are Rayhana’s announced plan. Store participation and redemption details are not yet confirmed.",
     knownOffers:
-      "Black Friday plan: 1 pot, 10%; 2 pots, 15%; 3 pots, 20%. All Rayhana Amazon marketplaces are included; redemption steps will be announced.",
-    sellerAction: "View the regular Amazon listing",
+      "Rayhana’s Black Friday plan: 1 pot, 10%; 2 pots, 15%; 3 pots, 20%. Participating stores and redemption steps will be announced.",
+    sellerAction: "View the product at the store",
     pendingAction: "Ask about offer redemption",
     ordinaryListing:
       "This is the regular product page; it does not apply the discount or your selected quantity.",
@@ -176,12 +190,12 @@ export const blackFridayCopy = {
     dates: "د ۲۰۲۶ د نومبر له ۲۷ تر ۳۰ پورې",
     duration: "څلور ورځنی وړاندیز",
     planned:
-      "د ریحانې ټول آمازون بازارونه شامل دي؛ د تخفیف کارولو طریقه او د پیل او پای دقیق ساعتونه به اعلان شي.",
+      "دلته د ریحانې اعلان شوی د تخفیف پلان دی؛ ګډون کوونکي پلورنځي، د کارولو طریقه او دقیق وختونه به اعلان شي.",
     before: "کمپاین لا نه دی پیل شوی.",
     ended: "دا وړاندیز پای ته رسېدلی دی.",
-    active: "د دې بازار د وړاندیز شرطونه په آمازون کې وګورئ.",
+    active: "له پېرود مخکې د دې پلورنځي د وړاندیز شرطونه وګورئ.",
     imageNote:
-      "انځورونه د دیګونو شمېر ښيي، نه په ټاکلو رنګونو کې یوه بسته. په آمازون کې رنګونه او اندازې وټاکئ او موجودیت وګورئ.",
+      "انځورونه د دیګونو شمېر ښيي، نه په ټاکلو رنګونو کې یوه بسته. په پلورنځي کې رنګونه او اندازې وټاکئ او موجودیت وګورئ.",
     quantity: "څو دیګونه غواړئ؟",
     count: "{quantity} {unit}",
     percent: "{discount}٪ تخفیف",
@@ -200,10 +214,10 @@ export const blackFridayCopy = {
     notCart:
       "دا انتخاب د آمازون سبد ته نه دی اضافه شوی؛ هلته شمېر او دقیق ماډل وټاکئ.",
     notApplied:
-      "دا د ریحانې اعلان شوی پلان دی؛ په دې بازار کې د تخفیف کارول تایید شوي دي.",
+      "دا سلنې د ریحانې اعلان شوی پلان دی؛ په هر پلورنځي کې د پلي کېدو جزئیات لا نه دي تایید شوي.",
     knownOffers:
-      "د بلک‌فرایډې پلان: ۱ دیګ ۱۰٪، ۲ دیګونه ۱۵٪، ۳ دیګونه ۲۰٪؛ د هر بازار شرطونه به اعلان شي.",
-    sellerAction: "د آمازون عادي محصول وګورئ",
+      "د ریحانې د بلک‌فرایډې پلان: ۱ دیګ ۱۰٪، ۲ دیګونه ۱۵٪، ۳ دیګونه ۲۰٪؛ ګډون کوونکي پلورنځي او د کارولو طریقه به اعلان شي.",
+    sellerAction: "محصول په پلورنځي کې وګورئ",
     pendingAction: "د تخفیف کارولو پوښتنه",
     ordinaryListing:
       "دا د عادي محصول پاڼه ده؛ تخفیف او ستاسو ټاکلی شمېر نه پلي کوي.",

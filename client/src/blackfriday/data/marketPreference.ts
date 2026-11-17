@@ -19,7 +19,7 @@ export const emptyMarketPreference: MarketPreference = {
 };
 
 export function isMarket(value: unknown): value is MarketId {
-  return typeof value === "string" && ["US", "CA", "AU", "DE"].includes(value);
+  return typeof value === "string" && ["US", "CA", "AU", "DE", "UK", "AF"].includes(value);
 }
 
 export function marketPreferenceReducer(
