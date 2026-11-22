@@ -1,0 +1,988 @@
+@font-face {
+  font-family: RayhanaCampaign;
+  src: url("/fonts/rayhana-campaign-bold.woff2") format("woff2");
+  font-weight: 700 900;
+  font-style: normal;
+  font-display: swap;
+}
+/* The supplied bold composition, as real HTML with unchanged offer controls. */
+.black-friday-campaign .announcement {
+  background: var(--red);
+  color: white;
+  min-height: 34px;
+  padding: 7px 18px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.4px;
+}
+.black-friday-campaign .announcement a {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 5px 22px;
+}
+.black-friday-campaign .announcement-action {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.black-friday-campaign .announcement a:focus-visible {
+  outline-color: white;
+}
+.black-friday-campaign .site-header {
+  background: color-mix(in srgb, var(--paper) 93%, transparent);
+}
+.black-friday-campaign .header-inner {
+  width: min(1512px, calc(100% - 80px));
+  height: 86px;
+  gap: 24px;
+}
+.black-friday-campaign .brand,
+.black-friday-campaign .brand img {
+  width: 192px;
+}
+.black-friday-campaign .brand img {
+  max-height: 62px;
+}
+.black-friday-campaign .desktop-nav {
+  font-size: 12px;
+  gap: 23px;
+}
+.black-friday-campaign .desktop-nav a[href="#black-friday"] {
+  color: var(--red);
+  font-weight: 600;
+}
+.black-friday-campaign .hero {
+  width: min(1512px, calc(100% - 80px));
+  grid-template-columns: minmax(0, 1.08fr) minmax(0, 1fr);
+  column-gap: 20px;
+  row-gap: 16px;
+  min-height: 0;
+  padding-block: 24px 21px;
+  align-items: center;
+  position: relative;
+}
+.black-friday-campaign .hero-copy {
+  padding: 0;
+  min-width: 0;
+  align-self: center;
+  position: relative;
+  z-index: 3;
+}
+.black-friday-campaign .campaign-label {
+  border: 0;
+  background: transparent;
+  padding: 0;
+  border-radius: 0;
+  margin-bottom: 14px;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--red);
+  letter-spacing: 3px;
+}
+.black-friday-campaign .hero h1 {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-weight: 700;
+  font-size: clamp(64px, 6.45vw, 108px);
+  line-height: 0.99;
+  letter-spacing: -4.5px;
+  margin-bottom: 16px;
+}
+.black-friday-campaign.is-ltr .hero h1 > span:first-child {
+  text-transform: uppercase;
+}
+.black-friday-campaign .hero h1 .red-line {
+  font-size: 1em;
+  margin-top: 1px;
+}
+.black-friday-campaign .hero-eyebrow {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-size: clamp(20px, 2.02vw, 32px);
+  font-weight: 700;
+  line-height: 1.3;
+  color: var(--ink);
+  letter-spacing: -0.7px;
+  margin-bottom: 5px;
+}
+.black-friday-campaign .hero-body {
+  max-width: none;
+  color: var(--ink);
+  font-size: clamp(15px, 1.38vw, 21px);
+  line-height: 1.6;
+  letter-spacing: 0.3px;
+  margin-bottom: 19px;
+}
+.black-friday-campaign .hero-actions {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 13px;
+  margin-bottom: 14px;
+}
+.black-friday-campaign .hero-actions .button {
+  border-radius: 999px;
+  min-height: 52px;
+  padding: 14px 27px;
+  font-size: 13px;
+  min-width: 0;
+  gap: 13px;
+}
+.black-friday-campaign .hero-actions .button.outline {
+  border: 1.5px solid var(--red);
+  background: transparent;
+  color: var(--ink);
+}
+.black-friday-campaign .hero-actions .button.outline:hover {
+  background: color-mix(in srgb, var(--red) 5%, var(--paper));
+}
+.black-friday-campaign .hero-footnote {
+  margin-block: 4px 0;
+  font-size: 12px;
+  letter-spacing: 1px;
+  line-height: 1.8;
+  color: var(--ink);
+}
+.black-friday-campaign .hero-footnote .tiny-line {
+  display: none;
+}
+.black-friday-campaign .hero-visual {
+  position: relative;
+  padding: 0;
+  min-width: 0;
+  align-self: center;
+  isolation: isolate;
+}
+.black-friday-campaign .hero-arch {
+  position: relative;
+  aspect-ratio: 1.45;
+  overflow: visible;
+  border-radius: 0;
+  background: none;
+  box-shadow: none;
+  isolation: isolate;
+}
+.black-friday-campaign .hero-arch::before {
+  content: none;
+}
+.hero-kitchen-backdrop {
+  position: absolute;
+  inset: -8% -24% -6% -9%;
+  background-size: cover;
+  background-position: 70% 75%;
+  z-index: -2;
+  pointer-events: none;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent, #000 22%, #000 90%, transparent),
+    linear-gradient(180deg, transparent, #000 24%, #000 88%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image:
+    linear-gradient(90deg, transparent, #000 22%, #000 90%, transparent),
+    linear-gradient(180deg, transparent, #000 24%, #000 88%, transparent);
+  mask-composite: intersect;
+}
+.hero-red-halo {
+  position: absolute;
+  width: 78%;
+  aspect-ratio: 1;
+  top: -11%;
+  inset-inline-start: 4%;
+  border-radius: 50%;
+  clip-path: inset(0 0 38% 0);
+  background: radial-gradient(
+    circle at 50% 56%,
+    #fae9e5 0%,
+    #f2b4ad 31%,
+    #e25254 65%,
+    #cf15257d 89%,
+    #cf152500 100%
+  );
+  opacity: 0.88;
+  z-index: -1;
+  pointer-events: none;
+}
+.black-friday-campaign .hero-product-image {
+  width: 108%;
+  max-width: none;
+  height: 100%;
+  margin-inline-start: -4%;
+  padding: 0;
+  object-fit: contain;
+  position: relative;
+  z-index: 1;
+  mix-blend-mode: normal;
+  filter: drop-shadow(0 21px 13px #49312421);
+}
+.hero-scene-message {
+  position: absolute;
+  top: -3%;
+  inset-inline-end: -2%;
+  max-width: 115px;
+  font:
+    italic 16px/1.25 Georgia,
+    serif;
+  color: var(--ink);
+  text-align: center;
+  z-index: 2;
+}
+.hero-scene-message::after {
+  content: "";
+  display: block;
+  margin: 15px auto 0;
+  width: 32px;
+  height: 2px;
+  background: var(--red);
+}
+.black-friday-campaign .hero-cooking-peek {
+  position: absolute;
+  inset-inline-start: 8%;
+  bottom: 4px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  padding: 5px 12px;
+  min-height: 36px;
+  font-size: 9px;
+  background: #fffc;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  box-shadow: none;
+  max-width: 280px;
+  z-index: 4;
+}
+.black-friday-campaign .hero-cooking-peek > img {
+  width: 24px;
+  height: 24px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+.black-friday-campaign .hero-peek-play {
+  width: 22px;
+  height: 22px;
+}
+.hero-offer-display {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 4;
+  display: grid;
+  grid-template-columns: minmax(0, 1.38fr) minmax(0, 1fr);
+  gap: 16px 28px;
+  padding-top: 7px;
+}
+.hero-pot-tiers {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.hero-tier {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 0;
+  min-height: 286px;
+  gap: 4px;
+  padding: 12px 8px 11px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: #fbf7f1e6;
+  transition:
+    border-color 150ms,
+    background 150ms;
+}
+.hero-tier.highest-tier {
+  border-color: var(--red);
+  background: #fbefebe8;
+}
+.hero-tier:hover {
+  border-color: var(--red);
+}
+.hero-tier.is-selected {
+  box-shadow: inset 0 0 0 1px var(--red);
+}
+.hero-tier > img {
+  width: 100%;
+  height: 83px;
+  object-fit: contain;
+  mix-blend-mode: normal;
+}
+.hero-tier-count {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.hero-tier > strong {
+  font-size: clamp(25px, 3.2vw, 44px);
+  font-weight: 600;
+  letter-spacing: -1.9px;
+  line-height: 1.2;
+  text-transform: uppercase;
+}
+.hero-tier.highest-tier > strong {
+  color: var(--red);
+}
+.hero-tier-purpose {
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.6;
+  text-align: center;
+}
+.hero-tier-check {
+  position: absolute;
+  top: 8px;
+  inset-inline-end: 8px;
+  height: 15px;
+  width: 15px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+}
+.hero-tier.is-selected .hero-tier-check {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+}
+.hero-mandoline-offer {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  align-items: stretch;
+  gap: 6px;
+  min-width: 0;
+  min-height: 286px;
+  padding: 20px 12px 18px 22px;
+  border: 1px solid #e4ddd3;
+  border-radius: 16px;
+  overflow: hidden;
+  background: #f7f2ea;
+  box-shadow: 0 0 0 1px var(--line);
+}
+.hero-mandoline-offer:hover {
+  box-shadow: 0 0 0 1px var(--red);
+}
+.hero-mandoline-offer-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  gap: 7px;
+  position: relative;
+  z-index: 2;
+  min-width: 0;
+  align-self: center;
+}
+.hero-mandoline-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+.hero-mandoline-offer strong {
+  font:
+    700 clamp(30px, 3.7vw, 48px) / 1.05 RayhanaCampaign,
+    Georgia,
+    serif;
+  color: var(--red);
+  letter-spacing: -2px;
+  white-space: nowrap;
+  text-transform: uppercase;
+}
+.hero-mandoline-description {
+  color: var(--ink);
+  font-size: 10px;
+  line-height: 1.7;
+  max-width: 230px;
+}
+.hero-mandoline-link {
+  color: var(--red);
+  font-size: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 3px;
+}
+.hero-mandoline-new {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  padding: 5px 10px;
+  border: 1px solid #de102028;
+  border-radius: 999px;
+  background: #fff3ed;
+  color: var(--red);
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+.hero-mandoline-visual {
+  position: relative;
+  min-width: 0;
+  height: 100%;
+  min-height: 244px;
+  isolation: isolate;
+  pointer-events: none;
+  z-index: 1;
+}
+.hero-mandoline-backdrop {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 88% 82%;
+  border-radius: 0;
+  z-index: 0;
+  opacity: 0.7;
+  -webkit-mask-image:
+    linear-gradient(90deg, transparent 0%, #000 35%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 35%, #000 100%);
+  -webkit-mask-composite: initial;
+  mask-composite: add;
+}
+.hero-mandoline-product {
+  position: relative;
+  z-index: 2;
+  width: 118%;
+  max-width: none;
+  height: 252px;
+  object-fit: contain;
+  min-width: 0;
+  margin-inline-start: -4%;
+  filter: drop-shadow(0 9px 4px #362e211a);
+}
+.hero-offer-footer {
+  grid-column: 1 / -1;
+  display: flex;
+  align-items: center;
+  gap: 26px;
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+  margin-top: 2px;
+}
+.hero-offer-scope {
+  color: var(--muted);
+  font-size: 10px;
+  line-height: 1.8;
+}
+.hero-footer-rule {
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+.hero-footer-signature {
+  font-size: 9px;
+  font-weight: 600;
+  color: var(--red);
+  letter-spacing: 3px;
+  white-space: nowrap;
+}
+.hero-country-strip {
+  grid-column: 1 / -1;
+}
+.hero-country-strip .market-recommendation.is-compact {
+  max-width: none;
+  margin: 0;
+  background: none;
+  border: 0;
+  box-shadow: none;
+  padding: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 7px 20px;
+}
+.hero-country-strip .recommendation-top {
+  flex: 1 1 390px;
+  gap: 8px;
+  align-items: center;
+}
+.hero-country-strip .recommendation-top > div {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+}
+.hero-country-strip .recommendation-top strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  font-size: 11px;
+}
+.hero-country-strip .recommendation-top strong small {
+  display: inline;
+  font-size: 9px;
+  margin: 0;
+}
+.hero-country-strip .recommendation-caption,
+.hero-country-strip .recommendation-note,
+.hero-country-strip .recommendation-pending {
+  font-size: 9px;
+  margin: 0;
+  line-height: 1.8;
+}
+.hero-country-strip .recommendation-change {
+  padding: 8px 4px;
+  min-height: 36px;
+  font-size: 10px;
+  white-space: nowrap;
+  border: 0;
+  text-decoration: underline;
+  text-underline-offset: 4px;
+}
+.black-friday-campaign .mandoline-offer-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  color: white;
+  background: var(--red);
+  border-radius: 999px;
+  padding: 7px 15px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.black-friday-campaign .closing-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.black-friday-campaign .closing-actions .outline {
+  color: white;
+  border-color: #fffa;
+}
+.black-friday-campaign .closing-actions .outline:hover {
+  background: #ffffff12;
+}
+.black-friday-campaign.is-rtl .announcement,
+.black-friday-campaign.is-rtl .campaign-label {
+  font-size: 12px;
+  letter-spacing: 0;
+}
+.black-friday-campaign.is-rtl .announcement-action {
+  font-size: 11px;
+}
+.black-friday-campaign.is-rtl .desktop-nav {
+  font-size: 13px;
+}
+.black-friday-campaign.is-rtl .hero h1 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: clamp(37px, 4.5vw, 68px);
+  font-weight: 700;
+  line-height: 1.37;
+  letter-spacing: -1.9px;
+}
+.black-friday-campaign.is-rtl .hero-eyebrow {
+  font-family: Vazirmatn, sans-serif;
+  font-size: clamp(16px, 1.45vw, 23px);
+  line-height: 1.8;
+  letter-spacing: -0.5px;
+}
+.black-friday-campaign.is-rtl .hero-body {
+  font-size: 16px;
+  letter-spacing: 0;
+  line-height: 1.9;
+}
+.black-friday-campaign.is-rtl .hero-actions .button {
+  font-size: 14px;
+}
+.black-friday-campaign.is-rtl .hero-footnote {
+  font-size: 12px;
+  letter-spacing: 0;
+}
+.is-rtl .hero-scene-message {
+  font-family: Vazirmatn, sans-serif;
+  font-style: normal;
+  font-size: 13px;
+  line-height: 1.6;
+}
+.is-rtl .hero-tier-count {
+  font-size: 12px;
+  letter-spacing: 0;
+}
+.is-rtl .hero-tier > strong {
+  font-size: clamp(23px, 2.75vw, 36px);
+  letter-spacing: -0.7px;
+}
+.is-rtl .hero-tier-purpose {
+  font-size: 11px;
+}
+.is-rtl .hero-mandoline-label {
+  font-size: 13px;
+  letter-spacing: 0;
+}
+.is-rtl .hero-mandoline-offer strong {
+  font-family: Vazirmatn, sans-serif;
+  font-size: clamp(28px, 3.25vw, 43px);
+  line-height: 1.4;
+  letter-spacing: -1px;
+}
+.is-rtl .hero-mandoline-description,
+.is-rtl .hero-mandoline-link,
+.is-rtl .hero-offer-scope {
+  font-size: 11px;
+}
+.is-rtl .hero-country-strip .recommendation-caption,
+.is-rtl .hero-country-strip .recommendation-note,
+.is-rtl .hero-country-strip .recommendation-pending,
+.is-rtl .hero-country-strip .recommendation-change {
+  font-size: 11px;
+}
+@media (max-width: 1120px) {
+  .black-friday-campaign .header-inner,
+  .black-friday-campaign .hero {
+    width: calc(100% - 56px);
+  }
+  .black-friday-campaign .brand,
+  .black-friday-campaign .brand img {
+    width: 156px;
+  }
+  .black-friday-campaign .desktop-nav {
+    gap: 14px;
+    font-size: 10px;
+  }
+  .black-friday-campaign.is-rtl .desktop-nav {
+    font-size: 12px;
+  }
+  .black-friday-campaign .header-actions {
+    gap: 10px;
+  }
+  .black-friday-campaign .hero h1 {
+    font-size: clamp(47px, 6.35vw, 72px);
+    letter-spacing: -3px;
+  }
+  .black-friday-campaign.is-rtl .hero h1 {
+    font-size: clamp(35px, 4.6vw, 47px);
+  }
+  .black-friday-campaign .hero-eyebrow {
+    font-size: 21px;
+  }
+  .hero-offer-display {
+    gap: 14px 20px;
+  }
+  .hero-mandoline-offer {
+    padding: 14px;
+    grid-template-columns: 1fr 1fr;
+  }
+  .hero-mandoline-offer strong {
+    font-size: 39px;
+  }
+  .hero-mandoline-product {
+    height: 155px;
+  }
+}
+@media (max-width: 850px) {
+  .black-friday-campaign .hero {
+    grid-template-columns: minmax(0, 1fr);
+    padding-top: 25px;
+    row-gap: 21px;
+  }
+  .black-friday-campaign .hero-copy {
+    width: 100%;
+    max-width: 650px;
+    margin-inline: auto;
+  }
+  .black-friday-campaign .hero h1 {
+    font-size: clamp(58px, 10.1vw, 84px);
+    letter-spacing: -3.7px;
+  }
+  .black-friday-campaign.is-rtl .hero h1 {
+    font-size: clamp(39px, 6.7vw, 56px);
+  }
+  .black-friday-campaign .hero-visual {
+    width: min(560px, 90%);
+    margin-inline: auto;
+  }
+  .hero-scene-message {
+    inset-inline-end: -6%;
+    font-size: 16px;
+    max-width: 85px;
+  }
+  .hero-offer-display {
+    grid-template-columns: 1fr;
+  }
+  .hero-mandoline-offer {
+    grid-template-columns: 0.9fr 1.1fr;
+    padding: 18px 22px;
+  }
+  .hero-mandoline-offer strong {
+    font-size: 50px;
+  }
+  .hero-mandoline-product {
+    height: 165px;
+    width: 105%;
+  }
+  .hero-tier > strong {
+    font-size: 34px;
+  }
+  .hero-offer-footer {
+    gap: 15px;
+  }
+  .hero-footer-signature {
+    font-size: 8px;
+    letter-spacing: 1.5px;
+  }
+}
+@media (max-width: 640px) {
+  .black-friday-campaign .announcement {
+    font-size: 9px;
+    letter-spacing: 0.65px;
+    padding: 7px 12px;
+  }
+  .black-friday-campaign .announcement-action {
+    font-size: 9px;
+  }
+  .black-friday-campaign.is-rtl .announcement {
+    font-size: 11px;
+  }
+  .black-friday-campaign.is-rtl .announcement-action {
+    font-size: 10px;
+  }
+  .black-friday-campaign .header-inner,
+  .black-friday-campaign .hero {
+    width: calc(100% - 40px);
+  }
+  .black-friday-campaign .header-inner {
+    height: 72px;
+    gap: 12px;
+  }
+  .black-friday-campaign .brand,
+  .black-friday-campaign .brand img {
+    width: 136px;
+  }
+  .black-friday-campaign .hero {
+    padding-block: 24px 20px;
+    row-gap: 18px;
+  }
+  .black-friday-campaign .campaign-label {
+    font-size: 9px;
+    letter-spacing: 1.8px;
+    margin-bottom: 12px;
+  }
+  .black-friday-campaign .hero h1 {
+    font-size: clamp(40px, 11.3vw, 67px);
+    line-height: 1.02;
+    letter-spacing: -2.6px;
+    margin-bottom: 13px;
+  }
+  .black-friday-campaign.is-rtl .hero h1 {
+    font-size: clamp(32px, 8.8vw, 44px);
+    letter-spacing: -1.3px;
+    line-height: 1.4;
+    margin-bottom: 10px;
+  }
+  .black-friday-campaign .hero-eyebrow {
+    font-size: 20px;
+    letter-spacing: -0.5px;
+  }
+  .black-friday-campaign.is-rtl .hero-eyebrow {
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  .black-friday-campaign .hero-body {
+    font-size: 12px;
+    letter-spacing: 0;
+    margin-bottom: 14px;
+  }
+  .black-friday-campaign.is-rtl .hero-body {
+    font-size: 13px;
+    line-height: 1.9;
+  }
+  .black-friday-campaign .hero-actions {
+    flex-wrap: nowrap;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+  .black-friday-campaign .hero-actions .button {
+    flex: 1;
+    min-height: 48px;
+    padding: 10px 10px;
+    gap: 5px;
+    font-size: 10px;
+  }
+  .black-friday-campaign.is-rtl .hero-actions .button {
+    font-size: 12px;
+  }
+  .black-friday-campaign .hero-actions .button svg {
+    width: 14px;
+    height: 14px;
+  }
+  .black-friday-campaign .hero-footnote {
+    font-size: 9px;
+    letter-spacing: 0.2px;
+  }
+  .black-friday-campaign.is-rtl .hero-footnote {
+    font-size: 10px;
+  }
+  .black-friday-campaign .hero-visual {
+    width: 94%;
+  }
+  .black-friday-campaign .hero-arch {
+    aspect-ratio: 1.35;
+  }
+  .hero-kitchen-backdrop {
+    inset: -4% -16% -9% -4%;
+  }
+  .hero-red-halo {
+    width: 78%;
+    top: -2%;
+  }
+  .hero-scene-message {
+    display: none;
+    font-size: 12px;
+    max-width: 65px;
+    top: 2%;
+    inset-inline-end: -2%;
+  }
+  .is-rtl .hero-scene-message {
+    font-size: 10px;
+    max-width: 62px;
+  }
+  .hero-scene-message::after {
+    width: 23px;
+    margin-top: 8px;
+  }
+  .black-friday-campaign .hero-cooking-peek {
+    position: relative;
+    inset-inline-start: auto;
+    bottom: auto;
+    width: fit-content;
+    margin: 4px auto 0;
+    min-height: 44px;
+    padding: 7px 12px;
+  }
+  .hero-offer-display {
+    gap: 12px;
+    padding-top: 0;
+  }
+  .hero-pot-tiers {
+    gap: 8px;
+  }
+  .hero-tier {
+    padding: 10px 5px;
+    border-radius: 10px;
+    gap: 4px;
+  }
+  .hero-tier > img {
+    height: 60px;
+  }
+  .hero-tier-count {
+    font-size: 9px;
+    letter-spacing: 0.4px;
+  }
+  .hero-tier > strong,
+  .is-rtl .hero-tier > strong {
+    font-size: clamp(17px, 4.9vw, 26px);
+    letter-spacing: -0.8px;
+  }
+  .hero-tier-purpose,
+  .is-rtl .hero-tier-purpose,
+  .is-rtl .hero-tier-count {
+    font-size: 9px;
+    letter-spacing: 0;
+    line-height: 1.6;
+  }
+  .hero-tier-check {
+    width: 14px;
+    height: 14px;
+    top: 6px;
+    inset-inline-end: 6px;
+  }
+  .hero-mandoline-offer {
+    padding: 15px;
+    border-radius: 10px;
+    grid-template-columns: 0.9fr 1.1fr;
+  }
+  .hero-mandoline-label {
+    font-size: 9px;
+  }
+  .hero-mandoline-offer strong {
+    font-size: 32px;
+    letter-spacing: -1.2px;
+  }
+  .is-rtl .hero-mandoline-offer strong {
+    font-size: 26px;
+  }
+  .hero-mandoline-new {
+    font-size: 11px;
+    padding: 4px 8px;
+  }
+  .hero-mandoline-visual {
+    height: 175px;
+  }
+  .hero-mandoline-product {
+    height: 135px;
+  }
+  .hero-mandoline-description,
+  .hero-mandoline-link,
+  .hero-offer-scope {
+    font-size: 9px;
+  }
+  .is-rtl .hero-mandoline-label {
+    font-size: 11px;
+  }
+  .is-rtl .hero-mandoline-description,
+  .is-rtl .hero-mandoline-link,
+  .is-rtl .hero-offer-scope {
+    font-size: 10px;
+  }
+  .hero-offer-footer {
+    flex-wrap: wrap;
+    gap: 8px 12px;
+    padding-top: 12px;
+  }
+  .hero-footer-rule {
+    min-width: 25px;
+  }
+  .hero-footer-signature {
+    font-size: 7px;
+    letter-spacing: 1.4px;
+  }
+  .hero-country-strip .market-recommendation.is-compact {
+    gap: 0;
+  }
+  .hero-country-strip .recommendation-top {
+    gap: 7px;
+    align-items: start;
+  }
+  .hero-country-strip .recommendation-top > div {
+    display: block;
+  }
+  .hero-country-strip .recommendation-top strong {
+    display: block;
+    font-size: 10px;
+  }
+  .hero-country-strip .recommendation-top strong small {
+    display: block;
+  }
+  .hero-country-strip .recommendation-change {
+    min-height: 44px;
+    font-size: 9px;
+    white-space: normal;
+    max-width: 135px;
+    padding-top: 0;
+  }
+  .hero-country-strip .recommendation-note,
+  .hero-country-strip .recommendation-pending {
+    font-size: 9px;
+  }
+  .is-rtl .hero-country-strip .recommendation-change,
+  .is-rtl .hero-country-strip .recommendation-caption,
+  .is-rtl .hero-country-strip .recommendation-note,
+  .is-rtl .hero-country-strip .recommendation-pending {
+    font-size: 10px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-tier,
+  .hero-mandoline-offer {
+    transition: none;
+  }
+}

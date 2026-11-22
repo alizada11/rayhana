@@ -517,7 +517,7 @@ gtag('config', '${gaMeasurementId}');`;
       </header>
 
       {/* Main Content */}
-      <main className="flex-1">{children}</main>
+      <main className={cn("flex-1", isBlackFriday && "black-friday-layout-main")}>{children}</main>
 
       {/* Footer */}
       <footer

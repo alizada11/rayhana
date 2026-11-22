@@ -1,0 +1,1332 @@
+/* Fazeli-informed version only. The previous design's styles are untouched. */
+.design-comparison {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 7px 14px;
+  padding: 8px 20px;
+  font:
+    12px/1.7 Vazirmatn,
+    Poppins,
+    sans-serif;
+  color: #49443f;
+  background: #f2ece3;
+  border-bottom: 1px solid #dcd4c9;
+}
+.design-comparison a {
+  min-height: 36px;
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border: 1px solid #cec3b5;
+  border-radius: 999px;
+}
+.design-comparison a[aria-current] {
+  background: #de1020;
+  color: white;
+  border-color: #de1020;
+}
+.design-comparison a:focus-visible {
+  outline: 2px solid #de1020;
+  outline-offset: 3px;
+}
+.refined-campaign .hero {
+  padding-top: 38px;
+  padding-bottom: 34px;
+}
+.refined-campaign .hero-body {
+  font-size: 17px;
+  line-height: 1.85;
+  max-width: 52ch;
+}
+.refined-campaign.is-rtl .hero-body {
+  font-size: 17px;
+}
+.refined-campaign .campaign-label {
+  font-size: 14px;
+  letter-spacing: 1.6px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+.refined-campaign .rp-preview {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 11px;
+  border-radius: 999px;
+  border: 1px solid #de102036;
+  background: #fff2e8;
+  font-size: 12px;
+  line-height: 1.7;
+  font-weight: 500;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+.refined-campaign .hero h1 {
+  font-size: clamp(54px, 5.5vw, 90px);
+  line-height: 1.07;
+}
+.refined-campaign.is-rtl .hero h1 {
+  font-size: clamp(40px, 4.5vw, 68px);
+  line-height: 1.48;
+}
+.refined-campaign .hero-actions {
+  align-items: center;
+  margin-top: 23px;
+}
+.refined-campaign .hero-actions .button {
+  font-size: 15px;
+  min-height: 54px;
+}
+.refined-campaign .hero-actions .hero-mandoline-button {
+  border: 0;
+  padding-inline: 10px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+}
+.refined-campaign .hero-footnote,
+.refined-campaign.is-rtl .hero-footnote {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0;
+  line-height: 1.9;
+  margin-top: 16px;
+  padding: 8px 12px;
+  border-inline-start: 3px solid var(--red);
+  background: #de102007;
+  border-radius: 10px;
+  width: fit-content;
+  max-width: 100%;
+}
+.refined-campaign .hero-cooking-peek {
+  font-size: 12px;
+  min-height: 44px;
+}
+.refined-campaign .rp-hero-trust {
+  display: flex;
+  align-items: flex-start;
+  gap: 15px 22px;
+  flex-wrap: wrap;
+  padding-top: 4px;
+}
+.refined-campaign .rp-hero-trust a {
+  display: flex;
+  gap: 8px;
+  align-items: flex-start;
+  font-size: 12px;
+  line-height: 1.8;
+  color: var(--ink);
+}
+.refined-campaign .rp-hero-trust svg {
+  flex-shrink: 0;
+  color: var(--red);
+  margin-top: 4px;
+}
+.refined-campaign .rp-hero-trust small {
+  display: block;
+  color: var(--muted);
+  max-width: 35ch;
+  font-size: 11px;
+}
+.refined-campaign .hero-offer-display {
+  margin-top: 22px;
+}
+.refined-campaign .hero-tier-count,
+.refined-campaign .hero-tier-purpose,
+.refined-campaign .hero-mandoline-link {
+  font-size: 12px;
+  letter-spacing: 0;
+}
+.refined-campaign .hero-tier {
+  min-height: 196px;
+}
+.refined-campaign .hero-offer-scope {
+  font-size: 13px;
+}
+.refined-campaign .rp-selection,
+.refined-campaign .rp-risk {
+  padding-block: 68px;
+  border-top: 1px solid var(--line);
+}
+.refined-campaign .rp-selection {
+  scroll-margin-top: 105px;
+}
+.refined-campaign .rp-section-heading {
+  margin-bottom: 30px;
+  max-width: 950px;
+}
+.refined-campaign .rp-section-heading h2 {
+  font:
+    700 clamp(34px, 3.5vw, 54px) / 1.15 RayhanaCampaign,
+    Georgia,
+    serif;
+  letter-spacing: -1.5px;
+  color: var(--ink);
+  text-wrap: balance;
+  margin-bottom: 16px;
+}
+.refined-campaign.is-rtl .rp-section-heading h2 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: clamp(30px, 3vw, 44px);
+  line-height: 1.6;
+  letter-spacing: -0.6px;
+}
+.refined-campaign .rp-section-heading > p:not(.eyebrow) {
+  font-size: 17px;
+  color: var(--muted);
+  line-height: 1.9;
+  max-width: 68ch;
+}
+.refined-campaign .rp-selection > .market-recommendation {
+  margin: 0 0 24px;
+  background: transparent;
+  box-shadow: none;
+  max-width: none;
+  padding: 20px 24px;
+  border-radius: 14px;
+  font-size: 14px;
+}
+.refined-campaign .rp-selection .recommendation-top strong {
+  font-size: 17px;
+}
+.refined-campaign .rp-selection .recommendation-change {
+  min-height: 44px;
+  font-size: 14px;
+}
+.refined-campaign
+  .rp-selection
+  :is(
+    .recommendation-caption,
+    .recommendation-note,
+    .recommendation-pending,
+    .recommendation-privacy,
+    .recommendation-top strong small
+  ) {
+  font-size: 13px;
+  line-height: 1.85;
+}
+.refined-campaign .rp-destinations,
+.refined-campaign .rp-care-details {
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  margin-block: 26px;
+}
+.refined-campaign :is(.rp-destinations, .rp-care-details) > summary {
+  font-size: 16px;
+  cursor: pointer;
+  padding-block: 17px;
+  font-weight: 500;
+}
+.refined-campaign .rp-destinations .market-options {
+  max-width: none;
+  padding-top: 12px;
+}
+.refined-campaign .rp-destinations .market-card {
+  min-height: 146px;
+}
+.refined-campaign .rp-care-details .feature-list {
+  padding-top: 10px;
+}
+.refined-campaign .campaign-pot {
+  padding-block: 66px;
+}
+.refined-campaign .pot-features {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 18px;
+  padding-block: 24px 0;
+}
+.refined-campaign .rp-risk-columns {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 36px;
+  margin-bottom: 28px;
+}
+.refined-campaign .rp-risk-columns article {
+  min-width: 0;
+  border-top: 2px solid var(--red);
+  padding-top: 23px;
+}
+.refined-campaign .rp-risk-columns svg {
+  color: var(--red);
+  width: 24px;
+  height: 24px;
+}
+.refined-campaign .rp-risk-columns h3 {
+  font-size: 20px;
+  line-height: 1.8;
+  margin: 14px 0 10px;
+  font-weight: 600;
+}
+.refined-campaign .rp-risk-columns p {
+  font-size: 16px;
+  line-height: 1.95;
+  color: var(--muted);
+}
+.refined-campaign .rp-risk .text-link {
+  font-size: 15px;
+  margin-top: 16px;
+  min-height: 44px;
+}
+.refined-campaign .rp-risk > .button {
+  font-size: 16px;
+  min-height: 52px;
+}
+.refined-campaign .faq-section {
+  padding-block: 68px;
+}
+.refined-campaign .mobile-sticky > a {
+  font-size: 13px;
+  line-height: 1.6;
+  max-width: 35%;
+}
+.refined-campaign .mobile-sticky .button {
+  font-size: 14px;
+  min-height: 50px;
+}
+/* PurchasePlanner and refined dialog rules are deliberately isolated by rp-/refined-. */
+.rp-planner {
+  color: var(--ink);
+  font-size: 16px;
+  line-height: 1.85;
+}
+.rp-planner fieldset {
+  min-width: 0;
+  border: 0;
+  padding: 0;
+  margin: 0;
+}
+.rp-planner legend {
+  display: block;
+  width: 100%;
+  margin-bottom: 12px;
+  font-weight: 600;
+  font-size: 15px;
+}
+.rp-planner button,
+.rp-planner select,
+.rp-planner a {
+  -webkit-tap-highlight-color: transparent;
+}
+.rp-planner :is(button, select, a):focus-visible,
+.refined-campaign summary:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+.rp-planner .market-field {
+  margin-top: 0;
+}
+.rp-planner .select-wrap {
+  border-radius: 12px;
+  background: var(--paper);
+}
+.rp-planner select {
+  font-size: 16px;
+  min-height: 52px;
+}
+.rp-planner .button {
+  min-height: 54px;
+  font-size: 16px;
+  border-radius: 999px;
+  white-space: normal;
+  text-align: center;
+}
+.refined-buy-dialog {
+  padding: 0;
+  width: min(840px, calc(100vw - 40px));
+  max-height: min(90dvh, 920px);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.refined-buy-dialog .dialog-close {
+  position: absolute;
+  z-index: 10;
+  top: 18px;
+  inset-inline-end: 18px;
+  min-width: 40px;
+  min-height: 40px;
+}
+.refined-buy-dialog .rp-planner {
+  padding: 24px 30px 30px;
+}
+@media (max-width: 1100px) {
+  .refined-campaign .header-inner {
+    gap: 18px;
+  }
+  .refined-campaign .desktop-nav {
+    gap: 15px;
+  }
+}
+@media (max-width: 850px) {
+  .refined-campaign .hero-copy {
+    max-width: none;
+  }
+  .refined-campaign .rp-risk-columns {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 26px;
+  }
+  .refined-campaign .rp-risk-columns article {
+    display: grid;
+    grid-template-columns: 30px minmax(0, 1fr);
+    gap: 0 14px;
+  }
+  .refined-campaign .rp-risk-columns article > svg {
+    margin-top: 4px;
+  }
+  .refined-campaign .rp-risk-columns h3 {
+    margin: 0 0 10px;
+  }
+  .refined-campaign .rp-risk-columns article > p,
+  .refined-campaign .rp-risk-columns .text-link {
+    grid-column: 2;
+  }
+}
+@media (max-width: 640px) {
+  .design-comparison {
+    gap: 4px 8px;
+    padding: 7px 16px;
+    font-size: 11px;
+  }
+  .design-comparison > span {
+    width: 100%;
+    text-align: center;
+  }
+  .refined-campaign .hero {
+    padding-top: 27px;
+    row-gap: 23px;
+  }
+  .refined-campaign .hero h1 {
+    font-size: clamp(38px, 10.6vw, 65px);
+    letter-spacing: -2px;
+  }
+  .refined-campaign.is-rtl .hero h1 {
+    font-size: clamp(30px, 8.2vw, 42px);
+    line-height: 1.6;
+    letter-spacing: -1px;
+  }
+  .refined-campaign .hero-body,
+  .refined-campaign.is-rtl .hero-body {
+    font-size: 15px;
+    line-height: 1.95;
+  }
+  .refined-campaign .hero-actions {
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 20px;
+  }
+  .refined-campaign .hero-actions .hero-button {
+    flex: 1 1 100%;
+    font-size: 16px;
+  }
+  .refined-campaign .hero-actions .hero-mandoline-button {
+    flex: 0 1 auto;
+    min-height: 44px;
+    font-size: 14px;
+  }
+  .refined-campaign .hero-footnote,
+  .refined-campaign.is-rtl .hero-footnote {
+    font-size: 14px;
+  }
+  .refined-campaign .rp-hero-trust {
+    gap: 12px;
+  }
+  .refined-campaign .rp-hero-trust a {
+    font-size: 12px;
+  }
+  .refined-campaign .hero-offer-display {
+    margin-top: 0;
+  }
+  .refined-campaign .hero-tier {
+    min-height: 162px;
+  }
+  .refined-campaign .hero-tier-purpose,
+  .refined-campaign .hero-tier-count {
+    font-size: 11px;
+  }
+  .refined-campaign .hero-tier > strong {
+    font-size: clamp(21px, 6vw, 30px);
+  }
+  .refined-campaign .hero-mandoline-link,
+  .refined-campaign .hero-offer-scope {
+    font-size: 12px;
+  }
+  .refined-campaign .hero-visual {
+    width: 90%;
+  }
+  .refined-campaign .rp-selection,
+  .refined-campaign .rp-risk {
+    padding-block: 46px;
+  }
+  .refined-campaign .rp-section-heading h2,
+  .refined-campaign.is-rtl .rp-section-heading h2 {
+    font-size: 30px;
+  }
+  .refined-campaign .rp-section-heading > p:not(.eyebrow) {
+    font-size: 16px;
+  }
+  .refined-campaign .rp-selection > .market-recommendation {
+    padding: 16px;
+  }
+  .refined-campaign .rp-selection .recommendation-change {
+    white-space: normal;
+    max-width: 100px;
+  }
+  .refined-campaign .rp-risk > .button {
+    width: 100%;
+  }
+  .refined-campaign .mobile-sticky {
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    gap: 12px;
+  }
+  .refined-buy-dialog {
+    width: calc(100vw - 20px);
+    max-height: 92dvh;
+    border-radius: 18px;
+  }
+  .refined-buy-dialog .rp-planner {
+    padding: 18px 20px 24px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .refined-campaign *,
+  .refined-buy-dialog * {
+    scroll-behavior: auto;
+  }
+}
+
+/* Controlled choice fields, with one compact selection summary. */
+.rp-planner:not(.rp-planner--compact) {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(340px, 0.94fr);
+  gap: 24px 36px;
+  padding: 32px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--red);
+  border-radius: 20px;
+}
+.rp-planner:not(.rp-planner--compact) > .rp-country {
+  grid-column: 1;
+  grid-row: 1;
+}
+.rp-planner:not(.rp-planner--compact) > .rp-choices {
+  grid-column: 1;
+  grid-row: 2;
+}
+.rp-planner:not(.rp-planner--compact) > .rp-summary {
+  grid-column: 2;
+  grid-row: 1 / 3;
+}
+.rp-planner:not(.rp-planner--compact) > .rp-action-area {
+  grid-column: 2;
+  grid-row: 3 / 5;
+  align-self: start;
+}
+.rp-planner:not(.rp-planner--compact) > .rp-conditions {
+  grid-column: 1;
+  grid-row: 3;
+}
+.rp-planner:not(.rp-planner--compact) > .rp-support {
+  grid-column: 1;
+  grid-row: 4;
+}
+.rp-planner .rp-choices {
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+.rp-planner .rp-radio-row {
+  display: flex;
+  gap: 10px;
+}
+.rp-planner .rp-radio {
+  display: flex;
+  flex: 1 1 0;
+  gap: 8px;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 11px 12px;
+  min-width: 0;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+  line-height: 1.8;
+}
+.rp-planner .rp-radio--selected {
+  background: #de102008;
+  border-color: var(--red);
+  box-shadow: inset 0 0 0 1px var(--red);
+}
+.rp-planner .rp-radio-input {
+  accent-color: var(--red);
+  flex-shrink: 0;
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+}
+.rp-planner .rp-radio:has(input:focus-visible) {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+.rp-planner .rp-summary {
+  background: #f3ede3;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  padding: 24px;
+  align-self: stretch;
+}
+.rp-planner .rp-summary-heading {
+  display: flex;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: center;
+}
+.rp-planner .rp-summary-title {
+  font-size: 17px;
+  font-weight: 600;
+}
+.rp-planner .rp-preview {
+  font-size: 12px;
+  color: var(--red);
+  padding: 3px 9px;
+  border: 1px solid #de102036;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.rp-planner .rp-selected-product {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.6;
+  margin-top: 20px;
+}
+.rp-planner .rp-summary-list {
+  margin-block: 15px;
+}
+.rp-planner .rp-summary-item {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 20px;
+  padding-block: 11px;
+  border-bottom: 1px solid var(--line);
+  font-size: 15px;
+}
+.rp-planner .rp-summary-item dt {
+  color: var(--muted);
+}
+.rp-planner .rp-summary-item dd {
+  margin: 0;
+  text-align: end;
+  font-weight: 500;
+}
+.rp-planner .rp-domain {
+  display: block;
+  font:
+    12px/1.8 Poppins,
+    sans-serif;
+  color: var(--muted);
+}
+.rp-planner .rp-summary-rate dd {
+  color: var(--red);
+  font-size: 34px;
+  line-height: 1.3;
+  font-weight: 700;
+}
+.rp-planner
+  :is(
+    .rp-preview-note,
+    .rp-dates,
+    .rp-availability-note,
+    .rp-price-note,
+    .rp-listing-scope,
+    .rp-missing-link,
+    .rp-support
+  ) {
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.rp-planner :is(.rp-preview-note, .rp-availability-note) {
+  margin-top: 12px;
+}
+.rp-planner .rp-dates {
+  color: var(--ink);
+  margin-top: 9px;
+}
+.rp-planner .rp-unavailable {
+  font-size: 15px;
+  margin-top: 16px;
+}
+.rp-planner .rp-action-area > p {
+  margin-bottom: 10px;
+}
+.rp-planner .rp-action {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  padding: 14px 20px;
+  min-height: 54px;
+  background: var(--red);
+  border: 1px solid var(--red);
+  border-radius: 999px;
+  color: #fff;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1.85;
+  text-align: center;
+  cursor: pointer;
+}
+.rp-planner .rp-action:hover {
+  background: #bf0c1b;
+}
+.rp-planner .rp-conditions {
+  border-block: 1px solid var(--line);
+  font-size: 14px;
+}
+.rp-planner .rp-conditions > summary {
+  padding-block: 13px;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 500;
+}
+.rp-planner .rp-conditions-body p {
+  margin-bottom: 14px;
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.9;
+}
+.rp-planner .rp-support bdi {
+  overflow-wrap: anywhere;
+}
+/* Radix portal uses its own overlay; no changes to the original dialog. */
+.rp-dialog-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 80;
+  background: #28201875;
+  backdrop-filter: blur(3px);
+}
+.refined-buy-dialog {
+  z-index: 81;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+.refined-buy-dialog .rp-dialog-close {
+  position: absolute;
+  z-index: 10;
+  top: 16px;
+  inset-inline-end: 16px;
+  display: grid;
+  place-items: center;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  cursor: pointer;
+}
+.refined-buy-dialog .rp-dialog-title {
+  margin: 26px 30px 8px;
+  padding-inline-end: 48px;
+  font-size: 28px;
+  line-height: 1.6;
+  flex-shrink: 0;
+}
+.refined-buy-dialog .rp-dialog-description {
+  margin: 0 30px 14px;
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.8;
+  flex-shrink: 0;
+}
+.refined-buy-dialog .rp-dialog-body {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  min-height: 0;
+  scroll-padding-block: 20px 70px;
+}
+.refined-buy-dialog .rp-planner--compact {
+  display: block;
+}
+.refined-buy-dialog .rp-country {
+  margin-bottom: 24px;
+}
+.refined-buy-dialog .rp-planner .rp-choices {
+  gap: 20px;
+}
+.refined-buy-dialog .rp-summary {
+  margin-block: 24px;
+  padding: 20px;
+}
+.refined-buy-dialog .rp-summary-heading {
+  gap: 12px;
+}
+.refined-buy-dialog .rp-selected-product {
+  font-size: 20px;
+  margin-top: 12px;
+}
+.refined-buy-dialog .rp-action-area {
+  display: contents;
+}
+.refined-buy-dialog .rp-action-area > p {
+  margin-bottom: 10px;
+}
+.refined-buy-dialog .rp-action {
+  position: sticky;
+  bottom: 0;
+  z-index: 4;
+  margin-block: 14px;
+  box-shadow:
+    0 8px 0 12px var(--paper),
+    0 -8px 15px #f8f3ea;
+}
+.refined-buy-dialog .rp-conditions {
+  margin-top: 20px;
+}
+.refined-buy-dialog .rp-support {
+  margin-top: 16px;
+}
+@media (max-width: 850px) {
+  .rp-planner:not(.rp-planner--compact) {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 24px;
+    gap: 26px;
+  }
+  .rp-planner:not(.rp-planner--compact)
+    > :is(
+      .rp-country,
+      .rp-choices,
+      .rp-summary,
+      .rp-action-area,
+      .rp-conditions,
+      .rp-support
+    ) {
+    grid-column: 1;
+    grid-row: auto;
+  }
+}
+@media (max-width: 640px) {
+  .rp-planner:not(.rp-planner--compact) {
+    padding: 20px 16px;
+    border-radius: 16px;
+    gap: 24px;
+  }
+  .rp-planner .rp-radio {
+    font-size: 14px;
+    padding: 10px 8px;
+    gap: 6px;
+  }
+  .rp-planner .rp-radio-row {
+    gap: 8px;
+  }
+  .rp-planner .rp-products .rp-radio {
+    align-items: center;
+    min-height: 60px !important;
+  }
+  .rp-planner .rp-summary {
+    padding: 20px 16px;
+  }
+  .rp-planner .rp-selected-product {
+    font-size: 20px;
+  }
+  .rp-planner .rp-summary-item {
+    gap: 12px;
+    font-size: 14px;
+  }
+  .rp-planner .rp-summary-rate dd {
+    font-size: 30px;
+  }
+  .rp-planner .rp-action {
+    font-size: 15px;
+  }
+  .refined-buy-dialog .rp-dialog-title,
+  .refined-buy-dialog[dir="rtl"] .rp-dialog-title {
+    font-size: 22px;
+    margin: 22px 20px 7px;
+    padding-inline-end: 46px;
+  }
+  .refined-buy-dialog .rp-dialog-description {
+    margin: 0 20px 12px;
+    font-size: 14px;
+  }
+  .refined-buy-dialog .rp-action {
+    bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* Direct storefront links replace the improved version's long purchase form. */
+.refined-campaign .ds-panel {
+  color: var(--ink);
+}
+.refined-campaign .ds-products {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-bottom: 18px;
+}
+.refined-campaign .ds-products button {
+  min-height: 46px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  padding: 10px 20px;
+  background: transparent;
+  font-size: 15px;
+  cursor: pointer;
+}
+.refined-campaign .ds-products button.is-active {
+  color: #fff;
+  background: var(--red);
+  border-color: var(--red);
+}
+.refined-campaign .ds-location {
+  display: flex;
+  align-items: flex-start;
+  gap: 9px;
+  margin-bottom: 22px;
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.9;
+}
+.refined-campaign .ds-location svg {
+  color: var(--red);
+  flex-shrink: 0;
+  margin-top: 5px;
+}
+.refined-campaign .ds-location p + p {
+  margin-top: 5px;
+}
+.refined-campaign .ds-featured {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 15px 24px;
+  margin-bottom: 28px;
+  padding: 24px;
+  background: #f3ede3;
+  border: 1px solid var(--line);
+  border-inline-start: 3px solid var(--red);
+  border-radius: 16px;
+}
+.refined-campaign .ds-featured-heading {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  grid-column: 1 / -1;
+  font-size: 13px;
+  color: var(--red);
+}
+.refined-campaign .ds-featured-identity {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+.refined-campaign .ds-store-identity {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 0;
+}
+.refined-campaign .ds-store-identity strong {
+  font-size: 16px;
+  line-height: 1.7;
+  font-weight: 600;
+}
+.refined-campaign .ds-featured .ds-store-identity strong {
+  font-size: 21px;
+}
+.refined-campaign .ds-store-identity small {
+  font:
+    12px/1.7 Poppins,
+    sans-serif;
+  color: var(--muted);
+}
+.refined-campaign .ds-primary {
+  min-height: 54px;
+  font-size: 16px;
+  white-space: normal;
+  text-align: center;
+  max-width: 440px;
+}
+.refined-campaign .ds-panel .market-flag {
+  flex-shrink: 0;
+  width: 29px;
+  height: 20px;
+}
+.refined-campaign .ds-other-stores h3,
+.refined-campaign .ds-af-section h3 {
+  font-size: 16px;
+  line-height: 1.8;
+  margin-bottom: 12px;
+  font-weight: 600;
+}
+.refined-campaign .ds-store-list {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 12px;
+}
+.refined-campaign .ds-store-row {
+  width: 100%;
+  min-height: 80px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  text-align: start;
+  padding: 15px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--ink);
+  cursor: pointer;
+  transition:
+    border-color 0.15s,
+    background 0.15s;
+}
+.refined-campaign a.ds-store-row:hover {
+  border-color: var(--red);
+  background: #de102005;
+}
+.refined-campaign .ds-store-row .ds-store-identity {
+  flex: 1;
+}
+.refined-campaign .ds-store-row-action {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: var(--red);
+  font-size: 13px;
+  line-height: 1.7;
+  font-weight: 500;
+}
+.refined-campaign .ds-store-row--pending .ds-store-row-action {
+  max-width: 13ch;
+  font-size: 12px;
+  color: var(--muted);
+}
+.refined-campaign .ds-coverage,
+.refined-campaign .ds-af-offer,
+.refined-campaign .ds-guidance {
+  font-size: 13px;
+  line-height: 1.9;
+}
+.refined-campaign .ds-coverage {
+  margin-top: 12px;
+  color: var(--muted);
+}
+.refined-campaign .ds-af-section {
+  border-top: 1px solid var(--line);
+  padding-top: 20px;
+  margin-top: 24px;
+  max-width: 560px;
+}
+.refined-campaign .ds-af-offer {
+  grid-column: 1 / -1;
+  margin-top: 9px;
+  color: var(--red);
+  font-size: 16px;
+  font-weight: 800;
+}
+.refined-campaign .ds-af-offer strong {
+  font-weight: inherit;
+}
+.refined-campaign .ds-missing,
+.refined-campaign .ds-unavailable {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  line-height: 1.9;
+}
+.refined-campaign .ds-contact {
+  grid-column: 1 / -1;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  width: fit-content;
+  min-height: 44px;
+  text-decoration: underline;
+  text-underline-offset: 5px;
+  color: var(--red);
+  font-size: 14px;
+}
+.refined-campaign .ds-guidance {
+  border-top: 1px solid var(--line);
+  margin-top: 24px;
+  padding-top: 16px;
+  color: var(--muted);
+  max-width: 82ch;
+}
+.refined-campaign .ds-guidance p + p {
+  margin-top: 6px;
+}
+.refined-campaign .ds-panel :is(a, button):focus-visible,
+.refined-campaign #direct-store-heading:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+.refined-campaign .ds-size-labels {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-block: 12px;
+}
+.refined-campaign .ds-size-labels span {
+  border: 1px solid var(--line);
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 15px;
+}
+.refined-campaign .mobile-sticky > a.button {
+  max-width: none;
+  display: inline-flex;
+  flex: 1;
+  text-align: center;
+  white-space: normal;
+  justify-content: center;
+}
+@media (max-width: 1100px) {
+  .refined-campaign .ds-store-list {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+@media (max-width: 640px) {
+  .refined-campaign .ds-products {
+    gap: 8px;
+  }
+  .refined-campaign .ds-products button {
+    flex: 1;
+    font-size: 13px;
+    padding-inline: 12px;
+  }
+  .refined-campaign .ds-featured {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 20px 16px;
+    gap: 13px;
+  }
+  .refined-campaign .ds-featured .ds-store-identity strong {
+    font-size: 19px;
+  }
+  .refined-campaign .ds-primary {
+    width: 100%;
+    max-width: none;
+    font-size: 15px;
+  }
+  .refined-campaign .ds-store-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 9px;
+  }
+  .refined-campaign .ds-store-row {
+    min-height: 74px;
+    padding: 12px 14px;
+    gap: 10px;
+  }
+  .refined-campaign .ds-store-identity strong {
+    font-size: 15px;
+  }
+  .refined-campaign .ds-store-row-action {
+    font-size: 13px;
+  }
+  .refined-campaign .ds-af-section {
+    max-width: none;
+  }
+}
+
+.refined-campaign .ds-af-availability {
+  grid-column: 1 / -1;
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.refined-campaign .ds-featured-heading:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+  border-radius: 4px;
+}
+
+/* Country-aware purchase bar: improved version only, across viewport sizes. */
+.refined-campaign.has-sticky-store {
+  padding-bottom: calc(132px + env(safe-area-inset-bottom, 0px));
+}
+.refined-campaign .ds-sticky-buy {
+  position: fixed;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 18px;
+  bottom: 16px;
+  inset-inline: max(16px, calc((100vw - 760px) / 2));
+  z-index: 40;
+  padding: 12px 18px;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  box-shadow: 0 8px 35px #21130c1a;
+  transform: translateY(calc(100% + 40px));
+  transition: transform 0.25s;
+  visibility: hidden;
+  pointer-events: none;
+}
+.refined-campaign .ds-sticky-buy.visible {
+  transform: translateY(0);
+  visibility: visible;
+  pointer-events: auto;
+}
+.refined-campaign .ds-sticky-store {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-width: 0;
+  min-height: 44px;
+}
+.refined-campaign .ds-sticky-store > span:last-child {
+  min-width: 0;
+}
+.refined-campaign .ds-sticky-store strong {
+  display: block;
+  font-weight: 700;
+}
+.refined-campaign .ds-sticky-store small {
+  display: block;
+  font-size: 11px;
+  color: var(--muted);
+}
+.refined-campaign .ds-sticky-store :is(svg, .market-flag) {
+  flex-shrink: 0;
+}
+.refined-campaign .ds-sticky-buy a:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 4px;
+}
+@media (max-width: 640px) {
+  .refined-campaign .ds-sticky-buy {
+    inset-inline: 0;
+    bottom: 0;
+    gap: 12px;
+    padding: 10px 16px calc(10px + env(safe-area-inset-bottom, 0px));
+    border-radius: 0;
+    border-inline: 0;
+    border-bottom: 0;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .refined-campaign .ds-sticky-buy {
+    transition: none;
+  }
+}
+
+.refined-campaign .ds-specs-list {
+  display: grid;
+  grid-template-columns: minmax(100px, 0.7fr) minmax(0, 1.5fr);
+  gap: 16px 20px;
+  margin: 0;
+  padding-block: 12px 20px;
+  font-size: 14px;
+  line-height: 1.9;
+}
+.refined-campaign .ds-specs-list dt {
+  font-weight: 700;
+}
+.refined-campaign .ds-specs-list dd {
+  margin: 0;
+  min-width: 0;
+  color: var(--muted);
+  overflow-wrap: anywhere;
+}
+.refined-campaign .ds-specs-list small {
+  display: block;
+  margin-top: 5px;
+  font-size: 12px;
+}
+.refined-campaign .ds-mandoline-answer {
+  white-space: pre-line;
+}
+@media (max-width: 640px) {
+  .refined-campaign .ds-specs-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 5px;
+  }
+  .refined-campaign .ds-specs-list dd + dt {
+    margin-top: 12px;
+  }
+}
+
+
+/* Mobile-only testimonial order and compact rating card; review content remains untouched. */
+@media (max-width: 720px) {
+  .refined-campaign .testimonials-section .tm-layout {
+    grid-template-columns: minmax(0, 1fr);
+    min-width: 0;
+  }
+  .refined-campaign .testimonials-section .tm-layout > .tm-experiences {
+    grid-row: 1;
+    min-width: 0;
+  }
+  .refined-campaign .testimonials-section .tm-layout > .tm-rating {
+    grid-row: 2;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    gap: 5px 12px;
+    min-width: 0;
+    padding: 16px;
+  }
+  .refined-campaign .testimonials-section .tm-rating-label {
+    grid-column: 1;
+    grid-row: 1;
+    align-self: end;
+    font-size: 15px;
+    line-height: 1.55;
+  }
+  .refined-campaign .testimonials-section .tm-market {
+    grid-column: 1;
+    grid-row: 2;
+    margin-top: 0;
+    font-size: 14px;
+    line-height: 1.6;
+    overflow-wrap: anywhere;
+  }
+  .refined-campaign .testimonials-section .tm-score {
+    grid-column: 2;
+    grid-row: 1 / 3;
+    justify-self: end;
+    align-self: center;
+    gap: 5px;
+    margin-top: 0;
+    white-space: nowrap;
+  }
+  .refined-campaign .testimonials-section .tm-score strong,
+  .refined-campaign.is-rtl .testimonials-section .tm-score strong {
+    font-size: 48px;
+    line-height: 1;
+    letter-spacing: -1px;
+  }
+  .refined-campaign .testimonials-section .tm-score span {
+    font-size: 14px;
+  }
+  .refined-campaign .testimonials-section .tm-stars,
+  .refined-campaign .testimonials-section .tm-observed,
+  .refined-campaign .testimonials-section .tm-scope,
+  .refined-campaign .testimonials-section .tm-source-action,
+  .refined-campaign .testimonials-section .tm-rating-count {
+    grid-column: 1 / -1;
+    min-width: 0;
+    font-size: 14px;
+    line-height: 1.75;
+  }
+  .refined-campaign .testimonials-section .tm-stars {
+    margin-top: 6px;
+  }
+  .refined-campaign .testimonials-section .tm-observed,
+  .refined-campaign .testimonials-section .tm-scope,
+  .refined-campaign .testimonials-section .tm-rating-count {
+    margin-top: 3px;
+  }
+  .refined-campaign .testimonials-section .tm-source-action {
+    width: fit-content;
+    min-height: 44px;
+    margin-top: 2px;
+    overflow-wrap: anywhere;
+  }
+  .refined-campaign.is-rtl .testimonials-section .tm-market {
+    justify-self: end;
+    text-align: right;
+  }
+}

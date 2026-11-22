@@ -1,0 +1,316 @@
+/* Theme palette, scoped to this page and driven by the site theme toggle. */
+.black-friday-campaign {
+  --campaign-accent-text: #c8101e;
+}
+
+.dark .black-friday-campaign {
+  --campaign-accent-text: #ffb4ba;
+  --burgundy: #f3eadd;
+  --cream: #191b1f;
+  --paper: #111316;
+  --ink: #f5f1e8;
+  --muted: #c2bdb5;
+  --line: #3d4148;
+  --gold: #e0b779;
+  --background: #111316;
+  --foreground: #f5f1e8;
+  --surface: #202329;
+  --card: #202329;
+  --card-foreground: #f5f1e8;
+  --popover: #202329;
+  --popover-foreground: #f5f1e8;
+  --secondary: #292c32;
+  --secondary-foreground: #f5f1e8;
+  --muted-foreground: #c2bdb5;
+  --accent: #292c32;
+  --accent-foreground: #f5f1e8;
+  --border: #3d4148;
+  --input: #3d4148;
+  --shadow-sm: 0 2px 8px rgb(0 0 0 / 30%);
+  --shadow-xl: 0 22px 48px rgb(0 0 0 / 38%);
+  --shadow-photo: 0 24px 55px rgb(0 0 0 / 42%);
+  color-scheme: dark;
+  color: var(--ink);
+  background: var(--paper);
+  transition: background-color 220ms ease, color 220ms ease;
+}
+
+.black-friday-campaign :is(
+  .eyebrow,
+  .rh-eyebrow,
+  .text-link,
+  .contact-link,
+  .rh-link,
+  .tm-source-action,
+  .bs-secondary,
+  .bs-source,
+  .bs-scene-label,
+  .bs-signature,
+  .hero-mandoline-link,
+  .hero-secondary,
+  .ds-af-offer
+) {
+  color: var(--campaign-accent-text);
+}
+
+.black-friday-campaign .hero-mandoline-offer.is-unavailable strong {
+  color: var(--campaign-accent-text);
+}
+
+.dark .black-friday-campaign .hero-mandoline-title,
+.dark .black-friday-campaign .mandoline-unavailable {
+  color: var(--campaign-accent-text);
+}
+
+.dark .black-friday-campaign .hero-cooking-peek {
+  color: var(--ink);
+  background: color-mix(in srgb, var(--surface) 96%, transparent);
+  border-color: var(--line);
+}
+
+.dark .black-friday-campaign .skip-link {
+  color: var(--ink);
+  background: var(--surface);
+  border: 1px solid var(--line);
+}
+
+.dark .black-friday-campaign .site-footer a {
+  color: var(--campaign-accent-text);
+}
+
+.dark .black-friday-campaign :is(
+  .black-friday-section,
+  .quality-section,
+  .testimonials-section,
+  .faq-section,
+  .markets-section,
+  .next-product-section,
+  .mandoline-section,
+  .brand-story-section,
+  .spec-strip
+) {
+  color: var(--ink);
+}
+
+.dark .black-friday-campaign .black-friday-section {
+  background: var(--paper);
+}
+
+.dark .black-friday-campaign :is(.hero-tier, .bf-tier-card) {
+  color: var(--ink);
+  background: var(--surface);
+}
+
+.dark .black-friday-campaign .hero-tier.highest-tier {
+  background: color-mix(in srgb, var(--red) 13%, var(--surface));
+}
+
+.dark .black-friday-campaign :is(.hero-mandoline-new, .bf-tier-highest) {
+  color: #ffe8e9;
+  background: #482027;
+  border-color: #88404a;
+}
+
+.dark .black-friday-campaign :is(
+  .bf-tier-card,
+  .market-card,
+  .tm-rating,
+  .tm-quote,
+  .rh-panel,
+  .rh-complete,
+  .rh-care-guide,
+  .rh-privacy,
+  .rh-step-preview,
+  .rh-form-dialog,
+  .buy-dialog,
+  .rayhana-video-dialog,
+  .rp-summary,
+  .ds-featured
+) {
+  color: var(--ink);
+  background-color: var(--surface);
+  border-color: var(--line);
+}
+
+.dark .black-friday-campaign .bf-tier-input:checked + .bf-tier-card {
+  background: color-mix(in srgb, var(--red) 13%, var(--surface));
+}
+
+.dark .black-friday-campaign .bf-tier-input:checked + .bf-tier-card .bf-tier-radio {
+  background: var(--surface);
+}
+
+.dark .black-friday-campaign .bf-tier-photo img {
+  mix-blend-mode: normal;
+}
+
+.dark .black-friday-campaign .bf-tier-highest {
+  color: #ffd6d8;
+  background: #481d24;
+  border-color: #88404a;
+}
+
+.dark .black-friday-campaign .product-choice button.selected {
+  color: #ffe8e9;
+  background: #482027;
+  border-color: #a84b55;
+}
+
+.dark .black-friday-campaign :is(.rp-preview, .rh-choice:has(input:checked)) {
+  color: #ffe8e9;
+  background: #482027;
+  border-color: #a84b55;
+}
+
+.dark .black-friday-campaign :is(.rp-summary, .ds-featured) {
+  background: var(--surface);
+}
+
+.dark .black-friday-campaign .concept-visual,
+.dark .black-friday-campaign .concept-name {
+  color: #f4e4cf;
+  background: #29231f;
+  border-color: #55483c;
+}
+
+.dark .black-friday-campaign .rh-form-dialog {
+  background: #1b1e23;
+  color: #f5f1e8;
+  border-color: #464b53;
+}
+
+/* These Radix dialogs portal to body, outside the campaign root. */
+.dark .rh-form-dialog {
+  background: #1b1e23;
+  color: #f5f1e8;
+  border-color: #464b53;
+}
+
+.dark .black-friday-campaign .rh-form-dialog :is(
+  .rh-form-title,
+  legend,
+  .rh-choice,
+  .rh-form-close
+) {
+  color: #f5f1e8;
+}
+
+.dark .rh-form-dialog :is(.rh-form-title, legend, .rh-choice, .rh-form-close) {
+  color: #f5f1e8;
+}
+
+.dark .rh-form-dialog .rh-form-close {
+  background: #25292f;
+  border-color: #565c65;
+}
+
+.dark .rh-form-dialog .rh-form-header .rh-eyebrow {
+  color: #ffb4ba;
+}
+
+.dark .black-friday-campaign .rh-form-dialog > p:not(.rh-notice),
+.dark .black-friday-campaign .rh-form-dialog .rh-form-header .rh-small {
+  color: #c9c5be;
+}
+
+.dark .rh-form-dialog > p:not(.rh-notice),
+.dark .rh-form-dialog .rh-form-header .rh-small {
+  color: #c9c5be;
+}
+
+.dark .black-friday-campaign .rh-form-dialog .rh-choice {
+  background: #25292f;
+  border-color: #565c65;
+}
+
+.dark .rh-form-dialog .rh-choice {
+  color: #f5f1e8;
+  background: #25292f;
+  border-color: #565c65;
+}
+
+.dark .black-friday-campaign .rh-form-dialog .rh-choice:has(input:checked) {
+  color: #ffe8e9;
+  background: #482027;
+  border-color: #d84b58;
+}
+
+.dark .rh-form-dialog .rh-choice:has(input:checked) {
+  color: #ffe8e9;
+  background: #482027;
+  border-color: #d84b58;
+}
+
+.dark .black-friday-campaign .rh-form-dialog .rh-note-field textarea {
+  color: #f5f1e8;
+  background: #15171b;
+  border-color: #565c65;
+}
+
+.dark .rh-form-dialog .rh-note-field textarea {
+  color: #f5f1e8;
+  background: #15171b;
+  border-color: #565c65;
+}
+
+.dark .rh-form-dialog .rh-actions .button.outline {
+  color: #f5f1e8;
+  background: #25292f;
+  border-color: #565c65;
+}
+
+.dark .black-friday-campaign :is(.rh-notice.is-error, .rh-form-header .rh-eyebrow) {
+  color: #ffc8cc;
+}
+
+.dark .rayhana-video-dialog {
+  color: #f5f1e8;
+  background: #1b1e23;
+  border-color: #464b53;
+}
+
+.dark .black-friday-campaign .rh-table-art {
+  background: #29211d;
+  border-color: #554336;
+}
+
+.dark .black-friday-campaign .rh-table-art::after {
+  background-color: #211a17;
+}
+
+.dark .black-friday-campaign .rh-progress {
+  background: #202329;
+}
+
+.dark .black-friday-campaign .tm-verified {
+  color: #b7e3a9;
+}
+
+.dark .black-friday-campaign .closing-section {
+  color: #fff;
+  background-color: #a90c1a;
+}
+
+.dark .black-friday-campaign .closing-description {
+  color: #fff !important;
+  text-shadow: 0 1px 2px #52000a;
+}
+
+.dark .black-friday-campaign .closing-actions .button.light {
+  color: #7a0813;
+  background: #fff;
+  border-color: #fff;
+}
+
+.dark .black-friday-campaign :is(a, button):focus-visible,
+.dark .black-friday-campaign input:focus-visible,
+.dark .black-friday-campaign textarea:focus-visible,
+.dark .black-friday-campaign select:focus-visible {
+  outline-color: #ff9ca5;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dark .black-friday-campaign {
+    transition: none;
+  }
+}

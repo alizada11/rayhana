@@ -1,0 +1,532 @@
+.black-friday-section {
+  padding-block: 76px 60px;
+  background: #fff8ec;
+  border-block: 1px solid var(--line);
+  color: var(--ink);
+  scroll-margin-top: 115px;
+}
+.bf-shell {
+  width: min(1232px, calc(100% - 112px));
+  margin-inline: auto;
+}
+.bf-masthead {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 18px 28px;
+  margin-bottom: 38px;
+}
+.bf-brand {
+  font:
+    600 11px/1.8 Poppins,
+    sans-serif;
+  letter-spacing: 2.4px;
+  color: var(--red);
+}
+.bf-calendar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 15px;
+}
+.bf-dates {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 5px 12px;
+  padding: 9px 16px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: #ffffff80;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+.bf-date-label {
+  color: var(--red);
+}
+.bf-duration {
+  font-size: 12px;
+  color: var(--muted);
+  line-height: 1.8;
+}
+.bf-intro {
+  display: grid;
+  grid-template-columns: 1.15fr 1fr;
+  gap: 55px;
+  align-items: center;
+  margin-bottom: 36px;
+}
+.bf-intro > div {
+  min-width: 0;
+}
+.bf-eyebrow {
+  margin-bottom: 12px;
+  color: var(--red);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.7px;
+  line-height: 1.9;
+}
+.bf-title {
+  white-space: pre-line;
+  font:
+    700 clamp(34px, 4vw, 56px) / 1.12 RayhanaDisplay,
+    Georgia,
+    serif;
+  letter-spacing: -0.8px;
+  text-wrap: balance;
+}
+.bf-body {
+  font-size: 14px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.bf-planned {
+  margin-top: 16px;
+  padding-inline-start: 14px;
+  border-inline-start: 2px solid var(--red);
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.bf-tier-choices {
+  min-width: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  color: var(--ink);
+  font-family: Poppins, Vazirmatn, sans-serif;
+}
+.bf-tier-legend {
+  padding: 0;
+  margin-bottom: 16px;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+.bf-tier-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 18px;
+}
+.bf-tier-label {
+  position: relative;
+  display: flex;
+  min-width: 0;
+  min-height: 44px;
+  cursor: pointer;
+  touch-action: manipulation;
+}
+.bf-tier-input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  margin: 0;
+}
+.bf-tier-card {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 0;
+  padding: 24px;
+  background: #fffdf8;
+  border: 2px solid var(--line);
+  border-radius: 16px;
+  transition:
+    border-color 160ms ease,
+    background-color 160ms ease,
+    box-shadow 160ms ease;
+}
+.bf-tier-label:hover .bf-tier-card {
+  border-color: var(--red);
+  box-shadow: 0 8px 24px #4810170a;
+}
+/* Highest discount is an offer emphasis, never a substitute for checked state. */
+.bf-tier-label--highest .bf-tier-card {
+  border-color: var(--red);
+}
+.bf-tier-label--highest .bf-tier-percent {
+  color: var(--red);
+}
+.bf-tier-input:checked + .bf-tier-card {
+  background: #fff0ec;
+  border-color: var(--red);
+  box-shadow: inset 0 0 0 2px var(--red);
+}
+.bf-tier-input:focus-visible + .bf-tier-card {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+.bf-tier-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+.bf-tier-count {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+.bf-tier-radio {
+  display: block;
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--muted);
+  border-radius: 50%;
+  flex-shrink: 0;
+  background: transparent;
+}
+.bf-tier-input:checked + .bf-tier-card .bf-tier-radio {
+  border: 7px solid var(--red);
+  background: white;
+}
+.bf-tier-photo {
+  display: block;
+  width: 100%;
+  height: 178px;
+  margin-top: 18px;
+  background: transparent;
+}
+.bf-tier-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+.bf-tier-percent {
+  display: flex;
+  align-items: baseline;
+  flex-wrap: wrap;
+  gap: 7px;
+  margin-top: 18px;
+  color: var(--ink);
+}
+.bf-tier-rate {
+  font:
+    700 clamp(54px, 6vw, 82px) / 1.05 RayhanaDisplay,
+    Georgia,
+    serif;
+  letter-spacing: -1.8px;
+}
+.bf-tier-discount-label {
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+.bf-tier-note {
+  display: block;
+  margin-top: 13px;
+  margin-bottom: 24px;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.bf-tier-bottom {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px 12px;
+  padding-top: 15px;
+  border-top: 1px solid var(--line);
+  margin-top: auto;
+}
+.bf-tier-selection {
+  font-size: 11px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.bf-tier-input:checked + .bf-tier-card .bf-tier-selection {
+  color: var(--red);
+  font-weight: 600;
+}
+.bf-tier-highest {
+  display: inline-block;
+  padding: 4px 9px;
+  border: 1px solid #de102030;
+  border-radius: 999px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1.8;
+  color: #ad0b18;
+  background: #fff1ed;
+}
+.bf-image-note {
+  margin-top: 14px;
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.bf-action-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  margin-top: 28px;
+  padding-block: 23px;
+  border-block: 1px solid var(--line);
+}
+.bf-selection-summary {
+  min-width: 0;
+  max-width: 720px;
+}
+.bf-summary {
+  font-size: 16px;
+  line-height: 1.8;
+  font-weight: 600;
+}
+.bf-disclaimer {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.bf-continue {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  flex-shrink: 0;
+  max-width: 100%;
+  min-height: 50px;
+  padding: 15px 25px;
+  background: var(--red);
+  color: white;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.7;
+  text-align: start;
+  border-radius: 999px;
+  transition: background-color 160ms ease;
+}
+.bf-continue svg {
+  flex-shrink: 0;
+}
+.bf-continue:hover {
+  background: #bc0d1b;
+}
+.bf-continue:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 4px;
+}
+.black-friday-section[dir="rtl"] .bf-continue svg {
+  transform: rotate(180deg);
+}
+.bf-closing {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 20px 40px;
+  flex-wrap: wrap;
+  margin-top: 25px;
+}
+.bf-story {
+  max-width: 740px;
+  font-size: 13px;
+  line-height: 1.9;
+  color: var(--muted);
+}
+.bf-signature {
+  font:
+    600 9px/1.9 Poppins,
+    sans-serif;
+  letter-spacing: 1.2px;
+  color: var(--red);
+}
+.black-friday-section[dir="rtl"],
+.bf-tier-choices[dir="rtl"] {
+  font-family: Vazirmatn, sans-serif;
+}
+.black-friday-section[dir="rtl"] .bf-title {
+  font-family: Vazirmatn, sans-serif;
+  font-size: clamp(29px, 3.3vw, 43px);
+  line-height: 1.65;
+  letter-spacing: 0;
+}
+.black-friday-section[dir="rtl"] .bf-eyebrow {
+  font-size: 13px;
+  letter-spacing: 0;
+}
+.black-friday-section[dir="rtl"] .bf-body {
+  font-size: 15px;
+}
+.black-friday-section[dir="rtl"] .bf-planned,
+.black-friday-section[dir="rtl"] .bf-disclaimer,
+.black-friday-section[dir="rtl"] .bf-image-note {
+  font-size: 13px;
+}
+.bf-tier-choices[dir="rtl"] .bf-tier-rate {
+  font-family: Vazirmatn, sans-serif;
+  letter-spacing: -1px;
+}
+.bf-tier-choices[dir="rtl"] .bf-tier-note {
+  font-size: 14px;
+}
+.bf-tier-choices[dir="rtl"] .bf-tier-selection,
+.bf-tier-choices[dir="rtl"] .bf-tier-highest {
+  font-size: 12px;
+}
+.black-friday-section[dir="rtl"] .bf-continue {
+  font-size: 14px;
+}
+/* The buying dialog reuses the same controlled choices in a compact stack. */
+.bf-tier-choices--compact .bf-tier-grid {
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+}
+.bf-tier-choices--compact .bf-tier-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 90px;
+  grid-template-areas: "top top" "percent photo" "note photo" "bottom bottom";
+  column-gap: 16px;
+  padding: 14px 16px;
+}
+.bf-tier-choices--compact .bf-tier-top {
+  grid-area: top;
+}
+.bf-tier-choices--compact .bf-tier-photo {
+  grid-area: photo;
+  align-self: center;
+  width: 90px;
+  height: 80px;
+  margin-block: 8px 10px;
+}
+.bf-tier-choices--compact .bf-tier-percent {
+  grid-area: percent;
+  margin-top: 8px;
+}
+.bf-tier-choices--compact .bf-tier-rate {
+  font-size: 37px;
+}
+.bf-tier-choices--compact .bf-tier-note {
+  grid-area: note;
+  margin-block: 6px 10px;
+}
+.bf-tier-choices--compact .bf-tier-bottom {
+  grid-area: bottom;
+  padding-top: 9px;
+}
+@media (max-width: 1000px) {
+  .bf-shell {
+    width: calc(100% - 64px);
+  }
+  .bf-intro {
+    gap: 30px;
+  }
+  .bf-tier-card {
+    padding: 20px 17px;
+  }
+  .bf-tier-photo {
+    height: 150px;
+  }
+  .bf-tier-rate {
+    font-size: 58px;
+  }
+  .bf-action-row {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 18px;
+  }
+}
+@media (max-width: 640px) {
+  .black-friday-section {
+    padding-block: 42px 36px;
+  }
+  .bf-shell {
+    width: calc(100% - 36px);
+  }
+  .bf-masthead {
+    gap: 15px;
+    margin-bottom: 27px;
+  }
+  .bf-brand {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+  }
+  .bf-calendar {
+    gap: 7px 10px;
+  }
+  .bf-dates {
+    padding: 7px 12px;
+    font-size: 12px;
+  }
+  .bf-duration {
+    font-size: 11px;
+  }
+  .bf-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+    margin-bottom: 27px;
+  }
+  .bf-title {
+    font-size: clamp(34px, 8vw, 43px);
+  }
+  .bf-tier-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 12px;
+  }
+  .bf-tier-card {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 116px;
+    grid-template-areas: "top top" "percent photo" "note photo" "bottom bottom";
+    column-gap: 12px;
+    padding: 18px;
+  }
+  .bf-tier-top {
+    grid-area: top;
+  }
+  .bf-tier-photo {
+    grid-area: photo;
+    align-self: center;
+    height: 104px;
+    margin-block: 8px;
+  }
+  .bf-tier-percent {
+    grid-area: percent;
+    margin-top: 13px;
+    gap: 4px 7px;
+  }
+  .bf-tier-rate {
+    font-size: 54px;
+  }
+  .bf-tier-discount-label {
+    font-size: 13px;
+  }
+  .bf-tier-note {
+    grid-area: note;
+    margin-block: 9px 16px;
+  }
+  .bf-tier-bottom {
+    grid-area: bottom;
+    padding-top: 11px;
+  }
+  .bf-continue {
+    width: 100%;
+    padding-inline: 15px;
+  }
+  .bf-closing {
+    gap: 12px;
+    margin-top: 22px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .bf-tier-card,
+  .bf-continue {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .bf-tier-input:checked + .bf-tier-card {
+    outline: 2px solid Highlight;
+    outline-offset: -2px;
+  }
+  .bf-tier-input:checked + .bf-tier-card .bf-tier-radio {
+    background: Highlight;
+    border-color: Highlight;
+    forced-color-adjust: none;
+  }
+}

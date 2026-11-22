@@ -1,0 +1,1438 @@
+/* The bold campaign continues below the hero. No hero or application state rules. */
+.black-friday-campaign {
+  --campaign-heading: clamp(42px, 4.2vw, 64px);
+  --campaign-body: 17px;
+  --campaign-detail: 14px;
+  --campaign-radius: 16px;
+}
+.black-friday-campaign main > .section-shell:not(.hero),
+.black-friday-campaign .spec-strip .section-shell,
+.black-friday-campaign .black-friday-section .bf-shell,
+.black-friday-campaign .brand-story-section .section-shell,
+.black-friday-campaign .quality-inner,
+.black-friday-campaign .testimonials-section .section-shell,
+.black-friday-campaign .markets-inner,
+.black-friday-campaign .mandoline-section .section-shell,
+.black-friday-campaign .rh-community .rh-shell,
+.black-friday-campaign .site-footer {
+  width: min(1512px, calc(100% - 80px));
+  margin-inline: auto;
+}
+.black-friday-campaign
+  :is(
+    .product-copy,
+    .quality-copy,
+    .next-copy,
+    .bs-intro > div,
+    .tm-intro,
+    .faq-heading
+  ) {
+  min-width: 0;
+}
+.black-friday-campaign
+  :is(
+    .bf-title,
+    .bs-intro h2,
+    .product-copy h2,
+    .campaign-heading,
+    .tm-intro h2,
+    .markets-heading h2,
+    .rh-community h2,
+    .faq-heading h2,
+    .closing-section h2
+  ) {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-size: var(--campaign-heading);
+  font-weight: 700;
+  line-height: 1.13;
+  letter-spacing: -1.4px;
+  color: var(--ink);
+  text-wrap: balance;
+}
+.black-friday-campaign.is-rtl
+  :is(
+    .bf-title,
+    .bs-intro h2,
+    .product-copy h2,
+    .campaign-heading,
+    .tm-intro h2,
+    .markets-heading h2,
+    .rh-community h2,
+    .faq-heading h2,
+    .closing-section h2
+  ) {
+  font-family: Vazirmatn, sans-serif;
+  font-size: clamp(34px, 3.2vw, 48px);
+  font-weight: 700;
+  line-height: 1.6;
+  letter-spacing: -0.7px;
+}
+.black-friday-campaign
+  :is(
+    .bf-body,
+    .bs-intro-text,
+    .bs-chapters li p:last-child,
+    .product-intro,
+    .quality-intro,
+    .proof-item p,
+    .tm-intro > p:last-child,
+    .markets-heading > p:last-child,
+    .next-copy > p:not(.eyebrow),
+    .faq-item [role="region"] p,
+    .closing-section > p:not(.eyebrow)
+  ) {
+  font-size: var(--campaign-body);
+  line-height: 1.8;
+  color: var(--muted);
+}
+.black-friday-campaign.is-rtl
+  :is(
+    .bf-body,
+    .bs-intro-text,
+    .bs-chapters li p:last-child,
+    .product-intro,
+    .quality-intro,
+    .proof-item p,
+    .tm-intro > p:last-child,
+    .markets-heading > p:last-child,
+    .next-copy > p:not(.eyebrow),
+    .faq-item [role="region"] p,
+    .closing-section > p:not(.eyebrow)
+  ) {
+  font-size: 18px;
+  line-height: 1.95;
+}
+.black-friday-campaign
+  :is(.eyebrow, .bf-eyebrow, .bs-scene-label, .rh-eyebrow) {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--red);
+  line-height: 1.7;
+}
+.black-friday-campaign.is-rtl
+  :is(.eyebrow, .bf-eyebrow, .bs-scene-label, .rh-eyebrow) {
+  font-size: 15px;
+  letter-spacing: 0;
+}
+.black-friday-campaign
+  :is(
+    .bf-continue,
+    .bs-actions .button,
+    .bs-secondary,
+    .bs-source,
+    .product-copy .button,
+    .quality-guide-download,
+    .tm-source-action,
+    .tm-experiences .button,
+    .market-buy-footer .button,
+    .rh-community .button,
+    .rh-link,
+    .next-copy .text-link,
+    .guide-link,
+    .closing-actions .button
+  ) {
+  font-size: 15px;
+  min-height: 50px;
+  line-height: 1.6;
+  border-radius: 999px;
+  white-space: normal;
+  text-align: start;
+}
+.black-friday-campaign.is-rtl
+  :is(
+    .bf-continue,
+    .bs-actions .button,
+    .bs-secondary,
+    .bs-source,
+    .product-copy .button,
+    .quality-guide-download,
+    .tm-source-action,
+    .tm-experiences .button,
+    .market-buy-footer .button,
+    .rh-community .button,
+    .rh-link,
+    .next-copy .text-link,
+    .guide-link,
+    .closing-actions .button
+  ) {
+  font-size: 16px;
+}
+.black-friday-campaign
+  :is(
+    .black-friday-section,
+    .brand-story-section,
+    .quality-section,
+    .markets-section,
+    .mandoline-section,
+    .rh-community
+  ) {
+  border-color: var(--line);
+}
+.black-friday-campaign
+  :is(
+    .black-friday-section,
+    .brand-story-section,
+    .markets-section,
+    .rh-community
+  ) {
+  background: var(--paper);
+}
+.black-friday-campaign :is(.quality-section, .mandoline-section) {
+  background: color-mix(in srgb, var(--paper) 84%, var(--red) 2%);
+}
+
+/* At-a-glance facts: three confident, readable values rather than footnotes. */
+.black-friday-campaign .spec-strip {
+  background: var(--paper);
+  padding-block: 34px 24px;
+}
+.black-friday-campaign .spec-strip-inner {
+  max-width: none;
+  gap: 32px;
+}
+.black-friday-campaign .spec-strip-inner span {
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+.black-friday-campaign .spec-strip-inner strong {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-size: 40px;
+  font-weight: 700;
+  color: var(--ink);
+}
+.black-friday-campaign.is-rtl .spec-strip-inner strong {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 34px;
+}
+.black-friday-campaign .spec-strip-inner strong small {
+  font-size: 16px;
+}
+.black-friday-campaign .spec-strip-inner strong.spec-material {
+  font:
+    600 25px/1.6 Poppins,
+    Vazirmatn,
+    sans-serif;
+}
+.black-friday-campaign.is-rtl .spec-strip-inner strong.spec-material {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 26px;
+}
+.black-friday-campaign .spec-source {
+  font-size: 14px;
+  line-height: 1.7;
+  margin-top: 22px;
+}
+
+/* The offer section is the decision, not another campaign introduction. */
+.black-friday-campaign .black-friday-section {
+  padding-block: 72px;
+}
+.black-friday-campaign .bf-intro {
+  gap: 56px;
+}
+.black-friday-campaign
+  :is(
+    .bf-brand,
+    .bf-duration,
+    .bf-dates,
+    .bf-tier-legend,
+    .bf-tier-note,
+    .bf-planned,
+    .bf-image-note,
+    .bf-signature
+  ) {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.black-friday-campaign .bf-tier-count {
+  font-size: 19px;
+  font-weight: 600;
+}
+.black-friday-campaign .bf-tier-card {
+  padding: 26px;
+  border-radius: var(--campaign-radius);
+  background: transparent;
+  box-shadow: none;
+}
+.black-friday-campaign .bf-tier-input:checked + .bf-tier-card {
+  background: color-mix(in srgb, var(--red) 5%, var(--paper));
+}
+.black-friday-campaign .bf-tier-photo {
+  height: 190px;
+}
+.black-friday-campaign .bf-tier-rate {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-size: clamp(64px, 6vw, 88px);
+}
+.black-friday-campaign.is-rtl .bf-tier-rate {
+  font-family: Vazirmatn, sans-serif;
+}
+.black-friday-campaign .bf-tier-discount-label {
+  font-size: 20px;
+}
+.black-friday-campaign :is(.bf-tier-selection, .bf-tier-highest) {
+  font-size: 14px;
+}
+.black-friday-campaign .bf-summary {
+  font-size: 21px;
+}
+.black-friday-campaign .bf-action-row {
+  padding-block: 26px;
+}
+.black-friday-campaign .bf-closing {
+  justify-content: flex-end;
+  margin-top: 16px;
+}
+/* Do not let the larger main offer cards overwhelm the existing dialog. */
+.black-friday-campaign .bf-tier-choices--compact .bf-tier-card {
+  padding: 14px 16px;
+}
+.black-friday-campaign .bf-tier-choices--compact .bf-tier-photo {
+  height: 80px;
+}
+.black-friday-campaign .bf-tier-choices--compact .bf-tier-rate {
+  font-size: 37px;
+}
+.black-friday-campaign .bf-tier-choices--compact .bf-tier-count {
+  font-size: 15px;
+}
+.black-friday-campaign .bf-tier-choices--compact .bf-tier-discount-label {
+  font-size: 14px;
+}
+
+/* A generous editorial story and scannable product details. */
+.black-friday-campaign .brand-story-section {
+  padding-block: 88px;
+}
+.black-friday-campaign .bs-intro {
+  gap: 64px;
+}
+.black-friday-campaign .bs-intro-text {
+  padding-top: 23px;
+  max-width: 52ch;
+}
+.black-friday-campaign .bs-layout {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 72px;
+  align-items: center;
+}
+.black-friday-campaign .bs-photo img {
+  aspect-ratio: 1;
+  border-radius: var(--campaign-radius);
+  box-shadow: none;
+}
+.black-friday-campaign
+  :is(.bs-photo figcaption, .bs-scene-label, .bs-signature) {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.black-friday-campaign .bs-scene-number {
+  width: 42px;
+  height: 42px;
+  font-size: 16px;
+}
+.black-friday-campaign .bs-chapters h3 {
+  font:
+    700 30px/1.3 RayhanaCampaign,
+    Georgia,
+    serif;
+}
+.black-friday-campaign.is-rtl .bs-chapters h3 {
+  font:
+    700 25px/1.7 Vazirmatn,
+    sans-serif;
+}
+.black-friday-campaign .values-ribbon {
+  background: var(--red);
+  color: #fff;
+  gap: 48px;
+  font-size: 17px;
+  font-weight: 500;
+  padding-block: 23px;
+}
+.black-friday-campaign .value-divider {
+  background: #fff;
+}
+.black-friday-campaign
+  :is(
+    .product-section,
+    .quality-inner,
+    .next-product-section,
+    .markets-inner,
+    .faq-section
+  ) {
+  padding-block: 88px;
+}
+.black-friday-campaign .campaign-pot {
+  gap: 72px;
+}
+.black-friday-campaign .product-copy > h2 {
+  margin-bottom: 20px;
+}
+.black-friday-campaign .product-intro {
+  max-width: 52ch;
+}
+.black-friday-campaign .campaign-pot .product-photo {
+  background: transparent;
+  border-radius: 0;
+  box-shadow: none;
+  aspect-ratio: 1.16;
+}
+.black-friday-campaign .feature-list {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 22px 28px;
+  padding-block: 30px;
+}
+.black-friday-campaign .feature {
+  gap: 12px;
+}
+.black-friday-campaign .feature > div {
+  min-width: 0;
+}
+.black-friday-campaign .feature-icon {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: color-mix(in srgb, var(--red) 6%, var(--paper));
+  color: var(--red);
+}
+.black-friday-campaign .feature h3 {
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
+  margin-bottom: 7px;
+}
+.black-friday-campaign .feature p {
+  font-size: 16px;
+  line-height: 1.75;
+  max-width: none;
+}
+.black-friday-campaign.is-rtl .feature h3 {
+  font-size: 19px;
+  line-height: 1.8;
+}
+.black-friday-campaign.is-rtl .feature p {
+  font-size: 17px;
+  line-height: 1.9;
+}
+.black-friday-campaign .field-heading {
+  font-size: 16px;
+  margin-bottom: 13px;
+}
+.black-friday-campaign .size-buttons {
+  gap: 12px;
+}
+.black-friday-campaign .size-buttons button {
+  font-size: 18px;
+  min-height: 48px;
+  padding: 10px 24px;
+  border-radius: 999px;
+}
+.black-friday-campaign .size-buttons button.active {
+  background: var(--red);
+  border-color: var(--red);
+}
+.black-friday-campaign :is(.microcopy, .safety-note, .concept-note) {
+  font-size: 14px;
+  line-height: 1.9;
+}
+.black-friday-campaign .safety-note {
+  padding: 15px 16px;
+  border-inline-start: 3px solid var(--red);
+  background: color-mix(in srgb, var(--red) 4%, var(--paper));
+  border-radius: 0 12px 12px 0;
+}
+.black-friday-campaign.is-rtl .safety-note {
+  border-radius: 12px 0 0 12px;
+}
+.black-friday-campaign .quality-intro {
+  max-width: 52ch;
+}
+.black-friday-campaign .quality-inner {
+  gap: 80px;
+}
+.black-friday-campaign .proof-list {
+  margin-top: 24px;
+}
+.black-friday-campaign .proof-number {
+  width: 40px;
+  height: 40px;
+  font-size: 16px;
+}
+.black-friday-campaign .proof-item h3 {
+  font-size: 20px;
+  line-height: 1.7;
+}
+.black-friday-campaign .cooking-card {
+  border-radius: var(--campaign-radius);
+  box-shadow: none;
+}
+.black-friday-campaign .cooking-caption strong {
+  font-size: 19px;
+  line-height: 1.6;
+}
+.black-friday-campaign .cooking-caption small {
+  font-size: 15px;
+  line-height: 1.7;
+}
+
+/* Trust is legible, sourced and distinct from sales copy. */
+.black-friday-campaign .testimonials-section {
+  padding-block: 88px;
+  background: var(--paper);
+}
+.black-friday-campaign .tm-intro {
+  max-width: 920px;
+}
+.black-friday-campaign .tm-layout {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+  gap: 64px;
+}
+.black-friday-campaign .tm-rating {
+  padding: 34px;
+  border-radius: var(--campaign-radius);
+  background: transparent;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--red);
+  box-shadow: none;
+}
+@media (min-width: 900px) {
+  .black-friday-campaign .testimonials-section .tm-rating {
+    position: sticky;
+    top: calc(var(--header-h, 64px) + 24px);
+    align-self: start;
+    max-height: calc(100dvh - var(--header-h, 64px) - 48px);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+  }
+}
+.black-friday-campaign .tm-rating-label {
+  font-size: 20px;
+}
+.black-friday-campaign .tm-score strong {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-size: 90px;
+  color: var(--ink);
+}
+.black-friday-campaign.is-rtl .tm-score strong {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 78px;
+}
+.black-friday-campaign .tm-score span {
+  font-size: 20px;
+}
+.black-friday-campaign
+  :is(
+    .tm-market,
+    .tm-observed,
+    .tm-scope,
+    .tm-review-market,
+    .tm-selected-note,
+    .tm-current-note,
+    .tm-principle,
+    .tm-quote header,
+    .tm-review-meta,
+    .tm-verified,
+    .tm-variant,
+    .tm-quote-note,
+    .tm-translation-label,
+    .tm-full-label,
+    .tm-full-review summary
+  ) {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.black-friday-campaign .tm-quote {
+  background: transparent;
+  border: 1px solid var(--line);
+  border-inline-start: 3px solid var(--red);
+  border-radius: var(--campaign-radius);
+  padding: 28px;
+  box-shadow: none;
+}
+.black-friday-campaign .tm-quote-title {
+  font-size: 22px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.black-friday-campaign .tm-quote blockquote {
+  font-size: 22px;
+  line-height: 1.8;
+}
+.black-friday-campaign .tm-full-review p {
+  font-size: 16px;
+  line-height: 1.9;
+}
+.black-friday-campaign .tm-more-reviews > summary {
+  font-size: 15px;
+  min-height: 50px;
+  border-radius: 999px;
+}
+
+/* Delivery is a simple choice, with the full purchase details kept in the dialog. */
+.black-friday-campaign .markets-heading {
+  max-width: 950px;
+  margin-bottom: 30px;
+}
+.black-friday-campaign .market-options {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  max-width: 1120px;
+  gap: 16px;
+}
+.black-friday-campaign .market-card {
+  min-width: 0;
+  min-height: 160px;
+  border-radius: var(--campaign-radius);
+  padding: 24px 20px;
+  background: transparent;
+  box-shadow: none;
+  gap: 8px;
+}
+.black-friday-campaign .market-card.selected {
+  border-color: var(--red);
+  background: color-mix(in srgb, var(--red) 5%, var(--paper));
+  box-shadow: inset 0 0 0 1px var(--red);
+}
+.black-friday-campaign .market-name {
+  font-size: 18px;
+  line-height: 1.6;
+}
+.black-friday-campaign .amazon-label {
+  font-size: 14px;
+}
+.black-friday-campaign .market-helper {
+  font-size: 14px;
+  line-height: 1.9;
+  align-items: flex-start;
+}
+.black-friday-campaign .market-helper svg {
+  margin-top: 4px;
+  flex-shrink: 0;
+}
+.black-friday-campaign .campaign-buy .market-recommendation {
+  max-width: 1120px;
+  padding: 22px 24px;
+  border-radius: var(--campaign-radius);
+  box-shadow: none;
+  background: transparent;
+}
+.black-friday-campaign
+  .campaign-buy
+  :is(
+    .recommendation-caption,
+    .recommendation-note,
+    .recommendation-pending,
+    .recommendation-privacy,
+    .recommendation-change,
+    .recommendation-top strong small
+  ) {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.black-friday-campaign .campaign-buy .recommendation-top strong {
+  font-size: 20px;
+}
+.black-friday-campaign .market-buy-footer {
+  margin-top: 28px;
+}
+.black-friday-campaign .mandoline-offer-badge {
+  font-size: 16px;
+  padding: 10px 16px;
+  margin-bottom: 18px;
+}
+.black-friday-campaign :is(.gallery-main, .gallery-thumbs button) {
+  border-radius: var(--campaign-radius);
+}
+.black-friday-campaign .mandoline-gallery .gallery-main {
+  aspect-ratio: 1.45;
+}
+.black-friday-campaign .mandoline-gallery .gallery-main > img {
+  object-fit: cover;
+}
+.black-friday-campaign .mandoline-gallery .video-pill {
+  font-size: 15px;
+  min-height: 46px;
+}
+
+/* Participation keeps its complete privacy and point rules, now at readable scale. */
+.black-friday-campaign .rh-community {
+  padding-block: 88px;
+}
+.black-friday-campaign .rh-layout {
+  grid-template-columns: minmax(0, 1fr) 320px;
+  gap: 48px;
+}
+.black-friday-campaign
+  .rh-community
+  :is(
+    .rh-intro,
+    .rh-panel > p,
+    .rh-panel .rh-question,
+    .rh-care-guide p,
+    .rh-recognition
+  ) {
+  font-size: 17px;
+  line-height: 1.85;
+}
+.black-friday-campaign.is-rtl
+  .rh-community
+  :is(
+    .rh-intro,
+    .rh-panel > p,
+    .rh-panel .rh-question,
+    .rh-care-guide p,
+    .rh-recognition
+  ) {
+  font-size: 18px;
+  line-height: 1.95;
+}
+.black-friday-campaign
+  .rh-community
+  :is(
+    .rh-small,
+    .rh-cover-note,
+    .rh-art-caption,
+    .rh-notice,
+    .rh-badge-path strong,
+    .rh-badge-state,
+    .rh-badge-threshold,
+    .rh-step-nav button,
+    .rh-journey-title,
+    .rh-progress-label,
+    .rh-score span
+  ) {
+  font-size: 14px;
+  line-height: 1.85;
+}
+.black-friday-campaign
+  .rh-community
+  :is(
+    .rh-privacy h3,
+    .rh-step-preview h3,
+    .rh-table-identity h3,
+    .rh-care-guide h3
+  ) {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.6;
+}
+.black-friday-campaign .rh-panel,
+.black-friday-campaign .rh-care-guide,
+.black-friday-campaign .rh-complete {
+  border-radius: var(--campaign-radius);
+  box-shadow: none;
+  background: var(--paper);
+}
+.black-friday-campaign .rh-community :is(.rh-panel h3, .rh-complete h3) {
+  font:
+    700 32px/1.35 RayhanaCampaign,
+    Georgia,
+    serif;
+}
+.black-friday-campaign.is-rtl .rh-community :is(.rh-panel h3, .rh-complete h3) {
+  font:
+    700 28px/1.7 Vazirmatn,
+    sans-serif;
+}
+.black-friday-campaign
+  .rh-community
+  :is(
+    .rh-panel legend,
+    .rh-note-field label,
+    .rh-choice,
+    .rh-note-field textarea
+  ) {
+  font-size: 16px;
+  line-height: 1.8;
+}
+.black-friday-campaign .rh-choice {
+  min-height: 58px;
+  border-radius: 12px;
+}
+.black-friday-campaign .rh-progress {
+  border-radius: var(--campaign-radius);
+  background: var(--ink);
+  padding: 30px;
+}
+.black-friday-campaign .rh-score strong {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-size: 72px;
+}
+.black-friday-campaign.is-rtl .rh-score strong {
+  font-family: Vazirmatn, sans-serif;
+}
+.black-friday-campaign .rh-badge strong {
+  font-size: 20px;
+}
+.black-friday-campaign .next-copy li {
+  font-size: 16px;
+  line-height: 1.8;
+}
+.black-friday-campaign .next-copy > p.concept-note {
+  font-size: 14px;
+  line-height: 1.85;
+}
+.black-friday-campaign .concept-visual {
+  background: var(--paper);
+  border-radius: var(--campaign-radius);
+  box-shadow: none;
+}
+.black-friday-campaign .concept-name {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-size: 32px;
+  background: var(--paper);
+  color: var(--red);
+}
+.black-friday-campaign .concept-label {
+  font-size: 14px;
+  line-height: 1.8;
+}
+
+/* FAQ and the final invitation no longer drop back to tiny editorial type. */
+.black-friday-campaign .faq-item h3 > button {
+  font-size: 19px;
+  font-weight: 600;
+  line-height: 1.8;
+  padding-block: 24px;
+}
+.black-friday-campaign .faq-list {
+  min-width: 0;
+}
+@media (min-width: 900px) {
+  .black-friday-campaign .faq-heading {
+    position: sticky;
+    top: calc(var(--header-h, 64px) + 24px);
+    align-self: start;
+  }
+}
+.black-friday-campaign.is-rtl .faq-item h3 > button {
+  font-family: Vazirmatn, sans-serif;
+}
+.black-friday-campaign .contact-link {
+  font-size: 16px;
+  min-height: 44px;
+}
+.black-friday-campaign .closing-section {
+  padding-block: 82px;
+  background: var(--red);
+  color: #fff;
+}
+.black-friday-campaign .closing-section h2 {
+  color: #fff;
+  max-width: 1000px;
+  margin-inline: auto;
+}
+.black-friday-campaign .closing-section > p:not(.eyebrow),
+.black-friday-campaign .closing-section .eyebrow {
+  color: #fff;
+  max-width: 720px;
+  margin-inline: auto;
+}
+.black-friday-campaign .closing-section > p:not(.eyebrow) {
+  margin-block: 22px 30px;
+  color: #fff;
+  font-weight: 500;
+}
+.black-friday-campaign .closing-section > .closing-description {
+  color: #fff !important;
+  opacity: 1;
+  text-shadow: 0 1px 2px #79000d;
+}
+.black-friday-campaign .closing-actions {
+  gap: 16px;
+  flex-wrap: wrap;
+}
+.black-friday-campaign .closing-actions .button {
+  padding-inline: 30px;
+}
+.black-friday-campaign .closing-actions .button.light {
+  background: #fff;
+  color: var(--red);
+}
+.black-friday-campaign .closing-actions .button.outline {
+  border-color: #fff;
+  background: transparent;
+  color: #fff;
+}
+.black-friday-campaign .closing-actions .button.outline:hover {
+  background: #fff;
+  color: var(--red);
+}
+.black-friday-campaign .site-footer {
+  padding-block: 64px 30px;
+}
+.black-friday-campaign .footer-column {
+  font-size: 16px;
+  line-height: 1.8;
+}
+.black-friday-campaign .footer-column h3 {
+  font-size: 20px;
+}
+.black-friday-campaign .footer-brand p {
+  font-size: 17px;
+  max-width: 34ch;
+}
+.black-friday-campaign :is(.footer-brand > span, .footer-bottom) {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.black-friday-campaign .footer-column a {
+  min-height: 36px;
+}
+
+@media (max-width: 1100px) {
+  .black-friday-campaign
+    :is(
+      .campaign-pot,
+      .mandoline-layout,
+      .quality-inner,
+      .bs-layout,
+      .tm-layout,
+      .faq-section,
+      .next-product-section
+    ) {
+    gap: 36px;
+  }
+  .black-friday-campaign .rh-layout {
+    grid-template-columns: minmax(0, 1fr) 280px;
+    gap: 28px;
+  }
+  .black-friday-campaign .feature-list {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .black-friday-campaign .bf-tier-card {
+    padding: 22px;
+  }
+}
+@media (max-width: 850px) {
+  .black-friday-campaign main > .section-shell:not(.hero),
+  .black-friday-campaign .spec-strip .section-shell,
+  .black-friday-campaign .black-friday-section .bf-shell,
+  .black-friday-campaign .brand-story-section .section-shell,
+  .black-friday-campaign .quality-inner,
+  .black-friday-campaign .testimonials-section .section-shell,
+  .black-friday-campaign .markets-inner,
+  .black-friday-campaign .mandoline-section .section-shell,
+  .black-friday-campaign .rh-community .rh-shell,
+  .black-friday-campaign .site-footer {
+    width: calc(100% - 48px);
+  }
+  .black-friday-campaign .rh-layout {
+    grid-template-columns: minmax(0, 1fr);
+  }
+  .black-friday-campaign .rh-progress {
+    max-width: none;
+  }
+  .black-friday-campaign .bf-intro {
+    gap: 28px;
+  }
+  .black-friday-campaign .bf-tier-count {
+    font-size: 17px;
+  }
+}
+@media (max-width: 720px) {
+  .black-friday-campaign {
+    --campaign-heading: clamp(32px, 7.2vw, 42px);
+    --campaign-body: 16px;
+    --campaign-detail: 13px;
+  }
+  .black-friday-campaign.is-rtl
+    :is(
+      .bf-title,
+      .bs-intro h2,
+      .product-copy h2,
+      .campaign-heading,
+      .tm-intro h2,
+      .markets-heading h2,
+      .rh-community h2,
+      .faq-heading h2,
+      .closing-section h2
+    ) {
+    font-size: clamp(28px, 6.8vw, 36px);
+    line-height: 1.65;
+  }
+  .black-friday-campaign.is-rtl
+    :is(
+      .bf-body,
+      .bs-intro-text,
+      .bs-chapters li p:last-child,
+      .product-intro,
+      .quality-intro,
+      .proof-item p,
+      .tm-intro > p:last-child,
+      .markets-heading > p:last-child,
+      .next-copy > p:not(.eyebrow),
+      .faq-item [role="region"] p,
+      .closing-section > p:not(.eyebrow)
+    ) {
+    font-size: 17px;
+    line-height: 1.9;
+  }
+  .black-friday-campaign
+    :is(
+      .black-friday-section,
+      .brand-story-section,
+      .product-section,
+      .quality-inner,
+      .testimonials-section,
+      .markets-inner,
+      .mandoline-layout,
+      .rh-community,
+      .next-product-section,
+      .faq-section,
+      .closing-section
+    ) {
+    padding-block: 54px;
+  }
+  .black-friday-campaign
+    :is(
+      .bs-layout,
+      .tm-layout,
+      .quality-inner,
+      .campaign-pot,
+      .mandoline-layout,
+      .faq-section,
+      .next-product-section
+    ) {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
+  .black-friday-campaign .campaign-pot .product-media {
+    position: static;
+  }
+  .black-friday-campaign .bs-intro {
+    display: block;
+    margin-bottom: 30px;
+  }
+  .black-friday-campaign .bs-intro-text {
+    padding-top: 16px;
+  }
+  .black-friday-campaign .bs-photo img {
+    aspect-ratio: 1.25;
+  }
+  .black-friday-campaign .bs-chapters h3 {
+    font-size: 26px;
+  }
+  .black-friday-campaign.is-rtl .bs-chapters h3 {
+    font-size: 22px;
+  }
+  .black-friday-campaign .values-ribbon {
+    gap: 14px 24px;
+    font-size: 15px;
+    flex-wrap: wrap;
+  }
+  .black-friday-campaign .market-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px;
+  }
+  .black-friday-campaign .market-card {
+    padding: 20px 12px;
+    min-height: 160px;
+  }
+  .black-friday-campaign .market-name {
+    font-size: 16px;
+  }
+  .black-friday-campaign .amazon-label {
+    font-size: 13px;
+  }
+  .black-friday-campaign .campaign-buy .market-recommendation {
+    padding: 18px 16px;
+  }
+  .black-friday-campaign .campaign-buy .recommendation-change {
+    max-width: 115px;
+  }
+  .black-friday-campaign .feature-list {
+    gap: 22px;
+  }
+  .black-friday-campaign .feature h3,
+  .black-friday-campaign.is-rtl .feature h3 {
+    font-size: 18px;
+  }
+  .black-friday-campaign .feature p,
+  .black-friday-campaign.is-rtl .feature p {
+    font-size: 16px;
+  }
+  .black-friday-campaign .spec-strip-inner {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .black-friday-campaign .spec-strip-inner > div {
+    flex: 1 1 calc(50% - 20px);
+    padding-inline-end: 14px;
+  }
+  .black-friday-campaign .spec-strip-inner strong,
+  .black-friday-campaign.is-rtl .spec-strip-inner strong {
+    font-size: 30px;
+  }
+  .black-friday-campaign .spec-strip-inner strong.spec-material,
+  .black-friday-campaign.is-rtl .spec-strip-inner strong.spec-material {
+    font-size: 21px;
+  }
+  .black-friday-campaign .spec-strip-inner span,
+  .black-friday-campaign .spec-source {
+    font-size: 13px;
+  }
+  .black-friday-campaign .tm-score strong {
+    font-size: 76px;
+  }
+  .black-friday-campaign.is-rtl .tm-score strong {
+    font-size: 64px;
+  }
+  .black-friday-campaign .tm-quote {
+    padding: 22px;
+  }
+  .black-friday-campaign .tm-quote-title {
+    font-size: 20px;
+  }
+  .black-friday-campaign .tm-quote blockquote {
+    font-size: 20px;
+  }
+  .black-friday-campaign .tm-rating {
+    padding: 26px;
+  }
+  .black-friday-campaign
+    :is(
+      .bs-actions .button,
+      .product-actions .button,
+      .quality-guide-download,
+      .closing-actions .button
+    ) {
+    width: 100%;
+  }
+  .black-friday-campaign :is(.product-actions, .closing-actions) {
+    flex-direction: column;
+  }
+  .black-friday-campaign
+    .rh-community
+    :is(
+      .rh-intro,
+      .rh-panel > p,
+      .rh-panel .rh-question,
+      .rh-care-guide p,
+      .rh-recognition
+    ),
+  .black-friday-campaign.is-rtl
+    .rh-community
+    :is(
+      .rh-intro,
+      .rh-panel > p,
+      .rh-panel .rh-question,
+      .rh-care-guide p,
+      .rh-recognition
+    ) {
+    font-size: 17px;
+  }
+  .black-friday-campaign .rh-panel,
+  .black-friday-campaign .rh-care-guide {
+    padding: 22px 18px;
+  }
+  .black-friday-campaign .rh-progress {
+    padding: 28px;
+  }
+  .black-friday-campaign .rh-community .rh-panel h3,
+  .black-friday-campaign .rh-community .rh-complete h3 {
+    font-size: 28px;
+  }
+  .black-friday-campaign.is-rtl .rh-community .rh-panel h3,
+  .black-friday-campaign.is-rtl .rh-community .rh-complete h3 {
+    font-size: 24px;
+  }
+  .black-friday-campaign .faq-item h3 > button {
+    font-size: 17px;
+  }
+  .black-friday-campaign .concept-label {
+    font-size: 13px;
+  }
+  .black-friday-campaign .closing-section {
+    padding-inline: 24px;
+  }
+  .black-friday-campaign .site-footer {
+    padding-top: 50px;
+  }
+  .black-friday-campaign .footer-main {
+    gap: 32px;
+  }
+  .black-friday-campaign .footer-column {
+    font-size: 15px;
+  }
+  .black-friday-campaign .footer-bottom {
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+}
+@media (max-width: 640px) {
+  .black-friday-campaign main > .section-shell:not(.hero),
+  .black-friday-campaign .spec-strip .section-shell,
+  .black-friday-campaign .black-friday-section .bf-shell,
+  .black-friday-campaign .brand-story-section .section-shell,
+  .black-friday-campaign .quality-inner,
+  .black-friday-campaign .testimonials-section .section-shell,
+  .black-friday-campaign .markets-inner,
+  .black-friday-campaign .mandoline-section .section-shell,
+  .black-friday-campaign .rh-community .rh-shell,
+  .black-friday-campaign .site-footer {
+    width: calc(100% - 40px);
+  }
+  .black-friday-campaign .bf-intro {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 20px;
+  }
+  .black-friday-campaign .bf-tier-card {
+    padding: 20px;
+  }
+  .black-friday-campaign .bf-tier-photo {
+    height: 104px;
+  }
+  .black-friday-campaign .bf-tier-rate {
+    font-size: 62px;
+  }
+  .black-friday-campaign .bf-tier-discount-label {
+    font-size: 18px;
+  }
+  .black-friday-campaign .bf-tier-count {
+    font-size: 18px;
+  }
+  .black-friday-campaign .bf-image-note,
+  .black-friday-campaign .bf-tier-note {
+    font-size: 14px;
+  }
+  .black-friday-campaign .bf-summary {
+    font-size: 19px;
+  }
+  .black-friday-campaign .bf-signature {
+    font-size: 12px;
+  }
+  .black-friday-campaign .bf-tier-choices--compact .bf-tier-rate {
+    font-size: 37px;
+  }
+  .black-friday-campaign .bf-tier-choices--compact .bf-tier-photo {
+    height: 80px;
+  }
+}
+
+/* Precise overrides for legacy RTL rules and Radix portals outside the site wrapper. */
+.black-friday-campaign
+  .bf-tier-choices[dir="rtl"]
+  :is(.bf-tier-selection, .bf-tier-highest) {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.black-friday-campaign
+  .testimonials-section[dir="rtl"]
+  :is(
+    .tm-observed,
+    .tm-variant,
+    .tm-translation-label,
+    .tm-review-meta,
+    .tm-verified,
+    .tm-current-note,
+    .tm-principle,
+    .tm-full-review summary
+  ) {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.black-friday-campaign .testimonials-section .tm-quote header time {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.black-friday-campaign .testimonials-section[dir="rtl"] .tm-full-review p {
+  font-size: 16px;
+  line-height: 1.9;
+}
+.buy-dialog,
+.video-dialog,
+.rh-delete-dialog {
+  font-size: 16px;
+  line-height: 1.8;
+  border-radius: 16px;
+  border: 1px solid var(--line);
+  background: var(--paper);
+}
+.buy-dialog h2,
+.video-dialog h2,
+.rh-delete-dialog h2 {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-size: 34px;
+  font-weight: 700;
+  line-height: 1.2;
+  margin-inline-end: 24px;
+}
+.buy-dialog[dir="rtl"] h2,
+.video-dialog[dir="rtl"] h2,
+.rh-delete-dialog[dir="rtl"] h2 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 28px;
+  line-height: 1.7;
+}
+.buy-dialog
+  :is(
+    .eyebrow,
+    .dialog-support,
+    .microcopy,
+    .bf-tier-legend,
+    .bf-tier-note,
+    .bf-image-note,
+    .bf-tier-discount-label,
+    .bf-purchase-disclaimer,
+    .bf-purchase-status,
+    .bf-purchase-dates
+  ),
+.buy-dialog[dir="rtl"]
+  :is(
+    .eyebrow,
+    .dialog-support,
+    .microcopy,
+    .bf-tier-legend,
+    .bf-tier-note,
+    .bf-image-note,
+    .bf-tier-discount-label,
+    .bf-purchase-disclaimer,
+    .bf-purchase-status,
+    .bf-purchase-dates
+  ) {
+  font-size: 14px;
+  line-height: 1.85;
+}
+.buy-dialog
+  :is(
+    .dialog-intro,
+    .product-choice button,
+    .dialog-capacity > span,
+    .market-field > label,
+    .select-wrap select,
+    .size-buttons button,
+    .purchase-state p
+  ),
+.buy-dialog[dir="rtl"]
+  :is(
+    .dialog-intro,
+    .product-choice button,
+    .dialog-capacity > span,
+    .market-field > label,
+    .select-wrap select,
+    .size-buttons button,
+    .purchase-state p
+  ) {
+  font-size: 16px;
+  line-height: 1.85;
+}
+.buy-dialog .purchase-state strong,
+.buy-dialog[dir="rtl"] .purchase-state strong {
+  font-size: 18px;
+}
+.buy-dialog .size-buttons {
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.buy-dialog .size-buttons button {
+  min-height: 46px;
+  border-radius: 999px;
+}
+.buy-dialog .button,
+.buy-dialog[dir="rtl"] .button,
+.rh-delete-dialog .button {
+  font-size: 16px;
+  line-height: 1.8;
+  min-height: 50px;
+  white-space: normal;
+  border-radius: 999px;
+}
+.buy-dialog .product-choice button {
+  border-radius: 12px;
+}
+.buy-dialog .select-wrap {
+  border-radius: 12px;
+}
+.buy-dialog .bf-tier-choices--compact .bf-tier-card {
+  padding: 14px 12px;
+  border-radius: 12px;
+}
+.buy-dialog .bf-tier-choices--compact .bf-tier-photo {
+  height: 75px;
+}
+.buy-dialog .bf-tier-choices--compact .bf-tier-rate {
+  font-family: RayhanaCampaign, Georgia, serif;
+  font-size: 36px;
+}
+.buy-dialog[dir="rtl"] .bf-tier-choices--compact .bf-tier-rate {
+  font-family: Vazirmatn, sans-serif;
+}
+.buy-dialog .bf-tier-choices--compact .bf-tier-count,
+.buy-dialog .bf-tier-choices--compact .bf-tier-discount-label {
+  font-size: 14px;
+}
+.buy-dialog :is(.bf-purchase-box, .purchase-state) {
+  border-radius: 12px;
+}
+.video-dialog > p,
+.video-dialog[dir="rtl"] > p,
+.rh-delete-dialog > p,
+.rh-delete-dialog[dir="rtl"] > p {
+  font-size: 16px;
+  line-height: 1.9;
+}
+.buy-dialog .dialog-close,
+.video-dialog .dialog-close {
+  border-radius: 50%;
+}
+.buy-dialog
+  .market-recommendation
+  :is(
+    .recommendation-caption,
+    .recommendation-note,
+    .recommendation-pending,
+    .recommendation-privacy,
+    .recommendation-change
+  ) {
+  font-size: 14px;
+  line-height: 1.8;
+}
+.buy-dialog .market-recommendation .recommendation-top strong {
+  font-size: 16px;
+}
+@media (max-width: 720px) {
+  .black-friday-campaign .site-footer {
+    padding-bottom: calc(104px + env(safe-area-inset-bottom, 0px));
+  }
+}
+@media (max-width: 640px) {
+  .buy-dialog,
+  .video-dialog,
+  .rh-delete-dialog {
+    padding: 26px 22px;
+  }
+  .buy-dialog h2,
+  .video-dialog h2,
+  .rh-delete-dialog h2 {
+    font-size: 30px;
+  }
+  .buy-dialog[dir="rtl"] h2,
+  .video-dialog[dir="rtl"] h2,
+  .rh-delete-dialog[dir="rtl"] h2 {
+    font-size: 25px;
+  }
+  .buy-dialog .bf-tier-choices--compact .bf-tier-card {
+    padding: 12px 8px;
+  }
+  .buy-dialog .bf-tier-choices--compact .bf-tier-rate {
+    font-size: 30px;
+  }
+  .buy-dialog .bf-tier-choices--compact .bf-tier-photo {
+    height: 60px;
+  }
+  .buy-dialog .bf-tier-choices--compact .bf-tier-count {
+    font-size: 13px;
+  }
+}
+
+.buy-dialog .recommendation-top strong small,
+.buy-dialog .bf-tier-choices :is(.bf-tier-selection, .bf-tier-highest),
+.buy-dialog
+  .bf-tier-choices[dir="rtl"]
+  :is(.bf-tier-selection, .bf-tier-highest) {
+  font-size: 14px;
+  line-height: 1.8;
+}

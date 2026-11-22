@@ -1,0 +1,7 @@
+/* Keep campaign headings on the same Tailwind font-serif stack as the rest of the site. */
+.black-friday-campaign .font-serif,
+.rh-form-dialog .font-serif,
+.buy-dialog .font-serif,
+.rayhana-video-dialog .font-serif {
+  font-family: var(--font-serif) !important;
+}

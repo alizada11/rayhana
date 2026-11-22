@@ -1,0 +1,150 @@
+/* A single cream product composition, matching the supplied campaign reference. */
+.black-friday-campaign .hero-offer-display {
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  column-gap: 24px;
+}
+.black-friday-campaign .hero-mandoline-offer {
+  grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+  gap: 6px;
+  min-height: 286px;
+  padding: 20px 12px 18px 22px;
+  border-radius: 16px;
+  background:
+    linear-gradient(90deg, #fbf8f2 0%, #fbf8f2eb 33%, #fbf8f29c 58%, #fbf8f240 100%),
+    var(--cream);
+  isolation: isolate;
+}
+.black-friday-campaign .hero-mandoline-offer-copy {
+  justify-content: center;
+  align-self: stretch;
+  gap: 5px;
+}
+.black-friday-campaign .hero-mandoline-label {
+  font-size: 12px;
+}
+.black-friday-campaign .hero-mandoline-offer strong {
+  font-size: clamp(32px, 3.4vw, 46px);
+}
+.black-friday-campaign.is-rtl .hero-mandoline-offer strong {
+  font-size: clamp(28px, 3vw, 40px);
+}
+.black-friday-campaign .hero-mandoline-description,
+.black-friday-campaign .hero-mandoline-link {
+  font-size: 12px;
+  line-height: 1.65;
+}
+.black-friday-campaign .hero-mandoline-visual {
+  height: 100%;
+  min-height: 244px;
+  align-self: stretch;
+  isolation: isolate;
+}
+.black-friday-campaign .hero-mandoline-backdrop {
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: 88% 82%;
+  border-radius: 0;
+  z-index: 0;
+  opacity: 0.7;
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 35%, #000 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 35%, #000 100%);
+  -webkit-mask-composite: initial;
+  mask-composite: initial;
+}
+.black-friday-campaign.is-rtl .hero-mandoline-backdrop {
+  transform: scaleX(-1);
+}
+.black-friday-campaign .hero-mandoline-product {
+  width: 118%;
+  height: 252px;
+  margin-inline-start: -4%;
+  margin-top: 0;
+  object-fit: contain;
+  position: relative;
+  z-index: 2;
+  filter: drop-shadow(0 12px 7px #49312424);
+}
+.black-friday-campaign .hero-mandoline-offer.is-unavailable strong {
+  font-family: Poppins, Vazirmatn, sans-serif;
+  font-size: clamp(19px, 1.65vw, 24px);
+  line-height: 1.28;
+  letter-spacing: 0;
+  white-space: normal;
+  text-transform: none;
+  overflow-wrap: anywhere;
+}
+.black-friday-campaign.is-rtl .hero-mandoline-offer.is-unavailable strong {
+  font-family: Vazirmatn, sans-serif;
+  font-size: clamp(18px, 1.5vw, 22px);
+  line-height: 1.55;
+}
+.black-friday-campaign .regional-availability,
+.black-friday-campaign .af-offer-note {
+  padding: 14px 18px;
+  margin-block: 16px;
+  border-inline-start: 3px solid var(--red);
+  background: color-mix(in srgb, var(--red) 4%, var(--paper));
+  font-size: 15px;
+  line-height: 1.9;
+  border-radius: 10px;
+}
+.black-friday-campaign .hero-regional-note {
+  grid-column: 1 / -1;
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.8;
+  color: var(--ink);
+}
+.black-friday-campaign .market-offer-note {
+  display: block;
+  font-size: 13px;
+  line-height: 1.7;
+  color: var(--red);
+  font-weight: 600;
+}
+.black-friday-campaign .market-coverage-note {
+  display: block;
+  font-size: 14px;
+  line-height: 1.7;
+  color: var(--ink);
+}
+@media (max-width: 850px) {
+  .black-friday-campaign .hero-offer-display {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+@media (max-width: 640px) {
+  .black-friday-campaign .hero-mandoline-offer {
+    grid-template-columns: minmax(0, 0.78fr) minmax(0, 1.22fr);
+    min-height: 254px;
+    padding: 16px 10px 16px 15px;
+    gap: 8px;
+  }
+  .black-friday-campaign .hero-mandoline-visual {
+    height: 100%;
+    min-height: 216px;
+  }
+  .black-friday-campaign .hero-mandoline-product {
+    width: 124%;
+    height: 218px;
+    margin-top: 0;
+  }
+  .black-friday-campaign .hero-mandoline-offer strong {
+    font-size: 32px;
+  }
+  .black-friday-campaign.is-rtl .hero-mandoline-offer strong {
+    font-size: 26px;
+  }
+  .black-friday-campaign .hero-mandoline-description,
+  .black-friday-campaign .hero-mandoline-link,
+  .black-friday-campaign .hero-mandoline-label {
+    font-size: 11px;
+  }
+  .black-friday-campaign .hero-mandoline-offer.is-unavailable strong,
+  .black-friday-campaign.is-rtl .hero-mandoline-offer.is-unavailable strong {
+    font-size: 16px;
+    line-height: 1.45;
+  }
+}

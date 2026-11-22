@@ -1,0 +1,42 @@
+/* Same photo frame, improved landing only; no separate video section. */
+.refined-campaign .ds-video-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 1;
+  border-radius: inherit;
+  scroll-margin-top: 116px;
+}
+.refined-campaign .ds-video-overlay[hidden] {
+  display: none;
+}
+.refined-campaign .ds-video-overlay video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
+  background: var(--paper);
+  opacity: 0;
+  pointer-events: none;
+}
+.refined-campaign .ds-video-overlay.is-started video {
+  opacity: 1;
+  pointer-events: auto;
+}
+.refined-campaign .ds-overlay-play {
+  z-index: 2;
+  max-width: calc(100% - 32px);
+  min-height: 44px;
+}
+.refined-campaign .ds-video-overlay:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 5px;
+}
+.refined-campaign .ds-demo-link {
+  display: inline-flex;
+}
+@media (max-width: 640px) {
+  .refined-campaign .ds-video-overlay {
+    scroll-margin-top: 100px;
+  }
+}

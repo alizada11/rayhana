@@ -14,6 +14,7 @@ import {
 } from "@/blackfriday/data/communityApi";
 
 const NOTES_KEY = "rayhana-table-private-notes-v1";
+const TOKEN_KEY = "rayhana-table-token-v1";
 type Action =
   | { kind: "join" }
   | { kind: "restore"; reveal?: boolean }

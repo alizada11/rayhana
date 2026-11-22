@@ -1,1 +1,1 @@
-export { default } from "@/blackfriday/BlackFridayCampaignPage";
+export { default } from "@/blackfriday/redesign/pages/BlackFridayPage";

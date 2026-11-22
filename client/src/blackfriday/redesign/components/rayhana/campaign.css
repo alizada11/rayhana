@@ -1,0 +1,1383 @@
+.campaign-site .hero {
+  padding-block: 55px 76px;
+}
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 18px 24px;
+}
+.hero-secondary {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  font-size: 11px;
+  color: var(--burgundy);
+  padding-block: 10px;
+  border-bottom: 1px solid var(--line);
+}
+.is-rtl .hero-secondary {
+  font-size: 13px;
+}
+.hero-cooking-peek {
+  position: absolute;
+  bottom: -23px;
+  inset-inline-start: -27px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: var(--paper);
+  padding: 8px 14px 8px 8px;
+  box-shadow: 0 12px 35px #42190b15;
+  border: 1px solid var(--line);
+  max-width: 310px;
+  text-align: start;
+  font-size: 11px;
+}
+.hero-cooking-peek > img {
+  width: 88px;
+  height: 77px;
+  object-fit: cover;
+  object-position: 50% 70%;
+}
+.hero-peek-play {
+  width: 33px;
+  height: 33px;
+  border-radius: 50%;
+  background: var(--red);
+  color: white;
+  display: grid;
+  place-items: center;
+  flex-shrink: 0;
+}
+.is-rtl .hero-cooking-peek {
+  font-size: 13px;
+}
+.spec-strip {
+  border-block: 1px solid var(--line);
+  background: var(--cream);
+  padding-block: 28px 18px;
+}
+.spec-strip-inner {
+  display: flex;
+  justify-content: space-between;
+  max-width: 990px;
+  gap: 25px;
+}
+.spec-strip-inner > div {
+  flex: 1;
+  border-inline-end: 1px solid var(--line);
+  padding-inline-end: 25px;
+}
+.spec-strip-inner > div:last-child {
+  border: 0;
+  padding-inline-end: 0;
+}
+.spec-strip-inner span {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 7px;
+}
+.spec-strip-inner strong {
+  font:
+    700 32px/1.4 RayhanaDisplay,
+    Georgia,
+    serif;
+  color: var(--burgundy);
+}
+.spec-strip-inner strong small {
+  font:
+    400 13px Poppins,
+    sans-serif;
+}
+.spec-strip-inner strong.spec-material {
+  font:
+    600 20px/1.5 Poppins,
+    sans-serif;
+}
+.is-rtl .spec-strip-inner span {
+  font-size: 12px;
+}
+.is-rtl .spec-strip-inner strong {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 27px;
+}
+.is-rtl .spec-strip-inner strong.spec-material {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 20px;
+}
+.spec-source {
+  text-align: center;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.8;
+  margin-top: 17px;
+}
+.is-rtl .spec-source {
+  font-size: 11px;
+}
+.campaign-site .campaign-story {
+  min-height: 475px;
+  margin-top: 65px;
+}
+.campaign-site .campaign-story .story-copy {
+  padding-block: 58px;
+}
+.story-invite {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 12px;
+  color: var(--cream);
+  margin-top: 22px;
+  border-bottom: 1px solid #ba896b;
+  padding-bottom: 8px;
+}
+.is-rtl .story-invite {
+  font-size: 14px;
+}
+.values-ribbon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 45px;
+  padding: 24px;
+  border-bottom: 1px solid var(--line);
+  color: var(--burgundy);
+  font-size: 12px;
+}
+.is-rtl .values-ribbon {
+  font-size: 14px;
+}
+.value-divider {
+  width: 4px;
+  height: 4px;
+  background: #b58a60;
+  transform: rotate(45deg);
+}
+.section-anchor {
+  display: block;
+}
+.campaign-site .campaign-pot {
+  gap: 60px;
+  align-items: start;
+}
+.campaign-site .campaign-pot .product-media {
+  position: sticky;
+  top: 135px;
+}
+.campaign-site .campaign-pot .product-photo {
+  aspect-ratio: 1/1;
+  background: var(--cream);
+}
+.pot-image-wordmark {
+  text-align: center;
+  font:
+    700 30px/1.5 RayhanaDisplay,
+    Georgia,
+    serif;
+  letter-spacing: 7px;
+  color: #cfb797;
+  margin-top: 25px;
+}
+.pot-image-wordmark > span {
+  display: block;
+  font:
+    400 8px Poppins,
+    sans-serif;
+  letter-spacing: 2px;
+  margin-top: 7px;
+}
+.pot-features {
+  gap: 19px;
+}
+.pot-features .feature p {
+  max-width: none;
+}
+.campaign-heading {
+  font:
+    700 clamp(30px, 3.3vw, 44px) / 1.22 RayhanaDisplay,
+    Georgia,
+    serif;
+  letter-spacing: -0.6px;
+  color: var(--burgundy);
+  margin-bottom: 22px;
+}
+.is-rtl .campaign-heading {
+  font-family: Vazirmatn, sans-serif;
+  font-size: clamp(28px, 3vw, 37px);
+  line-height: 1.75;
+  letter-spacing: -0.6px;
+}
+.quality-section {
+  background: var(--cream);
+  border-block: 1px solid var(--line);
+}
+.quality-inner {
+  display: grid;
+  grid-template-columns: 1.1fr 0.9fr;
+  gap: 95px;
+  align-items: center;
+  padding-block: 80px;
+}
+.quality-intro {
+  font-size: 12px;
+  line-height: 2;
+  color: var(--muted);
+  max-width: 430px;
+}
+.is-rtl .quality-intro {
+  font-size: 14px;
+  line-height: 2.1;
+}
+.proof-list {
+  margin-top: 29px;
+}
+.proof-item {
+  display: flex;
+  align-items: start;
+  gap: 18px;
+  padding-block: 19px;
+  border-bottom: 1px solid var(--line);
+}
+.proof-number {
+  display: grid;
+  place-items: center;
+  font:
+    600 12px Poppins,
+    sans-serif;
+  color: var(--red);
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  width: 31px;
+  height: 31px;
+  flex-shrink: 0;
+}
+.proof-item h3 {
+  font-size: 12px;
+  line-height: 1.8;
+}
+.proof-item p {
+  font-size: 11px;
+  line-height: 1.9;
+  margin-top: 4px;
+  color: var(--muted);
+}
+.is-rtl .proof-item h3 {
+  font-size: 14px;
+}
+.is-rtl .proof-item p {
+  font-size: 13px;
+  line-height: 2;
+}
+.cooking-media {
+  max-width: 390px;
+  justify-self: center;
+}
+.cooking-card {
+  position: relative;
+  display: block;
+  background: #342720;
+  padding: 0;
+  width: 100%;
+  border-radius: 120px 120px 0 0;
+  overflow: hidden;
+}
+.cooking-card > img {
+  width: 100%;
+  height: 470px;
+  object-fit: cover;
+  object-position: 50% 70%;
+  opacity: 0.88;
+  transition: transform 0.3s;
+}
+.cooking-video-slide > video {
+  display: block;
+  width: 100%;
+  height: 470px;
+  object-fit: cover;
+  object-position: center;
+  background: #342720;
+}
+.cooking-video-start {
+  position: absolute;
+  z-index: 2;
+  inset: 50% auto auto 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 54px;
+  padding: 0 20px 0 10px;
+  border: 1px solid #ffffff80;
+  border-radius: 999px;
+  color: #fff;
+  background: #e3061d;
+  box-shadow: 0 8px 28px #160b0b55;
+  cursor: pointer;
+  font: 600 13px Poppins, sans-serif;
+}
+.cooking-video-start svg {
+  box-sizing: content-box;
+  padding: 12px;
+  border-radius: 50%;
+  background: #ffffff24;
+}
+.cooking-video-start:hover {
+  background: #bd0015;
+}
+.cooking-video-caption {
+  position: absolute;
+  z-index: 1;
+  inset-inline: 0;
+  bottom: 58px;
+  display: flex;
+  align-items: end;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 30px 18px 12px;
+  color: white;
+  background: linear-gradient(transparent, #140d09c9);
+  text-align: start;
+  transition: opacity 180ms ease;
+}
+.cooking-video-caption strong,
+.cooking-video-caption small {
+  display: block;
+}
+.cooking-video-caption strong {
+  font-size: 14px;
+}
+.cooking-video-caption small {
+  margin-top: 2px;
+  font-size: 11px;
+  opacity: 0.85;
+}
+.cooking-video-slide.is-playing .cooking-video-caption {
+  opacity: 0;
+  pointer-events: none;
+}
+.black-friday-campaign.is-rtl .cooking-video-start {
+  font-family: Vazirmatn, sans-serif;
+}
+.cooking-video-controls {
+  position: absolute;
+  z-index: 3;
+  inset-inline: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-height: 54px;
+  padding: 8px 12px;
+  color: white;
+  background: linear-gradient(transparent, #090909ed 25%);
+}
+.cooking-control-button {
+  display: grid;
+  flex: 0 0 32px;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  border: 0;
+  border-radius: 50%;
+  color: inherit;
+  background: transparent;
+  cursor: pointer;
+}
+.cooking-control-button:hover {
+  background: #ffffff24;
+}
+.cooking-control-button:focus-visible,
+.cooking-video-start:focus-visible,
+.cooking-slider-arrow:focus-visible,
+.cooking-slider-dot:focus-visible {
+  outline: 2px solid #fff;
+  outline-offset: 3px;
+}
+.cooking-video-time {
+  color: #fff;
+  font: 500 11px Poppins, sans-serif;
+  direction: ltr;
+  white-space: nowrap;
+}
+.black-friday-campaign.is-rtl .cooking-video-time {
+  font-family: Vazirmatn, sans-serif;
+}
+.cooking-video-seek {
+  flex: 1 1 auto;
+  min-width: 30px;
+  height: 4px;
+  margin: 0 2px;
+  border-radius: 999px;
+  direction: ltr;
+  appearance: none;
+  background: linear-gradient(
+    to right,
+    #e3061d 0 var(--video-progress),
+    #ffffff80 var(--video-progress) 100%
+  );
+  cursor: pointer;
+}
+.cooking-video-seek::-webkit-slider-thumb {
+  width: 11px;
+  height: 11px;
+  border: 2px solid white;
+  border-radius: 50%;
+  appearance: none;
+  background: #e3061d;
+}
+.cooking-video-seek::-moz-range-thumb {
+  width: 8px;
+  height: 8px;
+  border: 2px solid white;
+  border-radius: 50%;
+  background: #e3061d;
+}
+.cooking-video-slide:fullscreen {
+  width: 100vw;
+  height: 100dvh;
+  max-width: none;
+  border-radius: 0;
+}
+.cooking-video-slide:fullscreen > video {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+.cooking-card:hover > img {
+  transform: scale(1.025);
+}
+.cooking-caption {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  position: absolute;
+  inset-inline: 0;
+  bottom: 0;
+  padding: 44px 22px 27px;
+  color: white;
+  background: linear-gradient(transparent, #140d09e8);
+  text-align: start;
+}
+.cooking-play {
+  border: 1px solid #fffc;
+  width: 55px;
+  height: 55px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.cooking-slide-count {
+  margin-inline-start: auto;
+  font: 600 12px Poppins, sans-serif;
+  direction: ltr;
+  white-space: nowrap;
+}
+.cooking-slider-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 18px;
+  padding-top: 14px;
+}
+.cooking-slider-arrow,
+.cooking-slider-dot {
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  color: var(--ink);
+  background: var(--paper);
+  cursor: pointer;
+}
+.cooking-slider-arrow {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+}
+.cooking-slider-arrow:hover,
+.cooking-slider-dot.is-active {
+  color: white;
+  border-color: var(--red);
+  background: var(--red);
+}
+.cooking-slider-dots {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.cooking-slider-dot {
+  width: 9px;
+  height: 9px;
+  padding: 0;
+  border-radius: 50%;
+}
+.cooking-caption strong,
+.cooking-caption small {
+  display: block;
+}
+.cooking-caption strong {
+  font-size: 12px;
+  margin-bottom: 5px;
+}
+.cooking-caption small {
+  font-size: 10px;
+  color: #eee0cf;
+}
+.cooking-caption > svg {
+  margin-inline-start: auto;
+  flex-shrink: 0;
+}
+.is-rtl .cooking-caption strong {
+  font-size: 15px;
+}
+.is-rtl .cooking-caption small {
+  font-size: 12px;
+}
+.cooking-note {
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.9;
+  margin-top: 13px;
+}
+.is-rtl .cooking-note {
+  font-size: 11px;
+}
+.reviews-section {
+  padding-block: 85px 50px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 30px 95px;
+}
+.reviews-copy > p:first-child {
+  font-size: 12px;
+  line-height: 2;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+.is-rtl .reviews-copy > p:first-child {
+  font-size: 14px;
+  line-height: 2.2;
+}
+.review-source {
+  margin-top: 15px;
+  font-size: 9px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+.is-rtl .review-source {
+  font-size: 11px;
+}
+.review-principle {
+  grid-column: 1/-1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 14px;
+  padding-top: 23px;
+  border-top: 1px solid var(--line);
+  font-size: 11px;
+  color: var(--muted);
+}
+.is-rtl .review-principle {
+  font-size: 13px;
+}
+.campaign-buy {
+  margin-top: 30px;
+}
+.buy-capacity {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 24px;
+  margin-block: 16px 25px;
+}
+.buy-capacity .field-heading {
+  margin: 0;
+}
+.market-buy-footer {
+  margin: 25px auto 0;
+  text-align: center;
+  max-width: 760px;
+}
+.market-buy-footer > p {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+  margin-bottom: 18px;
+}
+.market-buy-footer > small {
+  display: block;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.9;
+  margin-top: 17px;
+}
+.is-rtl .market-buy-footer > p {
+  font-size: 13px;
+}
+.is-rtl .market-buy-footer > small {
+  font-size: 11px;
+}
+.next-product-section {
+  display: grid;
+  grid-template-columns: 0.85fr 1fr;
+  gap: 90px;
+  padding-block: 85px;
+  align-items: center;
+  border-bottom: 1px solid var(--line);
+}
+.concept-visual {
+  position: relative;
+  background: #f1e4d2;
+  border: 1px solid #e4d1b8;
+  min-height: 405px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  overflow: hidden;
+}
+.concept-pattern {
+  position: absolute;
+  inset: 30px;
+  border: 1px solid #b9987470;
+  background: repeating-linear-gradient(
+    45deg,
+    transparent 0 34px,
+    #aa79570b 35px 36px,
+    transparent 37px 72px
+  );
+  display: grid;
+  place-items: center;
+}
+.concept-diamond {
+  display: block;
+  position: absolute;
+  width: 180px;
+  height: 180px;
+  transform: rotate(45deg);
+  border: 9px double #a34335;
+  outline: 1px solid #c1976d;
+  outline-offset: 14px;
+}
+.concept-diamond.small {
+  width: 105px;
+  height: 105px;
+  border-color: #b58150;
+  outline: none;
+}
+.concept-name {
+  position: relative;
+  z-index: 1;
+  font:
+    700 23px RayhanaDisplay,
+    Georgia,
+    serif;
+  letter-spacing: 3px;
+  color: var(--burgundy);
+  background: #f1e4d2;
+  padding: 9px;
+}
+.concept-label {
+  position: absolute;
+  inset-inline: 28px;
+  bottom: 13px;
+  text-align: center;
+  font-size: 8px;
+  letter-spacing: 1px;
+  color: #79573d;
+}
+.is-rtl .concept-label {
+  font-size: 11px;
+  letter-spacing: 0;
+}
+.next-copy > p:not(.eyebrow) {
+  font-size: 12px;
+  line-height: 2;
+  color: var(--muted);
+}
+.is-rtl .next-copy > p:not(.eyebrow) {
+  font-size: 14px;
+  line-height: 2.1;
+}
+.next-copy ul {
+  list-style: none;
+  padding: 0;
+  margin: 22px 0;
+  display: flex;
+  flex-direction: column;
+  gap: 11px;
+}
+.next-copy li {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 11px;
+}
+.next-copy li > svg {
+  color: var(--red);
+  flex-shrink: 0;
+}
+.is-rtl .next-copy li {
+  font-size: 13px;
+}
+.next-copy > p.concept-note {
+  border-inline-start: 2px solid #be925c;
+  padding-inline-start: 15px;
+  font-size: 10px;
+  line-height: 1.9;
+  margin-bottom: 20px;
+}
+.is-rtl .next-copy > p.concept-note {
+  font-size: 12px;
+}
+.campaign-site .faq-section {
+  padding-block: 75px;
+}
+.campaign-site .feature-icon {
+  color: var(--burgundy);
+}
+@media (max-width: 1100px) {
+  .campaign-site .desktop-nav {
+    gap: 17px;
+  }
+  .quality-inner {
+    gap: 45px;
+  }
+  .reviews-section {
+    gap: 30px 50px;
+  }
+  .campaign-site .campaign-pot {
+    gap: 40px;
+  }
+}
+@media (max-width: 1000px) {
+  .campaign-site .desktop-nav {
+    display: none;
+  }
+  .campaign-site .mobile-menu-button {
+    display: block;
+  }
+  .campaign-site .mobile-navigation {
+    display: flex;
+  }
+  .next-product-section {
+    gap: 45px;
+  }
+}
+@media (max-width: 850px) {
+  .quality-inner {
+    gap: 30px;
+    grid-template-columns: 1fr 1fr;
+    padding-block: 60px;
+  }
+  .campaign-site .campaign-pot .product-media {
+    position: static;
+  }
+  .cooking-card > img {
+    height: 420px;
+  }
+  .cooking-video-slide > video {
+    height: 420px;
+  }
+  .campaign-heading {
+    font-size: 32px;
+  }
+  .is-rtl .campaign-heading {
+    font-size: 29px;
+  }
+  .next-product-section {
+    gap: 30px;
+  }
+  .concept-visual {
+    min-height: 355px;
+  }
+  .spec-strip-inner {
+    gap: 17px;
+  }
+  .spec-strip-inner strong {
+    font-size: 25px;
+  }
+  .spec-strip-inner strong.spec-material {
+    font-size: 17px;
+  }
+  .values-ribbon {
+    gap: 25px;
+  }
+}
+@media (max-width: 640px) {
+  .campaign-site .hero {
+    padding-block: 30px 60px;
+  }
+  .hero-actions {
+    gap: 10px 15px;
+  }
+  .hero-secondary {
+    font-size: 11px;
+    min-height: 44px;
+  }
+  .is-rtl .hero-secondary {
+    font-size: 12px;
+  }
+  .hero-cooking-peek {
+    inset-inline-start: 8px;
+    bottom: -25px;
+    max-width: 280px;
+  }
+  .hero-cooking-peek > img {
+    width: 70px;
+    height: 58px;
+  }
+  .spec-strip {
+    padding-block: 22px 15px;
+  }
+  .spec-strip-inner {
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+  .spec-strip-inner > div {
+    min-width: 0;
+    padding-inline-end: 12px;
+  }
+  .spec-strip-inner span {
+    font-size: 8px;
+  }
+  .is-rtl .spec-strip-inner span {
+    font-size: 10px;
+  }
+  .spec-strip-inner strong {
+    font-size: 22px;
+  }
+  .is-rtl .spec-strip-inner strong {
+    font-size: 21px;
+  }
+  .spec-strip-inner strong.spec-material,
+  .is-rtl .spec-strip-inner strong.spec-material {
+    font-size: 13px;
+  }
+  .spec-source {
+    font-size: 8px;
+  }
+  .is-rtl .spec-source {
+    font-size: 10px;
+  }
+  .campaign-site .campaign-story {
+    margin-top: 35px;
+  }
+  .campaign-site .campaign-story .story-copy {
+    padding-block: 35px;
+  }
+  .values-ribbon {
+    gap: 15px;
+    font-size: 10px;
+    padding: 20px 16px;
+    flex-wrap: wrap;
+  }
+  .is-rtl .values-ribbon {
+    font-size: 11px;
+  }
+  .value-divider {
+    width: 3px;
+    height: 3px;
+  }
+  .campaign-site .campaign-pot {
+    padding-block: 50px;
+    gap: 30px;
+  }
+  .campaign-site .campaign-pot .product-photo {
+    aspect-ratio: 1.2;
+  }
+  .pot-image-wordmark {
+    display: none;
+  }
+  .campaign-site .campaign-pot .image-note {
+    font-size: 10px;
+  }
+  .is-rtl .campaign-site .campaign-pot .image-note {
+    font-size: 11px;
+  }
+  .pot-features {
+    gap: 18px;
+  }
+  .quality-inner {
+    grid-template-columns: 1fr;
+    padding-block: 45px;
+    gap: 30px;
+  }
+  .quality-intro {
+    font-size: 12px;
+  }
+  .cooking-media {
+    max-width: 390px;
+    width: 100%;
+  }
+  .cooking-card {
+    border-radius: 110px 110px 0 0;
+  }
+  .cooking-card > img {
+    height: 420px;
+  }
+  .cooking-video-slide > video {
+    height: 420px;
+  }
+  .cooking-caption strong {
+    font-size: 13px;
+  }
+  .cooking-caption small {
+    font-size: 11px;
+  }
+  .reviews-section {
+    grid-template-columns: 1fr;
+    padding-block: 45px 30px;
+    gap: 15px;
+  }
+  .reviews-section .campaign-heading {
+    margin-bottom: 5px;
+  }
+  .reviews-copy > .button {
+    width: 100%;
+    gap: 10px;
+    padding-inline: 12px;
+  }
+  .review-principle {
+    padding-top: 15px;
+    font-size: 10px;
+  }
+  .is-rtl .review-principle {
+    font-size: 12px;
+  }
+  .buy-capacity {
+    flex-direction: column;
+    gap: 5px;
+  }
+  .market-buy-footer .button {
+    width: 100%;
+  }
+  .campaign-buy .market-helper {
+    line-height: 1.8;
+    text-align: center;
+    align-items: flex-start;
+  }
+  .campaign-buy .market-helper > svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .next-product-section {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-block: 45px;
+  }
+  .concept-visual {
+    min-height: 300px;
+  }
+  .concept-diamond {
+    width: 150px;
+    height: 150px;
+  }
+  .concept-diamond.small {
+    width: 90px;
+    height: 90px;
+  }
+  .campaign-site .faq-section {
+    padding-block: 45px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .cooking-card > img {
+    transition: none;
+  }
+}
+
+/* A lightweight destination suggestion, never an automatic redirect. */
+.market-recommendation {
+  border: 1px solid var(--line);
+  background: var(--cream);
+  padding: 18px 20px;
+  max-width: 760px;
+  margin: 18px auto 25px;
+  text-align: start;
+}
+.market-recommendation.is-compact {
+  margin: 21px 0 0;
+  padding: 13px 15px;
+  max-width: 470px;
+}
+.recommendation-top {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+}
+.recommendation-top > svg {
+  color: var(--red);
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+.recommendation-top > div {
+  flex: 1;
+  min-width: 0;
+}
+.recommendation-caption {
+  display: block;
+  font-size: 10px;
+  color: var(--muted);
+  line-height: 1.7;
+}
+.recommendation-top strong {
+  display: block;
+  color: var(--burgundy);
+  font-size: 13px;
+  line-height: 1.7;
+  font-weight: 600;
+}
+.recommendation-top strong small {
+  display: block;
+  font:
+    400 10px/1.7 Poppins,
+    sans-serif;
+  color: var(--muted);
+}
+.recommendation-change {
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: transparent;
+  color: var(--burgundy);
+  font-size: 10px;
+  line-height: 1.6;
+  min-height: 44px;
+  max-width: 145px;
+  padding: 4px 0;
+  flex-shrink: 0;
+}
+.recommendation-note {
+  font-size: 10px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-top: 8px;
+}
+.recommendation-pending {
+  font-size: 10px;
+  line-height: 1.8;
+  color: #a52c2a;
+  margin-top: 6px;
+}
+.recommendation-privacy {
+  margin-top: 11px;
+  padding-top: 10px;
+  border-top: 1px solid var(--line);
+  font-size: 9px;
+  line-height: 1.8;
+  color: var(--muted);
+}
+.is-rtl .recommendation-caption {
+  font-size: 11px;
+}
+.is-rtl .recommendation-top strong {
+  font-size: 14px;
+}
+.is-rtl .recommendation-change {
+  font-size: 11px;
+}
+.is-rtl .recommendation-note,
+.is-rtl .recommendation-pending {
+  font-size: 11px;
+  line-height: 1.9;
+}
+.is-rtl .recommendation-privacy {
+  font-size: 10px;
+}
+.buy-dialog .market-recommendation {
+  max-width: none;
+  margin: 10px 0 20px;
+}
+.buy-dialog[dir="rtl"] .recommendation-caption,
+.buy-dialog[dir="rtl"] .recommendation-change,
+.buy-dialog[dir="rtl"] .recommendation-note,
+.buy-dialog[dir="rtl"] .recommendation-pending {
+  font-size: 12px;
+}
+@media (max-width: 640px) {
+  .market-recommendation,
+  .market-recommendation.is-compact {
+    padding: 12px 13px;
+  }
+  .recommendation-top {
+    gap: 8px;
+  }
+  .recommendation-change {
+    max-width: 105px;
+    min-width: 75px;
+    font-size: 9px;
+  }
+  .is-rtl .recommendation-change {
+    font-size: 11px;
+  }
+  .recommendation-top strong {
+    font-size: 12px;
+  }
+  .is-rtl .recommendation-top strong {
+    font-size: 13px;
+  }
+  .campaign-site .hero-actions .hero-button {
+    max-width: 100%;
+    white-space: normal;
+    text-align: start;
+  }
+  .campaign-site .mobile-sticky > .button {
+    white-space: normal;
+    line-height: 1.45;
+    max-width: 65%;
+    min-height: 44px;
+  }
+  .campaign-site .mobile-sticky > a {
+    flex-shrink: 1;
+    min-width: 0;
+  }
+}
+
+.hero-offer-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  margin: 3px 0 12px;
+  color: var(--red);
+  font-size: 11px;
+  border-bottom: 1px solid var(--line);
+}
+.campaign-site.is-rtl .hero-offer-link {
+  font-size: 13px;
+}
+.campaign-site .announcement a {
+  display: block;
+  color: inherit;
+  line-height: 1.65;
+  padding: 4px 0;
+}
+.dialog-offer-plan {
+  margin: 20px 0;
+  padding-block: 15px;
+  border-block: 1px solid var(--line);
+}
+.dialog-offer-summary {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--burgundy);
+  margin-top: 10px;
+  line-height: 1.7;
+}
+.buy-dialog[dir="rtl"] .dialog-offer-summary {
+  font-size: 13px;
+}
+@media (max-width: 640px) {
+  .campaign-site .announcement a {
+    font-size: 9px;
+  }
+  .campaign-site.is-rtl .announcement a {
+    font-size: 11px;
+  }
+}
+
+/* PDF feedback: keep the official wordmark and its embedded slogan together. */
+.campaign-site .brand,
+.campaign-site .brand img {
+  width: 180px;
+}
+.campaign-site .brand img,
+.campaign-site .footer-brand img {
+  display: block;
+  height: auto;
+  max-height: none;
+  object-fit: contain;
+}
+.campaign-site .footer-brand img {
+  width: 180px;
+}
+.campaign-site .hero h1 {
+  margin-bottom: 22px;
+}
+.campaign-site .quality-guide-download {
+  margin-top: 22px;
+  min-height: 48px;
+  gap: 10px;
+  font-size: 12px;
+}
+.campaign-site.is-rtl .quality-guide-download {
+  font-size: 14px;
+}
+.campaign-site .market-name {
+  line-height: 1.65;
+  overflow-wrap: normal;
+  text-wrap: balance;
+}
+@media (max-width: 1050px) {
+  .campaign-site .desktop-nav {
+    display: none;
+  }
+  .campaign-site .mobile-menu-button {
+    display: grid;
+    place-items: center;
+  }
+  .campaign-site .mobile-navigation {
+    display: flex;
+  }
+}
+@media (max-width: 640px) {
+  .campaign-site .brand,
+  .campaign-site .brand img {
+    width: 132px;
+  }
+  .campaign-site .header-inner {
+    gap: 10px;
+  }
+  .campaign-site .header-actions {
+    gap: 6px;
+  }
+  .campaign-site .quality-guide-download {
+    width: 100%;
+  }
+  .campaign-site .market-name {
+    font-size: 12px;
+  }
+  .campaign-site.is-rtl .market-name {
+    font-size: 14px;
+  }
+}
+@media (max-width: 360px) {
+  .campaign-site .header-inner {
+    flex-wrap: wrap;
+    justify-content: center;
+    height: auto;
+    min-height: 84px;
+    padding-block: 9px;
+  }
+  .campaign-site .brand,
+  .campaign-site .brand img {
+    width: 122px;
+  }
+}
+
+/* Marketplace flags stay independent of page language and device emoji fonts. */
+.market-flag {
+  display: inline-block;
+  width: 30px;
+  height: 20px;
+  object-fit: contain;
+  vertical-align: middle;
+  flex-shrink: 0;
+  border-radius: 2px;
+}
+.market-flag.market-card-flag {
+  display: block;
+  width: 40px;
+  height: 28px;
+  margin-inline: auto;
+  margin-bottom: 9px;
+}
+.header-market .market-flag {
+  width: 24px;
+  height: 17px;
+}
+.select-wrap > .market-flag {
+  pointer-events: none;
+  width: 26px;
+  height: 19px;
+}
+.recommendation-top > .market-flag {
+  margin-top: 3px;
+}
+/* Blend the supplied photo's white backdrop into the site's warm palette. */
+.campaign-site .hero-product-image,
+.campaign-site .campaign-pot .product-photo > img {
+  mix-blend-mode: multiply;
+}
+
+/* Homepage-reference surfaces; all original geometry/media queries retained. */
+.hero-cooking-peek {
+  background: var(--surface);
+  border-color: var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow-xl);
+}
+.hero-cooking-peek > img {
+  border-radius: 8px;
+}
+.spec-strip,
+.quality-section {
+  background: color-mix(in oklab, var(--cream) 45%, transparent);
+  border-color: var(--line);
+}
+.campaign-heading {
+  color: var(--ink);
+}
+.campaign-site .campaign-pot .product-photo {
+  background: var(--cream);
+  border-radius: 24px;
+  box-shadow: var(--shadow-photo);
+}
+.campaign-site .feature-icon {
+  color: var(--red);
+}
+.cooking-card {
+  border-radius: 24px;
+  box-shadow: var(--shadow-xl);
+}
+.cooking-play {
+  border-color: #fff;
+  background: color-mix(in oklab, var(--red) 90%, transparent);
+  color: #fff;
+}
+.cooking-caption {
+  background: linear-gradient(transparent, #000c);
+}
+.cooking-caption small {
+  color: #fff;
+}
+.proof-number {
+  border-color: var(--red);
+  background: var(--surface);
+  color: var(--red);
+}
+.market-recommendation {
+  background: var(--surface);
+  border-color: var(--line);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
+}
+.recommendation-top strong {
+  color: var(--ink);
+}
+.recommendation-change {
+  color: var(--red);
+  border-bottom-color: var(--red);
+}
+.recommendation-caption,
+.recommendation-top strong small,
+.recommendation-note,
+.recommendation-privacy,
+.market-buy-footer > small {
+  color: var(--muted);
+}
+.recommendation-pending {
+  color: var(--red);
+}
+.values-ribbon {
+  color: var(--ink);
+  border-color: var(--line);
+}
+.value-divider {
+  background: var(--red);
+}
+.pot-image-wordmark {
+  color: var(--red);
+}
+.concept-visual {
+  border-radius: 24px;
+  box-shadow: var(--shadow-xl);
+}

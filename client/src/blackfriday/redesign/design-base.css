@@ -1,0 +1,2886 @@
+.rayhana-site .redesign-chrome-hidden { display: none !important; }
+.black-friday-layout-main {
+  min-width: 0;
+  flex: 1 0 auto;
+  width: 100%;
+}
+@font-face {
+  font-family: Vazirmatn;
+  src: url("/fonts/vazirmatn-arabic-400-normal-DMZFCm7K.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Vazirmatn;
+  src: url("/fonts/vazirmatn-arabic-700-normal-Dge_DOjm.woff2") format("woff2");
+  font-weight: 600 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Poppins;
+  src: url("/fonts/poppins-400.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: Poppins;
+  src: url("/fonts/poppins-600.woff2") format("woff2");
+  font-weight: 600 800;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: RayhanaDisplay;
+  src: url("/fonts/rayhana-display.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+.rayhana-site {
+  --red: #de1020;
+  --burgundy: oklch(25% 0.02 260);
+  --cream: oklch(95% 0.01 85);
+  --paper: oklch(98% 0.01 85);
+  --ink: oklch(25% 0.02 260);
+  --muted: oklch(42% 0.03 260);
+  --line: oklch(90% 0.01 85);
+  --gold: #b88746;
+  --background: oklch(98% 0.01 85);
+  --foreground: oklch(25% 0.02 260);
+  --primary: #de1020;
+  --primary-foreground: oklch(98% 0 0);
+  --border: oklch(90% 0.01 85);
+  --ring: #de1020;
+  --radius: 0.5rem;
+  --surface: #fff;
+  --shadow-sm: 0 1px 3px #0000001a, 0 1px 2px -1px #0000001a;
+  --shadow-xl: 0 20px 25px -5px #0000001a, 0 8px 10px -6px #0000001a;
+  --shadow-photo: 0 25px 50px -12px #00000040;
+  font-synthesis: none;
+}
+:where(.rayhana-site), :where(.rayhana-site) * {
+  box-sizing: border-box;
+}
+.rayhana-site {
+  scroll-behavior: smooth;
+  scroll-padding-top: 110px;
+}
+.rayhana-site {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: Poppins, Vazirmatn, sans-serif;
+  -webkit-font-smoothing: antialiased;
+}
+:where(.rayhana-site) button,:where(.rayhana-site) 
+a,:where(.rayhana-site) 
+input,:where(.rayhana-site) 
+select {
+  -webkit-tap-highlight-color: transparent;
+}
+:where(.rayhana-site) button,:where(.rayhana-site) 
+select {
+  font: inherit;
+}
+:where(.rayhana-site) button,:where(.rayhana-site) 
+a {
+  touch-action: manipulation;
+}
+:where(.rayhana-site) button {
+  cursor: pointer;
+}
+:where(.rayhana-site) a {
+  color: inherit;
+  text-decoration: none;
+}
+:where(.rayhana-site) button {
+  border: 0;
+}
+:where(.rayhana-site) button:disabled {
+  cursor: not-allowed;
+}
+:where(.rayhana-site) img {
+  max-width: 100%;
+  display: block;
+}
+:where(.rayhana-site) button:focus-visible,:where(.rayhana-site) 
+a:focus-visible,:where(.rayhana-site) 
+select:focus-visible {
+  outline: 2px solid var(--red);
+  outline-offset: 5px;
+}
+:where(.rayhana-site) button svg,:where(.rayhana-site) 
+a svg {
+  flex-shrink: 0;
+}
+:where(.rayhana-site) button {
+  color: inherit;
+}
+:where(.rayhana-site) p,:where(.rayhana-site) 
+h1,:where(.rayhana-site) 
+h2,:where(.rayhana-site) 
+h3 {
+  margin: 0;
+}
+:where(.rayhana-site) h1,:where(.rayhana-site) 
+h2,:where(.rayhana-site) 
+h3 {
+  text-wrap: balance;
+}
+:where(.rayhana-site) p {
+  text-wrap: pretty;
+}
+:where(.rayhana-site) ::selection {
+  background: #ffd7d2;
+  color: var(--burgundy);
+}
+.rayhana-site {
+  overflow: clip;
+}
+:where(.rayhana-site).is-rtl {
+  font-family: Vazirmatn, sans-serif;
+}
+:where(.rayhana-site) .section-shell {
+  width: min(1232px, calc(100% - 112px));
+  margin-inline: auto;
+}
+:where(.rayhana-site) .eyebrow {
+  font-size: 10px;
+  letter-spacing: 2.1px;
+  font-weight: 600;
+  color: var(--red);
+  line-height: 1.8;
+  margin-bottom: 16px;
+}
+:where(.rayhana-site).is-rtl .eyebrow,:where(.rayhana-site).is-rtl .hero-eyebrow {
+  letter-spacing: 0;
+  font-size: 13px;
+}
+:where(.rayhana-site) .line-heading {
+  white-space: pre-line;
+}
+:where(.rayhana-site) .red-dot {
+  width: 6px;
+  height: 6px;
+  background: var(--red);
+  border-radius: 50%;
+  display: inline-block;
+  flex-shrink: 0;
+}
+:where(.rayhana-site) .sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
+:where(.rayhana-site) .skip-link {
+  position: fixed;
+  top: 10px;
+  inset-inline-start: 20px;
+  padding: 12px;
+  background: white;
+  z-index: 200;
+  transform: translateY(-150%);
+}
+:where(.rayhana-site) .skip-link:focus {
+  transform: translateY(0);
+}
+
+:where(.rayhana-site) .announcement {
+  min-height: 35px;
+  background: var(--burgundy);
+  color: #fff6e8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 28px;
+  font-size: 9px;
+  letter-spacing: 1.8px;
+  padding: 8px 18px;
+  text-align: center;
+}
+:where(.rayhana-site).is-rtl .announcement {
+  letter-spacing: 0;
+  font-size: 12px;
+}
+:where(.rayhana-site) .announcement-star {
+  color: #d2a46b;
+  font-size: 13px;
+}
+:where(.rayhana-site) .site-header {
+  background: #fffdf9f5;
+  border-bottom: 1px solid #e8e1d67a;
+  position: sticky;
+  top: 0;
+  z-index: 30;
+  backdrop-filter: blur(18px);
+}
+:where(.rayhana-site) .header-inner {
+  height: 88px;
+  width: min(1320px, calc(100% - 80px));
+  margin: auto;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 30px;
+}
+:where(.rayhana-site) .brand {
+  width: 141px;
+  flex-shrink: 0;
+}
+:where(.rayhana-site) .brand img {
+  width: 141px;
+  height: auto;
+  max-height: 56px;
+  object-fit: contain;
+}
+:where(.rayhana-site) .desktop-nav {
+  display: flex;
+  gap: 30px;
+  font-size: 11px;
+  align-items: center;
+}
+:where(.rayhana-site).is-rtl .desktop-nav {
+  font-size: 14px;
+}
+:where(.rayhana-site) .desktop-nav a {
+  position: relative;
+  padding-block: 10px;
+}
+:where(.rayhana-site) .desktop-nav a:after {
+  content: "";
+  position: absolute;
+  inset-inline: 0;
+  bottom: 4px;
+  height: 1px;
+  background: var(--red);
+  transform: scaleX(0);
+  transition: transform 0.2s;
+}
+:where(.rayhana-site) .desktop-nav a:hover:after {
+  transform: scaleX(1);
+}
+:where(.rayhana-site) .header-actions {
+  display: flex;
+  align-items: center;
+  gap: 19px;
+}
+:where(.rayhana-site) .language-control {
+  display: flex;
+  align-items: center;
+  gap: 3px;
+  direction: ltr;
+  border: 1px solid var(--line);
+  padding: 4px;
+  border-radius: 30px;
+}
+:where(.rayhana-site) .language-control a {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 11px;
+  padding: 5px 9px;
+  border-radius: 20px;
+  white-space: nowrap;
+  color: var(--muted);
+  transition: background 0.2s;
+}
+:where(.rayhana-site) .language-control a[lang="en"] {
+  font-family: Poppins, sans-serif;
+  font-size: 10px;
+}
+:where(.rayhana-site) .language-control a.active {
+  background: var(--burgundy);
+  color: white;
+}
+:where(.rayhana-site) .header-market {
+  background: transparent;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  font-size: 10px;
+}
+:where(.rayhana-site).is-rtl .header-market {
+  font-size: 12px;
+}
+:where(.rayhana-site) .mobile-menu-button {
+  display: none;
+  background: transparent;
+  padding: 6px;
+}
+:where(.rayhana-site) .mobile-navigation {
+  display: none;
+  flex-direction: column;
+  gap: 16px;
+  padding: 20px 24px;
+  border-top: 1px solid var(--line);
+  font-size: 14px;
+}
+
+:where(.rayhana-site) .hero {
+  display: grid;
+  grid-template-columns: 1.03fr 1fr;
+  gap: 58px;
+  align-items: center;
+  padding-block: 64px 90px;
+  min-height: 660px;
+}
+:where(.rayhana-site) .hero-copy {
+  padding-block: 18px 0;
+  position: relative;
+  z-index: 2;
+}
+:where(.rayhana-site) .campaign-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  border: 1px solid var(--line);
+  background: var(--cream);
+  padding: 7px 11px;
+  font-size: 9px;
+  letter-spacing: 1.4px;
+  margin-bottom: 30px;
+  border-radius: 2px;
+}
+:where(.rayhana-site).is-rtl .campaign-label {
+  letter-spacing: 0;
+  font-size: 12px;
+}
+:where(.rayhana-site) .campaign-year {
+  padding-inline-start: 10px;
+  border-inline-start: 1px solid var(--line);
+  color: var(--red);
+  font:
+    600 10px Poppins,
+    sans-serif;
+}
+:where(.rayhana-site) .hero-eyebrow {
+  font-size: 9px;
+  letter-spacing: 2.7px;
+  color: var(--muted);
+  margin-bottom: 19px;
+}
+:where(.rayhana-site) .hero h1 {
+  font-family: RayhanaDisplay, Georgia, serif;
+  font-size: clamp(42px, 4.55vw, 67px);
+  font-weight: 700;
+  line-height: 1.13;
+  letter-spacing: -1.4px;
+  margin-bottom: 23px;
+}
+:where(.rayhana-site) .hero h1 > span {
+  display: block;
+}
+:where(.rayhana-site).is-rtl .hero h1 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: clamp(38px, 4.2vw, 60px);
+  line-height: 1.55;
+  letter-spacing: -1.8px;
+  font-weight: 700;
+}
+:where(.rayhana-site) .red-line {
+  color: var(--red);
+}
+:where(.rayhana-site) .hero-body {
+  max-width: 444px;
+  font-size: 12px;
+  line-height: 2;
+  color: var(--muted);
+  margin-bottom: 29px;
+}
+:where(.rayhana-site).is-rtl .hero-body {
+  font-size: 15px;
+  line-height: 2.15;
+  max-width: 470px;
+}
+:where(.rayhana-site) .button {
+  min-height: 48px;
+  padding: 14px 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  font-weight: 600;
+  font-size: 11px;
+  line-height: 1.6;
+  border: 1px solid transparent;
+  transition:
+    background 0.2s,
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+:where(.rayhana-site).is-rtl .button {
+  font-size: 14px;
+  letter-spacing: 0;
+}
+:where(.rayhana-site) .button.primary {
+  background: var(--red);
+  color: white;
+}
+:where(.rayhana-site) .button.primary:hover {
+  background: #bd0c1b;
+  box-shadow: 0 5px 14px #ad142419;
+  transform: translateY(-2px);
+}
+:where(.rayhana-site) .button.outline {
+  border-color: var(--line);
+  background: transparent;
+}
+:where(.rayhana-site) .button.outline:hover {
+  background: white;
+}
+:where(.rayhana-site) .button.light {
+  background: var(--cream);
+  color: var(--burgundy);
+}
+:where(.rayhana-site) .hero-button {
+  min-width: 224px;
+}
+:where(.rayhana-site) .hero-footnote {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  color: var(--muted);
+  font-size: 9px;
+  margin-top: 22px;
+}
+:where(.rayhana-site).is-rtl .hero-footnote {
+  font-size: 11px;
+}
+:where(.rayhana-site) .tiny-line {
+  height: 1px;
+  width: 25px;
+  background: var(--muted);
+}
+:where(.rayhana-site) .hero-visual {
+  position: relative;
+  padding-bottom: 18px;
+}
+:where(.rayhana-site) .hero-arch {
+  position: relative;
+  aspect-ratio: 1/0.99;
+  border-radius: 46% 46% 3px 3px;
+  background: var(--cream);
+  overflow: hidden;
+  isolation: isolate;
+}
+:where(.rayhana-site) .hero-arch:before {
+  content: "";
+  position: absolute;
+  width: 70%;
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background: var(--line);
+  inset: 15% 15%;
+  opacity: 0.5;
+  z-index: -1;
+}
+:where(.rayhana-site) .hero-product-image {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  padding: 34px 3px 47px;
+}
+:where(.rayhana-site) .hero-photo-caption {
+  position: absolute;
+  bottom: 23px;
+  inset-inline: 27px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  font-size: 8px;
+  letter-spacing: 1.6px;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .hero-photo-caption {
+  letter-spacing: 0;
+  font-size: 11px;
+}
+:where(.rayhana-site) .hero-seal {
+  position: absolute;
+  top: 1px;
+  inset-inline-end: -21px;
+  width: 101px;
+  height: 101px;
+  border-radius: 50%;
+  background: var(--paper);
+  border: 1px solid var(--line);
+  outline: 6px solid var(--paper);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--burgundy);
+  gap: 4px;
+  transform: rotate(12deg);
+  font-family: Poppins, sans-serif;
+}
+:where(.rayhana-site) .hero-seal span {
+  font-size: 9px;
+  letter-spacing: 1.6px;
+  font-weight: 600;
+}
+:where(.rayhana-site) .hero-seal small {
+  font-size: 5px;
+  letter-spacing: 1px;
+}
+:where(.rayhana-site) .hero-slicer-peek {
+  position: absolute;
+  bottom: -32px;
+  inset-inline-start: -28px;
+  width: 207px;
+  background: white;
+  box-shadow: 0 8px 40px #45321c13;
+  border: 1px solid var(--line);
+  padding: 7px;
+}
+:where(.rayhana-site) .hero-slicer-peek img {
+  width: 100%;
+  height: 103px;
+  object-fit: cover;
+}
+:where(.rayhana-site) .hero-slicer-peek > span {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  align-items: center;
+  font-size: 10px;
+  padding: 11px 6px 7px;
+}
+:where(.rayhana-site).is-rtl .hero-slicer-peek > span {
+  font-size: 12px;
+}
+:where(.rayhana-site) .brand-ribbon {
+  border-block: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding: 20px 24px;
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: var(--muted);
+  background: var(--cream);
+  direction: ltr;
+}
+:where(.rayhana-site) .ribbon-mark {
+  color: var(--muted);
+  font-size: 18px;
+}
+
+:where(.rayhana-site) .collection {
+  padding-block: 90px;
+}
+:where(.rayhana-site) .section-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  gap: 50px;
+  margin-bottom: 35px;
+}
+:where(.rayhana-site) .section-heading > div {
+  max-width: 580px;
+}
+:where(.rayhana-site) .section-heading h2,:where(.rayhana-site) 
+.markets-heading h2,:where(.rayhana-site) 
+.faq-heading h2 {
+  font-family: RayhanaDisplay, Georgia, serif;
+  font-size: 36px;
+  line-height: 1.28;
+  letter-spacing: -0.7px;
+  font-weight: 700;
+}
+:where(.rayhana-site).is-rtl .section-heading h2,:where(.rayhana-site).is-rtl .markets-heading h2,:where(.rayhana-site).is-rtl .faq-heading h2 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 29px;
+  line-height: 1.8;
+  letter-spacing: -0.6px;
+}
+:where(.rayhana-site) .section-heading > p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--muted);
+  max-width: 284px;
+}
+:where(.rayhana-site).is-rtl .section-heading > p {
+  font-size: 14px;
+  line-height: 2.1;
+}
+:where(.rayhana-site) .collection-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 25px;
+}
+:where(.rayhana-site) .collection-card {
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 23px;
+  display: block;
+}
+:where(.rayhana-site) .collection-image {
+  background: var(--cream);
+  overflow: hidden;
+  aspect-ratio: 1.43;
+}
+:where(.rayhana-site) .collection-image img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+  transition: transform 0.65s;
+}
+:where(.rayhana-site) .slicer-card .collection-image img {
+  object-fit: cover;
+  mix-blend-mode: normal;
+}
+:where(.rayhana-site) .collection-card:hover .collection-image img {
+  transform: scale(1.035);
+}
+:where(.rayhana-site) .collection-card-copy {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 22px;
+  gap: 20px;
+}
+:where(.rayhana-site) .collection-card h3 {
+  font-family: RayhanaDisplay, Georgia, serif;
+  font-size: 24px;
+  margin-block: 5px 8px;
+  font-weight: 700;
+}
+:where(.rayhana-site).is-rtl .collection-card h3 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 22px;
+}
+:where(.rayhana-site) .collection-number {
+  font-size: 8px;
+  color: var(--red);
+  letter-spacing: 2px;
+}
+:where(.rayhana-site) .collection-card p {
+  font-size: 10px;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .collection-card p {
+  font-size: 14px;
+}
+:where(.rayhana-site) .round-arrow {
+  width: 45px;
+  height: 45px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: grid;
+  place-items: center;
+  transition: background 0.2s;
+}
+:where(.rayhana-site) .collection-card:hover .round-arrow {
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+}
+
+:where(.rayhana-site) .markets-section {
+  background: var(--cream);
+  border-block: 1px solid var(--line);
+}
+:where(.rayhana-site) .markets-inner {
+  padding-block: 57px;
+}
+:where(.rayhana-site) .markets-heading {
+  text-align: center;
+  max-width: 650px;
+  margin: 0 auto 29px;
+}
+:where(.rayhana-site) .markets-heading > svg {
+  margin: 0 auto 12px;
+  color: var(--burgundy);
+}
+:where(.rayhana-site) .markets-heading .eyebrow {
+  margin-bottom: 8px;
+}
+:where(.rayhana-site) .markets-heading h2 {
+  font-size: 30px;
+  margin-bottom: 14px;
+}
+:where(.rayhana-site) .markets-heading > p:last-child {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 1.9;
+}
+:where(.rayhana-site).is-rtl .markets-heading > p:last-child {
+  font-size: 14px;
+  line-height: 2;
+}
+:where(.rayhana-site) .market-options {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 12px;
+  max-width: 920px;
+  margin-inline: auto;
+}
+:where(.rayhana-site) .market-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid var(--line);
+  background: var(--surface);
+  padding: 21px 20px 18px;
+  transition:
+    border 0.2s,
+    background 0.2s;
+}
+:where(.rayhana-site) .market-card:hover {
+  border-color: var(--line);
+  background: white;
+}
+:where(.rayhana-site) .market-card.selected {
+  border-color: var(--red);
+  background: #fff;
+}
+:where(.rayhana-site) .country-symbol {
+  font:
+    600 12px Poppins,
+    sans-serif;
+  letter-spacing: 1px;
+  width: 35px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  background: var(--cream);
+  color: var(--burgundy);
+  margin-bottom: 3px;
+}
+:where(.rayhana-site) .market-name {
+  font-size: 11px;
+  font-weight: 600;
+}
+:where(.rayhana-site).is-rtl .market-name {
+  font-size: 14px;
+}
+:where(.rayhana-site) .amazon-label {
+  font:
+    400 9px Poppins,
+    sans-serif;
+  color: var(--muted);
+}
+:where(.rayhana-site) .market-check {
+  position: absolute;
+  inset-inline-end: 12px;
+  top: 12px;
+  color: var(--muted);
+}
+:where(.rayhana-site) .market-card.selected .market-check {
+  color: var(--red);
+}
+:where(.rayhana-site) .market-helper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 19px;
+}
+:where(.rayhana-site).is-rtl .market-helper {
+  font-size: 11px;
+}
+:where(.rayhana-site) .market-selection {
+  max-width: 920px;
+  margin: 20px auto 0;
+  border-top: 1px solid var(--line);
+  padding-top: 16px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  font-size: 11px;
+}
+:where(.rayhana-site) .market-selection > p {
+  flex: 1;
+  color: var(--muted);
+  font-size: 10px;
+}
+:where(.rayhana-site).is-rtl .market-selection > p {
+  font-size: 12px;
+}
+:where(.rayhana-site) .text-link {
+  background: transparent;
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--red);
+  font-size: 12px;
+  font-weight: 600;
+  white-space: nowrap;
+}
+
+:where(.rayhana-site) .product-section {
+  display: grid;
+  grid-template-columns: 1.05fr 1fr;
+  align-items: center;
+  gap: 82px;
+  padding-block: 100px;
+}
+:where(.rayhana-site) .product-photo {
+  aspect-ratio: 0.87;
+  background: var(--cream);
+  overflow: hidden;
+  display: grid;
+  place-items: center;
+}
+:where(.rayhana-site) .product-photo img {
+  height: 100%;
+  width: 100%;
+  object-fit: contain;
+  mix-blend-mode: multiply;
+}
+:where(.rayhana-site) .image-note {
+  display: flex;
+  gap: 11px;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  background: var(--cream);
+  padding: 18px;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .image-note {
+  font-size: 12px;
+}
+:where(.rayhana-site) .product-copy > .eyebrow {
+  margin-bottom: 14px;
+}
+:where(.rayhana-site) .product-copy h2 {
+  font-family: RayhanaDisplay, Georgia, serif;
+  font-size: 43px;
+  line-height: 1.2;
+  letter-spacing: -0.8px;
+  font-weight: 700;
+  margin-bottom: 22px;
+}
+:where(.rayhana-site).is-rtl .product-copy h2 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 35px;
+  line-height: 1.65;
+  letter-spacing: -1.2px;
+}
+:where(.rayhana-site) .product-intro {
+  font-size: 11px;
+  line-height: 2;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .product-intro {
+  font-size: 14px;
+  line-height: 2.1;
+}
+:where(.rayhana-site) .feature-list {
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  padding-block: 26px;
+}
+:where(.rayhana-site) .feature {
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+}
+:where(.rayhana-site) .feature-icon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  color: var(--muted);
+  background: var(--cream);
+  flex-shrink: 0;
+}
+:where(.rayhana-site) .feature-icon > svg {
+  width: 18px;
+  height: 18px;
+  stroke-width: 1.3;
+}
+:where(.rayhana-site) .feature h3 {
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+:where(.rayhana-site).is-rtl .feature h3 {
+  font-size: 13px;
+}
+:where(.rayhana-site) .feature p {
+  font-size: 10px;
+  line-height: 1.9;
+  color: var(--muted);
+  max-width: 340px;
+}
+:where(.rayhana-site).is-rtl .feature p {
+  font-size: 12px;
+  line-height: 2;
+}
+:where(.rayhana-site) .field-heading {
+  display: block;
+  font-size: 10px;
+  font-weight: 600;
+  margin-bottom: 11px;
+}
+:where(.rayhana-site).is-rtl .field-heading {
+  font-size: 13px;
+}
+:where(.rayhana-site) .size-buttons {
+  display: flex;
+  gap: 9px;
+  margin-block: 10px;
+}
+:where(.rayhana-site) .size-buttons button {
+  background: transparent;
+  border: 1px solid var(--line);
+  min-height: 43px;
+  padding: 9px 22px;
+  font-size: 11px;
+  transition: all 0.2s;
+}
+:where(.rayhana-site).is-rtl .size-buttons button {
+  font-size: 14px;
+}
+:where(.rayhana-site) .size-buttons button span {
+  font-size: 0.85em;
+}
+:where(.rayhana-site) .size-buttons button.active {
+  background: var(--burgundy);
+  color: white;
+  border-color: var(--burgundy);
+}
+:where(.rayhana-site) .microcopy {
+  font-size: 9px;
+  line-height: 1.8;
+  color: var(--muted);
+  margin-block: 8px;
+}
+:where(.rayhana-site).is-rtl .microcopy {
+  font-size: 11px;
+  line-height: 1.9;
+}
+:where(.rayhana-site) .product-buy {
+  width: 100%;
+  margin-top: 16px;
+}
+:where(.rayhana-site) .safety-note {
+  display: flex;
+  align-items: flex-start;
+  gap: 8px;
+  color: var(--muted);
+  font-size: 9px;
+  line-height: 1.9;
+  margin-top: 15px;
+}
+:where(.rayhana-site) .safety-note > svg {
+  margin-top: 3px;
+  flex-shrink: 0;
+}
+:where(.rayhana-site).is-rtl .safety-note {
+  font-size: 11px;
+  line-height: 2;
+}
+:where(.rayhana-site) .guide-link {
+  font-size: 9px;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-bottom: 1px solid var(--line);
+  padding-bottom: 3px;
+  margin-top: 12px;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .guide-link {
+  font-size: 12px;
+}
+:where(.rayhana-site) .mandoline-section {
+  background: var(--cream);
+  border-block: 1px solid var(--line);
+}
+:where(.rayhana-site) .mandoline-layout {
+  grid-template-columns: 1fr 1.12fr;
+  gap: 65px;
+}
+:where(.rayhana-site) .mandoline-layout .feature-icon {
+  background: var(--cream);
+}
+:where(.rayhana-site) .product-actions {
+  display: flex;
+  gap: 9px;
+  align-items: stretch;
+  margin-top: 4px;
+}
+:where(.rayhana-site) .product-actions > .button {
+  flex: 1;
+  gap: 10px;
+  padding-inline: 13px;
+  font-size: 10px;
+}
+:where(.rayhana-site).is-rtl .product-actions > .button {
+  font-size: 13px;
+}
+:where(.rayhana-site) .gallery-main {
+  position: relative;
+  background: white;
+  aspect-ratio: 1.08;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+}
+:where(.rayhana-site) .gallery-main > img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  background: var(--cream);
+}
+:where(.rayhana-site) .video-pill {
+  position: absolute;
+  inset-inline-start: 18px;
+  bottom: 20px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid #fff5;
+  background: #fffcf6ed;
+  backdrop-filter: blur(10px);
+  padding: 7px 15px 7px 8px;
+  font-size: 10px;
+  color: var(--burgundy);
+  border-radius: 30px;
+}
+:where(.rayhana-site).is-rtl .video-pill {
+  font-size: 12px;
+  padding: 7px 8px 7px 15px;
+}
+:where(.rayhana-site) .play-circle {
+  width: 28px;
+  height: 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+:where(.rayhana-site) .gallery-thumbs {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 9px;
+  margin-top: 12px;
+}
+:where(.rayhana-site) .gallery-thumbs button {
+  border: 1px solid transparent;
+  padding: 4px;
+  background: transparent;
+  transition: border-color 0.2s;
+}
+:where(.rayhana-site) .gallery-thumbs button.active {
+  border-color: var(--red);
+}
+:where(.rayhana-site) .gallery-thumbs img {
+  width: 100%;
+  aspect-ratio: 1.42;
+  object-fit: cover;
+}
+
+:where(.rayhana-site) .story-section {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 520px;
+}
+:where(.rayhana-site) .story-picture {
+  position: relative;
+  min-height: 100%;
+  background: #d2b194;
+  overflow: hidden;
+}
+:where(.rayhana-site) .story-picture img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  position: absolute;
+  inset: 0;
+}
+:where(.rayhana-site) .story-copy {
+  background: var(--burgundy);
+  color: var(--cream);
+  padding: 72px clamp(35px, 5.5vw, 95px);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  flex-direction: column;
+}
+:where(.rayhana-site) .story-heart {
+  color: #d6a273;
+  margin-bottom: 21px;
+}
+:where(.rayhana-site) .story-copy .eyebrow {
+  color: #dcae83;
+}
+:where(.rayhana-site) .story-copy h2 {
+  font:
+    700 39px/1.25 RayhanaDisplay,
+    Georgia,
+    serif;
+  letter-spacing: -0.5px;
+  margin-bottom: 22px;
+}
+:where(.rayhana-site).is-rtl .story-copy h2 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 32px;
+  line-height: 1.7;
+  letter-spacing: -1px;
+}
+:where(.rayhana-site) .story-copy > p:not(.eyebrow) {
+  font-size: 11px;
+  line-height: 2.1;
+  color: #e4c8b4;
+}
+:where(.rayhana-site).is-rtl .story-copy > p:not(.eyebrow) {
+  font-size: 14px;
+  line-height: 2.2;
+}
+:where(.rayhana-site) .story-signature {
+  display: block;
+  border-top: 1px solid #b781603f;
+  padding-top: 19px;
+  margin-top: 26px;
+  font-size: 8px;
+  letter-spacing: 1.5px;
+  color: #cc9c77;
+}
+:where(.rayhana-site).is-rtl .story-signature {
+  letter-spacing: 0;
+  font-size: 11px;
+}
+
+:where(.rayhana-site) .offer-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 95px;
+  padding-block: 100px;
+  border-bottom: 1px solid var(--line);
+}
+:where(.rayhana-site) .offer-stamp {
+  flex-shrink: 0;
+  width: 278px;
+  height: 278px;
+  border: 1px solid #caa47b;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  color: var(--burgundy);
+  position: relative;
+  transform: rotate(-9deg);
+  direction: ltr;
+  background: var(--cream);
+}
+:where(.rayhana-site) .offer-stamp:before {
+  content: "";
+  position: absolute;
+  inset: 10px;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+}
+:where(.rayhana-site) .offer-stamp:after {
+  content: "R A Y H A N A";
+  font:
+    8px Poppins,
+    sans-serif;
+  position: absolute;
+  bottom: 44px;
+  color: #bc875b;
+}
+:where(.rayhana-site) .offer-stamp > span {
+  font:
+    700 45px/1.05 RayhanaDisplay,
+    Georgia,
+    serif;
+  letter-spacing: 2px;
+}
+:where(.rayhana-site) .offer-stamp > small {
+  font:
+    400 15px Poppins,
+    sans-serif;
+  color: var(--red);
+  margin-top: 11px;
+}
+:where(.rayhana-site) .offer-copy {
+  max-width: 480px;
+}
+:where(.rayhana-site) .offer-copy h2 {
+  font:
+    700 43px/1.2 RayhanaDisplay,
+    Georgia,
+    serif;
+  letter-spacing: -1px;
+  margin-bottom: 21px;
+}
+:where(.rayhana-site).is-rtl .offer-copy h2 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 35px;
+  line-height: 1.65;
+}
+:where(.rayhana-site) .offer-copy > p:not(.eyebrow) {
+  font-size: 11px;
+  color: var(--muted);
+  line-height: 2;
+  margin-bottom: 23px;
+}
+:where(.rayhana-site).is-rtl .offer-copy > p:not(.eyebrow) {
+  font-size: 14px;
+  line-height: 2.1;
+}
+:where(.rayhana-site) .offer-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 17px;
+  font-size: 9px;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .offer-status {
+  font-size: 11px;
+}
+:where(.rayhana-site) .offer-status .red-dot {
+  width: 4px;
+  height: 4px;
+}
+
+:where(.rayhana-site) .faq-section {
+  display: grid;
+  grid-template-columns: 0.78fr 1.3fr;
+  gap: 105px;
+  padding-block: 85px 100px;
+}
+:where(.rayhana-site) .faq-heading h2 {
+  font-size: 35px;
+  margin-bottom: 22px;
+}
+:where(.rayhana-site) .contact-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: var(--muted);
+  font-size: 10px;
+}
+:where(.rayhana-site) .faq-item {
+  border-bottom: 1px solid var(--line);
+}
+:where(.rayhana-site) .faq-item:first-child {
+  border-top: 1px solid var(--line);
+}
+:where(.rayhana-site) .faq-item h3 {
+  margin: 0;
+}
+:where(.rayhana-site) .faq-item h3 > button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+  width: 100%;
+  padding: 22px 0;
+  background: transparent;
+  text-align: start;
+  font-size: 11px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+:where(.rayhana-site).is-rtl .faq-item h3 > button {
+  font-size: 14px;
+}
+:where(.rayhana-site) .faq-item h3 > button > svg {
+  flex-shrink: 0;
+  color: var(--muted);
+  transition: transform 0.2s;
+}
+:where(.rayhana-site) .faq-item[data-state="open"] h3 > button > svg {
+  transform: rotate(45deg);
+}
+:where(.rayhana-site) .faq-item [role="region"] {
+  overflow: hidden;
+}
+:where(.rayhana-site) .faq-item [role="region"] p {
+  padding: 0 24px 23px 0;
+  font-size: 11px;
+  line-height: 2;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .faq-item [role="region"] p {
+  padding: 0 0 23px 24px;
+  font-size: 13px;
+  line-height: 2.2;
+}
+:where(.rayhana-site) .closing-section {
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  text-align: center;
+  background: var(--red);
+  color: var(--cream);
+  padding: 65px 24px 71px;
+}
+:where(.rayhana-site) .closing-pattern {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: 0.09;
+  background-image:
+    repeating-linear-gradient(
+      45deg,
+      transparent,
+      transparent 45px,
+      #fff 46px,
+      transparent 47px
+    ),
+    repeating-linear-gradient(
+      -45deg,
+      transparent,
+      transparent 45px,
+      #fff 46px,
+      transparent 47px
+    );
+  mask-image: linear-gradient(
+    90deg,
+    #000,
+    transparent 35%,
+    transparent 65%,
+    #000
+  );
+}
+:where(.rayhana-site) .closing-section .eyebrow {
+  color: #ffd9bc;
+  font-size: 9px;
+}
+:where(.rayhana-site) .closing-section h2 {
+  font:
+    700 44px/1.2 RayhanaDisplay,
+    Georgia,
+    serif;
+  letter-spacing: -0.5px;
+}
+:where(.rayhana-site).is-rtl .closing-section h2 {
+  font-family: Vazirmatn, sans-serif;
+  font-size: 34px;
+  line-height: 1.65;
+  letter-spacing: -0.8px;
+}
+:where(.rayhana-site) .closing-section > p:not(.eyebrow) {
+  font-size: 11px;
+  color: #ffc9bd;
+  margin: 18px auto 25px;
+}
+:where(.rayhana-site).is-rtl .closing-section > p:not(.eyebrow) {
+  font-size: 14px;
+}
+:where(.rayhana-site) .site-footer {
+  padding-block: 53px 25px;
+}
+:where(.rayhana-site) .footer-main {
+  display: grid;
+  grid-template-columns: 1.5fr 1fr 1fr;
+  gap: 60px;
+  padding-bottom: 45px;
+}
+:where(.rayhana-site) .footer-brand img {
+  width: 145px;
+  height: auto;
+  max-height: 55px;
+  object-fit: contain;
+  margin-bottom: 18px;
+}
+:where(.rayhana-site) .footer-brand p {
+  font-size: 10px;
+  color: var(--muted);
+  margin-bottom: 9px;
+  max-width: 250px;
+  line-height: 1.9;
+}
+:where(.rayhana-site).is-rtl .footer-brand p {
+  font-size: 13px;
+}
+:where(.rayhana-site) .footer-brand > span {
+  font-size: 9px;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .footer-brand > span {
+  font-size: 11px;
+}
+:where(.rayhana-site) .footer-column {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 13px;
+  font-size: 10px;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .footer-column {
+  font-size: 12px;
+}
+:where(.rayhana-site) .footer-column h3 {
+  font-size: 10px;
+  color: var(--burgundy);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+:where(.rayhana-site).is-rtl .footer-column h3 {
+  font-size: 13px;
+}
+:where(.rayhana-site) .footer-column a {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+:where(.rayhana-site) .footer-column a:hover {
+  color: var(--red);
+}
+:where(.rayhana-site) .footer-bottom {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-top: 1px solid var(--line);
+  padding-top: 22px;
+  font-size: 8px;
+  color: var(--muted);
+}
+:where(.rayhana-site).is-rtl .footer-bottom {
+  font-size: 10px;
+}
+:where(.rayhana-site) .footer-bottom > a {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+:where(.rayhana-site) .point-up {
+  transform: rotate(180deg);
+}
+:where(.rayhana-site) .mobile-sticky {
+  display: none;
+}
+
+:where(.rayhana-site) .modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: #21130c8c;
+  backdrop-filter: blur(5px);
+  z-index: 90;
+  animation: fade-in 0.2s;
+}
+:where(.rayhana-site) .buy-dialog,:where(.rayhana-site) 
+.video-dialog {
+  position: fixed;
+  z-index: 91;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(540px, calc(100% - 32px));
+  max-height: calc(100dvh - 40px);
+  overflow: auto;
+  background: var(--paper);
+  padding: 36px;
+  box-shadow: 0 25px 100px #0003;
+  font-family: Poppins, Vazirmatn, sans-serif;
+  animation: fade-in 0.2s;
+}
+:where(.rayhana-site) .buy-dialog[dir="rtl"],:where(.rayhana-site) 
+.video-dialog[dir="rtl"] {
+  font-family: Vazirmatn, sans-serif;
+}
+:where(.rayhana-site) .dialog-close {
+  position: absolute;
+  top: 14px;
+  inset-inline-end: 14px;
+  display: grid;
+  place-items: center;
+  width: 44px;
+  height: 44px;
+  min-width: 44px;
+  min-height: 44px;
+  background: var(--cream);
+}
+:where(.rayhana-site) .buy-dialog > .eyebrow {
+  font-size: 10px;
+  display: block;
+  margin-bottom: 15px;
+}
+:where(.rayhana-site) .buy-dialog h2,:where(.rayhana-site) 
+.video-dialog h2 {
+  font:
+    700 30px/1.3 RayhanaDisplay,
+    Georgia,
+    serif;
+  margin-bottom: 13px;
+}
+:where(.rayhana-site) .buy-dialog[dir="rtl"] h2,:where(.rayhana-site) 
+.video-dialog[dir="rtl"] h2 {
+  font:
+    700 24px/1.6 Vazirmatn,
+    sans-serif;
+}
+:where(.rayhana-site) .dialog-intro {
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+:where(.rayhana-site) .buy-dialog[dir="rtl"] .dialog-intro {
+  font-size: 13px;
+  line-height: 2;
+}
+:where(.rayhana-site) .product-choice {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 21px;
+}
+:where(.rayhana-site) .product-choice button {
+  background: transparent;
+  border: 1px solid var(--line);
+  padding: 14px 10px;
+  font-size: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  text-align: start;
+  line-height: 1.8;
+}
+:where(.rayhana-site) .buy-dialog[dir="rtl"] .product-choice button {
+  font-size: 13px;
+}
+:where(.rayhana-site) .product-choice button.selected {
+  background: #fff4ee;
+  border-color: var(--red);
+  color: var(--red);
+}
+:where(.rayhana-site) .dialog-capacity > span,:where(.rayhana-site) 
+.market-field > label {
+  font-size: 11px;
+  font-weight: 600;
+  display: block;
+  margin-block: 10px;
+}
+:where(.rayhana-site) .buy-dialog[dir="rtl"] .dialog-capacity > span,:where(.rayhana-site) 
+.buy-dialog[dir="rtl"] .market-field > label {
+  font-size: 13px;
+}
+:where(.rayhana-site) .dialog-capacity .size-buttons button {
+  padding: 8px 19px;
+}
+:where(.rayhana-site) .market-field {
+  margin-top: 18px;
+}
+:where(.rayhana-site) .select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  position: relative;
+  border: 1px solid var(--line);
+  padding-inline: 13px;
+  background: white;
+}
+:where(.rayhana-site) .select-wrap > svg {
+  color: var(--muted);
+  flex-shrink: 0;
+}
+:where(.rayhana-site) .select-wrap select {
+  width: 100%;
+  border: 0;
+  background: transparent;
+  padding: 14px 24px 14px 0;
+  appearance: none;
+  min-width: 0;
+  font-size: 11px;
+  outline: none;
+  cursor: pointer;
+}
+:where(.rayhana-site) .buy-dialog[dir="rtl"] .select-wrap select {
+  font-size: 13px;
+  padding: 14px 0 14px 24px;
+}
+:where(.rayhana-site) .select-chevron {
+  position: absolute;
+  inset-inline-end: 15px;
+  pointer-events: none;
+}
+:where(.rayhana-site) .purchase-state {
+  background: var(--cream);
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  padding: 16px;
+  margin-block: 20px;
+  color: var(--muted);
+}
+:where(.rayhana-site) .purchase-state > svg {
+  flex-shrink: 0;
+}
+:where(.rayhana-site) .purchase-state strong {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  color: var(--burgundy);
+}
+:where(.rayhana-site) .purchase-state p {
+  font-size: 10px;
+  line-height: 1.9;
+}
+:where(.rayhana-site) .buy-dialog[dir="rtl"] .purchase-state p {
+  font-size: 12px;
+  line-height: 2;
+}
+:where(.rayhana-site) .buy-dialog[dir="rtl"] .purchase-state strong {
+  font-size: 14px;
+}
+:where(.rayhana-site) .dialog-action {
+  width: 100%;
+  font-size: 11px;
+}
+:where(.rayhana-site) .buy-dialog[dir="rtl"] .dialog-action {
+  font-size: 14px;
+}
+:where(.rayhana-site) .dialog-support {
+  display: block;
+  text-align: center;
+  font:
+    10px Poppins,
+    sans-serif;
+  color: var(--muted);
+  margin-top: 17px;
+}
+:where(.rayhana-site) .video-dialog {
+  width: min(870px, calc(100% - 32px));
+  padding: 30px;
+}
+:where(.rayhana-site) .video-dialog > p {
+  font-size: 11px;
+  line-height: 1.9;
+  color: var(--muted);
+  margin: 15px 0;
+}
+:where(.rayhana-site) .video-dialog[dir="rtl"] > p {
+  font-size: 13px;
+  line-height: 2;
+}
+:where(.rayhana-site) .video-dialog video {
+  width: 100%;
+  aspect-ratio: 16/9;
+  background: #151310;
+  display: block;
+}
+:where(.rayhana-site) .video-safety {
+  border-top: 1px solid var(--line);
+  padding-top: 15px;
+}
+:where(.rayhana-site) .dialog-action svg,:where(.rayhana-site) 
+.hero-button svg {
+  transition: transform 0.2s;
+}
+:where(.rayhana-site) .dialog-action:hover svg,:where(.rayhana-site) 
+.hero-button:hover svg {
+  transform: translateX(3px);
+}
+:where(.rayhana-site).is-rtl .hero-button:hover svg {
+  transform: translateX(-3px);
+}
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@media (min-width: 1500px) {
+  :where(.rayhana-site) .hero {
+    gap: 80px;
+    padding-block: 80px 110px;
+  }
+  :where(.rayhana-site) .hero h1 {
+    font-size: 72px;
+  }
+  :where(.rayhana-site).is-rtl .hero h1 {
+    font-size: 62px;
+  }
+}
+@media (max-width: 1100px) {
+  :where(.rayhana-site) .section-shell {
+    width: calc(100% - 70px);
+  }
+  :where(.rayhana-site) .header-inner {
+    width: calc(100% - 50px);
+    gap: 20px;
+  }
+  :where(.rayhana-site) .desktop-nav {
+    gap: 18px;
+  }
+  :where(.rayhana-site) .header-actions {
+    gap: 12px;
+  }
+  :where(.rayhana-site) .hero {
+    gap: 35px;
+    padding-block: 55px 80px;
+    min-height: 610px;
+  }
+  :where(.rayhana-site) .hero h1 {
+    font-size: 49px;
+  }
+  :where(.rayhana-site).is-rtl .hero h1 {
+    font-size: 42px;
+  }
+  :where(.rayhana-site) .hero-body {
+    font-size: 11px;
+  }
+  :where(.rayhana-site).is-rtl .hero-body {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .hero-seal {
+    width: 85px;
+    height: 85px;
+    inset-inline-end: -12px;
+  }
+  :where(.rayhana-site) .hero-slicer-peek {
+    width: 175px;
+    inset-inline-start: -15px;
+  }
+  :where(.rayhana-site) .hero-slicer-peek img {
+    height: 90px;
+  }
+  :where(.rayhana-site) .product-section {
+    gap: 45px;
+  }
+  :where(.rayhana-site) .product-copy h2 {
+    font-size: 37px;
+  }
+  :where(.rayhana-site).is-rtl .product-copy h2 {
+    font-size: 30px;
+  }
+  :where(.rayhana-site) .story-copy {
+    padding: 55px 40px;
+  }
+  :where(.rayhana-site) .story-copy h2 {
+    font-size: 33px;
+  }
+  :where(.rayhana-site).is-rtl .story-copy h2 {
+    font-size: 28px;
+  }
+  :where(.rayhana-site) .brand-ribbon {
+    gap: 30px;
+    font-size: 8px;
+    letter-spacing: 1px;
+  }
+  :where(.rayhana-site) .faq-section {
+    gap: 55px;
+  }
+  :where(.rayhana-site) .offer-section {
+    gap: 70px;
+  }
+}
+@media (max-width: 850px) {
+  :where(.rayhana-site) .section-shell {
+    width: calc(100% - 48px);
+  }
+  :where(.rayhana-site) .header-inner {
+    height: 76px;
+    width: calc(100% - 40px);
+  }
+  :where(.rayhana-site) .desktop-nav {
+    display: none;
+  }
+  :where(.rayhana-site) .mobile-menu-button {
+    display: grid;
+    place-items: center;
+  }
+  :where(.rayhana-site) .mobile-navigation {
+    display: flex;
+  }
+  :where(.rayhana-site) .brand,:where(.rayhana-site) 
+  .brand img {
+    width: 127px;
+  }
+  :where(.rayhana-site) .hero {
+    gap: 25px;
+    min-height: 545px;
+    padding-block: 38px 70px;
+  }
+  :where(.rayhana-site) .hero h1 {
+    font-size: 41px;
+  }
+  :where(.rayhana-site).is-rtl .hero h1 {
+    font-size: 35px;
+    letter-spacing: -1.1px;
+  }
+  :where(.rayhana-site) .campaign-label {
+    font-size: 8px;
+    margin-bottom: 23px;
+  }
+  :where(.rayhana-site).is-rtl .campaign-label {
+    font-size: 11px;
+  }
+  :where(.rayhana-site) .hero-eyebrow {
+    margin-bottom: 13px;
+  }
+  :where(.rayhana-site) .hero-body {
+    font-size: 10px;
+    line-height: 1.9;
+  }
+  :where(.rayhana-site).is-rtl .hero-body {
+    font-size: 13px;
+    line-height: 2;
+  }
+  :where(.rayhana-site) .hero-button {
+    min-width: 0;
+    padding: 12px 15px;
+    font-size: 10px;
+  }
+  :where(.rayhana-site).is-rtl .hero-button {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .hero-slicer-peek {
+    width: 155px;
+    bottom: -24px;
+  }
+  :where(.rayhana-site) .hero-slicer-peek > span {
+    font-size: 8px;
+  }
+  :where(.rayhana-site).is-rtl .hero-slicer-peek > span {
+    font-size: 10px;
+  }
+  :where(.rayhana-site) .hero-seal {
+    width: 70px;
+    height: 70px;
+  }
+  :where(.rayhana-site) .hero-seal svg {
+    width: 15px;
+    height: 15px;
+  }
+  :where(.rayhana-site) .hero-seal span {
+    font-size: 7px;
+  }
+  :where(.rayhana-site) .hero-seal small {
+    font-size: 4px;
+  }
+  :where(.rayhana-site) .hero-photo-caption {
+    font-size: 6px;
+    inset-inline: 15px;
+  }
+  :where(.rayhana-site).is-rtl .hero-photo-caption {
+    font-size: 8px;
+  }
+  :where(.rayhana-site) .hero-footnote {
+    font-size: 8px;
+  }
+  :where(.rayhana-site).is-rtl .hero-footnote {
+    font-size: 10px;
+  }
+  :where(.rayhana-site) .collection {
+    padding-block: 65px;
+  }
+  :where(.rayhana-site) .section-heading {
+    gap: 30px;
+  }
+  :where(.rayhana-site) .section-heading h2 {
+    font-size: 29px;
+  }
+  :where(.rayhana-site).is-rtl .section-heading h2 {
+    font-size: 25px;
+  }
+  :where(.rayhana-site) .section-heading > p {
+    max-width: 220px;
+    font-size: 10px;
+  }
+  :where(.rayhana-site).is-rtl .section-heading > p {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .product-section {
+    gap: 30px;
+    padding-block: 70px;
+  }
+  :where(.rayhana-site) .product-copy h2 {
+    font-size: 31px;
+  }
+  :where(.rayhana-site).is-rtl .product-copy h2 {
+    font-size: 26px;
+  }
+  :where(.rayhana-site) .product-intro {
+    font-size: 10px;
+  }
+  :where(.rayhana-site).is-rtl .product-intro {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .feature-list {
+    gap: 14px;
+    padding-block: 20px;
+  }
+  :where(.rayhana-site) .feature h3 {
+    font-size: 9px;
+  }
+  :where(.rayhana-site) .feature p {
+    font-size: 9px;
+  }
+  :where(.rayhana-site).is-rtl .feature p {
+    font-size: 11px;
+  }
+  :where(.rayhana-site) .feature-icon {
+    width: 30px;
+    height: 30px;
+  }
+  :where(.rayhana-site) .feature {
+    gap: 9px;
+  }
+  :where(.rayhana-site) .size-buttons button {
+    padding-inline: 14px;
+  }
+  :where(.rayhana-site) .product-actions {
+    flex-direction: column;
+  }
+  :where(.rayhana-site) .story-section {
+    min-height: 500px;
+  }
+  :where(.rayhana-site) .story-copy {
+    padding: 45px 28px;
+  }
+  :where(.rayhana-site) .story-copy h2 {
+    font-size: 30px;
+  }
+  :where(.rayhana-site).is-rtl .story-copy h2 {
+    font-size: 25px;
+  }
+  :where(.rayhana-site) .story-copy > p:not(.eyebrow) {
+    font-size: 10px;
+  }
+  :where(.rayhana-site).is-rtl .story-copy > p:not(.eyebrow) {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .offer-section {
+    gap: 50px;
+    padding-block: 75px;
+  }
+  :where(.rayhana-site) .offer-stamp {
+    width: 210px;
+    height: 210px;
+  }
+  :where(.rayhana-site) .offer-stamp > span {
+    font-size: 35px;
+  }
+  :where(.rayhana-site) .offer-stamp:after {
+    bottom: 30px;
+  }
+  :where(.rayhana-site) .offer-copy h2 {
+    font-size: 36px;
+  }
+  :where(.rayhana-site).is-rtl .offer-copy h2 {
+    font-size: 29px;
+  }
+  :where(.rayhana-site) .faq-section {
+    gap: 35px;
+  }
+  :where(.rayhana-site) .faq-heading h2 {
+    font-size: 30px;
+  }
+  :where(.rayhana-site).is-rtl .faq-heading h2 {
+    font-size: 25px;
+  }
+  :where(.rayhana-site) .footer-main {
+    gap: 30px;
+  }
+}
+@media (max-width: 640px) {
+  .rayhana-site {
+    scroll-padding-top: 85px;
+  }
+  :where(.rayhana-site) .section-shell {
+    width: calc(100% - 40px);
+  }
+  :where(.rayhana-site) .announcement {
+    font-size: 7px;
+    letter-spacing: 0.9px;
+    gap: 13px;
+    min-height: 32px;
+  }
+  :where(.rayhana-site).is-rtl .announcement {
+    font-size: 10px;
+  }
+  :where(.rayhana-site) .header-inner {
+    height: 68px;
+    width: calc(100% - 32px);
+    gap: 12px;
+  }
+  :where(.rayhana-site) .brand,:where(.rayhana-site) 
+  .brand img {
+    width: 104px;
+  }
+  :where(.rayhana-site) .header-actions {
+    gap: 9px;
+  }
+  :where(.rayhana-site) .header-market {
+    display: none;
+  }
+  :where(.rayhana-site) .mobile-menu-button {
+    display: grid;
+    place-items: center;
+    min-width: 44px;
+    min-height: 44px;
+    padding: 4px;
+  }
+  :where(.rayhana-site) .mobile-menu-button svg {
+    width: 21px;
+  }
+  :where(.rayhana-site) .language-control {
+    padding: 3px;
+    gap: 1px;
+  }
+  :where(.rayhana-site) .language-control a {
+    padding: 4px 7px;
+    font-size: 10px;
+  }
+  :where(.rayhana-site) .language-control a[lang="en"] {
+    font-size: 9px;
+  }
+  :where(.rayhana-site) .hero {
+    grid-template-columns: 1fr;
+    gap: 36px;
+    padding-block: 32px 61px;
+    min-height: 0;
+  }
+  :where(.rayhana-site) .hero-copy {
+    padding: 0;
+  }
+  :where(.rayhana-site) .campaign-label {
+    margin-bottom: 20px;
+    font-size: 8px;
+  }
+  :where(.rayhana-site).is-rtl .campaign-label {
+    font-size: 11px;
+  }
+  :where(.rayhana-site) .hero-eyebrow {
+    font-size: 8px;
+    margin-bottom: 12px;
+  }
+  :where(.rayhana-site).is-rtl .hero-eyebrow {
+    font-size: 11px;
+  }
+  :where(.rayhana-site) .hero h1 {
+    font-size: clamp(40px, 10.3vw, 56px);
+    letter-spacing: -1px;
+    line-height: 1.13;
+    margin-bottom: 18px;
+  }
+  :where(.rayhana-site).is-rtl .hero h1 {
+    font-size: clamp(31px, 8.8vw, 47px);
+    line-height: 1.6;
+    letter-spacing: -1.2px;
+  }
+  :where(.rayhana-site) .hero-body {
+    max-width: none;
+    font-size: 12px;
+    line-height: 2;
+    margin-bottom: 22px;
+  }
+  :where(.rayhana-site).is-rtl .hero-body {
+    font-size: 14px;
+    line-height: 2.1;
+  }
+  :where(.rayhana-site) .hero-button {
+    min-height: 48px;
+    width: 100%;
+    font-size: 12px;
+    padding: 13px 18px;
+  }
+  :where(.rayhana-site).is-rtl .hero-button {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .hero-footnote {
+    margin-top: 17px;
+    font-size: 9px;
+    justify-content: center;
+  }
+  :where(.rayhana-site).is-rtl .hero-footnote {
+    font-size: 11px;
+  }
+  :where(.rayhana-site) .hero-visual {
+    width: calc(100% - 20px);
+    margin-inline: auto;
+    padding-bottom: 17px;
+  }
+  :where(.rayhana-site) .hero-arch {
+    aspect-ratio: 1.06;
+    border-radius: 45% 45% 3px 3px;
+  }
+  :where(.rayhana-site) .hero-product-image {
+    padding: 20px 0 35px;
+  }
+  :where(.rayhana-site) .hero-seal {
+    width: 78px;
+    height: 78px;
+    top: 7px;
+    inset-inline-end: -9px;
+  }
+  :where(.rayhana-site) .hero-seal span {
+    font-size: 8px;
+  }
+  :where(.rayhana-site) .hero-slicer-peek {
+    width: 148px;
+    bottom: -17px;
+    inset-inline-start: -9px;
+  }
+  :where(.rayhana-site) .hero-slicer-peek img {
+    height: 77px;
+  }
+  :where(.rayhana-site) .hero-slicer-peek > span {
+    padding-block: 8px 5px;
+    font-size: 8px;
+  }
+  :where(.rayhana-site).is-rtl .hero-slicer-peek > span {
+    font-size: 10px;
+  }
+  :where(.rayhana-site) .hero-photo-caption {
+    bottom: 19px;
+    font-size: 6px;
+    inset-inline-start: 155px;
+    inset-inline-end: 14px;
+    letter-spacing: 0.8px;
+    gap: 6px;
+  }
+  :where(.rayhana-site).is-rtl .hero-photo-caption {
+    font-size: 8px;
+    letter-spacing: 0;
+  }
+  :where(.rayhana-site) .hero-photo-caption > svg {
+    width: 13px;
+  }
+  :where(.rayhana-site) .brand-ribbon {
+    padding: 16px 20px;
+    gap: 18px;
+    justify-content: flex-start;
+    white-space: nowrap;
+    overflow: hidden;
+    font-size: 7px;
+    letter-spacing: 1.1px;
+  }
+  :where(.rayhana-site) .brand-ribbon > span:last-child {
+    display: none;
+  }
+  :where(.rayhana-site) .ribbon-mark {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .collection {
+    padding-block: 55px;
+  }
+  :where(.rayhana-site) .section-heading {
+    flex-direction: column;
+    gap: 14px;
+    align-items: flex-start;
+    margin-bottom: 25px;
+  }
+  :where(.rayhana-site) .section-heading h2 {
+    font-size: 32px;
+  }
+  :where(.rayhana-site).is-rtl .section-heading h2 {
+    font-size: 27px;
+    line-height: 1.7;
+  }
+  :where(.rayhana-site) .section-heading > p {
+    font-size: 12px;
+    max-width: 100%;
+    line-height: 1.9;
+  }
+  :where(.rayhana-site).is-rtl .section-heading > p {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .eyebrow {
+    font-size: 9px;
+    margin-bottom: 10px;
+  }
+  :where(.rayhana-site).is-rtl .eyebrow {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .collection-grid {
+    grid-template-columns: 1fr;
+    gap: 29px;
+  }
+  :where(.rayhana-site) .collection-image {
+    aspect-ratio: 1.32;
+  }
+  :where(.rayhana-site) .collection-card {
+    padding-bottom: 20px;
+  }
+  :where(.rayhana-site) .collection-card-copy {
+    padding-top: 18px;
+  }
+  :where(.rayhana-site) .collection-card h3 {
+    font-size: 26px;
+    margin-bottom: 7px;
+  }
+  :where(.rayhana-site).is-rtl .collection-card h3 {
+    font-size: 22px;
+  }
+  :where(.rayhana-site) .collection-card p {
+    font-size: 11px;
+  }
+  :where(.rayhana-site).is-rtl .collection-card p {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .round-arrow {
+    width: 42px;
+    height: 42px;
+  }
+  :where(.rayhana-site) .markets-inner {
+    padding-block: 43px;
+  }
+  :where(.rayhana-site) .markets-heading {
+    margin-bottom: 23px;
+  }
+  :where(.rayhana-site) .markets-heading h2 {
+    font-size: 29px;
+  }
+  :where(.rayhana-site).is-rtl .markets-heading h2 {
+    font-size: 25px;
+    line-height: 1.7;
+  }
+  :where(.rayhana-site) .markets-heading > p:last-child {
+    font-size: 11px;
+    line-height: 2;
+  }
+  :where(.rayhana-site).is-rtl .markets-heading > p:last-child {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .market-options {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  :where(.rayhana-site) .market-card {
+    padding: 19px 14px 16px;
+  }
+  :where(.rayhana-site) .market-name {
+    font-size: 12px;
+  }
+  :where(.rayhana-site).is-rtl .market-name {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .amazon-label {
+    font-size: 10px;
+  }
+  :where(.rayhana-site) .market-helper {
+    align-items: flex-start;
+    font-size: 10px;
+    line-height: 1.8;
+    text-align: center;
+  }
+  :where(.rayhana-site) .market-helper > svg {
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  :where(.rayhana-site) .market-selection {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 9px;
+    padding-top: 14px;
+  }
+  :where(.rayhana-site) .market-selection > p {
+    font-size: 11px;
+  }
+  :where(.rayhana-site).is-rtl .market-selection > p {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .product-section {
+    grid-template-columns: 1fr;
+    gap: 30px;
+    padding-block: 55px;
+  }
+  :where(.rayhana-site) .product-media {
+    order: 2;
+  }
+  :where(.rayhana-site) .product-copy {
+    order: 1;
+  }
+  :where(.rayhana-site) .product-photo {
+    aspect-ratio: 1;
+  }
+  :where(.rayhana-site) .product-copy h2 {
+    font-size: 36px;
+  }
+  :where(.rayhana-site).is-rtl .product-copy h2 {
+    font-size: 30px;
+  }
+  :where(.rayhana-site) .product-intro {
+    font-size: 12px;
+    line-height: 2;
+  }
+  :where(.rayhana-site).is-rtl .product-intro {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .feature-list {
+    gap: 18px;
+    padding-block: 24px;
+  }
+  :where(.rayhana-site) .feature {
+    gap: 13px;
+  }
+  :where(.rayhana-site) .feature-icon {
+    width: 35px;
+    height: 35px;
+  }
+  :where(.rayhana-site) .feature h3 {
+    font-size: 12px;
+  }
+  :where(.rayhana-site).is-rtl .feature h3 {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .feature p {
+    font-size: 11px;
+    max-width: none;
+  }
+  :where(.rayhana-site).is-rtl .feature p {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .field-heading {
+    font-size: 12px;
+  }
+  :where(.rayhana-site).is-rtl .field-heading {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .size-buttons button {
+    min-height: 45px;
+    padding-inline: 24px;
+    font-size: 13px;
+  }
+  :where(.rayhana-site).is-rtl .size-buttons button {
+    font-size: 15px;
+  }
+  :where(.rayhana-site) .microcopy {
+    font-size: 10px;
+  }
+  :where(.rayhana-site).is-rtl .microcopy {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .product-buy {
+    font-size: 12px;
+    min-height: 49px;
+  }
+  :where(.rayhana-site) .safety-note {
+    font-size: 10px;
+    line-height: 2;
+  }
+  :where(.rayhana-site).is-rtl .safety-note {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .guide-link {
+    font-size: 11px;
+  }
+  :where(.rayhana-site).is-rtl .guide-link {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .image-note {
+    font-size: 11px;
+    padding: 16px;
+  }
+  :where(.rayhana-site) .mandoline-layout {
+    gap: 28px;
+  }
+  :where(.rayhana-site) .mandoline-gallery {
+    order: 2;
+  }
+  :where(.rayhana-site) .gallery-main {
+    aspect-ratio: 1.1;
+  }
+  :where(.rayhana-site) .gallery-thumbs {
+    gap: 6px;
+  }
+  :where(.rayhana-site) .product-actions {
+    flex-direction: row;
+    gap: 8px;
+  }
+  :where(.rayhana-site) .product-actions > .button {
+    font-size: 10px;
+    min-height: 48px;
+    gap: 8px;
+    padding-inline: 10px;
+  }
+  :where(.rayhana-site).is-rtl .product-actions > .button {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .video-pill {
+    font-size: 10px;
+    bottom: 16px;
+    inset-inline-start: 13px;
+  }
+  :where(.rayhana-site) .story-section {
+    grid-template-columns: 1fr;
+  }
+  :where(.rayhana-site) .story-picture {
+    min-height: 330px;
+  }
+  :where(.rayhana-site) .story-copy {
+    padding: 45px 24px 48px;
+  }
+  :where(.rayhana-site) .story-copy h2 {
+    font-size: 36px;
+  }
+  :where(.rayhana-site).is-rtl .story-copy h2 {
+    font-size: 30px;
+  }
+  :where(.rayhana-site) .story-copy > p:not(.eyebrow) {
+    font-size: 12px;
+    line-height: 2.1;
+  }
+  :where(.rayhana-site).is-rtl .story-copy > p:not(.eyebrow) {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .story-signature {
+    font-size: 9px;
+  }
+  :where(.rayhana-site) .offer-section {
+    flex-direction: column;
+    gap: 34px;
+    align-items: center;
+    padding-block: 55px;
+  }
+  :where(.rayhana-site) .offer-stamp {
+    width: 190px;
+    height: 190px;
+  }
+  :where(.rayhana-site) .offer-stamp > span {
+    font-size: 30px;
+  }
+  :where(.rayhana-site) .offer-stamp > small {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .offer-stamp:after {
+    font-size: 7px;
+    bottom: 28px;
+  }
+  :where(.rayhana-site) .offer-copy {
+    width: 100%;
+    text-align: start;
+  }
+  :where(.rayhana-site) .offer-copy h2 {
+    font-size: 36px;
+  }
+  :where(.rayhana-site).is-rtl .offer-copy h2 {
+    font-size: 31px;
+  }
+  :where(.rayhana-site) .offer-copy > p:not(.eyebrow) {
+    font-size: 12px;
+  }
+  :where(.rayhana-site).is-rtl .offer-copy > p:not(.eyebrow) {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .offer-copy .button {
+    width: 100%;
+    font-size: 11px;
+  }
+  :where(.rayhana-site).is-rtl .offer-copy .button {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .offer-status {
+    font-size: 10px;
+    line-height: 1.8;
+    align-items: flex-start;
+  }
+  :where(.rayhana-site) .offer-status .red-dot {
+    margin-top: 6px;
+  }
+  :where(.rayhana-site).is-rtl .offer-status {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .faq-section {
+    grid-template-columns: 1fr;
+    gap: 26px;
+    padding-block: 50px 60px;
+  }
+  :where(.rayhana-site) .faq-heading h2 {
+    font-size: 33px;
+    margin-bottom: 14px;
+  }
+  :where(.rayhana-site).is-rtl .faq-heading h2 {
+    font-size: 29px;
+  }
+  :where(.rayhana-site) .contact-link {
+    font-size: 11px;
+  }
+  :where(.rayhana-site) .faq-item h3 > button {
+    font-size: 12px;
+    padding-block: 19px;
+  }
+  :where(.rayhana-site).is-rtl .faq-item h3 > button {
+    font-size: 14px;
+  }
+  :where(.rayhana-site) .faq-item [role="region"] p {
+    font-size: 12px;
+    padding-inline-end: 15px;
+    line-height: 2;
+  }
+  :where(.rayhana-site).is-rtl .faq-item [role="region"] p {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .closing-section {
+    padding: 50px 20px 55px;
+  }
+  :where(.rayhana-site) .closing-section h2 {
+    font-size: 35px;
+  }
+  :where(.rayhana-site).is-rtl .closing-section h2 {
+    font-size: 29px;
+  }
+  :where(.rayhana-site) .closing-section > p:not(.eyebrow) {
+    font-size: 12px;
+    line-height: 1.9;
+  }
+  :where(.rayhana-site).is-rtl .closing-section > p:not(.eyebrow) {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .closing-section .button {
+    font-size: 11px;
+    min-width: 220px;
+  }
+  :where(.rayhana-site) .site-footer {
+    padding-top: 38px;
+    padding-bottom: 95px;
+  }
+  :where(.rayhana-site) .footer-main {
+    grid-template-columns: 1fr 1fr;
+    gap: 32px 17px;
+    padding-bottom: 30px;
+  }
+  :where(.rayhana-site) .footer-brand {
+    grid-column: 1/-1;
+  }
+  :where(.rayhana-site) .footer-brand img {
+    width: 132px;
+    margin-bottom: 14px;
+  }
+  :where(.rayhana-site) .footer-brand p {
+    max-width: none;
+    font-size: 11px;
+  }
+  :where(.rayhana-site) .footer-brand > span {
+    font-size: 10px;
+  }
+  :where(.rayhana-site) .footer-column {
+    font-size: 11px;
+    gap: 12px;
+  }
+  :where(.rayhana-site).is-rtl .footer-column {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .footer-column h3 {
+    font-size: 12px;
+  }
+  :where(.rayhana-site).is-rtl .footer-column h3 {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .footer-bottom {
+    gap: 15px;
+    font-size: 8px;
+    line-height: 1.9;
+    align-items: flex-start;
+  }
+  :where(.rayhana-site).is-rtl .footer-bottom {
+    font-size: 10px;
+  }
+  :where(.rayhana-site) .footer-bottom > a {
+    white-space: nowrap;
+    gap: 5px;
+  }
+  :where(.rayhana-site) .mobile-sticky {
+    position: fixed;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 15px;
+    bottom: 0;
+    inset-inline: 0;
+    z-index: 40;
+    padding: 11px 20px calc(11px + env(safe-area-inset-bottom));
+    background: #fffdf9f5;
+    backdrop-filter: blur(14px);
+    border-top: 1px solid var(--line);
+    transform: translateY(110%);
+    transition: transform 0.25s;
+    visibility: hidden;
+  }
+  :where(.rayhana-site) .mobile-sticky.visible {
+    transform: translateY(0);
+    visibility: visible;
+  }
+  :where(.rayhana-site) .mobile-sticky > a {
+    font-size: 11px;
+  }
+  :where(.rayhana-site).is-rtl .mobile-sticky > a {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .mobile-sticky > .button {
+    min-height: 43px;
+    padding: 10px 17px;
+    font-size: 10px;
+  }
+  :where(.rayhana-site).is-rtl .mobile-sticky > .button {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .buy-dialog,:where(.rayhana-site) 
+  .video-dialog {
+    padding: 28px 22px;
+    max-height: calc(100dvh - 24px);
+  }
+  :where(.rayhana-site) .buy-dialog h2 {
+    font-size: 28px;
+  }
+  :where(.rayhana-site) .buy-dialog[dir="rtl"] h2 {
+    font-size: 23px;
+  }
+  :where(.rayhana-site) .product-choice button {
+    font-size: 10px;
+    padding: 11px 9px;
+  }
+  :where(.rayhana-site) .buy-dialog[dir="rtl"] .product-choice button {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .dialog-intro {
+    font-size: 11px;
+  }
+  :where(.rayhana-site) .purchase-state {
+    padding: 14px;
+    gap: 10px;
+  }
+  :where(.rayhana-site) .purchase-state strong {
+    font-size: 11px;
+  }
+  :where(.rayhana-site) .buy-dialog[dir="rtl"] .purchase-state strong {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .buy-dialog[dir="rtl"] .purchase-state p {
+    font-size: 12px;
+  }
+  :where(.rayhana-site) .dialog-action {
+    font-size: 10px;
+    gap: 8px;
+    padding-inline: 10px;
+  }
+  :where(.rayhana-site) .buy-dialog[dir="rtl"] .dialog-action {
+    font-size: 13px;
+  }
+  :where(.rayhana-site) .video-dialog h2 {
+    font-size: 25px;
+    padding-inline-end: 20px;
+  }
+  :where(.rayhana-site) .video-dialog[dir="rtl"] h2 {
+    font-size: 21px;
+  }
+  :where(.rayhana-site) .video-dialog > p {
+    font-size: 10px;
+  }
+  :where(.rayhana-site) .video-dialog[dir="rtl"] > p {
+    font-size: 12px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .rayhana-site {
+    scroll-behavior: auto;
+  }
+  :where(.rayhana-site) *,:where(.rayhana-site) 
+  *:before,:where(.rayhana-site) 
+  *:after {
+    animation: none !important;
+    transition: none !important;
+  }
+}
+
+/* Rayhana.com visual alignment — paint and type only, unchanged layout. */
+:where(.rayhana-site) ::selection {
+  background: color-mix(in oklab, var(--red) 18%, var(--paper));
+  color: var(--ink);
+}
+:where(.rayhana-site) .announcement {
+  background: var(--red);
+  color: #fff;
+}
+:where(.rayhana-site) .announcement-star {
+  color: #fff;
+}
+:where(.rayhana-site) .site-header {
+  background: color-mix(in oklab, var(--paper) 70%, transparent);
+  border-bottom-color: var(--line);
+  box-shadow: var(--shadow-sm);
+}
+@supports (backdrop-filter: blur(1px)) {
+  :where(.rayhana-site) .site-header {
+    background: color-mix(in oklab, var(--paper) 50%, transparent);
+  }
+}
+:where(.rayhana-site) .language-control {
+  border-color: #d5d2ca;
+  background: color-mix(in oklab, var(--surface) 80%, transparent);
+}
+:where(.rayhana-site) .language-control a.active {
+  background: var(--red);
+  color: #fff;
+}
+:where(.rayhana-site) .desktop-nav a:hover,:where(.rayhana-site) 
+.header-market:hover,:where(.rayhana-site) 
+.hero-secondary,:where(.rayhana-site) 
+.hero-offer-link,:where(.rayhana-site) 
+.text-link,:where(.rayhana-site) 
+.guide-link,:where(.rayhana-site) 
+.contact-link {
+  color: var(--red);
+}
+:where(.rayhana-site) .button.primary,:where(.rayhana-site) 
+.button.light,:where(.rayhana-site) 
+.button.outline {
+  border-radius: 9999px;
+}
+:where(.rayhana-site) .button.primary:hover {
+  background: color-mix(in oklab, var(--red) 90%, transparent);
+  box-shadow: var(--shadow-sm);
+}
+:where(.rayhana-site) .button.outline {
+  border-color: var(--line);
+  color: var(--ink);
+  background: transparent;
+  box-shadow: 0 1px 2px #0000000d;
+}
+:where(.rayhana-site) .button.outline:hover {
+  background: var(--cream);
+}
+:where(.rayhana-site) .button.light {
+  background: var(--surface);
+  color: var(--red);
+}
+:where(.rayhana-site) .campaign-label {
+  border-color: var(--line);
+  background: var(--cream);
+  border-radius: 6px;
+}
+:where(.rayhana-site) .hero-arch,:where(.rayhana-site) 
+.product-photo,:where(.rayhana-site) 
+.gallery-main {
+  background: var(--cream);
+  border-radius: 24px;
+  box-shadow: var(--shadow-photo);
+}
+:where(.rayhana-site) .hero-arch::before {
+  background: color-mix(in oklab, var(--line) 40%, var(--cream));
+}
+:where(.rayhana-site) .hero-seal {
+  background: var(--surface);
+  border-color: var(--line);
+  color: var(--red);
+}
+:where(.rayhana-site) .hero-slicer-peek {
+  border-radius: 16px;
+  border-color: var(--line);
+  box-shadow: var(--shadow-xl);
+}
+:where(.rayhana-site) .market-card {
+  border-radius: 16px;
+  border-color: var(--line);
+  background: var(--surface);
+  box-shadow: var(--shadow-sm);
+}
+:where(.rayhana-site) .market-card:hover {
+  border-color: var(--red);
+  background: var(--surface);
+}
+:where(.rayhana-site) .market-card.selected {
+  border-color: var(--red);
+  background: color-mix(in oklab, var(--red) 4%, var(--surface));
+}
+:where(.rayhana-site) .feature-icon {
+  color: var(--red);
+  background: color-mix(in oklab, var(--red) 7%, var(--surface));
+  border-radius: 50%;
+}
+:where(.rayhana-site) .size-buttons button,:where(.rayhana-site) 
+.product-choice button {
+  border-radius: 6px;
+  border-color: var(--line);
+}
+:where(.rayhana-site) .size-buttons button.active {
+  background: var(--red);
+  border-color: var(--red);
+}
+:where(.rayhana-site) .product-choice button.selected {
+  background: color-mix(in oklab, var(--red) 7%, var(--surface));
+  border-color: var(--red);
+}
+:where(.rayhana-site) .image-note {
+  background: var(--cream);
+  color: var(--muted);
+  border-radius: 0 0 12px 12px;
+}
+:where(.rayhana-site) .mandoline-section {
+  background: color-mix(in oklab, var(--cream) 30%, transparent);
+  border-color: var(--line);
+}
+:where(.rayhana-site) .gallery-thumbs img {
+  border-radius: 8px;
+}
+:where(.rayhana-site) .gallery-thumbs button {
+  border-radius: 12px;
+}
+:where(.rayhana-site) .video-pill {
+  background: color-mix(in oklab, var(--surface) 90%, transparent);
+  border-color: var(--line);
+  color: var(--ink);
+  box-shadow: var(--shadow-sm);
+}
+:where(.rayhana-site) .closing-section {
+  color: #fff;
+}
+:where(.rayhana-site) .closing-section > p:not(.eyebrow),:where(.rayhana-site) 
+.closing-section .eyebrow {
+  color: #fff;
+}
+:where(.rayhana-site) .site-footer {
+  background: color-mix(in oklab, oklch(92% 0.01 85) 60%, transparent);
+  border-top-color: var(--line);
+}
+:where(.rayhana-site) .footer-column,:where(.rayhana-site) 
+.footer-brand p,:where(.rayhana-site) 
+.footer-brand > span,:where(.rayhana-site) 
+.footer-bottom {
+  color: var(--muted);
+}
+:where(.rayhana-site) .footer-column h3 {
+  color: var(--ink);
+}
+:where(.rayhana-site) .footer-column a:hover {
+  color: var(--red);
+}
+:where(.rayhana-site) .modal-overlay {
+  background: #0008;
+}
+:where(.rayhana-site) .buy-dialog,:where(.rayhana-site) 
+.video-dialog {
+  background: var(--surface);
+  border-radius: 16px;
+  box-shadow: var(--shadow-photo);
+}
+:where(.rayhana-site) .dialog-close {
+  background: var(--cream);
+  color: var(--ink);
+  border-radius: 50%;
+}
+:where(.rayhana-site) .select-wrap {
+  border-color: var(--line);
+  border-radius: 8px;
+}
+:where(.rayhana-site) .purchase-state {
+  background: var(--cream);
+  color: var(--muted);
+  border-radius: 12px;
+}
+:where(.rayhana-site) .mobile-sticky {
+  background: color-mix(in oklab, var(--paper) 95%, transparent);
+  box-shadow: 0 -1px 3px #0000000d;
+}
