@@ -108,7 +108,7 @@ export default function Products() {
     rating: null,
     reviews: [],
     sizes: [],
-    price: 38,
+    price: 36.99,
     prices: {},
   } as Product;
 
