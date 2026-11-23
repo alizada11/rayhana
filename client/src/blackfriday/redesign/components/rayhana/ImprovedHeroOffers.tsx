@@ -103,15 +103,6 @@ export default function ImprovedHeroOffers({
         className={`hero-mandoline-offer${mandolineDiscount === null ? " is-unavailable" : ""}`}
         href="#mandoline"
       >
-        <img
-          className="hero-mandoline-backdrop"
-          src={media.mandolineFoodScene}
-          alt=""
-          aria-hidden="true"
-          width="1200"
-          height="670"
-          decoding="async"
-        />
         <div className="hero-mandoline-offer-copy">
           <span className="hero-mandoline-new">
             {copy.heroMandolineNewLabel}
@@ -134,10 +125,15 @@ export default function ImprovedHeroOffers({
         <div className="hero-mandoline-visual">
           <img
             className="hero-mandoline-product"
-            src={media.mandolineHero}
+            src={
+              language === "en"
+                ? "/images/mandoline-hero-en.jpg"
+                : "/images/mandoline-hero-fa-ps.png"
+            }
             alt=""
-            width="1400"
-            height="843"
+            aria-hidden="true"
+            width="1650"
+            height="740"
             decoding="async"
           />
         </div>

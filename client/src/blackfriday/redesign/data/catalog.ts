@@ -210,7 +210,9 @@ export const media = {
   demoPoster: "/images/DSC03109_cb70ea18.jpg",
   potDemo: "/videos/pot-cooking-safe-web_9b3f9908.mp4",
   potDemoPoster: "/images/rayhana-pot-cutout_44807e34.webp",
+  potSectionVideo: "/videos/rayhana-pot-section-autoplay.mp4",
   potVideoSlides: [
+    "/videos/pot-cooking-safe-web_9b3f9908.mp4",
     "/videos/4068976be9d769511f36eba4287cc436.mp4",
     "/videos/40a905db6517ffab9c25e3347b156c80.mp4",
     "/videos/7455d229e665284ca3ce59ef2ba3722c.mp4",

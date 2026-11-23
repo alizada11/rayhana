@@ -5,7 +5,12 @@ import {
   type DirectMarketId,
 } from "@/blackfriday/redesign/data/directStores";
 
-const supplementalFlags = { BE: "🇧🇪", NL: "🇳🇱", IT: "🇮🇹" };
+const supplementalFlags = {
+  BE: "/flags/be.svg",
+  NL: "/flags/nl.svg",
+  IT: "/flags/it.svg",
+  SE: "/flags/se.svg",
+};
 export default function DirectMarketFlag({
   market,
   className,
@@ -16,18 +21,13 @@ export default function DirectMarketFlag({
   if (!isSupplementalDirectMarket(market))
     return <MarketFlag market={market} className={className} />;
   return (
-    <span
+    <img
       className={`market-flag${className ? ` ${className}` : ""}`}
-      style={{
-        display: "inline-flex",
-        alignItems: "center",
-        justifyContent: "center",
-        fontSize: 24,
-        lineHeight: 1,
-      }}
+      src={supplementalFlags[market]}
+      width={30}
+      height={20}
+      alt=""
       aria-hidden="true"
-    >
-      {supplementalFlags[market]}
-    </span>
+    />
   );
 }

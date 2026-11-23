@@ -281,11 +281,12 @@
     "card": "Card",
     "shipping_status": "Shipping Status",
     "shipping_tr": "Turkey: Customs restrictions currently prevent shipping, but our Amazon Turkey store is launching soon.",
-    "shipping_ir": "Iran: Unfortunately, current conditions make direct shipping not possible.",
+    "shipping_ir": "Iran: Direct shipping is now available, with taxes included.",
     "shipping_af": "Afghanistan: Coming soon through Shopino24.",
     "buy_amazon_ca": "Buy on Amazon CA 🇨🇦",
     "buy_amazon_au": "Buy on Amazon AU 🇦🇺",
-    "buy_shopino24": "Buy on Shopino24 🇦🇫"
+    "buy_shopino24": "Shopino24 Afghanistan AF",
+    "price_na": "Price not listed"
   },
   "reserve_discount": {
     "badge": "EID AL-ADHA OFFER",

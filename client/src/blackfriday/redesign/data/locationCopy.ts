@@ -74,7 +74,7 @@ export const locationCopy = {
       "A regional suggestion. Check delivery to your address at the store.",
     germanyCoverage:
       "Compatriots in Belgium, the Netherlands, Spain and Sweden can also buy from Amazon Germany; check delivery to your address before ordering.",
-    germanyCoverageShort: "Also for Belgium, Netherlands, Spain, Sweden",
+    germanyCoverageShort: "Also for Belgium, Netherlands, Italy and Sweden",
     pending:
       "This product’s purchase link in this market is not yet confirmed.",
     manual: "Your own choice takes priority. You can change it at any time.",

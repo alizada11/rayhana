@@ -9,6 +9,7 @@ import {
   VolumeX,
 } from "lucide-react";
 import { media, type Language } from "@/blackfriday/redesign/data/catalog";
+import { campaignCopy } from "@/blackfriday/redesign/data/campaign";
 import type { Copy } from "./BuyingDialog";
 
 export default function CookingVideoSlider({
@@ -31,6 +32,8 @@ export default function CookingVideoSlider({
     language === "en" ? "en" : language === "fa" ? "fa-AF" : "ps-AF"
   );
   const videos = media.potVideoSlides;
+  const potVideoLabel = campaignCopy[language].potVideoLabel;
+  const potVideoAction = campaignCopy[language].potVideoAction;
   const goTo = (index: number) => {
     videoRef.current?.pause();
     setPlaying(false);
@@ -66,7 +69,7 @@ export default function CookingVideoSlider({
           playsInline
           muted={muted}
           preload="metadata"
-          aria-label={`${copy.potVideoLabel} ${number.format(active + 1)}`}
+          aria-label={`${potVideoLabel} ${number.format(active + 1)}`}
           onPlaying={() => setPlaying(true)}
           onPause={() => setPlaying(false)}
           onEnded={() => setPlaying(false)}
@@ -99,8 +102,8 @@ export default function CookingVideoSlider({
         )}
         <div className="cooking-video-caption">
           <span>
-            <strong>{copy.potVideoLabel}</strong>
-            <small>{copy.potVideoAction}</small>
+            <strong>{potVideoLabel}</strong>
+            <small>{potVideoAction}</small>
           </span>
           <span className="cooking-slide-count" aria-live="polite">
             {number.format(active + 1)} / {number.format(videos.length)}
@@ -110,7 +113,7 @@ export default function CookingVideoSlider({
           className="cooking-video-controls"
           dir="ltr"
           role="group"
-          aria-label={copy.potVideoLabel}
+          aria-label={potVideoLabel}
         >
           <button
             type="button"
@@ -172,7 +175,7 @@ export default function CookingVideoSlider({
           </button>
         </div>
       </div>
-      <div className="cooking-slider-controls" aria-label={copy.potVideoLabel}>
+      <div className="cooking-slider-controls" aria-label={potVideoLabel}>
         <button
           type="button"
           className="cooking-slider-arrow"
@@ -192,7 +195,7 @@ export default function CookingVideoSlider({
               key={index}
               className={`cooking-slider-dot${active === index ? " is-active" : ""}`}
               onClick={() => goTo(index)}
-              aria-label={`${copy.videoLabel} ${number.format(index + 1)}`}
+            aria-label={`${potVideoLabel} ${number.format(index + 1)}`}
               aria-current={active === index ? "true" : undefined}
             />
           ))}

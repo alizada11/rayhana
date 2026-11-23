@@ -4,10 +4,10 @@ import { type Language, type ProductId } from "@/blackfriday/redesign/data/catal
 import {
   displayDetectedCountry,
   formatLocationTemplate,
-  locationCopy,
 } from "@/blackfriday/redesign/data/locationCopy";
 import { regionalOfferCopy } from "@/blackfriday/redesign/data/regionalOffers";
 import {
+  directMarkets,
   getDirectMarket,
   getDirectMarketLabel,
   getDirectMarketsForProduct,
@@ -41,7 +41,6 @@ export default function DirectStoreLinks({
   const featuredHeading = useRef<HTMLDivElement>(null);
   const guidanceId = `ds-guidance-${id}`;
   const c = directStoreCopy[language];
-  const location = locationCopy[language];
   const markets = getDirectMarketsForProduct(product);
   const selected = getDirectMarket(
     resolveDirectStoreMarket(
@@ -78,7 +77,7 @@ export default function DirectStoreLinks({
   function renderDestination(market: DirectMarketId, featured = false) {
     const url = getDirectStoreUrl(product, market);
     const unavailable = product === "mandoline" && market === "AF";
-    const store = markets.find(item => item.id === market)!;
+    const store = getDirectMarket(market)!;
     const name = getDirectMarketLabel(market, language);
     const identity = (
       <>
@@ -211,15 +210,12 @@ export default function DirectStoreLinks({
       <div className="ds-other-stores">
         <h3 className="font-serif">{c.amazon}</h3>
         <div className="ds-store-list">
-          {markets
+          {directMarkets
             .filter(
               item => item.marketkind === "amazon" && item.id !== selected?.id
             )
             .map(item => renderDestination(item.id))}
         </div>
-        {product === "pot" && (
-          <p className="ds-coverage">{location.germanyCoverageShort}</p>
-        )}
       </div>
       {selected?.id !== "AF" && (
         <div className="ds-af-section">

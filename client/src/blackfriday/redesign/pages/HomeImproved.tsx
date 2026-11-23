@@ -48,6 +48,7 @@ import {
 } from "@/blackfriday/redesign/data/mandolineSpecs";
 import ImprovedHeroOffers from "@/blackfriday/redesign/components/rayhana/ImprovedHeroOffers";
 import CookingVideoSlider from "@/blackfriday/redesign/components/rayhana/CookingVideoSlider";
+import ScrollAutoplayVideo from "@/blackfriday/redesign/components/rayhana/ScrollAutoplayVideo";
 import BrandStory from "@/blackfriday/redesign/components/rayhana/BrandStory";
 import Testimonials from "@/blackfriday/redesign/components/rayhana/Testimonials";
 import DirectMarketFlag from "@/blackfriday/redesign/components/rayhana/DirectMarketFlag";
@@ -485,12 +486,12 @@ export default function HomeImproved({
         >
           <div className="product-media pot-product-media">
             <div className="product-photo">
-              <img
-                src={media.potDetail}
-                alt={alt.pot}
-                loading="lazy"
-                width="850"
-                height="900"
+              <ScrollAutoplayVideo
+                src={media.potSectionVideo}
+                poster={media.potDetail}
+                label={alt.pot}
+                fallback={copy.videoFallback}
+                copy={copy}
               />
             </div>
           </div>

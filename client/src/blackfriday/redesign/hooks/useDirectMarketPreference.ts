@@ -17,7 +17,7 @@ export default function useDirectMarketPreference() {
     try {
       const saved = localStorage.getItem(SUPPLEMENTAL_MANUAL_MARKET_KEY);
       if (
-        localStorage.getItem(MANUAL_MARKET_KEY) === "DE" &&
+        ["DE", "UK"].includes(localStorage.getItem(MANUAL_MARKET_KEY) ?? "") &&
         isSupplementalDirectMarket(saved)
       )
         setSupplemental(saved);

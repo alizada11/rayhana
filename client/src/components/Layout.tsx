@@ -239,9 +239,9 @@ gtag('config', '${gaMeasurementId}');`;
   };
   const worldCupHref = `~${withLocalePath("/world-cup-prediction", currentLang)}`;
   const blackFridayBanner = {
-    en: { message: "Black Friday · Up to 20% off", link: "Shop now" },
-    fa: { message: "جمعه سیاه · تا ۲۰٪ تخفیف", link: "مشاهده پیشنهاد" },
-    ps: { message: "توره جمعه · تر ۲۰٪ تخفیف", link: "وړاندیز وګورئ" },
+    en: { message: "Black Friday · Up to 25% off", link: "Shop now" },
+    fa: { message: "جمعه سیاه · تا ۲۵٪ تخفیف", link: "مشاهده پیشنهاد" },
+    ps: { message: "توره جمعه · تر ۲۵٪ تخفیف", link: "وړاندیز وګورئ" },
   }[currentLang];
 
   return (
@@ -287,7 +287,7 @@ gtag('config', '${gaMeasurementId}');`;
       <header
         className={cn(
           isBlackFriday
-            ? "sticky top-0 translate-y-0 delay-150"
+            ? "relative translate-y-0 delay-150"
             : isHome && !isScrolled
             ? "absolute top-10 translate-y-2"
             : "sticky top-0 translate-y-0 delay-150",
@@ -335,32 +335,34 @@ gtag('config', '${gaMeasurementId}');`;
           </Link>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-6">
-            {navItems.map(item => (
-              <Link
-                key={item.href}
-                href={item.href}
-                className={cn(
-                  "text-sm font-medium transition-colors",
-                  isBlackFridayDark
-                    ? "text-[#f5efe0] hover:text-white"
-                    : isBlackFriday
-                      ? "text-foreground hover:text-primary"
-                    : isHome && !isScrolled
-                    ? "text-white hover:text-white/80"
-                    : "text-foreground hover:text-primary",
-                  location === item.href &&
-                    (isBlackFriday
-                      ? "text-primary font-bold"
+          {!isBlackFriday && (
+            <nav className="hidden md:flex items-center gap-6">
+              {navItems.map(item => (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  className={cn(
+                    "text-sm font-medium transition-colors",
+                    isBlackFridayDark
+                      ? "text-[#f5efe0] hover:text-white"
+                      : isBlackFriday
+                        ? "text-foreground hover:text-primary"
                       : isHome && !isScrolled
-                        ? "text-white font-bold"
-                        : "text-primary font-bold")
-                )}
-              >
-                {getLocalizedLabel(item.label)}
-              </Link>
-            ))}
-          </nav>
+                      ? "text-white hover:text-white/80"
+                      : "text-foreground hover:text-primary",
+                    location === item.href &&
+                      (isBlackFriday
+                        ? "text-primary font-bold"
+                        : isHome && !isScrolled
+                          ? "text-white font-bold"
+                          : "text-primary font-bold")
+                  )}
+                >
+                  {getLocalizedLabel(item.label)}
+                </Link>
+              ))}
+            </nav>
+          )}
 
           {/* Actions */}
           <div className="flex h-10 items-center gap-2">
@@ -450,7 +452,7 @@ gtag('config', '${gaMeasurementId}');`;
             </Button>
 
             {/* Mobile Menu Button */}
-            <Button
+            {!isBlackFriday && <Button
               variant="ghost"
               size="icon"
               className={cn(
@@ -472,12 +474,12 @@ gtag('config', '${gaMeasurementId}');`;
               ) : (
                 <Menu className="h-5 w-5" />
               )}
-            </Button>
+            </Button>}
           </div>
         </div>
 
         {/* Mobile Navigation */}
-        {isMenuOpen && (
+        {!isBlackFriday && isMenuOpen && (
           <div
             className={cn(
               "border-t md:hidden",

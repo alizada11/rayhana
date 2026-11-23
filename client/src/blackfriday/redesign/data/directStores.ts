@@ -106,7 +106,7 @@ export function directTemplate(
   return template.replace(/\{(\w+)\}/g, (_, key: string) => values[key] ?? "");
 }
 
-export type DirectMarketId = MarketId | "BE" | "NL" | "IT";
+export type DirectMarketId = MarketId | "BE" | "NL" | "IT" | "SE";
 export type DirectMarketPreference = MarketPreference & {
   directMarket?: DirectMarketId | "";
 };
@@ -136,16 +136,29 @@ export const directMarkets: {
     domain: "amazon.it",
     marketkind: "amazon",
   },
+  {
+    id: "SE",
+    country: { fa: "سوئد", ps: "سویډن", en: "Sweden" },
+    domain: "amazon.se",
+    marketkind: "amazon",
+  },
 ];
 
-// Supplied by the user on 21 November 2026: two pot links in the message,
-// and eight mandoline links in MandolineAmazonLinks.xlsx. Not proof of stock or discount activation.
+// Product links supplied in the latest Amazon stores table.
+// Listing a URL does not confirm stock or discount activation.
 export const suppliedDirectUrls: Partial<
   Record<ProductId, Partial<Record<DirectMarketId, string>>>
 > = {
   pot: {
-    DE: "https://www.amazon.de/dp/B0GDWR2TND",
-    UK: "https://www.amazon.co.uk/dp/B0GDWXN2ZK",
+    US: "https://www.amazon.com/dp/B0GDWM1PZV",
+    CA: "https://www.amazon.ca/dp/B0GDWM1PZV",
+    AU: "https://www.amazon.au/dp/B0GDWM1PZV",
+    DE: "https://www.amazon.de/dp/B0GDWM1PZV",
+    UK: "https://www.amazon.co.uk/dp/B0GDWM1PZV",
+    BE: "https://www.amazon.com.be/dp/B0GDWM1PZV",
+    NL: "https://www.amazon.nl/dp/B0GDWM1PZV",
+    IT: "https://www.amazon.it/dp/B0GDWM1PZV",
+    SE: "https://www.amazon.se/dp/B0GDWM1PZV",
   },
   mandoline: {
     US: "https://www.amazon.com/dp/B0HJL5XSS7",
@@ -156,13 +169,14 @@ export const suppliedDirectUrls: Partial<
     BE: "https://www.amazon.com.be/dp/B0HJL5XSS7",
     NL: "https://www.amazon.nl/dp/B0HJL5XSS7",
     IT: "https://www.amazon.it/dp/B0HJL5XSS7",
+    SE: "https://www.amazon.se/dp/B0HJL5XSS7",
   },
 };
 
 export function isSupplementalDirectMarket(
   value: unknown
-): value is "BE" | "NL" | "IT" {
-  return value === "BE" || value === "NL" || value === "IT";
+): value is "BE" | "NL" | "IT" | "SE" {
+  return value === "BE" || value === "NL" || value === "IT" || value === "SE";
 }
 export function legacyMarketForDirectMarket(market: DirectMarketId): MarketId {
   return isSupplementalDirectMarket(market) ? "DE" : market;
@@ -171,21 +185,23 @@ export function getDirectDeliveryMarket(
   preference: MarketPreference,
   supplemental: DirectMarketId | "" = ""
 ): DirectMarketId | "" {
-  if (preference.origin === "manual")
-    return preference.market === "DE" &&
-      isSupplementalDirectMarket(supplemental)
+  if (preference.origin === "manual") {
+    return preference.market === "DE" && isSupplementalDirectMarket(supplemental)
       ? supplemental
       : preference.market;
+  }
   const code = preference.suggestion?.countryCode;
-  return preference.origin === "automatic" && isSupplementalDirectMarket(code)
-    ? code
-    : preference.market;
+  return preference.origin === "automatic" && code === "SE"
+    ? "SE"
+    : preference.origin === "automatic" && isSupplementalDirectMarket(code)
+      ? code
+      : preference.market;
 }
 export function resolveDirectStoreMarket(
   product: ProductId,
   market: DirectMarketId | ""
 ): DirectMarketId | "" {
-  return product === "pot" && isSupplementalDirectMarket(market)
+  return product === "pot" && isSupplementalDirectMarket(market) && market !== "SE"
     ? "DE"
     : market;
 }

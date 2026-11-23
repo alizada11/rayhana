@@ -24,6 +24,34 @@ import {
 import { useProducts, type Product } from "@/hooks/useProducts";
 import SeoTags from "@/components/SeoTags";
 import ReserveDiscountSection from "@/components/ReserveDiscountSection";
+import {
+  getDirectStoreUrl,
+  suppliedDirectUrls,
+} from "@/blackfriday/redesign/data/directStores";
+
+const amazonMarketplaces = [
+  { id: "US", en: "Amazon United States", fa: "آمازون آمریکا", ps: "د امریکا امازون" },
+  { id: "CA", en: "Amazon Canada", fa: "آمازون کانادا", ps: "د کاناډا امازون" },
+  { id: "AU", en: "Amazon Australia", fa: "آمازون استرالیا", ps: "د استرالیا امازون" },
+  { id: "DE", en: "Amazon Germany", fa: "آمازون آلمان", ps: "د جرمني امازون" },
+  { id: "UK", en: "Amazon United Kingdom", fa: "آمازون بریتانیا", ps: "د بریتانیا امازون" },
+  { id: "BE", en: "Amazon Belgium", fa: "آمازون بلژیک", ps: "د بلجیم امازون" },
+  { id: "NL", en: "Amazon Netherlands", fa: "آمازون هلند", ps: "د هالنډ امازون" },
+  { id: "IT", en: "Amazon Italy", fa: "آمازون ایتالیا", ps: "د ایټالیا امازون" },
+  { id: "SE", en: "Amazon Sweden", fa: "آمازون سوئد", ps: "د سویډن امازون" },
+] as const;
+
+const validHttpUrl = (value: unknown): string | null => {
+  if (typeof value !== "string") return null;
+  try {
+    const parsed = new URL(value);
+    return ["http:", "https:"].includes(parsed.protocol.toLowerCase())
+      ? parsed.toString()
+      : null;
+  } catch {
+    return null;
+  }
+};
 
 export default function Products() {
   const { t, i18n } = useTranslation();
@@ -34,6 +62,7 @@ export default function Products() {
   const resolveImageUrl = (url: string) => {
     if (!url) return "";
     if (url.startsWith("http")) return url;
+    if (url.startsWith("/images/")) return url;
     return `${apiBase}${url}`;
   };
 
@@ -42,6 +71,46 @@ export default function Products() {
     if (typeof value === "string") return value;
     return value[i18n.language] || value.en || "";
   };
+
+  const potProducts = products.map(product => ({
+    ...product,
+    productUrl: suppliedDirectUrls.pot?.US,
+    amazonCaUrl: suppliedDirectUrls.pot?.CA,
+    amazonAuUrl: suppliedDirectUrls.pot?.AU,
+    amazonMarketLinks: amazonMarketplaces.map(market => ({
+      market: market.id,
+      label: market[i18n.language as "en" | "fa" | "ps"] || market.en,
+      url: suppliedDirectUrls.pot?.[market.id],
+    })),
+    shopino24Url: getDirectStoreUrl("pot", "AF"),
+  }));
+  const mandoline = {
+    id: "rayhana-mandoline",
+    title: {
+      en: "Rayhana Adjustable Mandoline Slicer",
+      fa: "ماندولین قابل تنظیم ریحانه",
+      ps: "د ریحانې تنظیمېدونکی ماندولین سلایسر",
+    },
+    description: {
+      en: "Julienne carrots for qabili, slice potatoes for chips or crisps, and adjust the thickness of salad vegetables. Always use the food holder and keep your fingers away from the blade.",
+      fa: "برای قابلی زردک را خلالی کنید، برای چیپس کچالو را ورقه کنید و ضخامت برش سبزیجات سالاد را تنظیم کنید. همیشه از نگهدارندهٔ مواد غذایی استفاده کنید و انگشتان را از تیغه دور نگه دارید.",
+      ps: "د قابلي لپاره ګازرې خلال کړئ، د چپس لپاره کچالو ټوټې کړئ، او د سلاد د سبزیو د ټوټو پنډوالی تنظیم کړئ. تل د خوړو نیوونکی وکاروئ او ګوتې له تیغې لرې وساتئ.",
+    },
+    imageUrl: "/images/mandoline-product-store.png",
+    productUrl: suppliedDirectUrls.mandoline?.US,
+    amazonCaUrl: suppliedDirectUrls.mandoline?.CA,
+    amazonAuUrl: suppliedDirectUrls.mandoline?.AU,
+    amazonMarketLinks: amazonMarketplaces.map(market => ({
+      market: market.id,
+      label: market[i18n.language as "en" | "fa" | "ps"] || market.en,
+      url: suppliedDirectUrls.mandoline?.[market.id],
+    })),
+    rating: null,
+    reviews: [],
+    sizes: [],
+    price: 38,
+    prices: {},
+  } as Product;
 
   return (
     <div className="min-h-screen py-20">
@@ -74,12 +143,6 @@ export default function Products() {
           </motion.p>
         </div>
 
-        {/* Market Info */}
-        <div className="text-center mb-12 p-4 bg-secondary/30 rounded-2xl border border-primary/10">
-          <p className="text-primary font-medium">
-            {t("products_page.coming_soon_markets")}
-          </p>
-        </div>
         {/* Product Grid - Centered */}
         <motion.div
           layout
@@ -95,7 +158,7 @@ export default function Products() {
               {t("products_page.no_products")}
             </div>
           )}
-          {products.map(product => (
+          {potProducts.map(product => (
             <ProductCard
               key={product.id}
               product={product}
@@ -105,6 +168,16 @@ export default function Products() {
               localize={localize}
             />
           ))}
+          {!isLoading && (
+            <ProductCard
+              key={mandoline.id}
+              product={mandoline}
+              t={t}
+              isRTL={isRTL}
+              resolveImageUrl={resolveImageUrl}
+              localize={localize}
+            />
+          )}
         </motion.div>
 
         <ReserveDiscountSection products={products} localize={localize} />
@@ -291,43 +364,12 @@ function ProductCard({
   );
 
   const currentPrice =
-    product.prices && selectedSize ? product.prices[selectedSize] : undefined;
-  const productLink = (() => {
-    const url = product.productUrl;
-    if (!url || typeof url !== "string") return null;
-    try {
-      const parsed = new URL(url);
-      const proto = parsed.protocol.toLowerCase();
-      if (proto === "http:" || proto === "https:") return parsed.toString();
-    } catch {
-      return null;
-    }
-    return null;
-  })();
-  const caLink = (() => {
-    const url = product.amazonCaUrl;
-    if (!url || typeof url !== "string") return null;
-    try {
-      const parsed = new URL(url);
-      const proto = parsed.protocol.toLowerCase();
-      if (proto === "http:" || proto === "https:") return parsed.toString();
-    } catch {
-      return null;
-    }
-    return null;
-  })();
-  const auLink = (() => {
-    const url = product.amazonAuUrl;
-    if (!url || typeof url !== "string") return null;
-    try {
-      const parsed = new URL(url);
-      const proto = parsed.protocol.toLowerCase();
-      if (proto === "http:" || proto === "https:") return parsed.toString();
-    } catch {
-      return null;
-    }
-    return null;
-  })();
+    product.price ??
+    (product.prices && selectedSize ? product.prices[selectedSize] : undefined);
+  const marketLinks = (product.amazonMarketLinks || [])
+    .filter((item: any) => item.url)
+    .map((item: any) => ({ ...item, href: validHttpUrl(item.url) }))
+    .filter((item: any) => item.href);
   const shopinoLink = (() => {
     const url = product.shopino24Url;
     if (!url || typeof url !== "string") return null;
@@ -349,7 +391,8 @@ function ProductCard({
         text: localize(rev.text) || "",
         verified: rev.verified ?? true,
       }))
-    : [
+    : product.rating
+      ? [
         {
           id: 1,
           author: "Sarah M.",
@@ -371,7 +414,8 @@ function ProductCard({
           text: t("products_page.review_3"),
           verified: true,
         },
-      ];
+      ]
+      : [];
 
   return (
     <Dialog>
@@ -389,12 +433,18 @@ function ProductCard({
               loading="lazy"
               src={resolveImageUrl(product.imageUrl)}
               alt={localize(product.title)}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-110"
+              className={`w-full h-full transition-transform duration-500 ${
+                product.id === "rayhana-mandoline"
+                  ? "object-contain p-3"
+                  : "object-cover group-hover:scale-110"
+              }`}
             />
-            <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1 text-sm font-bold shadow-sm z-10">
-              <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
-              {product.rating}
-            </div>
+            {!!product.rating && (
+              <div className="absolute top-4 right-4 bg-white/90 backdrop-blur px-3 py-1 rounded-full flex items-center gap-1 text-sm font-bold shadow-sm z-10">
+                <Star className="w-4 h-4 text-yellow-500 fill-yellow-500" />
+                {product.rating}
+              </div>
+            )}
           </div>
 
           {/* Content */}
@@ -407,7 +457,7 @@ function ProductCard({
                 {localize(product.description)}
               </p>
 
-              {product.sizes && (
+              {!!product.sizes?.length && (
                 <div className="space-y-2" onClick={e => e.stopPropagation()}>
                   <div className="text-xs font-bold text-muted-foreground">
                     {t("products_page.sizes")}:
@@ -431,58 +481,27 @@ function ProductCard({
               )}
             </div>
 
-            <div className="flex items-center justify-between pt-4 border-t border-border/50">
-              <span className="text-xl font-bold text-primary">
+            <div className="flex items-center gap-3 pt-4 border-t border-border/50">
+              <span className="w-[30%] shrink-0 text-xl font-bold text-primary">
                 {currentPrice !== undefined
                   ? `${isRTL ? "" : "$"}${currentPrice}${isRTL ? " دلار" : ""}`
                   : t("products_page.price_na")}
               </span>
-              <div className="flex w-full max-w-48 flex-col items-stretch gap-2">
-                <Button
-                  size="sm"
-                  className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
-                  onClick={e => {
-                    e.stopPropagation();
-                    const searchQuery = encodeURIComponent(
-                      `Rayhana Kitchen ${localize(product.title)} ${
-                        selectedSize ? `size ${selectedSize}` : ""
-                      }`
-                    );
-                    const href =
-                      productLink ||
-                      `https://www.amazon.com/s?k=${searchQuery}`;
-                    window.open(href, "_blank", "noopener,noreferrer");
-                  }}
-                >
-                  <ShoppingBag className="w-4 h-4 mr-2" />
-                  {t("products_page.buy_amazon")}
-                </Button>
-                {caLink && (
+              <div className="flex w-[70%] min-w-0 flex-col items-stretch gap-2" onClick={e => e.stopPropagation()}>
+                {marketLinks.map((item: any) => (
                   <Button
+                    key={item.market}
                     size="sm"
                     className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
                     onClick={e => {
                       e.stopPropagation();
-                      window.open(caLink, "_blank", "noopener,noreferrer");
+                      window.open(item.href, "_blank", "noopener,noreferrer");
                     }}
                   >
                     <ShoppingBag className="w-4 h-4 mr-2" />
-                    {t("products_page.buy_amazon_ca")}
+                    {item.label} <span className="ml-1 text-xs font-semibold uppercase">{item.market}</span>
                   </Button>
-                )}
-                {auLink && (
-                  <Button
-                    size="sm"
-                    className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold"
-                    onClick={e => {
-                      e.stopPropagation();
-                      window.open(auLink, "_blank", "noopener,noreferrer");
-                    }}
-                  >
-                    <ShoppingBag className="w-4 h-4 mr-2" />
-                    {t("products_page.buy_amazon_au")}
-                  </Button>
-                )}
+                ))}
                 {shopinoLink && (
                   <Button
                     size="sm"
@@ -517,7 +536,11 @@ function ProductCard({
                 loading="lazy"
                 src={resolveImageUrl(product.imageUrl)}
                 alt={localize(product.title)}
-                className="w-full h-full object-cover"
+                className={`w-full h-full ${
+                  product.id === "rayhana-mandoline"
+                    ? "object-contain p-3"
+                    : "object-cover"
+                }`}
               />
             </div>
 
@@ -528,45 +551,18 @@ function ProductCard({
                   : t("products_page.price_na")}
               </span>
               <div className="flex w-full max-w-70 flex-col items-stretch gap-2">
-                <Button
-                  className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
-                  onClick={() => {
-                    const searchQuery = encodeURIComponent(
-                      `Rayhana Kitchen ${localize(product.title)} ${
-                        selectedSize ? `size ${selectedSize}` : ""
-                      }`
-                    );
-                    const href =
-                      productLink ||
-                      `https://www.amazon.com/s?k=${searchQuery}`;
-                    window.open(href, "_blank", "noopener,noreferrer");
-                  }}
-                >
-                  <ShoppingBag className="w-4 h-4 mr-2" />
-                  {t("products_page.buy_amazon")}
-                </Button>
-                {caLink && (
+                {marketLinks.map((item: any) => (
                   <Button
+                    key={item.market}
                     className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
                     onClick={() => {
-                      window.open(caLink, "_blank", "noopener,noreferrer");
+                      window.open(item.href, "_blank", "noopener,noreferrer");
                     }}
                   >
                     <ShoppingBag className="w-4 h-4 mr-2" />
-                    {t("products_page.buy_amazon_ca")}
+                    {item.label} <span className="ml-1 text-xs font-semibold uppercase">{item.market}</span>
                   </Button>
-                )}
-                {auLink && (
-                  <Button
-                    className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
-                    onClick={() => {
-                      window.open(auLink, "_blank", "noopener,noreferrer");
-                    }}
-                  >
-                    <ShoppingBag className="w-4 h-4 mr-2" />
-                    {t("products_page.buy_amazon_au")}
-                  </Button>
-                )}
+                ))}
                 {shopinoLink && (
                   <Button
                     className="w-full rounded-full bg-[#FF9900] hover:bg-[#FF9900]/90 text-black font-bold px-8"
@@ -600,6 +596,7 @@ function ProductCard({
           </div>
 
           <div className="space-y-6">
+            {!!product.rating && (
             <div className="flex items-center gap-4 p-4 bg-yellow-50/50 dark:bg-yellow-900/10 rounded-xl border border-yellow-100 dark:border-yellow-900/30">
               <div className="text-center">
                 <div className="text-4xl font-bold text-primary">
@@ -620,10 +617,11 @@ function ProductCard({
                   {t("products_page.amazon_reviews")}
                 </h4>
                 <p className="text-sm text-muted-foreground">
-                  Based on global ratings
+                Based on product ratings
                 </p>
               </div>
             </div>
+            )}
 
             <div className="space-y-4">
               {reviews.map(review => (
@@ -650,6 +648,9 @@ function ProductCard({
                   </p>
                 </div>
               ))}
+              {!reviews.length && (
+                <p className="text-sm text-muted-foreground">{localize(product.description)}</p>
+              )}
             </div>
           </div>
         </div>
@@ -657,3 +658,5 @@ function ProductCard({
     </Dialog>
   );
 }
+
+
