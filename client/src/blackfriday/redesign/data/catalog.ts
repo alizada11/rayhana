@@ -206,7 +206,7 @@ export const media = {
     "/images/DSC03129_f37c3cab.jpg",
     "/images/DSC03138_82e30f41.jpg",
   ],
-  demo: "/videos/mandoline-demo-web_32514837.mp4",
+  demo: "/videos/mandoline-demo-updated.mp4",
   demoPoster: "/images/DSC03109_cb70ea18.jpg",
   potDemo: "/videos/pot-cooking-safe-web_9b3f9908.mp4",
   potDemoPoster: "/images/rayhana-pot-cutout_44807e34.webp",

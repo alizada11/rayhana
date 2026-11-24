@@ -645,7 +645,7 @@
   border-radius: var(--campaign-radius);
 }
 .black-friday-campaign .mandoline-gallery .gallery-main {
-  aspect-ratio: 1.45;
+  aspect-ratio: 16 / 9;
 }
 .black-friday-campaign .mandoline-gallery .gallery-main > img {
   object-fit: cover;
