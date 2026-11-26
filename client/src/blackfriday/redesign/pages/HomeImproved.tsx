@@ -571,7 +571,7 @@ export default function HomeImproved({
             </p>
             <figure className="pot-layers-graphic">
               <img
-                src={`/images/pot-layers-${language}.png`}
+                src={`/images/pot-layers-${language}.webp`}
                 alt={
                   language === "en"
                     ? "Rayhana three-layer pot construction: outer color coat, die-cast aluminum body, non-stick interior, and induction-ready base"
