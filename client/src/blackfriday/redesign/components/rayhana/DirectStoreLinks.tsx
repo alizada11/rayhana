@@ -89,36 +89,23 @@ export default function DirectStoreLinks({
       </>
     );
     if (!featured) {
-      return url ? (
-        <a
-          key={market}
-          className="ds-store-row"
-          data-market={market}
-          href={url}
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={() => onMarketChange(market)}
-          aria-describedby={guidanceId}
-          aria-label={getDirectActionLabel(language, product, market)}
-        >
-          {identity}
-          <span className="ds-store-row-action">
-            {product === "pot" ? c.shortPot : c.shortMandoline}
-            <ArrowUpRight size={18} aria-hidden="true" />
-          </span>
-        </a>
-      ) : (
+      return (
         <button
           key={market}
           type="button"
-          className="ds-store-row ds-store-row--pending"
+          className={`ds-store-row${market === selected?.id ? " is-selected" : ""}`}
           data-market={market}
           onClick={() => choosePendingMarket(market)}
-          aria-label={`${name} · ${unavailable ? c.unavailable : c.missing} · ${c.countryChoice}`}
+          aria-pressed={market === selected?.id}
+          aria-label={`${name} · ${c.countryChoice}`}
         >
           {identity}
           <span className="ds-store-row-action">
-            {unavailable ? c.unavailable : c.missing}
+            {market === selected?.id ? (
+              <Check size={17} aria-hidden="true" />
+            ) : (
+              c.countryChoice
+            )}
           </span>
         </button>
       );
@@ -144,7 +131,6 @@ export default function DirectStoreLinks({
             href={url}
             target="_blank"
             rel="noopener noreferrer"
-            onClick={() => onMarketChange(preference.directMarket || market)}
             aria-describedby={guidanceId}
           >
             {getDirectActionLabel(language, product, market)}

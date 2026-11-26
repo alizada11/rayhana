@@ -89,17 +89,6 @@ export default function CookingVideoSlider({
             {copy.videoFallback}
           </a>
         </video>
-        {!playing && (
-          <button
-            type="button"
-            className="cooking-video-start"
-            onClick={togglePlayback}
-            aria-label={copy.videoPlay}
-          >
-            <Play size={24} fill="currentColor" />
-            <span>{copy.watchDemo}</span>
-          </button>
-        )}
         <div className="cooking-video-caption">
           <span>
             <strong>{potVideoLabel}</strong>

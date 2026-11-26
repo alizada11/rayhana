@@ -119,6 +119,7 @@ export default function HomeImproved({
   const [gallery, setGallery] = useState(0);
   const [demoEnabled, setDemoEnabled] = useState(true);
   const [sticky, setSticky] = useState(false);
+  const [stickyStoreChanged, setStickyStoreChanged] = useState(false);
   const [status, setStatus] = useState("");
   const copy = refinedDictionary(dictionaries[language], language);
   const r = refinedCampaignCopy[language];
@@ -193,6 +194,10 @@ export default function HomeImproved({
       );
   }
   function changeMarket(next: DirectMarketId) {
+    if (next !== directMarket) {
+      setStickyStoreChanged(true);
+      window.setTimeout(() => setStickyStoreChanged(false), 650);
+    }
     preference.chooseMarket(next);
     setStatus(copy.selectionUpdated);
   }
@@ -564,6 +569,20 @@ export default function HomeImproved({
               <ShieldCheck size={16} />
               <span>{copy.potSafety}</span>
             </p>
+            <figure className="pot-layers-graphic">
+              <img
+                src={`/images/pot-layers-${language}.png`}
+                alt={
+                  language === "en"
+                    ? "Rayhana three-layer pot construction: outer color coat, die-cast aluminum body, non-stick interior, and induction-ready base"
+                    : language === "ps"
+                      ? "د ریحانه دیګ درې پوړیز جوړښت: بهرنی رنګ، د المونیم بدنه، نچسپ داخلي پوښ او د القلي لپاره مناسبه تل"
+                      : "ساختار سه‌لایه دیگ ریحانه: رنگ بیرونی، بدنه آلومینیومی، پوشش داخلی نچسب و کف مناسب اجاق القایی"
+                }
+                loading="lazy"
+                decoding="async"
+              />
+            </figure>
           </div>
         </section>
 
@@ -974,7 +993,7 @@ export default function HomeImproved({
         </div>
       </footer>
       <div
-        className={`mobile-sticky ds-sticky-buy ${sticky ? "visible" : ""}`}
+        className={`mobile-sticky ds-sticky-buy ${sticky ? "visible" : ""}${stickyStoreChanged ? " store-changed" : ""}`}
         aria-hidden={!sticky}
         data-market={currentStore?.id || ""}
         data-product={product}
@@ -1000,7 +1019,7 @@ export default function HomeImproved({
           </span>
         </a>
         <a
-          className="button primary"
+          className="button primary ds-sticky-action"
           tabIndex={sticky ? 0 : -1}
           href={currentPurchaseUrl || "#black-friday"}
           target={currentPurchaseUrl ? "_blank" : undefined}

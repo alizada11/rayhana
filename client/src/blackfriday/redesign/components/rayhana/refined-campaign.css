@@ -949,6 +949,17 @@
   text-align: center;
   max-width: 440px;
 }
+.refined-campaign .pot-layers-graphic {
+  width: 100%;
+  max-width: none;
+  margin: 24px 0 0;
+}
+.refined-campaign .pot-layers-graphic img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 18px;
+}
 .refined-campaign .ds-panel .market-flag {
   flex-shrink: 0;
   width: 29px;
@@ -983,7 +994,8 @@
     border-color 0.15s,
     background 0.15s;
 }
-.refined-campaign a.ds-store-row:hover {
+.refined-campaign .ds-store-row:hover,
+.refined-campaign .ds-store-row.is-selected {
   border-color: var(--red);
   background: #de102005;
 }
@@ -999,11 +1011,7 @@
   line-height: 1.7;
   font-weight: 500;
 }
-.refined-campaign .ds-store-row--pending .ds-store-row-action {
-  max-width: 13ch;
-  font-size: 12px;
-  color: var(--muted);
-}
+.refined-campaign .ds-store-row.is-selected .ds-store-row-action { color: var(--red); }
 .refined-campaign .ds-coverage,
 .refined-campaign .ds-af-offer,
 .refined-campaign .ds-guidance {
@@ -1170,6 +1178,14 @@
   visibility: visible;
   pointer-events: auto;
 }
+.refined-campaign .ds-sticky-buy.store-changed {
+  animation: ds-store-selection-pulse 0.6s ease-out;
+}
+@keyframes ds-store-selection-pulse {
+  0% { box-shadow: 0 8px 35px #21130c1a; }
+  35% { box-shadow: 0 0 0 5px #de102022, 0 8px 35px #21130c1a; }
+  100% { box-shadow: 0 8px 35px #21130c1a; }
+}
 .refined-campaign .ds-sticky-store {
   display: flex;
   align-items: center;
@@ -1210,6 +1226,7 @@
 @media (prefers-reduced-motion: reduce) {
   .refined-campaign .ds-sticky-buy {
     transition: none;
+    animation: none;
   }
 }
 

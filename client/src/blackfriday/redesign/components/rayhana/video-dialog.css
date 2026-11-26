@@ -120,6 +120,12 @@
   .rayhana-video-dialog {
     padding: 26px 20px;
   }
+  .rayhana-video-dialog
+    .cooking-video-slider[data-variant="dialog"]
+    .cooking-video-slide {
+    height: min(60dvh, 520px);
+    aspect-ratio: auto;
+  }
   .rayhana-video-dialog h2 {
     font-size: 28px;
   }

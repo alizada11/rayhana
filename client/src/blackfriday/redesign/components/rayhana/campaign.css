@@ -393,33 +393,6 @@
   object-position: center;
   background: #342720;
 }
-.cooking-video-start {
-  position: absolute;
-  z-index: 2;
-  inset: 50% auto auto 50%;
-  transform: translate(-50%, -50%);
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  min-height: 54px;
-  padding: 0 20px 0 10px;
-  border: 1px solid #ffffff80;
-  border-radius: 999px;
-  color: #fff;
-  background: #e3061d;
-  box-shadow: 0 8px 28px #160b0b55;
-  cursor: pointer;
-  font: 600 13px Poppins, sans-serif;
-}
-.cooking-video-start svg {
-  box-sizing: content-box;
-  padding: 12px;
-  border-radius: 50%;
-  background: #ffffff24;
-}
-.cooking-video-start:hover {
-  background: #bd0015;
-}
 .cooking-video-caption {
   position: absolute;
   z-index: 1;
@@ -451,9 +424,6 @@
   opacity: 0;
   pointer-events: none;
 }
-.black-friday-campaign.is-rtl .cooking-video-start {
-  font-family: Vazirmatn, sans-serif;
-}
 .cooking-video-controls {
   position: absolute;
   z-index: 3;
@@ -484,7 +454,6 @@
   background: #ffffff24;
 }
 .cooking-control-button:focus-visible,
-.cooking-video-start:focus-visible,
 .cooking-slider-arrow:focus-visible,
 .cooking-slider-dot:focus-visible {
   outline: 2px solid #fff;
@@ -1014,11 +983,15 @@
   .cooking-card {
     border-radius: 110px 110px 0 0;
   }
+  .cooking-video-slide {
+    height: min(100dvh, 720px);
+  }
   .cooking-card > img {
     height: 420px;
   }
   .cooking-video-slide > video {
-    height: 420px;
+    height: 100%;
+    object-fit: contain;
   }
   .cooking-caption strong {
     font-size: 13px;
